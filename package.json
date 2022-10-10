@@ -2,6 +2,7 @@
   "name": "mytsproject",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
+  "proxy": "http://127.0.0.1:5000",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,8 +10,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.0",
+    "axios": "^1.1.2",
     "expo": "~46.0.7",
     "expo-status-bar": "~1.4.0",
+    "http-proxy-middleware": "^2.0.6",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.4",
@@ -18,8 +22,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/jest": "^28.1.6",
     "@types/react": "~18.0.14",
-    "@types/react-native": "~0.69.1",
+    "@types/react-native": "^0.69.5",
+    "@types/react-test-renderer": "^18.0.0",
     "typescript": "~4.3.5"
   },
   "private": true
