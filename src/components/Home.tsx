@@ -1,6 +1,6 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+import axios from "../axios";
 
 export default function TestApiComponent() {
   const [movies, setMovies] = useState("test");
@@ -8,7 +8,7 @@ export default function TestApiComponent() {
   const data = {}
 
   useEffect(() => {
-  fetch("api/fileservice/0.1/test/").then((response) => {
+  axios.get("api/fileservice/0.1/test/").then((response) => {
       console.log(response);
       setMovies(JSON.stringify(response));
     });
