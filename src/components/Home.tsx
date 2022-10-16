@@ -5,8 +5,6 @@ import axios from "../axios";
 export default function TestApiComponent() {
   const [movies, setMovies] = useState("test");
 
-  const data = {}
-
   useEffect(() => {
   axios.get("api/fileservice/0.1/test/").then((response) => {
       console.log(response);
@@ -19,7 +17,7 @@ export default function TestApiComponent() {
       uuid: '12345678',
       mime_type: 'application/octet-stream'
     }
-    const response = await axios.post("/api/fileservice/0.1/upload/", data, {headers: {"Accept": "application/json"}})
+    const response = await axios.post("/api/fileservice/0.1/upload/", body, {headers: {"Accept": "application/json"}})
     
   }
 
