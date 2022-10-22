@@ -1,26 +1,24 @@
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function TestApiComponent() {
-  const [movies, setMovies] = useState("test");
+  const [movies, setMovies] = useState('original state');
 
-  // useEffect(() => {
-  // axios.get("api/fileservice/0.1/test/").then((response) => {
-  //     console.log(response);
-  //     setMovies(JSON.stringify(response));
-  //   });
-  // }, []);
+  useEffect(() => {
+    // TODO: Need to ensure the ENV env var is passed into expo and therefore webpack build so axios works properly
+  console.log("sdfdsafsda")
+  const res = fetch("http://192.168.1.217:5000/api/fileservice/0.1/test/")
+  .then((response) => response.json())
+  .then(json => setMovies(json.test));
+  }, []);
 
   async function handleButtonClick(){
-
-    await ImagePicker.requestMediaLibraryPermissionsAsync(false)
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
     
@@ -31,10 +29,11 @@ export default function TestApiComponent() {
 
       console.log(result);
 
-      const response = await FileSystem.uploadAsync(`http://127.0.0.1:5000/api/fileservice/0.1/upload/1234`, result.uri, {
-      fieldName: 'bytes',
+      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/upload/1234`, result.uri, {
       httpMethod: 'PATCH',
-      uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+      fieldName: 'bytes',
+      mimeType: 'multipart/form-data',
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
     });
   
     console.log("file upload response", response)
