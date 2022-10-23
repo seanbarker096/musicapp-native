@@ -29,11 +29,12 @@ export default function TestApiComponent() {
 
       console.log(result);
 
-      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/upload/1234`, result.uri, {
-      httpMethod: 'PATCH',
-      fieldName: 'bytes',
+      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/upload_file`, result.uri, {
+      httpMethod: 'POST',
+      fieldName: 'file',
       mimeType: 'multipart/form-data',
       uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      parameters: {'uuid': '12345'}
     });
   
     console.log("file upload response", response)
