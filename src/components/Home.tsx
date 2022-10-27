@@ -1,15 +1,16 @@
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+import { PermissionStatus } from 'expo-media-library';
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function TestApiComponent() {
   const [movies, setMovies] = useState('original state');
-  const [downloadedFile, setDownloadedFile] = useState('no file downloaded yet')
+  const [fileUri, setFileUri] = useState('')
 
   useEffect(() => {
     // TODO: Need to ensure the ENV env var is passed into expo and therefore webpack build so axios works properly
-  console.log("sdfdsafsda")
   const res = fetch("http://192.168.1.217:5000/api/fileservice/0.1/test/")
   .then((response) => response.json())
   .then(json => setMovies(json.test));
@@ -22,13 +23,9 @@ export default function TestApiComponent() {
       aspect: [1, 1],
       quality: 1,
     });
-    
-    console.log(result)
+
 
     if (!result.cancelled) {
-      console.log(result)
-
-      console.log(result);
 
       const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file`, result.uri, {
       httpMethod: 'POST',
@@ -40,22 +37,35 @@ export default function TestApiComponent() {
   
     console.log("file upload response", response)
     }
-
- 
-    
   }
 
   async function handleDownloadButtonClick(){
+    try {
     const response =  await FileSystem.downloadAsync(
       `http://192.168.1.217:5000/api/fileservice/0.1/files/12345`, 
       FileSystem.documentDirectory + 'my_app_image.png')
-      .then(response => {
+     
         console.log(response)
-        setDownloadedFile(response.uri)
-      }).catch(error => {
-        console.error(error);
-      });
-  }
+        setFileUri(response.uri)
+    
+
+    
+        console.log("requesting perms")
+      const permissionResponse = await MediaLibrary.requestPermissionsAsync()
+
+      console.log("checking access", permissionResponse)
+      if(permissionResponse.status === PermissionStatus.GRANTED){
+        console.log("saving to library")
+        console.log(response.uri)
+        const res = await MediaLibrary.saveToLibraryAsync(response.uri)
+        console.log("saved", res)
+      }
+
+    } catch(error){
+      console.log("error")
+      console.log(error)
+    }
+}
 
   return (
     <>
@@ -64,7 +74,7 @@ export default function TestApiComponent() {
       <Button title="Upload file" onPress={handleUploadButtonClick} ></Button>
     </View>
     <View style={styles.container}>
-      <Text>{downloadedFile}</Text>
+      <Text>{fileUri}</Text>
       <Button title="Download file" onPress={handleDownloadButtonClick} ></Button>
     </View>
   </>
