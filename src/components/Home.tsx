@@ -2,8 +2,8 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import { PermissionStatus } from 'expo-media-library';
-import * as mime from 'mime';
-import { useEffect, useState } from "react";
+import * as mime from 'mime/lite';
+import { useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 const EXT_TO_MIME_TYPE_MAP: {[index: string]: string}
@@ -21,18 +21,27 @@ export default function TestApiComponent() {
 
   const uuid = '12345'
 
-  useEffect(() => {
-    // TODO: Need to ensure the ENV env var is passed into expo and therefore webpack build so axios works properly
-  const res = fetch("http://192.168.1.217:5000/api/fileservice/0.1/test/")
-  .then((response) => response.json())
-  .then(json => setMovies(json.test));
-  }, []);
+  // useEffect(() => {
+  //   // TODO: Need to ensure the ENV env var is passed into expo and therefore webpack build so axios works properly
+  // // const res = fetch("http://192.168.1.217:5000/api/fileservice/0.1/test/")
+  // // .then((response) => response.json())
+  // // .then(json => setMovies(json.test));
+  // // }, []);
 
   async function handleUploadButtonClick(){
+
+    await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const response = await ImagePicker.getMediaLibraryPermissionsAsync()
+    const resp2 = await ImagePicker.requestCameraPermissionsAsync()
+    console.log("permission response")
+    console.log(response)
+
+    console.log("camnera permission response")
+    console.log(resp2)
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
-      aspect: [1, 1],
       quality: 1,
     });
 
@@ -44,35 +53,31 @@ export default function TestApiComponent() {
       setExt(extension ?? "")
       console.log(extension)
       mimeType = extension ? mime.getType(result.uri) : ""
-    }
-    
-
-
-    if (!result.cancelled) {
+  
       console.log(mimeType)
        try {
 
-      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file`, result.uri, {
+      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file/`, result.uri, {
       httpMethod: 'POST',
       fieldName: 'file',
       mimeType: 'multipart/form-data',
       uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      parameters: {'uuid': uuid, 'mime_type': `${mimeType}`} 
+      parameters: {'uuid': uuid, 'mime_type': `${mimeType}`, file_name: `test-file-name${extension}`} 
     });
     console.log("file upload response", response)
   }catch(error){
     console.log(error)
   }
   
-   
-    }
+}
+    
   }
 
   async function handleDownloadButtonClick(){
     try {
     const response =  await FileSystem.downloadAsync(
-      `http://192.168.1.217:5000/api/fileservice/0.1/files/${uuid}`, 
-      FileSystem.documentDirectory + `test.jpg`)
+      `http://192.168.1.217:5000/api/fileservice/0.1/files/${uuid}/`, 
+      FileSystem.documentDirectory + `test.mp4`)
      
         console.log(response)
         setFileUri(response.uri)
