@@ -2,14 +2,18 @@ import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 import { PermissionStatus } from 'expo-media-library';
+import * as mime from 'mime';
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 const EXT_TO_MIME_TYPE_MAP: {[index: string]: string}
 = {
   ".jpeg": "image/jpeg",
-  ".png": "image/png"
+  ".png": "image/png",
+  ".mp4": "video/mp4"
 }
+
+//TODO: Use npm mime-type module
 export default function TestApiComponent() {
   const [movies, setMovies] = useState('original state');
   const [fileUri, setFileUri] = useState('')
@@ -32,30 +36,35 @@ export default function TestApiComponent() {
       quality: 1,
     });
 
-    let mimeType = ""
+    let mimeType: string| null = ""
     if(!result.cancelled){
       console.log(result.uri)
       const regexArray = result.uri.match(/\.[0-9a-z]+$/i)
       const extension = regexArray ? regexArray[0] : undefined
       setExt(extension ?? "")
       console.log(extension)
-       mimeType = extension ? EXT_TO_MIME_TYPE_MAP[extension]: ""
+      mimeType = extension ? mime.getType(result.uri) : ""
     }
     
 
 
     if (!result.cancelled) {
       console.log(mimeType)
+       try {
 
       const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file`, result.uri, {
       httpMethod: 'POST',
       fieldName: 'file',
       mimeType: 'multipart/form-data',
       uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      parameters: {'uuid': uuid, 'mime_type': mimeType} 
+      parameters: {'uuid': uuid, 'mime_type': `${mimeType}`} 
     });
-  
     console.log("file upload response", response)
+  }catch(error){
+    console.log(error)
+  }
+  
+   
     }
   }
 
