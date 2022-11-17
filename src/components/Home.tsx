@@ -5,14 +5,6 @@ import { PermissionStatus } from 'expo-media-library';
 import * as mime from 'mime/lite';
 import { useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
-
-const EXT_TO_MIME_TYPE_MAP: {[index: string]: string}
-= {
-  ".jpeg": "image/jpeg",
-  ".png": "image/png",
-  ".mp4": "video/mp4"
-}
-
 //TODO: Use npm mime-type module
 export default function TestApiComponent() {
   const [movies, setMovies] = useState('original state');
@@ -27,6 +19,7 @@ export default function TestApiComponent() {
   // // .then((response) => response.json())
   // // .then(json => setMovies(json.test));
   // // }, []);
+
 
   async function handleUploadButtonClick(){
 

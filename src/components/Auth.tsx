@@ -1,11 +1,10 @@
-import * as SecureStore from 'expo-secure-store';
+
 import { Button, StyleSheet, View } from 'react-native';
+// import * as Keychain from 'react-native-keychain';
 
-
-//TODO: Use npm mime-type module
-export default function TestAuth() {
-
-  async function handleSignUpClick(){
+export default function TestAuthComponent() {
+ 
+ async function handleSignUpClick(){
     try {
         const response =  await fetch(`http://192.168.1.217:5000/api/auth/0.1/signup/`, {
             method: 'POST',
@@ -24,8 +23,8 @@ export default function TestAuth() {
         const json = await response.json()
         console.log(response)
         
-        let result = await SecureStore.setItemAsync("music_app_a_tk", json.token)
-        let result2 = await SecureStore.setItemAsync("music_app_r_tk", json.r_token)
+        // let result = await Keychain.setGenericPassword('access_token', json.token, {service: "music_app_access"});
+        // let result2 = await Keychain.setGenericPassword("refresh_token", json.r_token, {service: "music_app_refresh"})
     
         } catch(error){
           console.log("error")
@@ -33,10 +32,14 @@ export default function TestAuth() {
         }
   }
 
-  async function getTokens(){
-    
-  }
+  async function handleGetTokens(){
+    // let accessToken = await Keychain.getGenericPassword({service:"music_app_access"});
+    // let refreshToken = await Keychain.getGenericPassword({service: "music_app_refresh"});
 
+    // console.log("accessToken", accessToken)
+    // console.log("refresh token", refreshToken)
+  }
+  
   return (
     <>
     <View style={styles.container}>
@@ -47,13 +50,15 @@ export default function TestAuth() {
     </View>
   </>
   );
+
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+    container: {
+      flex: 1,
+      backgroundColor: "#fff",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  });
