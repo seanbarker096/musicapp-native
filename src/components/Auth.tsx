@@ -43,6 +43,24 @@ export default function TestAuthComponent() {
      console.log("accessToken", accessToken)
      console.log("refresh token", refreshToken)
   }
+
+  async function handleLogin(){
+    try {
+    const response =  await fetch(`http://192.168.1.217:5000/api/auth/0.1/login/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: 'seanbarker',
+                password: 'test',
+            })
+        })
+      } catch(error) {
+        console.log("error")
+        console.log(error)
+      }
+  }
   
   return (
     <>
@@ -51,6 +69,9 @@ export default function TestAuthComponent() {
     </View>
     <View style={styles.container}>
       <Button title="Get tokens" onPress={handleGetTokens} ></Button>
+    </View>
+    <View style={styles.container}>
+      <Button title="Login" onPress={handleLogin} ></Button>
     </View>
   </>
   );
