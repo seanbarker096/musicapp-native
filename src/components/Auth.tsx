@@ -1,6 +1,7 @@
 
 import { Button, StyleSheet, View } from 'react-native';
 // import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
 export default function TestAuthComponent() {
  
@@ -21,10 +22,13 @@ export default function TestAuthComponent() {
         })
         
         const json = await response.json()
-        console.log(response)
+        console.log(json)
         
         // let result = await Keychain.setGenericPassword('access_token', json.token, {service: "music_app_access"});
         // let result2 = await Keychain.setGenericPassword("refresh_token", json.r_token, {service: "music_app_refresh"})
+
+        let reuslt = await SecureStore.setItemAsync('access_token', json.token)
+        let result2 = await SecureStore.setItemAsync('refresh_token', json.r_token)
     
         } catch(error){
           console.log("error")
@@ -33,11 +37,11 @@ export default function TestAuthComponent() {
   }
 
   async function handleGetTokens(){
-    // let accessToken = await Keychain.getGenericPassword({service:"music_app_access"});
-    // let refreshToken = await Keychain.getGenericPassword({service: "music_app_refresh"});
+     let accessToken = await SecureStore.getItemAsync('access_token');
+     let refreshToken = await SecureStore.getItemAsync('refresh_token');
 
-    // console.log("accessToken", accessToken)
-    // console.log("refresh token", refreshToken)
+     console.log("accessToken", accessToken)
+     console.log("refresh token", refreshToken)
   }
   
   return (
