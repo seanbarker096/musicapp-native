@@ -10,8 +10,10 @@ export default function TestApiComponent() {
   const [movies, setMovies] = useState('original state');
   const [fileUri, setFileUri] = useState('')
   const [ext, setExt] = useState("")
+  const [fileId, setFileId] = useState(undefined)
 
   const uuid = '12345'
+
 
   // useEffect(() => {
   //   // TODO: Need to ensure the ENV env var is passed into expo and therefore webpack build so axios works properly
@@ -58,6 +60,11 @@ export default function TestApiComponent() {
       parameters: {'uuid': uuid, 'mime_type': `${mimeType}`, file_name: `test-file-name${extension}`} 
     });
     console.log("file upload response", response)
+
+    const parsed_response = JSON.parse(response.body)
+
+    setFileId(parsed_response.file.id)
+
   }catch(error){
     console.log(error)
   }
@@ -94,6 +101,26 @@ export default function TestApiComponent() {
     }
 }
 
+async function handlePostButtonClick(){
+  try {
+    const response =  await fetch(`http://192.168.1.217:5000/api/posts/0.1/posts/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                owner_id: 123,
+                content: 'my great post',
+                attachment_file_ids: `["${fileId}"]`
+            })
+        })
+
+        console.log("Post response", response.json())
+  } catch(err){
+    console.log("create post error", err)
+  }
+}
+
   return (
     <>
     <View style={styles.container}>
@@ -102,7 +129,11 @@ export default function TestApiComponent() {
     </View>
     <View style={styles.container}>
       <Text>{fileUri}</Text>
-      <Button title="Download file" onPress={handleDownloadButtonClick} ></Button>
+      <Button title="Download file" onPress={handleDownloadButtonClick}></Button>
+    </View>
+    <View style={styles.container}>
+      <Text>{fileUri}</Text>
+      <Button title="Create post" onPress={handlePostButtonClick}></Button>
     </View>
   </>
   );
