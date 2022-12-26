@@ -1,7 +1,7 @@
+import Icon from 'components/Icon/Icon';
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colorPrimary } from '../../../styles';
-import Icon from '../../components/Icon/Icon';
 
 interface PrimaryNavProps {}
 

@@ -7,11 +7,21 @@ interface IconProps {
 
 const iconsRoot = 'assets/';
 
-const Icon: FC<IconProps> = ({ iconName }) => (
-  <View style={styles.iconContainer}>
-    <Image source={require('assets/icon.png')}></Image>
-  </View>
-);
+const Icon: FC<IconProps> = ({ iconName }) => {
+  console.log(iconName);
+
+  return (
+    <View style={styles.iconContainer}>
+      <Image
+        source={{
+          uri: require(`assets/icons/${iconName}.svg`),
+          height: 20,
+          width: 20,
+        }}
+      ></Image>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   iconContainer: {
