@@ -1,0 +1,13 @@
+{
+    "trailingComma": "all",
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "singleAttributePerLine": true,
+    "proseWrap": "never",
+    "overrides": [{
+        "files": ["**/*.css", "**/*.scss"],
+        "options": {
+            "singleQuote": false
+        }
+    }]
+}

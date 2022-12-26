@@ -13,5 +13,7 @@
       "name": "gig dev",
       "username": "root"
     }
-  ]
+  ],
+  "prettier.configPath": "",
+  "prettier.prettierPath": "./node_modules/prettier"
 }

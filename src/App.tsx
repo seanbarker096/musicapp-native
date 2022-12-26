@@ -1,27 +1,25 @@
-import { registerRootComponent } from "expo";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import TestAuth from "./components/Auth";
-import TestApiComponent from "./components/Home";
+import { StyleSheet } from 'react-native';
+import AppShell from './app/app-shell/AppShell/AppShell';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tssx to start dsfasdforking on your app!</Text>
-      <StatusBar style="auto" />
-      <TestApiComponent></TestApiComponent>
-      <TestAuth></TestAuth>
-    </View>
-  );
+  return <AppShell></AppShell>;
+}
+
+function myFunc() {
+  console.log('dsfrsd');
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
