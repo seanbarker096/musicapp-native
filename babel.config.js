@@ -13,7 +13,13 @@ module.exports = function(api) {
           "safe": false,
           "allowUndefined": true
           }
-        ]
+        ],
+        ["module-resolver", {
+          "root": ["./src/"],
+          "alias": {
+            "assets": "./src/assets",
+          }
+        }]
       ],
   };
 };
