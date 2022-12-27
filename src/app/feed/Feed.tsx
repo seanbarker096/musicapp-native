@@ -1,12 +1,8 @@
-import React, { FC } from 'react';
-
+import { FC } from 'react';
+import { Text } from 'react-native';
 
 interface FeedProps {}
 
-const Feed: FC<FeedProps> = () => (
-  <div>
-    Feed Component
-  </div>
-);
+const Feed: FC<FeedProps> = () => <Text>dsfsdf</Text>;
 
 export default Feed;

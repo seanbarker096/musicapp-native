@@ -11,10 +11,27 @@ import { NAVIGATION_BACKGROUND_COLOR, SPACING_SMALL } from 'styles';
 import {
   PrimaryNavNavigationProp,
   PrimaryNavNavigatorParamList,
-  Screens,
+  PrimaryScreens,
 } from './PrimaryNav.types';
 
 interface PrimaryNavProps {}
+
+const DEFAULT_HEADER_OPTIONS = {
+  headerBackVisible: true,
+};
+const NavigationHeaderOptions = {
+  default: DEFAULT_HEADER_OPTIONS,
+  [PrimaryScreens.PROFILE]: {
+    title: 'Profile',
+    ...DEFAULT_HEADER_OPTIONS,
+    headerBackVisible: false,
+  },
+  [PrimaryScreens.FEED]: {
+    title: 'Feed',
+    ...DEFAULT_HEADER_OPTIONS,
+    headerBackVisible: false,
+  },
+};
 
 const PrimaryNav: FC<PrimaryNavProps> = () => {
   const Stack = createNativeStackNavigator<PrimaryNavNavigatorParamList>();
@@ -22,6 +39,7 @@ const PrimaryNav: FC<PrimaryNavProps> = () => {
 
   const handleNavigation = (screen: keyof PrimaryNavNavigatorParamList) => {
     console.log('clicked');
+    //navigation.setOptions(NavigationHeaderOptions[screen]);
     navigation.navigate(screen);
   };
 
@@ -29,12 +47,14 @@ const PrimaryNav: FC<PrimaryNavProps> = () => {
     <>
       <Stack.Navigator>
         <Stack.Screen
-          name={Screens.FEED}
+          name={PrimaryScreens.FEED}
           component={Feed}
+          options={NavigationHeaderOptions[PrimaryScreens.FEED]}
         ></Stack.Screen>
         <Stack.Screen
-          name={Screens.PROFILE}
+          name={PrimaryScreens.PROFILE}
           component={UserProfile}
+          options={NavigationHeaderOptions[PrimaryScreens.PROFILE]}
         ></Stack.Screen>
       </Stack.Navigator>
       <View style={styles.navContainer}>
@@ -49,7 +69,7 @@ const PrimaryNav: FC<PrimaryNavProps> = () => {
         <Avatar
           size={AvatarSize.SMALL}
           imageUrl="https://www.w3schools.com/howto/img_avatar.png"
-          onPress={() => handleNavigation(Screens.PROFILE)}
+          onPress={() => handleNavigation(PrimaryScreens.PROFILE)}
         ></Avatar>
       </View>
     </>
