@@ -30,6 +30,7 @@ module.exports = function(api) {
             '.svg'
           ],
           "alias": {
+            "app": "./src/app",
             "assets": "./src/assets",
             "components": "./src/components"
           }

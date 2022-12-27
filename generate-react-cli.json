@@ -1,6 +1,5 @@
 {
   "usesTypeScript": true,
-  "cssPreprocessor": "scss",
   "testLibrary": "Testing Library",
   "component": {
     "default": {
