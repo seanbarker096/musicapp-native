@@ -1,7 +1,7 @@
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 import { StyleSheet } from 'react-native';
-import AppShell from './app/app-shell/AppShell/AppShell';
+import AppShell from './app/app-shell/AppShell';
 
 export default function App() {
   return <AppShell></AppShell>;

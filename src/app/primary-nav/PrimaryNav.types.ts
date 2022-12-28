@@ -3,7 +3,10 @@ import { NavigationHelpers } from '@react-navigation/native';
 
 export enum PrimaryScreens {
   PROFILE = 'profile',
-  FEED = 'feed',
+  MANAGE = 'manage',
+  UPLOAD = 'upload',
+  SEARCH = 'search',
+  HOME = 'home',
 }
 
 export type PrimaryNavNavigatorParamList = Record<

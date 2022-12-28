@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import { SVGProps } from './icon.types';
 
 interface IconProps {
-  iconName: string;
+  clickable?: boolean;
+  children?: React.ReactElement<SVGProps>;
   width?: number; // px
   height?: number; // px
 }
@@ -17,21 +19,27 @@ const iconNames: { [imageName: string]: string } = {
 const DEFAULT_ICON_HEIGHT = 22;
 const DEFAULT_ICON_WIDTH = 22;
 
-const Icon: FC<IconProps> = ({
-  iconName,
+const SVGIcon: FC<IconProps> = ({
+  clickable = false,
   width = DEFAULT_ICON_WIDTH,
   height = DEFAULT_ICON_HEIGHT,
+  children,
 }) => {
+  const icon = <View style={styles.iconContainer}>{children}</View>;
+
+  const handleIconPress = () => {
+    console.log('pressed');
+  };
+
   return (
-    <View style={styles.iconContainer}>
-      <Image
-        source={{
-          uri: iconNames[iconName],
-          width: width,
-          height: height,
-        }}
-      ></Image>
-    </View>
+    <>
+      {clickable && (
+        <TouchableHighlight onPress={handleIconPress}>
+          {icon}
+        </TouchableHighlight>
+      )}
+      {!clickable && icon}
+    </>
   );
 };
 
@@ -44,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Icon;
+export default SVGIcon;

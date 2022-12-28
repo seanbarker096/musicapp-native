@@ -24,7 +24,7 @@ export const Avatar: FC<AvatarProps & TouchableNativeFeedbackProps> = ({
   size = AvatarSize.MEDIUM,
   onPress,
 }) => {
-  const [isActive, setIsActive] = useState<boolean>(true);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   const handlePress = (event: GestureResponderEvent) => {
     console.log(isActive);
