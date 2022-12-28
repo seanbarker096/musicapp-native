@@ -10,5 +10,6 @@
       "withLazy": false
     }
   },
-  "usesCssModule": false
+  "usesCssModule": false,
+  "cssPreprocessor": "styl"
 }

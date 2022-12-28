@@ -1,10 +1,17 @@
 import { BottomTabNavigationEventMap } from '@react-navigation/bottom-tabs';
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native';
 import { Avatar, AvatarSize } from 'components/avatar';
-import Icon from 'components/icon/Icon';
-import { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { NAVIGATION_BACKGROUND_COLOR } from 'styles';
+import { IconColor } from 'components/icon/icon.types';
+import {
+  BorderedPlusSVG,
+  HomeOutlineSVG,
+  PeopleSVG,
+  SearchOutlineSVG,
+} from 'components/icon/svg-components';
+import SVGIcon from 'components/icon/SVGIcon';
+import { FC, useState } from 'react';
+import { Button, StyleSheet, View } from 'react-native';
+import { NAVIGATION_BACKGROUND_COLOR, SPACING_SMALL } from 'styles';
 import {
   PrimaryNavNavigatorParamList,
   PrimaryScreens,
@@ -14,45 +21,44 @@ interface PrimaryNavProps {
   navigation: NavigationHelpers<ParamListBase, BottomTabNavigationEventMap>;
 }
 
-const DEFAULT_HEADER_OPTIONS = {
-  headerBackVisible: true,
-};
-const NavigationHeaderOptions = {
-  default: DEFAULT_HEADER_OPTIONS,
-  [PrimaryScreens.PROFILE]: {
-    title: 'Profile',
-    ...DEFAULT_HEADER_OPTIONS,
-    headerBackVisible: false,
-  },
-  [PrimaryScreens.FEED]: {
-    title: 'Feed',
-    ...DEFAULT_HEADER_OPTIONS,
-    headerBackVisible: false,
-  },
-};
-
 const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
+  const [color, setColor] = useState(IconColor.LIGHT);
+
   const handleNavigation = (screen: keyof PrimaryNavNavigatorParamList) => {
-    console.log('clicked');
     navigation.navigate(screen);
   };
 
   return (
-    <View style={styles.navContainer}>
-      <Icon iconName="home-outline"></Icon>
-      <Icon iconName="search"></Icon>
-      <Icon iconName="bordered-plus"></Icon>
-      <Icon
-        iconName="people"
-        width={24}
-        height={24}
-      ></Icon>
-      <Avatar
-        size={AvatarSize.SMALL}
-        imageUrl="https://www.w3schools.com/howto/img_avatar.png"
-        onPress={() => handleNavigation(PrimaryScreens.PROFILE)}
-      ></Avatar>
-    </View>
+    <>
+      <Button
+        title="sadsad"
+        onPress={() =>
+          setColor(color === IconColor.DARK ? IconColor.LIGHT : IconColor.DARK)
+        }
+      ></Button>
+      <View style={styles.navContainer}>
+        <SVGIcon
+          color={IconColor.LIGHT}
+          clickable={true}
+        >
+          <HomeOutlineSVG></HomeOutlineSVG>
+        </SVGIcon>
+        <SVGIcon clickable={true}>
+          <SearchOutlineSVG></SearchOutlineSVG>
+        </SVGIcon>
+        <SVGIcon clickable={true}>
+          <PeopleSVG></PeopleSVG>
+        </SVGIcon>
+        <SVGIcon clickable={true}>
+          <BorderedPlusSVG></BorderedPlusSVG>
+        </SVGIcon>
+        <Avatar
+          size={AvatarSize.SMALL}
+          imageUrl="https://www.w3schools.com/howto/img_avatar.png"
+          onPress={() => handleNavigation(PrimaryScreens.PROFILE)}
+        ></Avatar>
+      </View>
+    </>
   );
 };
 
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // padding: SPACING_SMALL,
+    padding: SPACING_SMALL,
     width: '100%',
   },
 });
