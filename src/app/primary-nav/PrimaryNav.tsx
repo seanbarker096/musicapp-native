@@ -38,7 +38,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
       ></Button>
       <View style={styles.navContainer}>
         <SVGIcon
-          color={IconColor.LIGHT}
+          color={color}
           clickable={true}
         >
           <HomeOutlineSVG></HomeOutlineSVG>
