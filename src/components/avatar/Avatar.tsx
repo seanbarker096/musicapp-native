@@ -19,7 +19,7 @@ interface AvatarProps {
   onPress: <T>(arg: T) => void;
 }
 
-const Avatar: FC<AvatarProps & TouchableNativeFeedbackProps> = ({
+export const Avatar: FC<AvatarProps & TouchableNativeFeedbackProps> = ({
   imageUrl,
   size = AvatarSize.MEDIUM,
   onPress,
