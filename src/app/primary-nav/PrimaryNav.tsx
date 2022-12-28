@@ -37,11 +37,16 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
         }
       ></Button>
       <View style={styles.navContainer}>
+<<<<<<< HEAD
         <SVGIcon
           color={color}
           clickable={true}
         >
           <HomeOutlineSVG></HomeOutlineSVG>
+=======
+        <SVGIcon clickable={true}>
+          <HomeOutlineSVG color={color}></HomeOutlineSVG>
+>>>>>>> 74ac7c400e18b42d8040b2933dfecfa84a423217
         </SVGIcon>
         <SVGIcon clickable={true}>
           <SearchOutlineSVG></SearchOutlineSVG>
@@ -49,7 +54,15 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
         <SVGIcon clickable={true}>
           <PeopleSVG></PeopleSVG>
         </SVGIcon>
+<<<<<<< HEAD
         <SVGIcon clickable={true}>
+=======
+        <SVGIcon
+          clickable={true}
+          width={24}
+          height={24}
+        >
+>>>>>>> 74ac7c400e18b42d8040b2933dfecfa84a423217
           <BorderedPlusSVG></BorderedPlusSVG>
         </SVGIcon>
         <Avatar
