@@ -1,62 +1,34 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import {
   GestureResponderEvent,
   Image,
-  StyleSheet,
+  Pressable,
+  StyleProp,
   TouchableNativeFeedbackProps,
-  TouchableWithoutFeedback,
 } from 'react-native';
-import {
-  BORDER_COLOR_XDARK,
-  BORDER_RADIUS_XSMALL,
-  BORDER_RADIUS_XXSMALL,
-} from 'styles';
 import { AvatarSize } from './Avatar.types';
 
 interface AvatarProps {
+  handlePress?: (event?: GestureResponderEvent) => any;
   imageUrl: string;
   size: AvatarSize.SMALL;
-  onPress: <T>(arg: T) => void;
+  style: StyleProp<any>;
 }
 
 export const Avatar: FC<AvatarProps & TouchableNativeFeedbackProps> = ({
+  handlePress,
   imageUrl,
   size = AvatarSize.MEDIUM,
-  onPress,
+  style,
 }) => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-
-  const handlePress = (event: GestureResponderEvent) => {
-    console.log(isActive);
-    event.stopPropagation();
-    setIsActive(!isActive);
-    onPress(event);
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={e => handlePress(e)}>
+    <Pressable onPress={e => (handlePress ? handlePress(e) : undefined)}>
       <Image
-        style={{
-          borderRadius: size / 2,
-          ...styles[isActive ? 'active' : 'inactive'],
-        }}
+        style={{ ...style }}
         source={{ uri: imageUrl, height: `${size}px`, width: `${size}px` }}
       ></Image>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  inactive: {
-    borderStyle: 'solid',
-    borderWidth: BORDER_RADIUS_XSMALL,
-    borderColor: 'transparent',
-  },
-  active: {
-    borderStyle: 'solid',
-    borderWidth: BORDER_RADIUS_XXSMALL,
-    borderColor: BORDER_COLOR_XDARK,
-  },
-});
 
 export default Avatar;
