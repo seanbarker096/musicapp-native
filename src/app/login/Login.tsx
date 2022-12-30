@@ -1,20 +1,26 @@
+import { ParamListBase } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 
-interface LoginProps {}
+type LoginProps = NativeStackScreenProps<ParamListBase>;
 
 interface LoginFormValues {
   username: string;
   password: string;
 }
 
-const Login: FC<LoginProps> = () => {
+const Login: FC<LoginProps> = ({ navigation }: LoginProps) => {
   const mutatation = useLoginMutation();
 
-  const handleFormSubmit = ({ username, password }: LoginFormValues) => {
-    mutatation.mutate({ username, password });
+  const handleFormSubmit = async ({ username, password }: LoginFormValues) => {
+    await mutatation.mutateAsync({ username, password });
+
+    if (mutatation.isSuccess) {
+      navigation.navigate('Temp');
+    }
   };
 
   return (

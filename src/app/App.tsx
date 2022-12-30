@@ -1,3 +1,5 @@
+import { NavigationContainer, ParamListBase } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from 'app/login/Login';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
@@ -15,6 +17,8 @@ const { Provider } = createContext<AuthContext>({
 });
 
 const queryClient = new QueryClient();
+
+const Stack = createNativeStackNavigator<ParamListBase>();
 
 export default function App() {
   const [authStatus, setAuthStatus] = useState(AuthStatus.UNAUTHENTICATED);
@@ -41,19 +45,33 @@ export default function App() {
     getTokens();
   }, []);
 
+  const Temp = () => <Text>You are logged in</Text>;
+
   const loggedInPages = (
-    <Provider value={{ authStatus }}>
-      {/* <AppShell></AppShell> */}
-      <Text>You are logged in</Text>
-    </Provider>
+    <Stack.Screen
+      name="Temp"
+      component={Temp}
+    ></Stack.Screen>
   );
 
-  const loggedOutPages = <Login></Login>;
+  const loggedOutPages = (
+    <Stack.Screen
+      name="Login"
+      component={Login}
+    ></Stack.Screen>
+  );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {authStatus === AuthStatus.AUTHENTICATED ? loggedInPages : loggedOutPages}
-    </QueryClientProvider>
+    <NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <Provider value={{ authStatus }}>
+          <Stack.Navigator>
+            {loggedOutPages}
+            {loggedInPages}
+          </Stack.Navigator>
+        </Provider>
+      </QueryClientProvider>
+    </NavigationContainer>
   );
 }
 
