@@ -4,17 +4,12 @@ import Login from 'app/login/Login';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 import * as SecureStore from 'expo-secure-store';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { AuthContext } from '../store/auth/auth.contexts';
 import { useValidateAuthQuery } from '../store/auth/auth.queries';
 import { AuthStatus } from '../store/auth/auth.types';
-
-interface AuthContext {}
-
-const { Provider } = createContext<AuthContext>({
-  status: AuthStatus.UNAUTHENTICATED,
-});
 
 const queryClient = new QueryClient();
 
@@ -64,12 +59,15 @@ export default function App() {
   return (
     <NavigationContainer>
       <QueryClientProvider client={queryClient}>
-        <Provider value={{ authStatus }}>
+        <AuthContext.Provider
+          value={{ status: authStatus, setStatus: setAuthStatus }}
+        >
           <Stack.Navigator>
-            {loggedOutPages}
-            {loggedInPages}
+            {authStatus === AuthStatus.AUTHENTICATED
+              ? loggedInPages
+              : loggedOutPages}
           </Stack.Navigator>
-        </Provider>
+        </AuthContext.Provider>
       </QueryClientProvider>
     </NavigationContainer>
   );
