@@ -1,4 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
 import { useMutation } from 'react-query';
 import axios from '../../axios-instance';
 import { LoginFormState, LoginResultApi } from './auth.types';
@@ -34,7 +33,6 @@ const login = async ({
   username,
   password,
 }: LoginFormState): Promise<LoginResultApi> => {
-  console.log(axios);
   const response = await axios.post(
     'http://192.168.1.217:5000/api/auth/0.1/login',
     {
@@ -42,21 +40,9 @@ const login = async ({
       password,
     },
   );
+
+  console.log('response', response);
   return response.data;
-};
-
-export const onLoginSuccess = async (data: LoginResultApi) => {
-  // const { setAuthState } = useContext(AuthStateContext);
-
-  // const newAuthState = loginResultToAuthState(data);
-
-  // setAuthState(newAuthState);
-
-  // update secure store
-  await SecureStore.setItemAsync('refresh_token', data.refresh_token);
-  await SecureStore.setItemAsync('access_token', data.access_token);
-
-  // invalidate all other queries (not relevant here as using context for auth)
 };
 
 export const useLoginMutation = () => {
