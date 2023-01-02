@@ -1,7 +1,10 @@
 import { createContext } from 'react';
-import { AuthStatus } from './auth.types';
+import { AuthState } from './auth.types';
 
-export const AuthContext = createContext({
-  status: AuthStatus.UNAUTHENTICATED,
-  setStatus: (status: AuthStatus): void => {},
+export const AuthStateContext = createContext<{
+  authState?: AuthState;
+  setAuthState: (authState: AuthState) => void;
+}>({
+  authState: undefined,
+  setAuthState: () => {},
 });

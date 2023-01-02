@@ -1,28 +1,42 @@
-import { useMutation, useQuery } from 'react-query';
+import * as SecureStore from 'expo-secure-store';
+import { useMutation } from 'react-query';
 import axios from '../../axios-instance';
-import {
-  AuthStatus,
-  LoginFormState,
-  ValidateAuthQueryState,
-} from './auth.types';
+import { LoginFormState, LoginResultApi } from './auth.types';
 
-const validateAuthState = async (
-  state: ValidateAuthQueryState,
-): Promise<AuthStatus> => {
-  const response = await axios.get(
-    'http://192.168.1.144:5000/api/auth/0.1/validate',
-  );
+// const validateAuthState = async (): Promise<ValidateAuthStateApi> => {
+//   console.log('wooo');
+//   return Promise.reject('asdfasd');
+//   const response = await axios.get('/api/auth/0.1/validate');
 
-  return response.data;
-};
+//   return response.data;
+// };
 
-export const useValidateAuthQuery = (state: ValidateAuthQueryState) => {
-  return useQuery(['auth', state], () => validateAuthState(state));
-};
+// const transformAuthStateApi = (data: ValidateAuthStateApi): AuthUser => {
+//   return {
+//     userId: data.user_id,
+//     role: data.role,
+//     status: data.auth_status,
+//   };
+// };
 
-const login = async ({ username, password }: LoginFormState): Promise<any> => {
+// export const useValidateAuthQuery = (state: any) => {
+//   return useQuery<ValidateAuthStateApi, unknown, AuthUser>(
+//     ['auth', state],
+//     validateAuthState,
+//     {
+//       select: transformAuthStateApi,
+//       cacheTime: 0, // Ensure the tokens are not stored as cache keys
+//     },
+//   );
+// };
+
+const login = async ({
+  username,
+  password,
+}: LoginFormState): Promise<LoginResultApi> => {
+  console.log(axios);
   const response = await axios.post(
-    'http://192.168.1.144:5000/api/auth/0.1/login',
+    'http://192.168.1.217:5000/api/auth/0.1/login',
     {
       username,
       password,
@@ -31,6 +45,44 @@ const login = async ({ username, password }: LoginFormState): Promise<any> => {
   return response.data;
 };
 
+export const onLoginSuccess = async (data: LoginResultApi) => {
+  // const { setAuthState } = useContext(AuthStateContext);
+
+  // const newAuthState = loginResultToAuthState(data);
+
+  // setAuthState(newAuthState);
+
+  // update secure store
+  await SecureStore.setItemAsync('refresh_token', data.refresh_token);
+  await SecureStore.setItemAsync('access_token', data.access_token);
+
+  // invalidate all other queries (not relevant here as using context for auth)
+};
+
 export const useLoginMutation = () => {
-  return useMutation<any, any, LoginFormState>(request => login(request));
+  return useMutation<LoginResultApi, any, LoginFormState>(request =>
+    login(request),
+  );
+};
+
+const getAuthToken = async (refreshToken: string): Promise<string> => {
+  const response = await axios.post(
+    'http://192.168.1.217:5000/api/auth/0.1/token',
+    { token_type: 'access' },
+    {
+      headers: { 'Refresh-Token': refreshToken },
+    },
+  );
+
+  if (!response.data['token']) {
+    throw Error('Invalid response from api');
+  }
+
+  return response.data['token'];
+};
+
+export const useGetAuthTokenMutation = () => {
+  return useMutation<any, any, string>(refreshToken =>
+    getAuthToken(refreshToken),
+  );
 };

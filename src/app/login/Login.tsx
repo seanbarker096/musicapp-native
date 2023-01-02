@@ -3,9 +3,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import React, { FC, useContext } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
-import { AuthContext } from 'store/auth/auth.contexts';
+import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useLoginMutation } from 'store/auth/auth.queries';
-import { AuthStatus } from 'store/auth/auth.types';
+import { loginResultToAuthState } from 'store/auth/auth.transformations';
 
 type LoginProps = NativeStackScreenProps<ParamListBase>;
 
@@ -15,17 +15,17 @@ interface LoginFormValues {
 }
 
 const Login: FC<LoginProps> = ({ navigation }: LoginProps) => {
+  const { setAuthState, authState } = useContext(AuthStateContext);
+
+  console.log('inside login', authState);
   const mutatation = useLoginMutation();
 
-  const { status, setStatus } = useContext(AuthContext);
-
   const handleFormSubmit = async ({ username, password }: LoginFormValues) => {
-    await mutatation.mutateAsync({ username, password });
+    const result = await mutatation.mutateAsync({ username, password });
 
-    if (mutatation.isSuccess) {
-      navigation.navigate('Temp');
-      setStatus(AuthStatus.AUTHENTICATED);
-    }
+    const authState = loginResultToAuthState(result);
+
+    setAuthState(authState);
   };
 
   return (
