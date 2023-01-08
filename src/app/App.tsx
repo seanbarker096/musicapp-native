@@ -49,7 +49,7 @@ const App = function () {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         {authState?.status === AuthStatus.AUTHENTICATED
           ? loggedInPages
           : loggedOutPages}
