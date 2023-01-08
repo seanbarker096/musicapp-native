@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation, UseMutationResult } from 'react-query';
 import axios from '../../axios-instance';
 import { LoginFormState, LoginResultApi } from './auth.types';
 
@@ -51,7 +51,7 @@ export const useLoginMutation = () => {
   );
 };
 
-const getAuthToken = async (refreshToken: string): Promise<string> => {
+const authTokenCreate = async (refreshToken: string): Promise<string> => {
   const response = await axios.post(
     'http://192.168.1.217:5000/api/auth/0.1/token',
     { token_type: 'access' },
@@ -64,11 +64,16 @@ const getAuthToken = async (refreshToken: string): Promise<string> => {
     throw Error('Invalid response from api');
   }
 
+  console.log('token', response.data.token);
   return response.data['token'];
 };
 
-export const useGetAuthTokenMutation = () => {
+export const useAuthTokenCreateMutation = (): UseMutationResult<
+  any,
+  any,
+  string
+> => {
   return useMutation<any, any, string>(refreshToken =>
-    getAuthToken(refreshToken),
+    authTokenCreate(refreshToken),
   );
 };

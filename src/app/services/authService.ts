@@ -1,66 +1,85 @@
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { useGetAuthTokenMutation } from 'store/auth/auth.queries';
-import { AuthStatus, AuthUser } from 'store/auth/auth.types';
+import { useAuthTokenCreateMutation } from 'store/auth/auth.queries';
+import {
+  AuthState,
+  AuthStatus,
+  AuthUser,
+  AuthUserApi,
+} from 'store/auth/auth.types';
 
-export class AuthService {
-  constructor() {
-    console.log('AuthService initialised');
+export const reauthenticateUserOnAppStartup = (
+  authState: AuthState | undefined,
+) => {
+  reAuthenticateUser(authState, []);
+};
+
+/**
+ * Authenticates the user ASSUMING that a refresh token is already available. This is used to create a new acess token. If no refresh token is available please use authenticateUser.
+ *
+ * @param param0
+ */
+export const reAuthenticateUser = (
+  authState: AuthState | undefined,
+  dependecy: any[],
+) => {
+  const { setAuthState } = useContext(AuthStateContext);
+  const mutation = useAuthTokenCreateMutation();
+
+  useEffect(() => {
+    const _reAuthenticateUser = async () => {
+      if (authState && authState.status === AuthStatus.AUTHENTICATED) {
+        return;
+      }
+
+      const refreshToken = await SecureStore.getItemAsync('refresh_token');
+
+      if (!refreshToken) {
+        throw Error(
+          'Failed to find refresh token on users device. Cannot reauthenticate without a refresh token',
+        );
+      }
+
+      try {
+        await SecureStore.deleteItemAsync('access_token');
+      } catch (e) {}
+
+      const accessToken = await mutation.mutateAsync(refreshToken);
+
+      await SecureStore.setItemAsync('access_token', accessToken);
+
+      const newAuthUser = buildAuthUserFromAuthToken(accessToken);
+
+      if (authState?.status === AuthStatus.AUTHENTICATED) {
+        console.warn(
+          'call made to authenticateUser despite user being authenticated already',
+        );
+      }
+
+      setAuthState({
+        authUser: newAuthUser,
+        status: AuthStatus.AUTHENTICATED,
+      });
+
+      SecureStore.setItemAsync('access_token', accessToken);
+
+      return authState;
+    };
+
+    _reAuthenticateUser();
+  }, dependecy);
+};
+
+const buildAuthUserFromAuthToken = (token: string): AuthUser => {
+  const { role, user_id: userId } = jwt_decode<AuthUserApi>(token);
+
+  console.log(jwt_decode(token));
+
+  if (!role || !userId) {
+    throw Error('Invalid token provided');
   }
 
-  private async getAuthToken() {
-    // Remove any previous auth token if it exists
-    try {
-      await SecureStore.deleteItemAsync('access_token');
-    } catch (e) {}
-
-    const refreshToken = await SecureStore.getItemAsync('refresh_token');
-
-    if (!refreshToken) {
-      throw Error(
-        'Could not find refresh token on users device. Cannot get auth token without a refresh token',
-      );
-    }
-
-    const mutation = useGetAuthTokenMutation();
-
-    const accessToken = await mutation.mutateAsync(refreshToken);
-
-    await SecureStore.setItemAsync('access_token', accessToken);
-
-    return accessToken;
-  }
-
-  private buildAuthUserFromAuthToken(token: string): AuthUser {
-    const { role, permissions, userId } = jwt_decode<AuthUser>(token);
-
-    if (!role || !permissions || !userId) {
-      throw Error('Invalid token provided');
-    }
-
-    return { role, permissions, userId };
-  }
-
-  async authenticateUser() {
-    const token = await this.getAuthToken();
-
-    const newAuthUser = this.buildAuthUserFromAuthToken(token);
-
-    const { setAuthState, authState } = useContext(AuthStateContext);
-
-    if (authState?.status === AuthStatus.AUTHENTICATED) {
-      console.warn(
-        'call made to authenticateUser despite user being authenticated already',
-      );
-    }
-
-    setAuthState({
-      authUser: newAuthUser,
-      status: AuthStatus.AUTHENTICATED,
-    });
-
-    SecureStore.setItemAsync('access_token', token);
-  }
-}
+  return { role, userId };
+};

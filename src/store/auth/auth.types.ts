@@ -33,3 +33,9 @@ export interface LoginResultApi {
   access_token: string;
   refresh_token: string;
 }
+
+export interface AuthUserApi {
+  role: AuthUserRole;
+  user_id: number;
+  permissions?: readonly number[];
+}

@@ -25,24 +25,9 @@ const Login: FC<LoginProps> = () => {
     const authState = loginResultToAuthState(result);
 
     setAuthState(authState);
-    try {
-      const a = await SecureStore.getItemAsync('refresh_token');
-      console.log('refresh_token', a);
-      const b = await SecureStore.getItemAsync('access_token');
-      console.log('access_token', b);
-    } catch (e) {
-      console.log('error in login getting from secure store');
-      console.log(e);
-    }
 
-    try {
-      console.log(result.refresh_token);
-      console.log(result.access_token);
-      await SecureStore.setItemAsync('refresh_token', '10');
-      await SecureStore.setItemAsync('access_token', '11');
-    } catch (e) {
-      console.log(e);
-    }
+    await SecureStore.setItemAsync('refresh_token', result.refresh_token);
+    await SecureStore.setItemAsync('access_token', result.access_token);
   };
 
   return (
