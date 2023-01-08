@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
+import { Text } from 'react-native';
 
 interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => (
-  <div>UserProfile Component</div>
+  <Text>UserProfile Component</Text>
 );
 
 export default UserProfile;

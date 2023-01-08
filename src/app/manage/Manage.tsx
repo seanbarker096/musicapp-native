@@ -1,12 +1,8 @@
 import React, { FC } from 'react';
-
+import { Text } from 'react-native';
 
 interface ManageProps {}
 
-const Manage: FC<ManageProps> = () => (
-  <div>
-    Manage Component
-  </div>
-);
+const Manage: FC<ManageProps> = () => <Text>Manage Component</Text>;
 
 export default Manage;

@@ -47,7 +47,7 @@ const SVGIcon: FC<IconProps> = ({
 const styles = StyleSheet.create({
   iconContainer: {
     display: 'flex',
-    padding: '2px',
+    padding: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -4,10 +4,10 @@ import Login from 'app/login/Login';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 import React, { useContext } from 'react';
-import { Text } from 'react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthStatus } from '../store/auth/auth.types';
+import LoggedInAppShell from './app-shell/AppShell';
 import AppContexts from './AppContexts';
 import { reauthenticateUserOnAppStartup } from './services/authService';
 import SignUp from './signup/SignUp';
@@ -27,12 +27,10 @@ const App = function () {
 
   reauthenticateUserOnAppStartup(authState);
 
-  const Temp = () => <Text>You are logged in</Text>;
-
   const loggedInPages = (
     <Stack.Screen
-      name="Temp"
-      component={Temp}
+      name="LoggedInApp"
+      component={LoggedInAppShell}
     ></Stack.Screen>
   );
 

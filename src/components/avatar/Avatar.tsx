@@ -25,7 +25,7 @@ export const Avatar: FC<AvatarProps & TouchableNativeFeedbackProps> = ({
     <Pressable onPress={e => (handlePress ? handlePress(e) : undefined)}>
       <Image
         style={{ ...style }}
-        source={{ uri: imageUrl, height: `${size}px`, width: `${size}px` }}
+        source={{ uri: imageUrl, height: size, width: size }}
       ></Image>
     </Pressable>
   );

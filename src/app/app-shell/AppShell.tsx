@@ -1,11 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ManageStackScreen from 'app/manage/ManageStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import UserProfile from 'app/user-profile/UserProfile';
+import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
 import React, { FC } from 'react';
 
-interface AppShellProps {}
-const AppShell: FC<AppShellProps> = () => {
+interface LoggedInAppShellProps {}
+const LoggedInAppShell: FC<LoggedInAppShellProps> = () => {
   const Tab = createBottomTabNavigator();
 
   return (
@@ -14,10 +15,14 @@ const AppShell: FC<AppShellProps> = () => {
     >
       <Tab.Screen
         name={PrimaryScreens.PROFILE}
-        component={UserProfile}
+        component={UserProfileStackScreen}
       />
+      <Tab.Screen
+        name={PrimaryScreens.MANAGE}
+        component={ManageStackScreen}
+      ></Tab.Screen>
     </Tab.Navigator>
   );
 };
 
-export default AppShell;
+export default LoggedInAppShell;
