@@ -10,12 +10,19 @@ import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthStatus } from '../store/auth/auth.types';
 import AppContexts from './AppContexts';
 import { reauthenticateUserOnAppStartup } from './services/authService';
+import SignUp from './signup/SignUp';
 
 const queryClient = new QueryClient();
 
 const Stack = createNativeStackNavigator<ParamListBase>();
 
 const App = function () {
+  // try {
+  //   console.log('CLEARING SECURE STORAGE FOR DEV PURPOSES');
+  //   SecureStore.deleteItemAsync('refresh_token');
+  //   SecureStore.deleteItemAsync('access_token');
+  // } catch (e) {}
+
   const { authState } = useContext(AuthStateContext);
 
   reauthenticateUserOnAppStartup(authState);
@@ -30,10 +37,16 @@ const App = function () {
   );
 
   const loggedOutPages = (
-    <Stack.Screen
-      name="Login"
-      component={Login}
-    ></Stack.Screen>
+    <>
+      <Stack.Screen
+        name="Login"
+        component={Login}
+      ></Stack.Screen>
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+      ></Stack.Screen>
+    </>
   );
 
   return (

@@ -1,6 +1,19 @@
-import { useMutation, UseMutationResult } from 'react-query';
+import { AxiosResponse } from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import { useMutation } from 'react-query';
 import axios from '../../axios-instance';
-import { LoginFormState, LoginResultApi } from './auth.types';
+import {
+  loginResultToAuthState,
+  signUpResultToAuthState,
+} from './auth.transformations';
+import {
+  LoginFormState,
+  LoginMutationResult,
+  LoginResultApi,
+  SignUpMutationResult,
+  SignUpResultApi,
+  UserCreateRequestApi,
+} from './auth.types';
 
 // const validateAuthState = async (): Promise<ValidateAuthStateApi> => {
 //   console.log('wooo');
@@ -32,8 +45,8 @@ import { LoginFormState, LoginResultApi } from './auth.types';
 const login = async ({
   username,
   password,
-}: LoginFormState): Promise<LoginResultApi> => {
-  const response = await axios.post(
+}: LoginFormState): Promise<LoginMutationResult> => {
+  const response = await axios.post<LoginResultApi>(
     'http://192.168.1.217:5000/api/auth/0.1/login',
     {
       username,
@@ -41,13 +54,27 @@ const login = async ({
     },
   );
 
-  console.log('response', response);
-  return response.data;
+  const authState = loginResultToAuthState(response.data);
+
+  return {
+    authState,
+    refreshToken: response.data['refresh_token'] ?? undefined,
+    accessToken: response.data['access_token'] ?? undefined,
+  };
 };
 
 export const useLoginMutation = () => {
-  return useMutation<LoginResultApi, any, LoginFormState>(request =>
-    login(request),
+  const onSuccessCallback = async ({
+    refreshToken,
+    accessToken,
+  }: LoginMutationResult) => {
+    await SecureStore.setItemAsync('refresh_token', refreshToken);
+    await SecureStore.setItemAsync('access_token', accessToken);
+  };
+
+  return useMutation<LoginMutationResult, any, LoginFormState>(
+    request => login(request),
+    { onSuccess: onSuccessCallback },
   );
 };
 
@@ -64,16 +91,51 @@ const authTokenCreate = async (refreshToken: string): Promise<string> => {
     throw Error('Invalid response from api');
   }
 
-  console.log('token', response.data.token);
   return response.data['token'];
 };
 
-export const useAuthTokenCreateMutation = (): UseMutationResult<
-  any,
-  any,
-  string
-> => {
+export const useAuthTokenCreateMutation = () => {
   return useMutation<any, any, string>(refreshToken =>
     authTokenCreate(refreshToken),
   );
+};
+
+const signUp = async ({
+  email,
+  firstName,
+  secondName,
+  password,
+  username,
+}: SignUpFormValues): Promise<SignUpMutationResult> => {
+  const response = await axios.post<
+    SignUpResultApi,
+    AxiosResponse<SignUpResultApi>,
+    UserCreateRequestApi
+  >('http://192.168.1.217:5000/api/auth/0.1/signup', {
+    email,
+    first_name: firstName,
+    second_name: secondName,
+    username,
+    password,
+  });
+
+  const authState = signUpResultToAuthState(response.data);
+
+  return {
+    authState,
+    refreshToken: response.data['refresh_token'] ?? undefined,
+    accessToken: response.data['access_token'] ?? undefined,
+  };
+};
+
+export const useSignUpMutation = () => {
+  const onSuccessCallback = async ({
+    refreshToken,
+    accessToken,
+  }: SignUpMutationResult) => {
+    await SecureStore.setItemAsync('refresh_token', refreshToken);
+    await SecureStore.setItemAsync('access_token', accessToken);
+  };
+
+  return useMutation(signUp, { onSuccess: onSuccessCallback });
 };

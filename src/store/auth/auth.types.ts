@@ -39,3 +39,35 @@ export interface AuthUserApi {
   user_id: number;
   permissions?: readonly number[];
 }
+
+export interface SignUpResultApi {
+  user_id: number;
+  auth_status: AuthStatus;
+  role: AuthUserRole;
+  access_token: string;
+  refresh_token: string;
+}
+
+export interface UserCreateRequestApi {
+  username: string;
+  password: string;
+  first_name: string;
+  second_name: string;
+  email: string;
+}
+
+/**
+ * Mutation function types
+ */
+
+export interface LoginMutationResult {
+  authState: AuthState;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface SignUpMutationResult {
+  authState: AuthState;
+  accessToken: string;
+  refreshToken: string;
+}
