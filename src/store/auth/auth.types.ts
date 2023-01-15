@@ -1,3 +1,11 @@
+/**
+ * Store slice type definitions
+ */
+
+/**
+ * Other type definitionns
+ */
+
 export enum AuthUserRole {
   USER = 1,
   ADMIN = 2,

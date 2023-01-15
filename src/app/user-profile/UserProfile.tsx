@@ -1,6 +1,7 @@
 import SVGIcon from 'components/icon/SVGIcon';
+import ProfileImage from 'components/profile-image/ProfileImage';
 import React, { FC, useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 interface UserProfileProps {}
 
@@ -10,7 +11,7 @@ const UserProfile: FC<UserProfileProps> = () => {
   return (
     <>
       <View>
-        <Image></Image>
+        <ProfileImage imgUrl={profileImageUrl}></ProfileImage>
         <Text>Jelani Blackman</Text>
         <Text></Text>
         <View>
