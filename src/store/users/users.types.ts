@@ -17,10 +17,6 @@ export interface UsersStoreSlice extends StoreSlice {
 /**
  * Other type definitionns
  */
-export interface UsersGetFilterApi {
-  user_ids?: readonly number[];
-}
-
 export interface User {
   id: number;
   username: string;
@@ -47,6 +43,10 @@ export interface UserApi {
   avatar_file_uuid?: string;
   language_id?: string;
   timezone_id?: string;
+}
+
+export interface UsersGetFilterApi {
+  user_ids?: readonly number[];
 }
 
 export interface UsersGetResultApi {

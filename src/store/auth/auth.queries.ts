@@ -78,6 +78,7 @@ export const useLoginMutation = () => {
   );
 };
 
+// TODO: Do we need to invalidate any othert instances of this query??
 const authTokenCreate = async (refreshToken: string): Promise<string> => {
   const response = await axios.post(
     'http://192.168.1.217:5000/api/auth/0.1/token',
