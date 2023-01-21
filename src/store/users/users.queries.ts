@@ -27,6 +27,8 @@ const usersGet = async (
     params,
   });
 
+  console.log('users get', response);
+
   return response.data.users;
 };
 

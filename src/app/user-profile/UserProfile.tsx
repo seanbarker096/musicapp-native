@@ -1,3 +1,4 @@
+import { default as ProfileImage } from 'components/profile-image/ProfileImage';
 import React, { FC, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useFileGetQuery } from 'store/files/files.queries';
@@ -17,6 +18,8 @@ const UserProfile: FC<UserProfileProps> = () => {
     enabled: !!ready,
   });
 
+  const file = dataTwo ? dataTwo[0] : undefined;
+
   const user = ready ? data[0] : undefined;
 
   console.log('avatar file', dataTwo);
@@ -29,25 +32,12 @@ const UserProfile: FC<UserProfileProps> = () => {
 
   const UserProfileTemplate = () => {
     return (
-      <Text>Just some placeholder text</Text>
-      // <View>
-      //   {user && <ProfileImage imgUrl={user.avatarFileUuid}></ProfileImage>}
-      //   {!user && <Text>No user found</Text>}
-      //   <Text>Jelani Blackman</Text>
-      //   <Text></Text>
-      //   <View>
-      //     <View>
-      //       <SVGIcon></SVGIcon>
-      //     </View>
-      //     <View>
-      //       <SVGIcon></SVGIcon>
-      //     </View>
-      //     <View>
-      //       <SVGIcon></SVGIcon>
-      //     </View>
-      //   </View>
-      //   <View class="Gallery"></View>
-      // </View>
+      <View>
+        {user && <ProfileImage imageUrl={file?.url}></ProfileImage>}
+        {!user && <Text>No user found</Text>}
+        <Text>Jelani Blackman</Text>
+        <View class="Gallery"></View>
+      </View>
     );
   };
 

@@ -15,6 +15,7 @@ const ProfileImage: FC<ProfileImageProps> = ({ imageUrl }) => {
     </SVGIcon>
   );
 
+  console.log(imageUrl);
   const UserImage = (
     <Image
       style={{ ...style.image }}
