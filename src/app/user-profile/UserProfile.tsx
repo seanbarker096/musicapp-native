@@ -1,28 +1,37 @@
+import { AppText } from 'components/app-text';
 import { default as ProfileImage } from 'components/profile-image/ProfileImage';
-import React, { FC, useState } from 'react';
-import { Text, View } from 'react-native';
+import React, { FC } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { useFileGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
 
 interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => {
-  const [hasProfileImage, setHasProfileImage] = useState(false);
+  const {
+    isLoading: usersLoading,
+    isError: isUsersGetError,
+    data,
+    error: usersGetError,
+  } = useUserGetQuery({ id: 1 });
 
-  const { isLoading, isError, data, error } = useUserGetQuery({ id: 1 });
+  const userReady = data && !usersLoading;
 
-  const ready = data && !isLoading;
+  const user = userReady ? data[0] : undefined;
 
-  const { data: dataTwo } = useFileGetQuery({
+  const {
+    isLoading: filesLoading,
+    isError: isFilesGetError,
+    data: files,
+    error: filesGetError,
+  } = useFileGetQuery({
     queryParams: { uuid: data ? data[0].avatarFileUuid : undefined },
-    enabled: !!ready,
+    enabled: !!userReady,
   });
 
-  const file = dataTwo ? dataTwo[0] : undefined;
+  const fileReady = files && !filesLoading;
 
-  const user = ready ? data[0] : undefined;
-
-  console.log('avatar file', dataTwo);
+  const file = files ? files[0] : undefined;
 
   /************************* Templates ********************************/
 
@@ -30,24 +39,34 @@ const UserProfile: FC<UserProfileProps> = () => {
 
   const Error = () => <Text>Error...</Text>;
 
-  const UserProfileTemplate = () => {
-    return (
-      <View>
-        {user && <ProfileImage imageUrl={file?.url}></ProfileImage>}
-        {!user && <Text>No user found</Text>}
-        <Text>Jelani Blackman</Text>
-        <View class="Gallery"></View>
-      </View>
-    );
-  };
-
   return (
     <View>
-      {ready && <UserProfileTemplate></UserProfileTemplate>}
-      {isLoading && <Loading></Loading>}
-      {isError && <Error></Error>}
+      {user && file && (
+        <View>
+          <ProfileImage imageUrl={file.url}></ProfileImage>
+          <AppText
+            size="large"
+            weight="bold"
+          >
+            {user.firstName} {user.secondName}
+          </AppText>
+          <Text>@{user.username}</Text>
+          <View class="Gallery"></View>
+        </View>
+      )}
+      {(usersLoading || filesLoading) && <Loading></Loading>}
+      {(isUsersGetError || isFilesGetError) && <Error></Error>}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  text: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
 
 export default UserProfile;
