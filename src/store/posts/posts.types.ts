@@ -2,7 +2,10 @@
  * Store slice type definitions
  */
 
-import { PostAttachmentApi } from 'store/post-attachments/post-attachments.types';
+import {
+  PostAttachment,
+  PostAttachmentApi,
+} from 'store/post-attachments/post-attachments.types';
 import { StoreSlice } from 'store/store.types';
 
 export interface PostsStoreSlice extends StoreSlice {
@@ -22,15 +25,16 @@ export interface Post {
   createTime: number;
   updateTime?: number;
   isDeleted?: boolean;
+  attachments: readonly PostAttachment[];
 }
 
 export interface PostApi {
   id: number;
-  ownerId: number;
+  owner_id: number;
   content: string;
-  createTime: number;
-  isDeleted: boolean;
-  updateTime?: number;
+  create_time: number;
+  is_deleted: boolean;
+  update_time?: number;
 }
 
 export interface PostsGetResultApi {

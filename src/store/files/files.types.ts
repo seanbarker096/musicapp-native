@@ -32,7 +32,8 @@ export interface FileApi {
 }
 
 export interface FilesGetFilter {
-  uuids: readonly string[];
+  uuids?: readonly string[];
+  ids?: readonly number[];
 }
 
 export interface FilesGetResult {

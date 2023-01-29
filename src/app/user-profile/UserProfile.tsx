@@ -1,4 +1,5 @@
 import { AppText } from 'components/app-text';
+import Gallery from 'components/gallery/Gallery';
 import { default as ProfileImage } from 'components/profile-image/ProfileImage';
 import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -9,18 +10,21 @@ interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => {
   const {
-    isLoading: usersLoading,
+    isLoading: userGetLoading,
     isError: isUsersGetError,
     data,
     error: usersGetError,
   } = useUserGetQuery({ id: 1 });
 
-  const userReady = data && !usersLoading;
+  const userReady = data && !userGetLoading;
+  const userLoading = !userReady && userGetLoading;
+  // Error if no data exists AND error. If error but previous data exists don't render error state
+  const userError = !userReady && usersGetError;
 
   const user = userReady ? data[0] : undefined;
 
   const {
-    isLoading: filesLoading,
+    isLoading: filesGetLoading,
     isError: isFilesGetError,
     data: files,
     error: filesGetError,
@@ -29,7 +33,9 @@ const UserProfile: FC<UserProfileProps> = () => {
     enabled: !!userReady,
   });
 
-  const fileReady = files && !filesLoading;
+  const fileReady = files && !filesGetLoading;
+  const fileLoading = !fileReady && filesGetLoading;
+  const filesError = !fileReady && filesGetError;
 
   const file = files ? files[0] : undefined;
 
@@ -51,11 +57,11 @@ const UserProfile: FC<UserProfileProps> = () => {
             {user.firstName} {user.secondName}
           </AppText>
           <Text>@{user.username}</Text>
-          <View class="Gallery"></View>
+          <Gallery></Gallery>
         </View>
       )}
-      {(usersLoading || filesLoading) && <Loading></Loading>}
-      {(isUsersGetError || isFilesGetError) && <Error></Error>}
+      {(userLoading || fileLoading) && <Loading></Loading>}
+      {(!!userError || !!filesError) && <Error></Error>}
     </View>
   );
 };

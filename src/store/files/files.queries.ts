@@ -35,25 +35,35 @@ export function useFileGetQuery({
   queryParams: FileGetQueryField;
   enabled: boolean;
 }) {
-  const { uuid } = queryParams;
+  const { uuid, id } = queryParams;
 
   // There might be cases where first request fails meaning undefined variables are passed in
   // Need to be careful to ensure if we are waiting for variables to be defined, they are
   // used in determining value of enabled. Also even if is defined at runtime,
   // at compile time, when using dependant queries, TS won't know at runtime it will be defined
   // so need to  account for this too
-  const apiQueryParams = uuid
-    ? {
-        uuids: [uuid],
-      }
-    : undefined;
+  let apiQueryParams:
+    | FilesStoreSlice['Get']['RequestParametersType']
+    | undefined = undefined;
+
+  if (uuid || id) {
+    apiQueryParams = {};
+
+    if (uuid) {
+      apiQueryParams['uuids'] = [uuid];
+    }
+
+    if (id) {
+      apiQueryParams['ids'] = [id];
+    }
+  }
 
   return useQuery<readonly FileApi[], unknown, readonly File[]>(
     filesKeys.fileByUUID(uuid),
     () =>
       apiQueryParams
         ? filesGet(apiQueryParams)
-        : failedQuery('Invalid uuids. It is likely that uuid was undefined'),
+        : failedQuery('Invalid uuids and ids. At least one must be defined'),
     {
       select: files => files.map(file => transformFileApi(file)),
       enabled,
