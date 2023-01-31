@@ -1,6 +1,7 @@
-import { useQuery } from 'react-query';
+import { QueryKey, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
+import { isArray } from 'utils/utils';
 import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
 import { File, FileApi, FilesStoreSlice } from './files.types';
@@ -11,10 +12,6 @@ type FilesGetQueryField = Partial<{
   [key in FileObjectFields]:
     | FilesStoreSlice['ObjectType'][key]
     | readonly FilesStoreSlice['ObjectType'][key][];
-}>;
-
-type FileGetQueryField = Partial<{
-  [key in FileObjectFields]: FilesStoreSlice['ObjectType'][key];
 }>;
 
 const filesGet = async function (
@@ -28,11 +25,11 @@ const filesGet = async function (
   return response.data.files;
 };
 
-export function useFileGetQuery({
+export function useFilesGetQuery({
   queryParams,
   enabled = true,
 }: {
-  queryParams: FileGetQueryField;
+  queryParams: FilesGetQueryField;
   enabled: boolean;
 }) {
   const { uuid, id } = queryParams;
@@ -46,20 +43,27 @@ export function useFileGetQuery({
     | FilesStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
+  let queryKey: QueryKey = filesKeys.null;
+
   if (uuid || id) {
     apiQueryParams = {};
 
+    // Settting query key like this assumes we only ever use one parameter
     if (uuid) {
-      apiQueryParams['uuids'] = [uuid];
+      const processedUUID = isArray(uuid) ? uuid : [uuid];
+      apiQueryParams['uuids'] = processedUUID;
+      queryKey = filesKeys.filesByUUIDs(processedUUID);
     }
 
     if (id) {
-      apiQueryParams['ids'] = [id];
+      const processedId = isArray(id) ? id : [id];
+      apiQueryParams['ids'] = processedId;
+      queryKey = filesKeys.filesByIds(processedId);
     }
   }
 
   return useQuery<readonly FileApi[], unknown, readonly File[]>(
-    filesKeys.fileByUUID(uuid),
+    queryKey,
     () =>
       apiQueryParams
         ? filesGet(apiQueryParams)

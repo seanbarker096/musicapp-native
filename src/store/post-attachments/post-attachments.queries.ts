@@ -51,24 +51,16 @@ export const usePostAttachmentsGetQuery = ({
   const queryClient = useQueryClient();
   const { postId } = queryParams;
 
-  const isArrayFilterField = isArray(postId);
-
   let apiQueryParams:
     | PostAttachmentsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
   let queryKey: QueryKey = postAttachmentsKeys.null;
 
-  if (isArrayFilterField) {
+  if (postId) {
     apiQueryParams = {};
-    apiQueryParams['post_ids'] = postId;
+    apiQueryParams['post_ids'] = isArray(postId) ? postId : [postId];
     queryKey = postAttachmentsKeys.postAttachmentsByPostIds(postId);
-  }
-
-  if (!isArrayFilterField && postId) {
-    apiQueryParams = {};
-    apiQueryParams['post_ids'] = [postId];
-    queryKey = postAttachmentsKeys.postAttachmentsByPostId(postId);
   }
 
   return useQuery<
