@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { AuthState } from './auth.types';
 
 export interface AuthStateContext {
-  authState?: AuthState;
+  authState: AuthState;
   setAuthState: (authState: AuthState) => void;
 }
 

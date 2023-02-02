@@ -7,10 +7,10 @@ import { AuthStateContext } from 'store/auth/auth.contexts';
 interface GalleryProps {}
 
 const Gallery: FC<GalleryProps> = () => {
-  const {authState} = useContext(AuthStateContext);
+  const { authState } = useContext(AuthStateContext);
 
   const { isLoading, postsWithAttachmentsAndFiles } =
-    useGetPostsWithAttachmentsAndFilesQuery(authState.);
+    useGetPostsWithAttachmentsAndFilesQuery(authState.authUser.userId);
 
   const loading = !postsWithAttachmentsAndFiles && isLoading;
 

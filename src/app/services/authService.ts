@@ -10,29 +10,37 @@ import {
   AuthUserApi,
 } from 'store/auth/auth.types';
 
-export async function authenticateUserOnAppStartup(): Promise<AuthState> {
-  const mutation = useAuthTokenCreateMutation();
-  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+export async function authenticateUserOnAppStartup(
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>,
+) {
+  const { mutateAsync } = useAuthTokenCreateMutation();
 
-  if (!refreshToken) {
-    throw Error(
-      'Failed to find refresh token on users device. Cannot reauthenticate without a refresh token',
-    );
-  }
+  useEffect(() => {
+    const _authenticateUser = async () => {
+      const refreshToken = await SecureStore.getItemAsync('refresh_token');
 
-  try {
-    await SecureStore.deleteItemAsync('access_token');
-  } catch (e) {}
+      if (!refreshToken) {
+        return;
+      }
 
-  const accessToken = await mutation.mutateAsync(refreshToken);
+      try {
+        await SecureStore.deleteItemAsync('access_token');
+      } catch (e) {}
 
-  await SecureStore.setItemAsync('access_token', accessToken);
+      try {
+        const accessToken = await mutateAsync(refreshToken);
 
-  const authUser = buildAuthUserFromAuthToken(accessToken);
+        await SecureStore.setItemAsync('access_token', accessToken);
 
-  SecureStore.setItemAsync('access_token', accessToken);
+        const authUser = buildAuthUserFromAuthToken(accessToken);
 
-  return { status: AuthStatus.AUTHENTICATED, authUser };
+        SecureStore.setItemAsync('access_token', accessToken);
+
+        setAuthState({ status: AuthStatus.AUTHENTICATED, authUser });
+      } catch (e) {}
+    };
+    _authenticateUser();
+  }, []);
 }
 
 /**

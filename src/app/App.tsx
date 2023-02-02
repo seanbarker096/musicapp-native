@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from 'app/login/Login';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthState, AuthStatus } from '../store/auth/auth.types';
 import LoggedInAppShell from './app-shell/AppShell';
@@ -21,19 +21,8 @@ const App = function () {
   //   SecureStore.deleteItemAsync('refresh_token');
   //   SecureStore.deleteItemAsync('access_token');
   // } catch (e) {}
-
-  useEffect(() => {
-    const _authenticateUserOnAppStartUp = async () => {
-      try {
-        const authState = await authenticateUserOnAppStartup();
-        setAuthState(authState);
-      } catch (e) {
-        Promise.reject();
-      }
-
-      _authenticateUserOnAppStartUp();
-    };
-  }, []);
+  console.log('in app');
+  authenticateUserOnAppStartup(setAuthState);
 
   const loggedOutPages = (
     <>
