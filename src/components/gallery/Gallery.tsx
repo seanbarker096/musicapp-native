@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 import { AuthStateContext } from 'store/auth/auth.contexts';
+import GalleryLayout from './gallery-layout/GalleryLayout';
 
 interface GalleryProps {}
 
@@ -18,7 +19,9 @@ const Gallery: FC<GalleryProps> = () => {
 
   return (
     <View>
-      {postsWithAttachmentsAndFiles && <Text>Got data</Text>}
+      {postsWithAttachmentsAndFiles && (
+        <GalleryLayout posts={postsWithAttachmentsAndFiles}></GalleryLayout>
+      )}
       {loading && <Text>...Loading</Text>}
     </View>
   );

@@ -2,6 +2,7 @@
  * Spacings
  */
 export const SPACING_SMALL = 14;
+export const SPACING_XSMALL = 10;
 
 /**
  * Borders

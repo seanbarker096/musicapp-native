@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
+import { SPACING_SMALL } from 'styles';
 
 interface UserProfileProps {}
 
@@ -49,7 +50,7 @@ const UserProfile: FC<UserProfileProps> = () => {
   const Error = () => <Text>Error...</Text>;
 
   return (
-    <View>
+    <View style={styles.container}>
       {user && file && (
         <View>
           <ProfileImage imageUrl={file.url}></ProfileImage>
@@ -75,6 +76,10 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  container: {
+    paddingLeft: SPACING_SMALL,
+    paddingRight: SPACING_SMALL,
   },
 });
 

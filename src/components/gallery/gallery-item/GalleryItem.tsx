@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
+import { Text } from 'react-native';
+import { Post } from 'store/posts/posts.types';
 
+interface GalleryItemProps {
+  post: Post;
+}
 
-interface GalleryItemProps {}
-
-const GalleryItem: FC<GalleryItemProps> = () => (
-  <div>
-    GalleryItem Component
-  </div>
+const GalleryItem: FC<GalleryItemProps> = ({ post }) => (
+  <Text>Post content: {post.content}</Text>
 );
 
 export default GalleryItem;
