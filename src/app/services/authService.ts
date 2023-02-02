@@ -10,11 +10,30 @@ import {
   AuthUserApi,
 } from 'store/auth/auth.types';
 
-export const reauthenticateUserOnAppStartup = (
-  authState: AuthState | undefined,
-) => {
-  reAuthenticateUser(authState, []);
-};
+export async function authenticateUserOnAppStartup(): Promise<AuthState> {
+  const mutation = useAuthTokenCreateMutation();
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+
+  if (!refreshToken) {
+    throw Error(
+      'Failed to find refresh token on users device. Cannot reauthenticate without a refresh token',
+    );
+  }
+
+  try {
+    await SecureStore.deleteItemAsync('access_token');
+  } catch (e) {}
+
+  const accessToken = await mutation.mutateAsync(refreshToken);
+
+  await SecureStore.setItemAsync('access_token', accessToken);
+
+  const authUser = buildAuthUserFromAuthToken(accessToken);
+
+  SecureStore.setItemAsync('access_token', accessToken);
+
+  return { status: AuthStatus.AUTHENTICATED, authUser };
+}
 
 /**
  * Authenticates the user ASSUMING that a refresh token is already available. This is used to create a new acess token. If no refresh token is available please use authenticateUser.
