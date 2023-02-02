@@ -1,3 +1,4 @@
+import { File } from 'store/files/files.types';
 import { StoreSlice } from 'store/store.types';
 
 export interface PostAttachmentsStoreSlice extends StoreSlice {
@@ -15,6 +16,10 @@ export interface PostAttachment {
   postId: number;
   fileId: number;
   createTime: number;
+  /**
+   * Added on frontend for convienent access. Not received in API response.
+   */
+  file: File;
 }
 
 export interface PostAttachmentApi {

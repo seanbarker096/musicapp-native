@@ -46,13 +46,12 @@ export const usePostsGetQuery = ({ ownerId }: PostsGetQueryField) => {
     throw Error('ownerId must be defined to get posts');
   }
 
-  const isArrayFilterField = isArray(ownerId);
+  const processedOwnerId = isArray(ownerId) ? ownerId : [ownerId];
 
-  let ownerIdQueryParam = isArrayFilterField ? ownerId[0] : ownerId;
-  let apiQueryParams = { owner_ids: [ownerIdQueryParam] };
+  let apiQueryParams = { owner_ids: processedOwnerId };
 
   return useQuery<readonly Post[], unknown, readonly Post[]>(
-    postsKeys.postsByOwnerId(ownerIdQueryParam),
+    postsKeys.postsByOwnerIds(processedOwnerId),
     () => postsGet(apiQueryParams, queryClient),
   );
 };

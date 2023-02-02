@@ -59,8 +59,10 @@ export const usePostAttachmentsGetQuery = ({
 
   if (postId) {
     apiQueryParams = {};
-    apiQueryParams['post_ids'] = isArray(postId) ? postId : [postId];
-    queryKey = postAttachmentsKeys.postAttachmentsByPostIds(postId);
+    const processedPostId = isArray(postId) ? postId : [postId];
+
+    apiQueryParams['post_ids'] = processedPostId;
+    queryKey = postAttachmentsKeys.postAttachmentsByPostIds(processedPostId);
   }
 
   return useQuery<

@@ -25,6 +25,9 @@ export interface Post {
   createTime: number;
   updateTime?: number;
   isDeleted?: boolean;
+  /**
+   * Added on frontend for convienent access. Not received in API response.
+   */
   attachments: readonly PostAttachment[];
 }
 

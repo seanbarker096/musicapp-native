@@ -51,12 +51,14 @@ export function useFilesGetQuery({
     // Settting query key like this assumes we only ever use one parameter
     if (uuid) {
       const processedUUID = isArray(uuid) ? uuid : [uuid];
+
       apiQueryParams['uuids'] = processedUUID;
       queryKey = filesKeys.filesByUUIDs(processedUUID);
     }
 
     if (id) {
       const processedId = isArray(id) ? id : [id];
+
       apiQueryParams['ids'] = processedId;
       queryKey = filesKeys.filesByIds(processedId);
     }
