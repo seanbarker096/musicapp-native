@@ -1,20 +1,23 @@
 import { AppText } from 'components/app-text';
 import Gallery from 'components/gallery/Gallery';
 import { default as ProfileImage } from 'components/profile-image/ProfileImage';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
 
 interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => {
+  const { authState } = useContext(AuthStateContext);
+
   const {
     isLoading: userGetLoading,
     isError: isUsersGetError,
     data,
     error: usersGetError,
-  } = useUserGetQuery({ id: 1 });
+  } = useUserGetQuery({ id: authState.authUser.userId });
 
   const userReady = data && !userGetLoading;
   const userLoading = !userReady && userGetLoading;

@@ -1,7 +1,4 @@
-import { QueryKey, useQuery, useQueryClient } from 'react-query';
-import { postsKeys } from 'store/posts/posts.query-keys';
-import { addPostAttachmentsToPosts } from 'store/posts/posts.transformations';
-import { Post } from 'store/posts/posts.types';
+import { QueryKey, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
@@ -29,13 +26,6 @@ async function usePostAttachmentsGet(
     params,
   });
 
-  console.log(
-    'result',
-    response.data.attachments.map(attachment =>
-      transformPostAttachmentApi(attachment),
-    ),
-  );
-
   return response.data.attachments.map(attachment =>
     transformPostAttachmentApi(attachment),
   );
@@ -48,7 +38,6 @@ export const usePostAttachmentsGetQuery = ({
   queryParams: PostAttachmentGetQueryField;
   enabled: boolean;
 }) => {
-  const queryClient = useQueryClient();
   const { postId } = queryParams;
 
   let apiQueryParams:
@@ -77,22 +66,6 @@ export const usePostAttachmentsGetQuery = ({
         : failedQuery('Invalid uuids and ids. At least one must be defined'),
     {
       enabled,
-      onSuccess: newPostAttachments => {
-        queryClient.setQueriesData<readonly Post[] | undefined>(
-          {
-            queryKey: postsKeys.all,
-            exact: false,
-          },
-          posts => {
-            if (!posts) {
-              // If the updater function receives undefined as input, you can return undefined to bail out of the update and thus not create a new cache entry. https://tanstack.com/query/v4/docs/react/reference/QueryClient#queryclientsetquerydata
-              return undefined;
-            }
-
-            return addPostAttachmentsToPosts(posts, newPostAttachments);
-          },
-        );
-      },
     },
   );
 };

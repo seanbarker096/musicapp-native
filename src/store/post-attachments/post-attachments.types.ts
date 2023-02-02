@@ -19,7 +19,7 @@ export interface PostAttachment {
   /**
    * Added on frontend for convienent access. Not received in API response.
    */
-  file: File;
+  file?: File;
 }
 
 export interface PostAttachmentApi {

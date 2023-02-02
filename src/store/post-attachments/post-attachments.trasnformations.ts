@@ -8,5 +8,6 @@ export function transformPostAttachmentApi(
     postId: attachment.post_id,
     fileId: attachment.file_id,
     createTime: attachment.create_time,
+    file: undefined,
   };
 }
