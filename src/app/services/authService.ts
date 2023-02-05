@@ -1,6 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { useContext, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useAuthTokenCreateMutation } from 'store/auth/auth.queries';
 import {
@@ -17,6 +18,9 @@ export async function authenticateUserOnAppStartup(
 
   useEffect(() => {
     const _authenticateUser = async () => {
+      if (Platform.OS === 'web') {
+        return;
+      }
       const refreshToken = await SecureStore.getItemAsync('refresh_token');
 
       if (!refreshToken) {

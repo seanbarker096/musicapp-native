@@ -18,7 +18,7 @@ const filesGet = async function (
   params: FilesStoreSlice['Get']['RequestParametersType'],
 ) {
   const response = await getRequest<FilesStoreSlice>({
-    url: 'fileservice/0.1/files',
+    url: 'fileservice/0.1/files/',
     params,
   });
 
