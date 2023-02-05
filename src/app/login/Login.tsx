@@ -1,26 +1,26 @@
-import { Link, ParamListBase } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Link } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useLoginMutation } from 'store/auth/auth.queries';
+import { AuthState } from 'store/auth/auth.types';
 
-type LoginProps = NativeStackScreenProps<ParamListBase>;
+interface LoginProps {
+  handleLoginSuccess: (authState: AuthState) => void;
+}
 
 interface LoginFormValues {
   username: string;
   password: string;
 }
 
-const Login: FC<LoginProps> = () => {
-  const { setAuthState } = useContext(AuthStateContext);
+const Login: FC<LoginProps> = ({ handleLoginSuccess }) => {
   const mutatation = useLoginMutation();
 
   const handleFormSubmit = async ({ username, password }: LoginFormValues) => {
     const result = await mutatation.mutateAsync({ username, password });
 
-    setAuthState(result.authState);
+    handleLoginSuccess(result.authState);
   };
 
   return (

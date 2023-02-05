@@ -1,14 +1,15 @@
 import { Link } from '@react-navigation/native';
 import { Formik } from 'formik';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useSignUpMutation } from 'store/auth/auth.queries';
+import { AuthState } from 'store/auth/auth.types';
 
-interface SignUpProps {}
+interface SignUpProps {
+  handleSignUpSuccess: (authState: AuthState) => void;
+}
 
-const SignUp: FC<SignUpProps> = () => {
-  const { setAuthState } = useContext(AuthStateContext);
+const SignUp: FC<SignUpProps> = ({ handleSignUpSuccess }) => {
   const mutatation = useSignUpMutation();
 
   const handleFormSubmit = async ({
@@ -26,7 +27,7 @@ const SignUp: FC<SignUpProps> = () => {
       password,
     });
 
-    setAuthState(authState);
+    handleSignUpSuccess(authState);
   };
 
   return (

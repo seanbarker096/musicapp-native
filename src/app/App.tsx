@@ -21,21 +21,37 @@ const App = function () {
   //   SecureStore.deleteItemAsync('refresh_token');
   //   SecureStore.deleteItemAsync('access_token');
   // } catch (e) {}
-  console.log('in app');
+
   authenticateUserOnAppStartup(setAuthState);
 
   const loggedOutPages = (
     <>
-      <Stack.Screen
-        name="Login"
-        component={Login}
-      ></Stack.Screen>
-      <Stack.Screen
-        name="SignUp"
-        component={SignUp}
-      ></Stack.Screen>
+      <Stack.Screen name="Login">
+        {props => (
+          <Login
+            {...props}
+            handleLoginSuccess={handleLoginSuccess}
+          ></Login>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="SignUp">
+        {props => (
+          <SignUp
+            {...props}
+            handleSignUpSuccess={handleSignUpSuccess}
+          ></SignUp>
+        )}
+      </Stack.Screen>
     </>
   );
+
+  function handleLoginSuccess(authState: AuthState) {
+    setAuthState(authState);
+  }
+
+  function handleSignUpSuccess(authState: AuthState) {
+    setAuthState(authState);
+  }
 
   return (
     <NavigationContainer>

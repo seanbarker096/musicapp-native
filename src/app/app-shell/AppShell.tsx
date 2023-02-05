@@ -5,26 +5,22 @@ import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SearchStackScreen from 'app/search/SearchStackScreen';
 import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
 
 interface LoggedInAppShellProps {
   authState: AuthState;
 }
-const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
-  authState: authStateProp,
-}) => {
-  if (!!authStateProp) {
+const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
+  if (!!authState) {
     console.warn('Logged in app shell initialised without an authState');
   }
-  // create authContext to pass around the logged in app
-  const [authState, setAuthState] = useState<AuthState>(authStateProp);
 
   return (
     <>
       {authState && (
-        <AuthStateContext.Provider value={{ authState, setAuthState }}>
+        <AuthStateContext.Provider value={{ authState }}>
           <LoggedInScreens></LoggedInScreens>
         </AuthStateContext.Provider>
       )}
