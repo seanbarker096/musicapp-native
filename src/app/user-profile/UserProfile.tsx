@@ -6,7 +6,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
-import { SPACING_SMALL } from 'styles';
 
 interface UserProfileProps {}
 
@@ -52,7 +51,7 @@ const UserProfile: FC<UserProfileProps> = () => {
   return (
     <View style={styles.container}>
       {user && file && (
-        <View>
+        <>
           <ProfileImage imageUrl={file.url}></ProfileImage>
           <AppText
             size="large"
@@ -62,7 +61,7 @@ const UserProfile: FC<UserProfileProps> = () => {
           </AppText>
           <Text>@{user.username}</Text>
           <Gallery></Gallery>
-        </View>
+        </>
       )}
       {(userLoading || fileLoading) && <Loading></Loading>}
       {(!!userError || !!filesError) && <Error></Error>}
@@ -72,14 +71,17 @@ const UserProfile: FC<UserProfileProps> = () => {
 
 const styles = StyleSheet.create({
   text: {
-    height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
   },
   container: {
-    paddingLeft: SPACING_SMALL,
-    paddingRight: SPACING_SMALL,
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+    justifyContent: 'flex-start',
   },
 });
 

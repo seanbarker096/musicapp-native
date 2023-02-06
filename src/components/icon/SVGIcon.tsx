@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   View,
+  ViewStyle,
 } from 'react-native';
 import Svg from 'react-native-svg';
 import { IconColor, SVGProps } from './icon.types';
@@ -15,22 +16,29 @@ interface IconProps {
   handlePress?: (event?: GestureResponderEvent) => any;
   width?: number; // px
   height?: number; // px
+  position?: 'absolute' | 'relative';
+  inheritedStyles?: ViewStyle;
 }
 
 const DEFAULT_ICON_HEIGHT = 22;
 const DEFAULT_ICON_WIDTH = 22;
 
-const SVGIcon: FC<IconProps> = ({
+export const SVGIcon: FC<IconProps> = ({
   color = IconColor.DARK,
   handlePress,
+  inheritedStyles = {},
   width = DEFAULT_ICON_WIDTH,
   height = DEFAULT_ICON_HEIGHT,
+  position = undefined,
   children,
 }) => {
   const fill = iconColorGenerator(color);
 
   return (
-    <Pressable onPress={e => (handlePress ? handlePress(e) : undefined)}>
+    <Pressable
+      style={{ position, ...inheritedStyles }}
+      onPress={e => (handlePress ? handlePress(e) : undefined)}
+    >
       <View style={styles.iconContainer}>
         <Svg
           width={width}
@@ -52,5 +60,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
-export default SVGIcon;

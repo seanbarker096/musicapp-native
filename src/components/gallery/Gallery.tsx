@@ -1,8 +1,9 @@
 import React, { FC, useContext } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 import { AuthStateContext } from 'store/auth/auth.contexts';
+import { COLOR_PRIMARY } from 'styles';
 import GalleryLayout from './gallery-layout/GalleryLayout';
 
 interface GalleryProps {}
@@ -15,12 +16,13 @@ const Gallery: FC<GalleryProps> = () => {
 
   const loading = !postsWithAttachmentsAndFiles && isLoading;
 
-  console.log('postsWithAttachmentsAndFiles', postsWithAttachmentsAndFiles);
-
   return (
-    <View>
+    <View style={{ width: '100%' }}>
       {postsWithAttachmentsAndFiles && (
-        <GalleryLayout posts={postsWithAttachmentsAndFiles}></GalleryLayout>
+        <>
+          <View style={styles.headerContainer}></View>
+          <GalleryLayout posts={postsWithAttachmentsAndFiles}></GalleryLayout>
+        </>
       )}
       {loading && <Text>...Loading</Text>}
     </View>
@@ -28,3 +30,11 @@ const Gallery: FC<GalleryProps> = () => {
 };
 
 export default Gallery;
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    backgroundColor: COLOR_PRIMARY,
+    height: 40,
+    width: '100%',
+  },
+});

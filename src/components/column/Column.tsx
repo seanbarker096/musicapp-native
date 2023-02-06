@@ -8,7 +8,6 @@ interface ColumnProps {
 }
 
 export const Column: FC<ColumnProps> = ({ columnWidth, children }) => {
-  console.log(children);
   return (
     <View
       style={{ ...colWidthStyles[`colWidth${columnWidth}`], ...mainStyles }}
@@ -73,5 +72,6 @@ const mainStyles = StyleSheet.create({
   column: {
     flexGrow: 0,
     flexShrink: 0,
+    height: 'auto',
   },
 });

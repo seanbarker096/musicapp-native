@@ -1,6 +1,6 @@
 import { AvatarSize } from 'components/avatar';
 import { UserAvatarSVG } from 'components/icon/svg-components';
-import SVGIcon from 'components/icon/SVGIcon';
+import { SVGIcon } from 'components/icon/SVGIcon';
 import React, { FC } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 

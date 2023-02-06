@@ -8,7 +8,7 @@ import {
   PeopleSVG,
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
-import SVGIcon from 'components/icon/SVGIcon';
+import { SVGIcon } from 'components/icon/SVGIcon';
 import { FC, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {

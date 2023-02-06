@@ -1,3 +1,5 @@
+import { IconColor, SVGIcon } from 'components/icon/index';
+import { PlayButtonSVG } from 'components/icon/svg-components';
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
@@ -10,6 +12,7 @@ import { Post } from 'store/posts/posts.types';
 
 interface GalleryItemProps {
   post: Post;
+  galleryItemStyles: { [style: string]: any };
 }
 
 const LOADING_STRING = '... loading ...';
@@ -17,7 +20,7 @@ const BUFFERING_STRING = '...buffering...';
 const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
-const GalleryItem: FC<GalleryItemProps> = ({ post }) => {
+const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
   const video = React.useRef<Video>(null);
   const [videoStatus, setStatus] = React.useState<
     Partial<AVPlaybackStatusSuccess>
@@ -55,18 +58,28 @@ const GalleryItem: FC<GalleryItemProps> = ({ post }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-        }}
-        useNativeControls
-        resizeMode={ResizeMode.COVER}
-        isLooping
-        onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-      />
+    <View style={{ ...galleryItemStyles }}>
+      <View style={styles.videoOverlay}>
+        <Video
+          ref={video}
+          style={styles.video}
+          source={{
+            uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+          }}
+          useNativeControls
+          resizeMode={ResizeMode.COVER}
+          isLooping
+          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
+        />
+        {/* <View style={{ ...styles.video, backgroundColor: '#FFDA6D' }}></View> */}
+        <SVGIcon
+          inheritedStyles={styles.playIcon}
+          color={IconColor.LIGHT}
+          position={'absolute'}
+        >
+          <PlayButtonSVG></PlayButtonSVG>
+        </SVGIcon>
+      </View>
     </View>
   );
 };
@@ -74,19 +87,21 @@ const GalleryItem: FC<GalleryItemProps> = ({ post }) => {
 export default GalleryItem;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
-  },
+  container: {},
   video: {
-    alignSelf: 'center',
-    width: 100,
+    top: 0,
+    left: 0,
+    width: '100%',
     height: 100,
   },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+  videoOverlay: {
+    position: 'relative',
+    height: 100,
+    width: '100%',
+  },
+  playIcon: {
+    left: '85%',
+    top: '85%',
+    transform: [{ translateY: -11 }, { translateX: -11 }],
   },
 });
