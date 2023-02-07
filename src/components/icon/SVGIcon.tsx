@@ -14,8 +14,9 @@ interface IconProps {
   children?: React.ReactElement<SVGProps>;
   color?: IconColor;
   handlePress?: (event?: GestureResponderEvent) => any;
-  width?: number; // px
-  height?: number; // px
+  width?: number | string; // px
+  height?: number | string; // px
+  viewBox?: string;
   position?: 'absolute' | 'relative';
   inheritedStyles?: ViewStyle;
 }
@@ -29,6 +30,7 @@ export const SVGIcon: FC<IconProps> = ({
   inheritedStyles = {},
   width = DEFAULT_ICON_WIDTH,
   height = DEFAULT_ICON_HEIGHT,
+  viewBox = undefined,
   position = undefined,
   children,
 }) => {
@@ -43,6 +45,7 @@ export const SVGIcon: FC<IconProps> = ({
         <Svg
           width={width}
           height={height}
+          viewBox={viewBox}
           fill={fill}
         >
           {children}

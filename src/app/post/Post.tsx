@@ -1,7 +1,8 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackScreen';
-import { IconColor, SVGIcon } from 'components/icon/index';
+import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
+import ProfileImage from 'components/profile-image/ProfileImage';
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
@@ -9,23 +10,12 @@ import {
   Video,
 } from 'expo-av';
 import React, { FC } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Post } from 'store/posts/posts.types';
+import { StyleSheet, Text, View } from 'react-native';
 
-interface GalleryItemProps {
-  post: Post;
-  galleryItemStyles: { [style: string]: any };
-}
+interface PostProps
+  extends NativeStackScreenProps<UserProfileStackScreenProps, 'Post'> {}
 
-const LOADING_STRING = '... loading ...';
-const BUFFERING_STRING = '...buffering...';
-const LOOPING_TYPE_ALL = 0;
-const LOOPING_TYPE_ONE = 1;
-
-const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
-  const navigation =
-    useNavigation<NavigationProp<UserProfileStackScreenProps>>();
-
+export const Post: FC<PostProps> = ({ route }) => {
   const video = React.useRef<Video>(null);
   const [videoStatus, setStatus] = React.useState<
     Partial<AVPlaybackStatusSuccess>
@@ -62,16 +52,13 @@ const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
     }
   }
 
-  function handleItemPress() {
-    navigation.navigate('Post', { post: post });
-  }
-
   return (
-    <View style={{ ...galleryItemStyles }}>
-      <Pressable
-        style={styles.videoOverlay}
-        onPress={handleItemPress}
-      >
+    <View>
+      <View>
+        <ProfileImage></ProfileImage>
+        <Text>dan13</Text>
+      </View>
+      <View style={styles.videoContainer}>
         <Video
           ref={video}
           style={styles.video}
@@ -83,19 +70,20 @@ const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
           isLooping
           onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
         />
-        <SVGIcon
-          inheritedStyles={styles.playIcon}
-          color={IconColor.LIGHT}
-          position={'absolute'}
-        >
-          <PlayButtonSVG></PlayButtonSVG>
-        </SVGIcon>
-      </Pressable>
+      </View>
+      <SVGIcon
+        inheritedStyles={styles.playIcon}
+        color={IconColor.LIGHT}
+        height="100%"
+        width="100%"
+        viewBox="0 0 100 100"
+        position={'absolute'}
+      >
+        <PlayButtonSVG></PlayButtonSVG>
+      </SVGIcon>
     </View>
   );
 };
-
-export default GalleryItem;
 
 const styles = StyleSheet.create({
   container: {},
@@ -103,16 +91,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: '100%',
-    height: 100,
+    height: 500,
   },
-  videoOverlay: {
+  videoContainer: {
     position: 'relative',
-    height: 100,
+    height: 500,
     width: '100%',
   },
   playIcon: {
-    left: '85%',
-    top: '85%',
+    left: '50%',
+    top: '50%',
     transform: [{ translateY: -11 }, { translateX: -11 }],
   },
 });
