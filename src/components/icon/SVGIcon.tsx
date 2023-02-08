@@ -4,7 +4,6 @@ import {
   GestureResponderEvent,
   Pressable,
   StyleSheet,
-  View,
   ViewStyle,
 } from 'react-native';
 import Svg from 'react-native-svg';
@@ -16,7 +15,6 @@ interface IconProps {
   handlePress?: (event?: GestureResponderEvent) => any;
   width?: number | string; // px
   height?: number | string; // px
-  viewBox?: string;
   position?: 'absolute' | 'relative';
   inheritedStyles?: ViewStyle;
 }
@@ -24,13 +22,17 @@ interface IconProps {
 const DEFAULT_ICON_HEIGHT = 22;
 const DEFAULT_ICON_WIDTH = 22;
 
+/**
+ * An SVG icon which scales to fit the size of its container.
+ *
+ * This is acheived by setting the view property to be the size of the raw/uploaded svg file, and then setting its height and width to 100% of its container
+ */
 export const SVGIcon: FC<IconProps> = ({
   color = IconColor.DARK,
   handlePress,
   inheritedStyles = {},
   width = DEFAULT_ICON_WIDTH,
   height = DEFAULT_ICON_HEIGHT,
-  viewBox = undefined,
   position = undefined,
   children,
 }) => {
@@ -38,28 +40,33 @@ export const SVGIcon: FC<IconProps> = ({
 
   return (
     <Pressable
-      style={{ position, ...inheritedStyles }}
+      style={{
+        position,
+        ...inheritedStyles,
+        ...styles.iconContainer,
+        width,
+        height,
+      }}
       onPress={e => (handlePress ? handlePress(e) : undefined)}
     >
-      <View style={styles.iconContainer}>
-        <Svg
-          width={width}
-          height={height}
-          viewBox={viewBox}
-          fill={fill}
-        >
-          {children}
-        </Svg>
-      </View>
+      <Svg
+        viewBox="0 0 22 22"
+        height="100%"
+        width="100%"
+        fill={fill}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {children}
+      </Svg>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   iconContainer: {
-    display: 'flex',
-    padding: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // // display: 'flex',
+    // padding: 2,
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
 });

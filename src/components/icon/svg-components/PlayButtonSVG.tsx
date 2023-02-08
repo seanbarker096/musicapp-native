@@ -2,6 +2,9 @@ import * as React from 'react';
 import { Path } from 'react-native-svg';
 import { SVGProps } from '../icon.types';
 
-export const PlayButtonSVG: React.FC<SVGProps> = () => (
-  <Path d="M17.084 10.93a1.52 1.52 0 0 0 0-2.453A30.187 30.187 0 0 0 8.8 4.097l-.545-.187c-1.043-.358-2.144.325-2.285 1.367a33.268 33.268 0 0 0 0 8.853c.14 1.042 1.242 1.725 2.285 1.366l.545-.187a30.187 30.187 0 0 0 8.284-4.38Z" />
+export const PlayButtonSVG: React.FC<SVGProps> = ({ opacity = 1 }) => (
+  <Path
+    d="M20.864 13.29a2.876 2.876 0 0 0 0-4.58A54.82 54.82 0 0 0 5.716.53L4.72.18C2.813-.49.8.786.54 2.732a63.457 63.457 0 0 0 0 16.536c.26 1.946 2.273 3.222 4.18 2.552l.996-.35a54.819 54.819 0 0 0 15.148-8.18Z"
+    fillOpacity={opacity}
+  />
 );

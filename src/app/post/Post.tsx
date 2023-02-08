@@ -3,6 +3,7 @@ import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackSc
 import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 import ProfileImage from 'components/profile-image/ProfileImage';
+
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
@@ -10,10 +11,14 @@ import {
   Video,
 } from 'expo-av';
 import React, { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface PostProps
   extends NativeStackScreenProps<UserProfileStackScreenProps, 'Post'> {}
+
+interface PostComponentState {
+  showPlayIcon: boolean;
+}
 
 export const Post: FC<PostProps> = ({ route }) => {
   const video = React.useRef<Video>(null);
@@ -29,6 +34,11 @@ export const Post: FC<PostProps> = ({ route }) => {
     volume: 1.0,
     rate: 1.0,
   });
+
+  const [componentState, setComponentState] =
+    React.useState<PostComponentState>({
+      showPlayIcon: true,
+    });
 
   function _onPlaybackStatusUpdate(status: AVPlaybackStatus): void {
     if (status.isLoaded) {
@@ -52,13 +62,31 @@ export const Post: FC<PostProps> = ({ route }) => {
     }
   }
 
+  function handlePlayPress() {
+    console.log('running');
+    if (video.current == null) {
+      return;
+    }
+
+    setComponentState({ ...componentState, showPlayIcon: false });
+
+    if (videoStatus.isPlaying) {
+      video.current.pauseAsync();
+    } else {
+      video.current.playAsync();
+    }
+  }
+
   return (
     <View>
       <View>
         <ProfileImage></ProfileImage>
         <Text>dan13</Text>
       </View>
-      <View style={styles.videoContainer}>
+      <Pressable
+        onPress={handlePlayPress}
+        style={styles.videoContainer}
+      >
         <Video
           ref={video}
           style={styles.video}
@@ -66,21 +94,23 @@ export const Post: FC<PostProps> = ({ route }) => {
             uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
           }}
           useNativeControls
-          resizeMode={ResizeMode.COVER}
+          resizeMode={ResizeMode.CONTAIN}
           isLooping
           onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
         />
-      </View>
-      <SVGIcon
-        inheritedStyles={styles.playIcon}
-        color={IconColor.LIGHT}
-        height="100%"
-        width="100%"
-        viewBox="0 0 100 100"
-        position={'absolute'}
-      >
-        <PlayButtonSVG></PlayButtonSVG>
-      </SVGIcon>
+        {componentState.showPlayIcon && (
+          <SVGIcon
+            inheritedStyles={styles.playIcon}
+            color={IconColor.MID}
+            height={50}
+            position="absolute"
+            width={50}
+            handlePress={handlePlayPress}
+          >
+            <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
+          </SVGIcon>
+        )}
+      </Pressable>
     </View>
   );
 };
@@ -100,7 +130,7 @@ const styles = StyleSheet.create({
   },
   playIcon: {
     left: '50%',
-    top: '50%',
-    transform: [{ translateY: -11 }, { translateX: -11 }],
+    top: '55%',
+    transform: [{ translateY: -25 }, { translateY: -25 }],
   },
 });

@@ -7,4 +7,6 @@ export enum IconColor {
   SECONDARY = 'secondary',
 }
 
-export interface SVGProps extends SvgProps {}
+export interface SVGProps extends SvgProps {
+  opacity?: number;
+}
