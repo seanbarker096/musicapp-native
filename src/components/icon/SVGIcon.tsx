@@ -16,7 +16,7 @@ interface IconProps {
   width?: number | string; // px
   height?: number | string; // px
   position?: 'absolute' | 'relative';
-  inheritedStyles?: ViewStyle;
+  styles?: ViewStyle;
 }
 
 const DEFAULT_ICON_HEIGHT = 22;
@@ -30,7 +30,7 @@ const DEFAULT_ICON_WIDTH = 22;
 export const SVGIcon: FC<IconProps> = ({
   color = IconColor.DARK,
   handlePress,
-  inheritedStyles = {},
+  styles = {},
   width = DEFAULT_ICON_WIDTH,
   height = DEFAULT_ICON_HEIGHT,
   position = undefined,
@@ -42,7 +42,7 @@ export const SVGIcon: FC<IconProps> = ({
     <Pressable
       style={{
         position,
-        ...inheritedStyles,
+        ...styles,
         ...styles.iconContainer,
         width,
         height,

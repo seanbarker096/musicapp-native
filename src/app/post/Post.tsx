@@ -1,7 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackScreen';
+import AppText from 'components/app-text/AppText';
 import { IconColor, SVGIcon } from 'components/icon';
-import { PlayButtonSVG } from 'components/icon/svg-components';
+import {
+  LikeHeartSVG,
+  PicturePlusSVG,
+  PlayButtonSVG,
+} from 'components/icon/svg-components';
 import ProfileImage from 'components/profile-image/ProfileImage';
 
 import {
@@ -9,18 +14,44 @@ import {
   AVPlaybackStatusSuccess,
   ResizeMode,
   Video,
+  VideoReadyForDisplayEvent,
 } from 'expo-av';
 import React, { FC } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useUserGetQuery } from 'store/users';
+import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PostProps
   extends NativeStackScreenProps<UserProfileStackScreenProps, 'Post'> {}
 
 interface PostComponentState {
   showPlayIcon: boolean;
+  videoWidth: number;
+  videoHeight: number;
 }
 
-export const Post: FC<PostProps> = ({ route }) => {
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
+const VIDEO_CONTAINER_HEIGHT = (DEVICE_HEIGHT * 2.0) / 5.0 - 14 * 2;
+
+export const Post: FC<PostProps> = ({
+  route: {
+    params: { post },
+  },
+}) => {
+  const {
+    user,
+    isLoading: isPostOwnerLoading,
+    isError: isPostOwnerGetError,
+  } = useUserGetQuery({ id: post.ownerId });
+
   const video = React.useRef<Video>(null);
   const [videoStatus, setStatus] = React.useState<
     Partial<AVPlaybackStatusSuccess>
@@ -38,6 +69,8 @@ export const Post: FC<PostProps> = ({ route }) => {
   const [componentState, setComponentState] =
     React.useState<PostComponentState>({
       showPlayIcon: true,
+      videoWidth: DEVICE_WIDTH,
+      videoHeight: VIDEO_CONTAINER_HEIGHT,
     });
 
   function _onPlaybackStatusUpdate(status: AVPlaybackStatus): void {
@@ -63,7 +96,6 @@ export const Post: FC<PostProps> = ({ route }) => {
   }
 
   function handlePlayPress() {
-    console.log('running');
     if (video.current == null) {
       return;
     }
@@ -77,56 +109,152 @@ export const Post: FC<PostProps> = ({ route }) => {
     }
   }
 
+  const _onReadyForDisplay = (event: VideoReadyForDisplayEvent) => {
+    const widestHeight =
+      (DEVICE_WIDTH * event.naturalSize.height) / event.naturalSize.width;
+    if (widestHeight > VIDEO_CONTAINER_HEIGHT) {
+      setComponentState({
+        ...componentState,
+        videoWidth:
+          (VIDEO_CONTAINER_HEIGHT * event.naturalSize.width) /
+          event.naturalSize.height,
+        videoHeight: VIDEO_CONTAINER_HEIGHT,
+      });
+    } else {
+      setComponentState({
+        ...componentState,
+        videoWidth: DEVICE_WIDTH,
+        videoHeight:
+          (DEVICE_WIDTH * event.naturalSize.height) / event.naturalSize.width,
+      });
+    }
+  };
+
   return (
-    <View>
-      <View>
-        <ProfileImage></ProfileImage>
-        <Text>dan13</Text>
-      </View>
-      <Pressable
-        onPress={handlePlayPress}
-        style={styles.videoContainer}
-      >
-        <Video
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+    <>
+      <View style={styles.container}>
+        <View
+          style={{
+            padding: SPACING_XSMALL,
+            ...styles.header,
+            ...styles.flexRowContainer,
           }}
-          useNativeControls
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping
-          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-        />
-        {componentState.showPlayIcon && (
-          <SVGIcon
-            inheritedStyles={styles.playIcon}
-            color={IconColor.MID}
-            height={50}
-            position="absolute"
-            width={50}
-            handlePress={handlePlayPress}
+        >
+          <ProfileImage
+            size="medium"
+            styles={{ marginRight: SPACING_XXSMALL }}
+          ></ProfileImage>
+          <AppText>dan13</AppText>
+        </View>
+        <Pressable
+          onPress={handlePlayPress}
+          style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
+        >
+          <Video
+            ref={video}
+            style={{
+              width: componentState.videoWidth,
+              height: componentState.videoHeight,
+              maxWidth: DEVICE_WIDTH,
+            }}
+            source={{
+              uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+            }}
+            useNativeControls={true}
+            resizeMode={ResizeMode.CONTAIN}
+            isLooping
+            onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
+            onReadyForDisplay={_onReadyForDisplay}
+          />
+          {componentState.showPlayIcon && (
+            <SVGIcon
+              styles={styles.playIcon}
+              color={IconColor.MID}
+              height={50}
+              position="absolute"
+              width={50}
+              handlePress={handlePlayPress}
+            >
+              <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
+            </SVGIcon>
+          )}
+        </Pressable>
+        <View
+          style={{
+            ...styles.sidePadding,
+            ...styles.flexRowContainer,
+            marginBottom: SPACING_SMALL,
+          }}
+        >
+          <View
+            style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
           >
-            <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
-          </SVGIcon>
-        )}
-      </Pressable>
-    </View>
+            <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+              <LikeHeartSVG></LikeHeartSVG>
+            </SVGIcon>
+            <AppText>Like</AppText>
+          </View>
+          <View
+            style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
+          >
+            <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+              <PicturePlusSVG></PicturePlusSVG>
+            </SVGIcon>
+            <AppText>Feature on your profile</AppText>
+          </View>
+        </View>
+        <View
+          style={{
+            ...styles.sidePadding,
+            ...styles.flexRowContainer,
+          }}
+        >
+          <AppText
+            weight="bold"
+            marginRight={SPACING_XXSMALL}
+          >
+            dan13
+          </AppText>
+          <AppText>{post.content}</AppText>
+        </View>
+      </View>
+      <SkeletonPlaceholder borderRadius={4}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ width: 60, height: 60, borderRadius: 50 }} />
+          <View style={{ marginLeft: 20 }}>
+            <Image
+              style={{ width: 120, height: 20 }}
+              source={require('./../../assets/avatar.png')}
+            />
+            <Text style={{ marginTop: 6, fontSize: 14, lineHeight: 18 }}>
+              Hello world
+            </Text>
+          </View>
+        </View>
+      </SkeletonPlaceholder>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
-  video: {
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: 500,
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
+  flexRowContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  header: {
+    width: '100%',
+  },
+  sidePadding: { paddingLeft: SPACING_XSMALL, paddingRight: SPACING_XSMALL },
   videoContainer: {
     position: 'relative',
-    height: 500,
-    width: '100%',
+    height: 'auto',
   },
   playIcon: {
     left: '50%',

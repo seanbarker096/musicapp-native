@@ -84,7 +84,7 @@ const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
           onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
         />
         <SVGIcon
-          inheritedStyles={styles.playIcon}
+          styles={styles.playIcon}
           color={IconColor.LIGHT}
           position={'absolute'}
         >

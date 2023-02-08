@@ -14,7 +14,7 @@ interface LoggedInAppShellProps {
 }
 const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
   if (!!authState) {
-    console.warn('Logged in app shell initialised without an authState');
+    //console.warn('Logged in app shell initialised without an authState');
   }
 
   return (

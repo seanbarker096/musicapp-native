@@ -1,37 +1,46 @@
-import { AvatarSize } from 'components/avatar';
-import { UserAvatarSVG } from 'components/icon/svg-components';
-import { SVGIcon } from 'components/icon/SVGIcon';
 import React, { FC } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View, ViewStyle } from 'react-native';
+import { profileImageSizeGenerator } from './profile-image.styles';
+import { ProfileImageSize } from './profile-image.types';
 
 interface ProfileImageProps {
   imageUrl?: string;
+  size?: ProfileImageSize;
+  styles: ViewStyle;
 }
 
-const ProfileImage: FC<ProfileImageProps> = ({ imageUrl }) => {
-  const SvgAvatar = (
-    <SVGIcon>
-      <UserAvatarSVG></UserAvatarSVG>
-    </SVGIcon>
-  );
+const avatarImage = require('./../../assets/avatar.png');
 
-  console.log(imageUrl);
-  const UserImage = (
-    <Image
-      style={{ ...style.image }}
-      source={{
-        uri: imageUrl,
-        height: AvatarSize.MEDIUM,
-        width: AvatarSize.MEDIUM,
-      }}
-    ></Image>
-  );
+const ProfileImage: FC<ProfileImageProps> = ({
+  imageUrl,
+  styles,
+  size = 'small',
+}) => {
+  const height = profileImageSizeGenerator(size);
 
-  return <View>{imageUrl ? UserImage : SvgAvatar}</View>;
+  return (
+    <View style={{ ...styles, height: height, width: height }}>
+      <Image
+        style={{ ...style.image }}
+        source={
+          imageUrl
+            ? {
+                uri: imageUrl,
+                height,
+                width: height,
+              }
+            : avatarImage
+        }
+      ></Image>
+    </View>
+  );
 };
 
 const style = StyleSheet.create({
-  image: {},
+  image: {
+    height: '100%',
+    width: '100%',
+  },
 });
 
 export default ProfileImage;
