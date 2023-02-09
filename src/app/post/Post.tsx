@@ -22,8 +22,9 @@ import {
   Placeholder,
   PlaceholderLine,
   PlaceholderMedia,
-  ShineOverlay,
+  Shine,
 } from 'rn-placeholder';
+import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
@@ -34,6 +35,7 @@ interface PostComponentState {
   showPlayIcon: boolean;
   videoWidth: number;
   videoHeight: number;
+  useNativeControls: boolean;
 }
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
@@ -45,12 +47,27 @@ export const Post: FC<PostProps> = ({
   },
 }) => {
   const {
-    user,
+    data: user,
     isLoading: isPostOwnerLoading,
     isError: isPostOwnerGetError,
   } = useUserGetQuery({ id: post.ownerId });
 
+  const postOwner = user && user[0];
+
+  const {
+    isLoading: filesGetLoading,
+    isError: isFilesGetError,
+    data: files,
+    error: filesGetError,
+  } = useFilesGetQuery({
+    queryParams: { uuid: postOwner ? postOwner.avatarFileUuid : undefined },
+    enabled: !isPostOwnerLoading,
+  });
+
+  const avatarFile = files && files[0];
+
   const video = React.useRef<Video>(null);
+
   const [videoStatus, setStatus] = React.useState<
     Partial<AVPlaybackStatusSuccess>
   >({
@@ -69,6 +86,7 @@ export const Post: FC<PostProps> = ({
       showPlayIcon: true,
       videoWidth: DEVICE_WIDTH,
       videoHeight: VIDEO_CONTAINER_HEIGHT,
+      useNativeControls: false,
     });
 
   function _onPlaybackStatusUpdate(status: AVPlaybackStatus): void {
@@ -98,7 +116,15 @@ export const Post: FC<PostProps> = ({
       return;
     }
 
-    setComponentState({ ...componentState, showPlayIcon: false });
+    if (componentState.useNativeControls) {
+      return;
+    }
+
+    setComponentState({
+      ...componentState,
+      showPlayIcon: false,
+      useNativeControls: true,
+    });
 
     if (videoStatus.isPlaying) {
       video.current.pauseAsync();
@@ -128,106 +154,123 @@ export const Post: FC<PostProps> = ({
     }
   };
 
-  return (
-    <>
-      <View style={styles.container}>
-        <View
-          style={{
-            padding: SPACING_XSMALL,
-            ...styles.header,
-            ...styles.flexRowContainer,
-          }}
-        >
-          <ProfileImage
-            size="medium"
-            styles={{ marginRight: SPACING_XXSMALL }}
-          ></ProfileImage>
-          <AppText>dan13</AppText>
-        </View>
-        <Pressable
-          onPress={handlePlayPress}
-          style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
-        >
-          <Video
-            ref={video}
-            style={{
-              width: componentState.videoWidth,
-              height: componentState.videoHeight,
-              maxWidth: DEVICE_WIDTH,
-            }}
-            source={{
-              uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-            }}
-            useNativeControls={true}
-            resizeMode={ResizeMode.CONTAIN}
-            isLooping
-            onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-            onReadyForDisplay={_onReadyForDisplay}
+  const UserHeader =
+    postOwner && avatarFile ? (
+      <>
+        <ProfileImage
+          size="small"
+          styles={{ marginRight: SPACING_XXSMALL }}
+          imageUrl={avatarFile.url}
+        ></ProfileImage>
+        <AppText size="large">{postOwner.username}</AppText>
+      </>
+    ) : (
+      <Placeholder
+        Animation={props => (
+          <Shine
+            {...props}
+            reverse={false}
+          ></Shine>
+        )}
+      >
+        <View style={{ ...styles.flexRowContainer }}>
+          <PlaceholderMedia
+            isRound={true}
+            size={48}
+            style={{ marginRight: SPACING_XXSMALL }}
+          ></PlaceholderMedia>
+          <PlaceholderLine
+            height={20}
+            width={50}
+            noMargin={true}
           />
-          {componentState.showPlayIcon && (
-            <SVGIcon
-              styles={styles.playIcon}
-              color={IconColor.MID}
-              height={50}
-              position="absolute"
-              width={50}
-              handlePress={handlePlayPress}
-            >
-              <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
-            </SVGIcon>
-          )}
-        </Pressable>
-        <View
+        </View>
+      </Placeholder>
+    );
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          padding: SPACING_XSMALL,
+          ...styles.header,
+          ...styles.flexRowContainer,
+        }}
+      >
+        {UserHeader}
+      </View>
+      <Pressable
+        onPress={handlePlayPress}
+        style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
+      >
+        <Video
+          ref={video}
           style={{
-            ...styles.sidePadding,
-            ...styles.flexRowContainer,
-            marginBottom: SPACING_SMALL,
+            width: componentState.videoWidth,
+            height: componentState.videoHeight,
+            maxWidth: DEVICE_WIDTH,
           }}
+          source={{
+            uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+          }}
+          useNativeControls={componentState.useNativeControls}
+          resizeMode={ResizeMode.CONTAIN}
+          isLooping
+          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
+          onReadyForDisplay={_onReadyForDisplay}
+        />
+        {componentState.showPlayIcon && (
+          <SVGIcon
+            styles={styles.playIcon}
+            color={IconColor.MID}
+            height={50}
+            position="absolute"
+            width={50}
+            handlePress={handlePlayPress}
+          >
+            <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
+          </SVGIcon>
+        )}
+      </Pressable>
+      <View
+        style={{
+          ...styles.sidePadding,
+          ...styles.flexRowContainer,
+          marginBottom: SPACING_SMALL,
+        }}
+      >
+        <View
+          style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
         >
-          <View
-            style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
-          >
-            <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-              <LikeHeartSVG></LikeHeartSVG>
-            </SVGIcon>
-            <AppText>Like</AppText>
-          </View>
-          <View
-            style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
-          >
-            <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-              <PicturePlusSVG></PicturePlusSVG>
-            </SVGIcon>
-            <AppText>Feature on your profile</AppText>
-          </View>
+          <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+            <LikeHeartSVG></LikeHeartSVG>
+          </SVGIcon>
+          <AppText>Like</AppText>
         </View>
         <View
-          style={{
-            ...styles.sidePadding,
-            ...styles.flexRowContainer,
-          }}
+          style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
         >
-          <AppText
-            weight="bold"
-            marginRight={SPACING_XXSMALL}
-          >
-            dan13
-          </AppText>
-          <AppText>{post.content}</AppText>
+          <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+            <PicturePlusSVG></PicturePlusSVG>
+          </SVGIcon>
+          <AppText>Feature on your profile</AppText>
         </View>
       </View>
-      <View style={{ height: 100, width: 100 }}>
-        <Placeholder
-          Left={PlaceholderMedia}
-          Right={PlaceholderMedia}
-          Animation={ShineOverlay}
+      <View
+        style={{
+          ...styles.sidePadding,
+          ...styles.flexRowContainer,
+        }}
+      >
+        <AppText
+          weight="bold"
+          marginRight={SPACING_XXSMALL}
         >
-          <PlaceholderLine width={80} />
-          <PlaceholderLine />
-          <PlaceholderLine width={30} />
-        </Placeholder>
+          dan13
+        </AppText>
+        <AppText>{post.content}</AppText>
       </View>
-    </>
+    </View>
   );
 };
 

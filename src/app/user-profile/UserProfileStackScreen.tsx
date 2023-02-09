@@ -15,7 +15,13 @@ const UserProfileStack =
   createNativeStackNavigator<UserProfileStackScreenProps>();
 
 const UserProfileStackScreen: FC<UserProfileStackScreenProps> = () => (
-  <UserProfileStack.Navigator>
+  <UserProfileStack.Navigator
+    screenOptions={{
+      contentStyle: {
+        backgroundColor: '#FFFFFF',
+      },
+    }}
+  >
     <UserProfileStack.Screen
       name="UserProfile"
       component={UserProfile}
