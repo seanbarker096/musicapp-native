@@ -17,15 +17,13 @@ import {
   VideoReadyForDisplayEvent,
 } from 'expo-av';
 import React, { FC } from 'react';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import {
-  Dimensions,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+  Placeholder,
+  PlaceholderLine,
+  PlaceholderMedia,
+  ShineOverlay,
+} from 'rn-placeholder';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
@@ -218,20 +216,17 @@ export const Post: FC<PostProps> = ({
           <AppText>{post.content}</AppText>
         </View>
       </View>
-      <SkeletonPlaceholder borderRadius={4}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ width: 60, height: 60, borderRadius: 50 }} />
-          <View style={{ marginLeft: 20 }}>
-            <Image
-              style={{ width: 120, height: 20 }}
-              source={require('./../../assets/avatar.png')}
-            />
-            <Text style={{ marginTop: 6, fontSize: 14, lineHeight: 18 }}>
-              Hello world
-            </Text>
-          </View>
-        </View>
-      </SkeletonPlaceholder>
+      <View style={{ height: 100, width: 100 }}>
+        <Placeholder
+          Left={PlaceholderMedia}
+          Right={PlaceholderMedia}
+          Animation={ShineOverlay}
+        >
+          <PlaceholderLine width={80} />
+          <PlaceholderLine />
+          <PlaceholderLine width={30} />
+        </Placeholder>
+      </View>
     </>
   );
 };
