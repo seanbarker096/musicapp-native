@@ -211,7 +211,10 @@ export const Post: FC<PostProps> = ({
             maxWidth: DEVICE_WIDTH,
           }}
           source={{
-            uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+            uri:
+              post.attachments && post.attachments[0]?.file?.url
+                ? post.attachments[0].file.url
+                : '',
           }}
           useNativeControls={componentState.useNativeControls}
           resizeMode={ResizeMode.CONTAIN}

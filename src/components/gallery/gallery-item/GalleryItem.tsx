@@ -2,12 +2,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackScreen';
 import { IconColor, SVGIcon } from 'components/icon/index';
 import { PlayButtonSVG } from 'components/icon/svg-components';
-import {
-  AVPlaybackStatus,
-  AVPlaybackStatusSuccess,
-  ResizeMode,
-  Video,
-} from 'expo-av';
+import { ResizeMode, Video } from 'expo-av';
 import React, { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Post } from 'store/posts/posts.types';
@@ -27,70 +22,36 @@ const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
     useNavigation<NavigationProp<UserProfileStackScreenProps>>();
 
   const video = React.useRef<Video>(null);
-  const [videoStatus, setStatus] = React.useState<
-    Partial<AVPlaybackStatusSuccess>
-  >({
-    isMuted: false,
-    shouldPlay: false,
-    isPlaying: false,
-    isBuffering: false,
-    isLoaded: true,
-    shouldCorrectPitch: true,
-    volume: 1.0,
-    rate: 1.0,
-  });
-
-  function _onPlaybackStatusUpdate(status: AVPlaybackStatus): void {
-    if (status.isLoaded) {
-      setStatus({
-        shouldPlay: status.shouldPlay,
-        isPlaying: status.isPlaying,
-        isBuffering: status.isBuffering,
-        rate: status.rate,
-        isMuted: status.isMuted,
-        volume: status.volume,
-        shouldCorrectPitch: status.shouldCorrectPitch,
-      });
-      if (status.didJustFinish && !status.isLooping) {
-        // this._advanceIndex(true);
-        // this._updatePlaybackInstanceForIndex(true);
-      }
-    } else {
-      if (status.error) {
-        console.log(`FATAL PLAYER ERROR: ${status.error}`);
-      }
-    }
-  }
-
   function handleItemPress() {
     navigation.navigate('Post', { post: post });
   }
 
+  // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)
   return (
-    <View style={{ ...galleryItemStyles }}>
-      <Pressable
-        style={styles.videoOverlay}
-        onPress={handleItemPress}
-      >
-        <Video
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
-          }}
-          useNativeControls
-          resizeMode={ResizeMode.COVER}
-          isLooping
-          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-        />
-        <SVGIcon
-          styles={styles.playIcon}
-          color={IconColor.LIGHT}
-          position={'absolute'}
+    <View style={{ ...galleryItemStyles, height: 100 }}>
+      {post.attachments && post.attachments[0]?.file && (
+        <Pressable
+          style={styles.videoOverlay}
+          onPress={handleItemPress}
         >
-          <PlayButtonSVG></PlayButtonSVG>
-        </SVGIcon>
-      </Pressable>
+          <Video
+            ref={video}
+            style={styles.video}
+            source={{
+              uri: post.attachments[0].file.url,
+            }}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay={false}
+          />
+          <SVGIcon
+            styles={styles.playIcon}
+            color={IconColor.LIGHT}
+            position={'absolute'}
+          >
+            <PlayButtonSVG></PlayButtonSVG>
+          </SVGIcon>
+        </Pressable>
+      )}
     </View>
   );
 };

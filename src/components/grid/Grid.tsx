@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   grid: {
     alignItems: 'flex-start',
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     flexWrap: 'wrap',
     flexDirection: 'row',
   },

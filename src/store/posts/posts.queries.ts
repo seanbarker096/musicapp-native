@@ -1,12 +1,15 @@
-import { useQuery } from 'react-query';
+import { AxiosResponse } from 'axios';
+import { useMutation, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
 import { isArray } from 'utils/utils';
+import axios from '../../axios-instance';
 import { postsKeys } from './posts.query-keys';
 import { transformPostApi } from './posts.transformations';
-import { Post, PostsStoreSlice } from './posts.types';
+import { Post, PostCreateRequestApi, PostCreateResult, PostCreateResultApi, PostsStoreSlice } from './posts.types';
 
 type PostObjectFields = keyof PostsStoreSlice['ObjectType'];
 
+/** -------------- POSTS GET ------------------ */
 type PostsGetQueryField = Partial<{
   [key in PostObjectFields]:
     | PostsStoreSlice['ObjectType'][key]
@@ -40,3 +43,34 @@ export const usePostsGetQuery = ({ ownerId }: PostsGetQueryField) => {
     () => postsGet(apiQueryParams),
   );
 };
+
+/** ------------------- POST CREATE ---------------------- */
+
+
+const postCreate = async({
+    owner_id,
+    content,
+    attachment_file_ids
+}: PostCreateRequestApi): Promise<PostCreateResult> {
+  const response = await axios.post<PostCreateResultApi, AxiosResponse<PostCreateResultApi>, PostCreateRequestApi>(
+    'http://192.168.1.217:5000/api/posts/0.1/posts/', {
+      owner_id,
+      content,
+      attachment_file_ids
+    }
+  )
+
+  const postWithAttachments = postsAndAttachmentsApiToPostsAndAttachments()
+}
+
+export const usePostCreateMutation = () => {
+
+  const onSuccessCallback = async ({
+   
+  }) => {
+   // invalidate relevant query keys
+  };
+
+
+  return useMutation(postCreate, {onSuccess: onSuccessCallback})
+}

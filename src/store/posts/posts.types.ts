@@ -16,6 +16,11 @@ export interface PostsStoreSlice extends StoreSlice {
     ResultType: PostsGetResultApi;
     ErrorType: {};
   };
+  Post: {
+    RequestParamtersType: PostCreateRequestApi;
+    ResultType: PostCreateResultApi;
+    ErrorType: {};
+  };
 }
 
 export interface Post {
@@ -50,3 +55,16 @@ export interface PostsGetFilterApi {
   is_deleted?: boolean;
   owner_ids?: readonly number[];
 }
+
+export interface PostCreateRequestApi {
+  attachment_file_ids: readonly [];
+  content: string;
+  owner_id: number;
+}
+
+export interface PostCreateResultApi {
+  post: PostApi;
+  attachments: PostAttachmentApi[];
+}
+
+export interface PostCreateResult {}
