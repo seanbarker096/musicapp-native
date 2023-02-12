@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from 'app/home/Home';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
+import CreatePostStackScreen from 'app/post/UploadStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SearchStackScreen from 'app/search/SearchStackScreen';
@@ -56,6 +57,10 @@ const LoggedInScreens = () => {
       <Tab.Screen
         name={PrimaryScreens.MANAGE}
         component={ManageStackScreen}
+      ></Tab.Screen>
+      <Tab.Screen
+        name={PrimaryScreens.CREATE_POST}
+        component={CreatePostStackScreen}
       ></Tab.Screen>
     </Tab.Navigator>
   );

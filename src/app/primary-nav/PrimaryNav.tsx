@@ -63,6 +63,16 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
       </SVGIcon>
       <SVGIcon
         color={
+          selectedScreen === PrimaryScreens.CREATE_POST
+            ? IconColor.SECONDARY
+            : IconColor.DARK
+        }
+        handlePress={() => handleIconPress(PrimaryScreens.CREATE_POST)}
+      >
+        <BorderedPlusSVG></BorderedPlusSVG>
+      </SVGIcon>
+      <SVGIcon
+        color={
           selectedScreen === PrimaryScreens.MANAGE
             ? IconColor.SECONDARY
             : IconColor.DARK
@@ -70,16 +80,6 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
         handlePress={() => handleIconPress(PrimaryScreens.MANAGE)}
       >
         <PeopleSVG></PeopleSVG>
-      </SVGIcon>
-      <SVGIcon
-        color={
-          selectedScreen === PrimaryScreens.UPLOAD
-            ? IconColor.SECONDARY
-            : IconColor.DARK
-        }
-        handlePress={() => handleIconPress(PrimaryScreens.UPLOAD)}
-      >
-        <BorderedPlusSVG></BorderedPlusSVG>
       </SVGIcon>
       <Avatar
         style={avatarActive ? styles.avatarActive : styles.avatarInactive}

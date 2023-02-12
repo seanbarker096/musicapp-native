@@ -41,6 +41,9 @@ interface PostComponentState {
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 const VIDEO_CONTAINER_HEIGHT = (DEVICE_HEIGHT * 2.0) / 5.0 - 14 * 2;
 
+//TODO: Could make a page wrapper component which takes in the route, gets post out,
+// and then passes post into Post component which takes a single post prop. Means
+// Post component is more resuable
 export const Post: FC<PostProps> = ({
   route: {
     params: { post },

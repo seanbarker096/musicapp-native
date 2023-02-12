@@ -56,8 +56,13 @@ export interface PostsGetFilterApi {
   owner_ids?: readonly number[];
 }
 
+export interface PostCreateRequest {
+  ownerId: number;
+  content: string;
+  attachmentFileIds: readonly number[];
+}
 export interface PostCreateRequestApi {
-  attachment_file_ids: readonly [];
+  attachment_file_ids: readonly number[];
   content: string;
   owner_id: number;
 }
@@ -67,4 +72,7 @@ export interface PostCreateResultApi {
   attachments: PostAttachmentApi[];
 }
 
-export interface PostCreateResult {}
+export interface PostCreateResult {
+  post: Post;
+  attachments: PostAttachment[];
+}
