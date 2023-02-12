@@ -12,7 +12,10 @@ import {
   Shine,
 } from 'rn-placeholder';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { useFilesGetQuery } from 'store/files/files.queries';
+import {
+  useFileCreateMutation,
+  useFilesGetQuery,
+} from 'store/files/files.queries';
 import { usePostCreateMutation } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import {
@@ -25,16 +28,21 @@ import {
 
 interface CreatePostProps {}
 
+interface PostFile {
+  imageInfo: ImagePicker.ImageInfo;
+  mimeType: string | undefined;
+  fileName: string | undefined;
+}
+
 export const CreatePost: FC<CreatePostProps> = () => {
-  const [postFile, setPostFile] = useState<ImagePicker.ImageInfo | undefined>(
-    undefined,
-  );
+  const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
 
   const { authState } = useContext(AuthStateContext);
 
   const userId = authState.authUser.userId;
 
   const { mutate: createPost } = usePostCreateMutation({ ownerId: userId });
+  const { mutate: createFile } = useFileCreateMutation();
 
   const {
     data: user,
@@ -71,7 +79,15 @@ export const CreatePost: FC<CreatePostProps> = () => {
         if (!result.cancelled) {
           const regexArray = result.uri.match(/\.[0-9a-z]+$/i);
           const extension = regexArray ? regexArray[0] : undefined;
-          setPostFile(result);
+
+          if (!result.fileName) {
+            throw Error('filename not defined!');
+          }
+          setPostFile({
+            imageInfo: result,
+            mimeType: extension,
+            fileName: result.fileName,
+          });
         }
       };
 
@@ -83,9 +99,11 @@ export const CreatePost: FC<CreatePostProps> = () => {
     }, []),
   );
 
-  const handleFormSubmit = function (form: any) {
+  const handleFormSubmit = async function (form: any) {
     // first upload the files
-
+    await createFile({
+      postFile,
+    });
     // then create the post
     createPost({
       ownerId: form.ownerId,

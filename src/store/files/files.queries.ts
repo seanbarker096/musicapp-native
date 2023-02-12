@@ -1,10 +1,21 @@
-import { QueryKey, useQuery } from 'react-query';
+import { AxiosResponse } from 'axios';
+import { QueryKey, useMutation, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
+import { v4 as uuidv4 } from 'uuid';
+import axios from '../../axios-instance';
 import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
-import { File, FileApi, FilesStoreSlice } from './files.types';
+import {
+  File,
+  FileApi,
+  FileCreateRequest,
+  FileCreateRequestApi,
+  FileCreateResult,
+  FileCreateResultApi,
+  FilesStoreSlice,
+} from './files.types';
 
 type FileObjectFields = keyof FilesStoreSlice['ObjectType'];
 
@@ -76,3 +87,30 @@ export function useFilesGetQuery({
     },
   );
 }
+
+/************************ FILE CREATE ***************************/
+
+const fileCreate = async function ({
+  mimeType,
+  fileName,
+}: FileCreateRequest): Promise<FileCreateResult> {
+  const uuid = uuidv4();
+
+  const response = await axios.post<
+    FileCreateResultApi,
+    AxiosResponse<FileCreateResultApi>,
+    FileCreateRequestApi
+  >('http://192.168.1.217:5000/api/posts/0.1/posts/', {
+    uuid,
+    mime_type: mimeType,
+    file_name: fileName,
+  });
+
+  return { file: transformFileApi(response.data.file) };
+};
+
+export const useFileCreateMutation = function () {
+  return useMutation<FileCreateResult, any, FileCreateRequest>(
+    (fileCreateRequest: FileCreateRequest) => fileCreate(fileCreateRequest),
+  );
+};

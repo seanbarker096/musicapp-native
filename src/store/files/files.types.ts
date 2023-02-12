@@ -39,3 +39,23 @@ export interface FilesGetFilter {
 export interface FilesGetResult {
   files: readonly FileApi[];
 }
+
+export interface FileCreateRequest {
+  uuid: string;
+  fileName: string;
+  mimeType: string;
+}
+
+export interface FileCreateRequestApi {
+  uuid: string;
+  file_name: string;
+  mime_type: string;
+}
+
+export interface FileCreateResultApi {
+  file: FileApi;
+}
+
+export interface FileCreateResult {
+  file: File;
+}
