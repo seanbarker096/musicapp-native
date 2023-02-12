@@ -32,6 +32,7 @@ interface PostFile {
   imageInfo: ImagePicker.ImageInfo;
   mimeType: string | undefined;
   fileName: string | undefined;
+  blob: Blob;
 }
 
 export const CreatePost: FC<CreatePostProps> = () => {
@@ -76,17 +77,21 @@ export const CreatePost: FC<CreatePostProps> = () => {
           quality: 1,
         });
 
-        if (!result.cancelled) {
-          const regexArray = result.uri.match(/\.[0-9a-z]+$/i);
-          const extension = regexArray ? regexArray[0] : undefined;
+        if (result.cancelled) {
+          console.log('selection cancelled');
+          return;
+        }
 
-          if (!result.fileName) {
-            throw Error('filename not defined!');
-          }
+        if (!result.cancelled) {
+          const file = await fetch(result.uri);
+
+          const blob = await file.blob();
+
           setPostFile({
             imageInfo: result,
-            mimeType: extension,
-            fileName: result.fileName,
+            mimeType: blob.type,
+            fileName: `${userId}-${Date.now()}`,
+            blob,
           });
         }
       };
@@ -100,16 +105,31 @@ export const CreatePost: FC<CreatePostProps> = () => {
   );
 
   const handleFormSubmit = async function (form: any) {
-    // first upload the files
-    await createFile({
-      postFile,
+    // TODO DISABLE BUTTON if file not defined
+    if (!postFile) {
+      throw Error('Post file not correctly defined when submit pressed');
+    }
+
+    if (!postFile.fileName) {
+      throw Error('filename not defined');
+    }
+
+    if (!postFile.mimeType || postFile.mimeType === '') {
+      throw Error('mime type not defined');
+    }
+
+    createFile({
+      fileName: postFile.fileName,
+      file: postFile.blob,
+      mimeType: postFile.mimeType,
+      uri: postFile.imageInfo.uri,
     });
-    // then create the post
-    createPost({
-      ownerId: form.ownerId,
-      content: form.caption,
-      attachmentFileIds: [],
-    });
+    // // then create the post
+    // createPost({
+    //   ownerId: form.ownerId,
+    //   content: form.caption,
+    //   attachmentFileIds: [],
+    // });
   };
 
   const handleCancelClick = function () {
@@ -168,7 +188,11 @@ export const CreatePost: FC<CreatePostProps> = () => {
             <>
               <View style={{ ...styles.flexRowContainer }}>
                 <Image
-                  source={{ uri: postFile?.uri, width: 150, height: 150 }}
+                  source={{
+                    uri: postFile?.imageInfo.uri,
+                    width: 150,
+                    height: 150,
+                  }}
                 ></Image>
                 <View
                   style={{

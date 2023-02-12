@@ -41,15 +41,17 @@ export interface FilesGetResult {
 }
 
 export interface FileCreateRequest {
-  uuid: string;
   fileName: string;
   mimeType: string;
+  file: Blob;
+  uri: string;
 }
 
 export interface FileCreateRequestApi {
   uuid: string;
   file_name: string;
   mime_type: string;
+  file: Blob;
 }
 
 export interface FileCreateResultApi {

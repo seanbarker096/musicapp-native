@@ -1,4 +1,6 @@
 import { AxiosResponse } from 'axios';
+import * as SecureStore from 'expo-secure-store';
+
 import { QueryKey, useMutation, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
@@ -8,10 +10,8 @@ import axios from '../../axios-instance';
 import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
 import {
-  File,
   FileApi,
   FileCreateRequest,
-  FileCreateRequestApi,
   FileCreateResult,
   FileCreateResultApi,
   FilesStoreSlice,
@@ -90,20 +90,40 @@ export function useFilesGetQuery({
 
 /************************ FILE CREATE ***************************/
 
+// TODO: Create request vuilder for post requests which adds headers
 const fileCreate = async function ({
   mimeType,
   fileName,
+  file,
+  uri,
 }: FileCreateRequest): Promise<FileCreateResult> {
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  const accessToken = await SecureStore.getItemAsync('access_token');
+
+  console.log(refreshToken, accessToken);
+
   const uuid = uuidv4();
+
+  const form = new FormData();
+
+  form.append('file_name', fileName);
+  form.append('mime_type', mimeType);
+  form.append('file', { uri, name: fileName, type: mimeType });
+  form.append('uuid', uuid);
+
+  console.log('file blob', file);
+  console.log('form', form);
 
   const response = await axios.post<
     FileCreateResultApi,
     AxiosResponse<FileCreateResultApi>,
-    FileCreateRequestApi
-  >('http://192.168.1.217:5000/api/posts/0.1/posts/', {
-    uuid,
-    mime_type: mimeType,
-    file_name: fileName,
+    FormData
+  >('http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file/', form, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Refresh-Token': refreshToken,
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 
   return { file: transformFileApi(response.data.file) };
