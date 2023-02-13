@@ -17,7 +17,7 @@ export interface PostsStoreSlice extends StoreSlice {
     ErrorType: {};
   };
   Post: {
-    RequestParamtersType: PostCreateRequestApi;
+    RequestBodyType: PostCreateRequestApi;
     ResultType: PostCreateResultApi;
     ErrorType: {};
   };
@@ -56,13 +56,17 @@ export interface PostsGetFilterApi {
   owner_ids?: readonly number[];
 }
 
+export type Test = {
+  [key in keyof PostsGetFilterApi]: any;
+};
+
 export interface PostCreateRequest {
   ownerId: number;
   content: string;
   attachmentFileIds: readonly number[];
 }
 export interface PostCreateRequestApi {
-  attachment_file_ids: readonly number[];
+  'attachment_file_ids[]': readonly number[];
   content: string;
   owner_id: number;
 }

@@ -1,10 +1,12 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { FC } from 'react';
 import CreatePost from './CreatePost';
-
-const CreatePostStackNavigator = createNativeStackNavigator();
+import { CreatePostStackParamList } from './post.types';
 
 interface CreatePostStackScreenProps {}
+
+const CreatePostStackNavigator =
+  createNativeStackNavigator<CreatePostStackParamList>();
 
 const CreatePostStackScreen: FC<CreatePostStackScreenProps> = () => {
   return (

@@ -1,19 +1,15 @@
-import { AxiosResponse } from 'axios';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { getRequest } from 'store/request-builder';
+import { getRequest, postRequest } from 'store/request-builder';
 import { isArray } from 'utils/utils';
-import axios from '../../axios-instance';
 import { postsKeys } from './posts.query-keys';
 import {
-  postAndAttachmentsApiToPostAndAttachments,
+  transformPostAndAttachmentsApi,
   transformPostApi,
 } from './posts.transformations';
 import {
   Post,
   PostCreateRequest,
-  PostCreateRequestApi,
   PostCreateResult,
-  PostCreateResultApi,
   PostsStoreSlice,
 } from './posts.types';
 
@@ -61,17 +57,22 @@ const postCreate = async function ({
   content,
   attachmentFileIds,
 }: PostCreateRequest): Promise<PostCreateResult> {
-  const response = await axios.post<
-    PostCreateResultApi,
-    AxiosResponse<PostCreateResultApi>,
-    PostCreateRequestApi
-  >('http://192.168.1.217:5000/api/posts/0.1/posts/', {
-    owner_id: ownerId,
-    content,
-    attachment_file_ids: attachmentFileIds,
+  if (attachmentFileIds.length === 0) {
+    throw Error(
+      'Must provide at least one  attachment id when creating a post',
+    );
+  }
+
+  const response = await postRequest<PostsStoreSlice>({
+    url: 'posts/0.1/posts/',
+    body: {
+      owner_id: ownerId,
+      content,
+      'attachment_file_ids[]': attachmentFileIds,
+    },
   });
 
-  const postWithAttachments = postAndAttachmentsApiToPostAndAttachments(
+  const postWithAttachments = transformPostAndAttachmentsApi(
     response.data.post,
     response.data.attachments,
   );
@@ -92,7 +93,7 @@ export const usePostCreateMutation = ({
   };
 
   return useMutation<PostCreateResult, any, PostCreateRequest>(
-    ({ ownerId, content, attachmentFileIds }) =>
+    ({ ownerId, content, attachmentFileIds }: PostCreateRequest) =>
       postCreate({ ownerId, content, attachmentFileIds }),
     { onSuccess: onSuccessCallback },
   );

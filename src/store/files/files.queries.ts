@@ -1,19 +1,18 @@
-import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 import { QueryKey, useMutation, useQuery } from 'react-query';
-import { getRequest } from 'store/request-builder';
+import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
 import { v4 as uuidv4 } from 'uuid';
-import axios from '../../axios-instance';
+
 import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
 import {
+  File,
   FileApi,
   FileCreateRequest,
   FileCreateResult,
-  FileCreateResultApi,
   FilesStoreSlice,
 } from './files.types';
 
@@ -114,15 +113,11 @@ const fileCreate = async function ({
   console.log('file blob', file);
   console.log('form', form);
 
-  const response = await axios.post<
-    FileCreateResultApi,
-    AxiosResponse<FileCreateResultApi>,
-    FormData
-  >('http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file/', form, {
+  const response = await postRequest<FilesStoreSlice>({
+    url: 'fileservice/0.1/files/upload_file/',
+    body: form,
     headers: {
       'Content-Type': 'multipart/form-data',
-      'Refresh-Token': refreshToken,
-      Authorization: `Bearer ${accessToken}`,
     },
   });
 

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from 'app/login/Login';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
+// import * as SecureStore from 'expo-secure-store';
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthState, AuthStatus } from '../store/auth/auth.types';

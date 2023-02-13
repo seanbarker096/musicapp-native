@@ -5,7 +5,12 @@ export interface FilesStoreSlice extends StoreSlice {
   ObjectType: File;
   Get: {
     RequestParametersType: FilesGetFilter;
-    ResultType: FilesGetResult;
+    ResultType: FilesGetResultApi;
+    ErrorType: {};
+  };
+  Post: {
+    RequestBodyType: FormData;
+    ResultType: FileCreateResultApi;
     ErrorType: {};
   };
 }
@@ -37,6 +42,10 @@ export interface FilesGetFilter {
 }
 
 export interface FilesGetResult {
+  files: readonly File[];
+}
+
+export interface FilesGetResultApi {
   files: readonly FileApi[];
 }
 

@@ -1,4 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
+import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppText } from 'components/app-text';
 import ProfileImage from 'components/profile-image/ProfileImage';
 import * as ImagePicker from 'expo-image-picker';
@@ -25,8 +26,7 @@ import {
   SPACING_XSMALL,
   SPACING_XXSMALL,
 } from 'styles';
-
-interface CreatePostProps {}
+import { CreatePostStackScreenProps } from './post.types';
 
 interface PostFile {
   imageInfo: ImagePicker.ImageInfo;
@@ -35,15 +35,32 @@ interface PostFile {
   blob: Blob;
 }
 
-export const CreatePost: FC<CreatePostProps> = () => {
+interface PostCreateFormValues {
+  artistId: number | undefined;
+  eventDate: string | undefined;
+  eventName: string | undefined;
+  caption: string | undefined;
+}
+
+export const CreatePost: FC<CreatePostStackScreenProps> = ({
+  navigation,
+}: CreatePostStackScreenProps) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
 
   const { authState } = useContext(AuthStateContext);
 
   const userId = authState.authUser.userId;
 
-  const { mutate: createPost } = usePostCreateMutation({ ownerId: userId });
-  const { mutate: createFile } = useFileCreateMutation();
+  const { mutateAsync: createPost } = usePostCreateMutation({
+    ownerId: userId,
+  });
+
+  const {
+    mutateAsync: createFile,
+    data: createdFile,
+    isLoading: createFileLoading,
+    isError: createFileError,
+  } = useFileCreateMutation();
 
   const {
     data: user,
@@ -104,8 +121,11 @@ export const CreatePost: FC<CreatePostProps> = () => {
     }, []),
   );
 
-  const handleFormSubmit = async function (form: any) {
+  const handleFormSubmit = async function (form: PostCreateFormValues) {
     // TODO DISABLE BUTTON if file not defined
+    if (!userId) {
+      throw Error('userId undefined when trying to create a post');
+    }
     if (!postFile) {
       throw Error('Post file not correctly defined when submit pressed');
     }
@@ -118,18 +138,35 @@ export const CreatePost: FC<CreatePostProps> = () => {
       throw Error('mime type not defined');
     }
 
-    createFile({
+    if (!form.artistId || !form.caption || !form.eventDate || !form.eventName) {
+      throw Error('Form incomplete. At least one required field is undefined');
+    }
+
+    const fileResult = await createFile({
       fileName: postFile.fileName,
       file: postFile.blob,
       mimeType: postFile.mimeType,
       uri: postFile.imageInfo.uri,
     });
-    // // then create the post
-    // createPost({
-    //   ownerId: form.ownerId,
-    //   content: form.caption,
-    //   attachmentFileIds: [],
-    // });
+
+    if (!fileResult) {
+      throw Error('create file request failed');
+    }
+
+    console.log('file result', fileResult);
+
+    // then create the post
+    const postResult = await createPost({
+      ownerId: userId,
+      content: form.caption,
+      attachmentFileIds: [fileResult.file.id],
+    });
+
+    if (!postResult) {
+      throw Error('failed to create post');
+    }
+
+    navigation.navigate(PrimaryScreens.PROFILE);
   };
 
   const handleCancelClick = function () {

@@ -9,6 +9,7 @@ import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
 import React, { FC } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
+import { AppShellStackNavigatorParamList } from './appShell.types';
 
 interface LoggedInAppShellProps {
   authState: AuthState;
@@ -35,7 +36,7 @@ export default LoggedInAppShell;
  * This component exists to initialise Tab in seperate component to LoggedInApp shell. Because of the conditional rendering of the template the Tab Navigator was rendering at the top of the screen
  **/
 const LoggedInScreens = () => {
-  const Tab = createBottomTabNavigator();
+  const Tab = createBottomTabNavigator<AppShellStackNavigatorParamList>();
 
   return (
     <Tab.Navigator

@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackScreen';
+import { UserProfileStackParamList } from 'app/user-profile/user-profile.types';
 import AppText from 'components/app-text/AppText';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
@@ -28,8 +28,7 @@ import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
-interface PostProps
-  extends NativeStackScreenProps<UserProfileStackScreenProps, 'Post'> {}
+type PostProps = NativeStackScreenProps<UserProfileStackParamList, 'ViewPost'>;
 
 interface PostComponentState {
   showPlayIcon: boolean;

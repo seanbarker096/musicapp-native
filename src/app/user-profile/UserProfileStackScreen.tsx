@@ -1,20 +1,18 @@
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AppShellStackParamList } from 'app/app-shell/appShell.types';
 import { Post as PostComponent } from 'app/post/Post';
 import React, { FC } from 'react';
-import { Post } from '../../store/posts/index';
+import { UserProfileStackParamList } from './user-profile.types';
 import UserProfile from './UserProfile';
 
-export type UserProfileStackScreenProps = {
-  Post: {
-    post: Post;
-  };
-  UserProfile: undefined;
-};
+type Props = BottomTabScreenProps<AppShellStackParamList, 'UserProfile'>;
 
+// TODO: Type this
 const UserProfileStack =
-  createNativeStackNavigator<UserProfileStackScreenProps>();
+  createNativeStackNavigator<UserProfileStackParamList>();
 
-const UserProfileStackScreen: FC<UserProfileStackScreenProps> = () => (
+const UserProfileStackScreen: FC<Props> = () => (
   <UserProfileStack.Navigator
     screenOptions={{
       contentStyle: {
@@ -27,7 +25,7 @@ const UserProfileStackScreen: FC<UserProfileStackScreenProps> = () => (
       component={UserProfile}
     ></UserProfileStack.Screen>
     <UserProfileStack.Screen
-      name="Post"
+      name="ViewPost"
       component={PostComponent}
     ></UserProfileStack.Screen>
   </UserProfileStack.Navigator>

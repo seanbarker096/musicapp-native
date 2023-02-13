@@ -1,19 +1,23 @@
-import axios from 'axios';
+import { AxiosResponse, RawAxiosRequestHeaders } from 'axios';
 import * as SecureStore from 'expo-secure-store';
-import { GetRequestConfig, StoreSlice } from './store.types';
+import axios from '../axios-instance';
+import { GetRequestConfig, PostRequestConfig, StoreSlice } from './store.types';
 
 export async function getRequest<S extends StoreSlice>({
   url,
   params,
+  headers = {},
 }: {
   url: string;
   params: GetRequestConfig<S>['Params'];
-}) {
+  headers?: RawAxiosRequestHeaders;
+}): Promise<AxiosResponse<S['Get']['ResultType']>> {
   const refreshToken = await SecureStore.getItemAsync('refresh_token');
   const accessToken = await SecureStore.getItemAsync('access_token');
 
   const getRequestConfig = {
     headers: {
+      ...headers,
       'Refresh-Token': refreshToken,
       Authorization: `Bearer ${accessToken}`,
     },
@@ -24,4 +28,31 @@ export async function getRequest<S extends StoreSlice>({
     `http://192.168.1.217:5000/api/${url}`,
     getRequestConfig,
   );
+}
+
+export async function postRequest<S extends StoreSlice>({
+  url,
+  body,
+  headers = {},
+}: {
+  url: string;
+  body: PostRequestConfig<S>['Body'];
+  headers?: RawAxiosRequestHeaders;
+}): Promise<AxiosResponse<S['Post']['ResultType']>> {
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  const accessToken = await SecureStore.getItemAsync('access_token');
+
+  const postRequestConfig = {
+    headers: {
+      ...headers,
+      'Refresh-Token': refreshToken,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  return await axios.post<
+    S['Post']['ResultType'],
+    AxiosResponse<S['Post']['ResultType']>,
+    S['Post']['RequestBodyType']
+  >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
 }

@@ -14,24 +14,24 @@ export function transformPostApi(post: PostApi): Post {
   };
 }
 
-export function postAndAttachmentsApiToPostAndAttachments(
+export function transformPostAndAttachmentsApi(
   post: PostApi,
   attachments: readonly PostAttachmentApi[],
 ): PostCreateResult {
+  const transformedAttachments = attachments.map(attachment =>
+    transformPostAttachmentApi(attachment),
+  );
+
   return {
     post: {
       id: post.id,
       ownerId: post.owner_id,
       content: post.content,
       createTime: post.create_time,
-      updateTime: post.create_time,
+      updateTime: post.update_time,
       isDeleted: post.is_deleted,
-      attachments: attachments.map(attachment =>
-        transformPostAttachmentApi(attachment),
-      ),
+      attachments: transformedAttachments,
     },
-    attachments: attachments.map(attachment =>
-      transformPostAttachmentApi(attachment),
-    ),
+    attachments: transformedAttachments,
   };
 }
