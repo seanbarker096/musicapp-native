@@ -1,7 +1,7 @@
 import { AxiosResponse, RawAxiosRequestHeaders } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import axios from '../axios-instance';
-import { GetRequestConfig, PostRequestConfig, StoreSlice } from './store.types';
+import { GetRequestConfig, StoreSlice } from './store.types';
 
 export async function getRequest<S extends StoreSlice>({
   url,
@@ -36,7 +36,7 @@ export async function postRequest<S extends StoreSlice>({
   headers = {},
 }: {
   url: string;
-  body: PostRequestConfig<S>['Body'];
+  body: S['Post']['RequestBodyType'];
   headers?: RawAxiosRequestHeaders;
 }): Promise<AxiosResponse<S['Post']['ResultType']>> {
   const refreshToken = await SecureStore.getItemAsync('refresh_token');
@@ -50,21 +50,9 @@ export async function postRequest<S extends StoreSlice>({
     },
   };
 
-  // let processedBody: { [key: string]: any } = {};
-
-  // if (
-  //   headers['Content-Type'] &&
-  //   headers['Content-Type'] === 'application/json'
-  // ) {
-  //   JSON.stringify(body);
-  // } else {
-  //   processedBody = body;
-  // }
-
-  // console.log('processedBody', processedBody);
-
   return await axios.post<
     S['Post']['ResultType'],
-    AxiosResponse<S['Post']['ResultType']>
+    AxiosResponse<S['Post']['ResultType']>,
+    S['Post']['RequestBodyType']
   >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
 }
