@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { UserProfileStackScreenProps } from 'app/user-profile/UserProfileStackScreen';
+import { UserProfileStackParamList } from 'app/user-profile/user-profile.types';
+
 import { IconColor, SVGIcon } from 'components/icon/index';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 import { ResizeMode, Video } from 'expo-av';
@@ -18,12 +19,11 @@ const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
 const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
-  const navigation =
-    useNavigation<NavigationProp<UserProfileStackScreenProps>>();
+  const navigation = useNavigation<NavigationProp<UserProfileStackParamList>>();
 
   const video = React.useRef<Video>(null);
   function handleItemPress() {
-    navigation.navigate('Post', { post: post });
+    navigation.navigate('ViewPost', { post });
   }
 
   // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)

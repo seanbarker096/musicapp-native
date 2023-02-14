@@ -166,6 +166,8 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('failed to create post');
     }
 
+    console.log('postReuslt', postResult);
+
     navigation.navigate(PrimaryScreens.PROFILE);
   };
 

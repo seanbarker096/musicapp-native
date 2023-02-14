@@ -68,7 +68,7 @@ const postCreate = async function ({
     body: {
       owner_id: ownerId,
       content,
-      'attachment_file_ids[]': attachmentFileIds,
+      attachment_file_ids: attachmentFileIds,
     },
   });
 

@@ -103,6 +103,9 @@ const fileCreate = async function ({
 
   const uuid = uuidv4();
 
+  // TODO: Update to let axios build the form https://www.npmjs.com/package/axios#example
+  // It will correctly serialize it if use axios.postForm or set header to multipart/form-data
+
   const form = new FormData();
 
   form.append('file_name', fileName);

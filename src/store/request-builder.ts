@@ -50,9 +50,21 @@ export async function postRequest<S extends StoreSlice>({
     },
   };
 
+  // let processedBody: { [key: string]: any } = {};
+
+  // if (
+  //   headers['Content-Type'] &&
+  //   headers['Content-Type'] === 'application/json'
+  // ) {
+  //   JSON.stringify(body);
+  // } else {
+  //   processedBody = body;
+  // }
+
+  // console.log('processedBody', processedBody);
+
   return await axios.post<
     S['Post']['ResultType'],
-    AxiosResponse<S['Post']['ResultType']>,
-    S['Post']['RequestBodyType']
+    AxiosResponse<S['Post']['ResultType']>
   >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
 }

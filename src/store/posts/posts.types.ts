@@ -66,7 +66,7 @@ export interface PostCreateRequest {
   attachmentFileIds: readonly number[];
 }
 export interface PostCreateRequestApi {
-  'attachment_file_ids[]': readonly number[];
+  attachment_file_ids: readonly number[];
   content: string;
   owner_id: number;
 }
