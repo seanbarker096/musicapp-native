@@ -89,7 +89,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         const response = await ImagePicker.getMediaLibraryPermissionsAsync();
 
         const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: false,
           quality: 1,
         });
