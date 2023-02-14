@@ -95,7 +95,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         });
 
         if (result.cancelled) {
-          console.log('selection cancelled');
           return;
         }
 
@@ -153,9 +152,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('create file request failed');
     }
 
-    console.log('file result', fileResult);
-
-    // then create the post
     const postResult = await createPost({
       ownerId: userId,
       content: form.caption,
@@ -165,8 +161,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     if (!postResult) {
       throw Error('failed to create post');
     }
-
-    console.log('postReuslt', postResult);
 
     navigation.navigate(PrimaryScreens.PROFILE);
   };

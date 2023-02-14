@@ -1,6 +1,5 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import { Post } from 'store/posts/posts.types';
 
 export type AppShellStackNavigatorParamList = {
   [PrimaryScreens.HOME]: undefined;
@@ -8,13 +7,6 @@ export type AppShellStackNavigatorParamList = {
   [PrimaryScreens.MANAGE]: undefined;
   [PrimaryScreens.PROFILE]: undefined;
   [PrimaryScreens.SEARCH]: undefined;
-};
-
-export type AppShellStackParamList = {
-  Post: {
-    post: Post;
-  };
-  UserProfile: undefined;
 };
 
 export type AppShellStackScreenProps =

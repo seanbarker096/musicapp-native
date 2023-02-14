@@ -6,7 +6,7 @@ import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SearchStackScreen from 'app/search/SearchStackScreen';
 import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
 import { AppShellStackNavigatorParamList } from './appShell.types';
@@ -36,33 +36,63 @@ export default LoggedInAppShell;
  * This component exists to initialise Tab in seperate component to LoggedInApp shell. Because of the conditional rendering of the template the Tab Navigator was rendering at the top of the screen
  **/
 const LoggedInScreens = () => {
+  const [selectedScreen, setSelectedScreen] = useState<PrimaryScreens>(
+    PrimaryScreens.HOME,
+  );
+
   const Tab = createBottomTabNavigator<AppShellStackNavigatorParamList>();
 
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
-      tabBar={props => <PrimaryNav navigation={props.navigation}></PrimaryNav>}
+      tabBar={props => (
+        <PrimaryNav
+          navigation={props.navigation}
+          currentScreen={selectedScreen}
+        ></PrimaryNav>
+      )}
     >
-      <Tab.Screen
-        name={PrimaryScreens.HOME}
-        component={Home}
-      ></Tab.Screen>
-      <Tab.Screen
-        name={PrimaryScreens.SEARCH}
-        component={SearchStackScreen}
-      ></Tab.Screen>
-      <Tab.Screen
-        name={PrimaryScreens.PROFILE}
-        component={UserProfileStackScreen}
-      />
-      <Tab.Screen
-        name={PrimaryScreens.MANAGE}
-        component={ManageStackScreen}
-      ></Tab.Screen>
-      <Tab.Screen
-        name={PrimaryScreens.CREATE_POST}
-        component={CreatePostStackScreen}
-      ></Tab.Screen>
+      <Tab.Screen name={PrimaryScreens.HOME}>
+        {/* TODO: Make sure to use react memo here https://reactnavigation.org/docs/hello-react-navigation/#passing-additional-props*/}
+        {props => (
+          <Home
+            {...props}
+            setSelectedScreen={setSelectedScreen}
+          ></Home>
+        )}
+      </Tab.Screen>
+      <Tab.Screen name={PrimaryScreens.SEARCH}>
+        {props => (
+          <SearchStackScreen
+            {...props}
+            setSelectedScreen={setSelectedScreen}
+          ></SearchStackScreen>
+        )}
+      </Tab.Screen>
+      <Tab.Screen name={PrimaryScreens.PROFILE}>
+        {props => (
+          <UserProfileStackScreen
+            {...props}
+            setSelectedScreen={setSelectedScreen}
+          ></UserProfileStackScreen>
+        )}
+      </Tab.Screen>
+      <Tab.Screen name={PrimaryScreens.MANAGE}>
+        {props => (
+          <ManageStackScreen
+            {...props}
+            setSelectedScreen={setSelectedScreen}
+          ></ManageStackScreen>
+        )}
+      </Tab.Screen>
+      <Tab.Screen name={PrimaryScreens.CREATE_POST}>
+        {props => (
+          <CreatePostStackScreen
+            {...props}
+            setSelectedScreen={setSelectedScreen}
+          ></CreatePostStackScreen>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

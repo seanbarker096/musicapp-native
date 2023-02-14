@@ -7,7 +7,7 @@ import { NavigationHelpers } from '@react-navigation/native';
 export enum PrimaryScreens {
   PROFILE = 'profile',
   MANAGE = 'manage',
-  CREATE_POST = 'CREATE_POST',
+  CREATE_POST = 'create_post',
   SEARCH = 'search',
   HOME = 'home',
 }

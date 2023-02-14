@@ -9,7 +9,7 @@ import {
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
 import { SVGIcon } from 'components/icon/SVGIcon';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   BORDER_COLOR_XDARK,
@@ -21,21 +21,11 @@ import { PrimaryScreens } from './PrimaryNav.types';
 
 interface PrimaryNavProps {
   navigation: NavigationHelpers<ParamListBase, BottomTabNavigationEventMap>;
+  currentScreen: PrimaryScreens;
 }
 
-const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
-  const [selectedScreen, setSelectedScreen] = useState(PrimaryScreens.HOME);
-  const [avatarActive, setAvatarActive] = useState(false);
-
+const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
   const handleIconPress = (selectedScreen: PrimaryScreens) => {
-    setSelectedScreen(selectedScreen);
-    setAvatarActive(false);
-    navigation.navigate(selectedScreen);
-  };
-
-  const handleAvatarPress = (selectedScreen: PrimaryScreens) => {
-    setSelectedScreen(selectedScreen);
-    setAvatarActive(!avatarActive);
     navigation.navigate(selectedScreen);
   };
 
@@ -43,7 +33,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
     <View style={styles.navContainer}>
       <SVGIcon
         color={
-          selectedScreen === PrimaryScreens.HOME
+          currentScreen === PrimaryScreens.HOME
             ? IconColor.SECONDARY
             : IconColor.DARK
         }
@@ -53,7 +43,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
       </SVGIcon>
       <SVGIcon
         color={
-          selectedScreen === PrimaryScreens.SEARCH
+          currentScreen === PrimaryScreens.SEARCH
             ? IconColor.SECONDARY
             : IconColor.DARK
         }
@@ -63,7 +53,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
       </SVGIcon>
       <SVGIcon
         color={
-          selectedScreen === PrimaryScreens.CREATE_POST
+          currentScreen === PrimaryScreens.CREATE_POST
             ? IconColor.SECONDARY
             : IconColor.DARK
         }
@@ -73,7 +63,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
       </SVGIcon>
       <SVGIcon
         color={
-          selectedScreen === PrimaryScreens.MANAGE
+          currentScreen === PrimaryScreens.MANAGE
             ? IconColor.SECONDARY
             : IconColor.DARK
         }
@@ -82,10 +72,14 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation }) => {
         <PeopleSVG></PeopleSVG>
       </SVGIcon>
       <Avatar
-        style={avatarActive ? styles.avatarActive : styles.avatarInactive}
+        style={
+          currentScreen === PrimaryScreens.PROFILE
+            ? styles.avatarActive
+            : styles.avatarInactive
+        }
         size={AvatarSize.SMALL}
         imageUrl="https://www.w3schools.com/howto/img_avatar.png"
-        handlePress={() => handleAvatarPress(PrimaryScreens.PROFILE)}
+        handlePress={() => handleIconPress(PrimaryScreens.PROFILE)}
       ></Avatar>
     </View>
   );
