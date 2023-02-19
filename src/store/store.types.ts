@@ -21,8 +21,3 @@ export interface GetRequestConfig<S extends StoreSlice> {
   Headers: RawAxiosRequestHeaders;
   Params: S['Get']['RequestParametersType'];
 }
-
-export interface PostRequestConfig<S extends StoreSlice> {
-  Headers: RawAxiosRequestHeaders;
-  Body: S['Post']['RequestBodyType'];
-}
