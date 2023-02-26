@@ -56,3 +56,30 @@ export async function postRequest<S extends StoreSlice>({
     S['Post']['RequestBodyType']
   >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
 }
+
+export async function searchRequest<S extends StoreSlice>({
+  url,
+  body,
+  headers = {},
+}: {
+  url: string;
+  body: S['Search']['RequestBodyType'];
+  headers?: RawAxiosRequestHeaders;
+}): Promise<AxiosResponse<S['Search']['ResultType']>> {
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  const accessToken = await SecureStore.getItemAsync('access_token');
+
+  const searchRequestConfig = {
+    headers: {
+      ...headers,
+      'Refresh-Token': refreshToken,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  return await axios.post<
+    S['Search']['ResultType'],
+    AxiosResponse<S['Search']['ResultType']>,
+    S['Search']['RequestBodyType']
+  >(`http://192.168.1.217:5000/api/${url}`, body, searchRequestConfig);
+}
