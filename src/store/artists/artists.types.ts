@@ -42,11 +42,13 @@ export interface ArtistApi {
 export interface ArtistSearchArtist {
   uuid: string;
   name: string;
+  imageUrl?: string;
 }
 
 export interface ArtistSearchArtistApi {
   uuid: string;
   name: string;
+  image_url?: string;
 }
 
 export interface ArtistsGetFilterApi {

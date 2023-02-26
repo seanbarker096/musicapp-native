@@ -1,3 +1,5 @@
+import ArtistSearchCard from 'components/artist-search-card/ArtistSearchCard';
+import { List, ListItem } from 'components/list';
 import React, { FC, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useArtistsSearchQuery } from 'store/artists/artists.queries';
@@ -25,7 +27,15 @@ const Search: FC<SearchProps> = () => {
       </View>
       <>
         {searchArtists && searchArtists.length > 0 && !isArtistsSearchError && (
-          <Text>Name: {searchArtists[0].name}</Text>
+          <List>
+            {searchArtists.map(artist => (
+              <>
+                <ListItem>
+                  <ArtistSearchCard artist={artist}></ArtistSearchCard>
+                </ListItem>
+              </>
+            ))}
+          </List>
         )}
         {searchArtists &&
           searchArtists.length === 0 &&

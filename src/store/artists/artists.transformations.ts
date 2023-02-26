@@ -6,5 +6,6 @@ export function transformArtistSearchArtistApi(
   return {
     uuid: artistSearchArtistApi.uuid,
     name: artistSearchArtistApi.name,
+    imageUrl: artistSearchArtistApi.image_url,
   };
 }
