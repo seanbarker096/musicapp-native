@@ -1,10 +1,11 @@
-import { StoreSlice } from 'store/store.types';
+import { GetRequestTypes, StoreSlice } from 'store/store.types';
 
-export interface ArtistsStoreSlice extends StoreSlice {
+export interface ArtistsStoreSlice<T extends GetRequestTypes = 'Collection'>
+  extends StoreSlice {
   ObjectType: Artist;
   Get: {
     RequestParametersType: ArtistsGetFilterApi;
-    ResultType: ArtistsGetResultApi;
+    ResultType: T extends 'Collection' ? ArtistsGetResultApi : ArtistApi;
     ErrorType: {};
   };
   Post: {
@@ -27,6 +28,7 @@ export interface Artist {
   createTime: number;
   updateTime?: number;
   ownerId?: number;
+  imageUrl?: string;
 }
 
 export interface ArtistApi {
@@ -37,6 +39,7 @@ export interface ArtistApi {
   create_time: number;
   update_time?: number;
   owner_id?: number;
+  image_url?: string;
 }
 
 export interface ArtistSearchArtist {

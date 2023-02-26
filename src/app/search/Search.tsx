@@ -1,19 +1,33 @@
 import ArtistSearchCard from 'components/artist-search-card/ArtistSearchCard';
 import { List, ListItem } from 'components/list';
 import React, { FC, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { useArtistsSearchQuery } from 'store/artists/artists.queries';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  useArtistGetOrCreateQuery,
+  useArtistsSearchQuery,
+} from 'store/artists/artists.queries';
 
 interface SearchProps {}
 
 const Search: FC<SearchProps> = () => {
   const [searchTerm, setsearchTerm] = useState<string>('');
+  const [selectedArtist, setSelectedArtist] = useState<string | undefined>(
+    undefined,
+  );
 
   const {
     data: searchArtists,
     isLoading: artistsSearchLoading,
     isError: isArtistsSearchError,
   } = useArtistsSearchQuery(searchTerm);
+
+  const {
+    data: artist,
+    isLoading: artistsGetOrCreateLoading,
+    isError: isArtistsGetOrCreateError,
+  } = useArtistGetOrCreateQuery(artistUUID);
+
+  function handleArtistSelection(artistUUID: string) {}
 
   return (
     <View style={styles.container}>
@@ -28,9 +42,14 @@ const Search: FC<SearchProps> = () => {
         {searchArtists && searchArtists.length > 0 && !isArtistsSearchError && (
           <List sidePadding="small">
             {searchArtists.map(artist => (
-              <ListItem key={artist.uuid}>
-                <ArtistSearchCard artist={artist}></ArtistSearchCard>
-              </ListItem>
+              <Pressable
+                onPress={() => handleArtistSelection(artist.uuid)}
+                key={artist.uuid}
+              >
+                <ListItem>
+                  <ArtistSearchCard artist={artist}></ArtistSearchCard>
+                </ListItem>
+              </Pressable>
             ))}
           </List>
         )}
