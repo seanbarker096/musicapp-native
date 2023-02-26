@@ -9,13 +9,11 @@ interface ArtistSearchCardProps {
   artist: ArtistSearchArtist;
 }
 
-const avatarImage = require('./../../assets/avatar.png');
-
 const ArtistSearchCard: FC<ArtistSearchCardProps> = ({ artist }) => (
-  <View>
+  <View style={styles.container}>
     <ProfileImage
       styles={styles.profileImage}
-      imageUrl={artist.imageUrl ?? avatarImage}
+      imageUrl={artist.imageUrl}
     ></ProfileImage>
     <AppText weight="bold">{artist.name}</AppText>
   </View>
@@ -24,6 +22,7 @@ const ArtistSearchCard: FC<ArtistSearchCardProps> = ({ artist }) => (
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',

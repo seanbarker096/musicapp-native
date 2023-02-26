@@ -28,6 +28,7 @@ export const List: FC<ListProps> = ({ children, sidePadding }) => {
                 ? 0
                 : styles.listItemContainer.marginBottom,
           }}
+          key={i}
         >
           {listItem}
         </View>
@@ -40,10 +41,12 @@ const styles = StyleSheet.create({
   listContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'flex-start',
+    width: '100%',
   },
   listItemContainer: {
     marginBottom: SPACING_XXSMALL,
+    width: '100%',
   },
 });

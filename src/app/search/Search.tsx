@@ -16,24 +16,21 @@ const Search: FC<SearchProps> = () => {
   } = useArtistsSearchQuery(searchTerm);
 
   return (
-    <View>
-      <View>
-        <TextInput
-          style={styles.text}
-          onChangeText={val => setsearchTerm(val)}
-          value={searchTerm}
-          placeholder="e.g. Eminem"
-        />
-      </View>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.text}
+        onChangeText={val => setsearchTerm(val)}
+        value={searchTerm}
+        placeholder="e.g. Eminem"
+      />
+
       <>
         {searchArtists && searchArtists.length > 0 && !isArtistsSearchError && (
-          <List>
+          <List sidePadding="small">
             {searchArtists.map(artist => (
-              <>
-                <ListItem>
-                  <ArtistSearchCard artist={artist}></ArtistSearchCard>
-                </ListItem>
-              </>
+              <ListItem key={artist.uuid}>
+                <ArtistSearchCard artist={artist}></ArtistSearchCard>
+              </ListItem>
             ))}
           </List>
         )}
@@ -48,11 +45,17 @@ const Search: FC<SearchProps> = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    padding: 10,
+    width: '100%',
+  },
   text: {
     height: 40,
-    margin: 12,
     borderWidth: 1,
-    padding: 10,
+    width: '100%',
   },
 });
 

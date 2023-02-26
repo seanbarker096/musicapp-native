@@ -1,6 +1,7 @@
 /**
  * Spacings
  */
+export const SPACING_NONE = 0;
 export const SPACING_SMALL = 14;
 export const SPACING_XSMALL = 10;
 export const SPACING_XXSMALL = 8;
