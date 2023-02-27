@@ -1,39 +1,76 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import ArtistSearchCard from 'components/artist-search-card/ArtistSearchCard';
 import { List, ListItem } from 'components/list';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ArtistSearchArtist } from 'store/artists';
 import {
   useArtistGetOrCreateQuery,
   useArtistsSearchQuery,
 } from 'store/artists/artists.queries';
+import { SearchStackScreenParamList } from './search-types';
 
-interface SearchProps {}
+type SearchProps = NativeStackScreenProps<SearchStackScreenParamList, 'Search'>;
 
-const Search: FC<SearchProps> = () => {
-  const [searchTerm, setsearchTerm] = useState<string>('');
-  const [selectedArtist, setSelectedArtist] = useState<string | undefined>(
-    undefined,
-  );
+const SEARCH_DEBOUNCE_TIME = 500;
 
+const Search: FC<SearchProps> = ({ navigation }) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+  let searchDebounceTimer: number | undefined = undefined;
+
+  const [selectedSearchArtist, setSelectedSearchArtist] = useState<
+    ArtistSearchArtist | undefined
+  >(undefined);
+
+  // TODO: consider adding logic to cancel queries on the fly whenever
+  // user types a new character
   const {
     data: searchArtists,
     isLoading: artistsSearchLoading,
     isError: isArtistsSearchError,
-  } = useArtistsSearchQuery(searchTerm);
+  } = useArtistsSearchQuery(debouncedSearchTerm);
 
   const {
     data: artist,
     isLoading: artistsGetOrCreateLoading,
     isError: isArtistsGetOrCreateError,
-  } = useArtistGetOrCreateQuery(artistUUID);
+  } = useArtistGetOrCreateQuery({
+    artistUUID: selectedSearchArtist?.uuid,
+    enabled: !!selectedSearchArtist,
+    onSuccess: artist => navigation.navigate('ArtistProfile', { artist }),
+  });
 
-  function handleArtistSelection(artistUUID: string) {}
+  useEffect(() => {
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+    }
+
+    searchDebounceTimer = setTimeout(
+      () => setDebouncedSearchTerm(searchTerm),
+      SEARCH_DEBOUNCE_TIME,
+    );
+
+    return () => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+    };
+  }, [searchTerm]);
+
+  function handleSearchTermChange(term: string) {
+    setSearchTerm(term);
+  }
+
+  function handleArtistSelection(artist: ArtistSearchArtist) {
+    setSelectedSearchArtist(artist);
+  }
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.text}
-        onChangeText={val => setsearchTerm(val)}
+        onChangeText={val => handleSearchTermChange(val)}
         value={searchTerm}
         placeholder="e.g. Eminem"
       />
@@ -43,7 +80,7 @@ const Search: FC<SearchProps> = () => {
           <List sidePadding="small">
             {searchArtists.map(artist => (
               <Pressable
-                onPress={() => handleArtistSelection(artist.uuid)}
+                onPress={() => handleArtistSelection(artist)}
                 key={artist.uuid}
               >
                 <ListItem>

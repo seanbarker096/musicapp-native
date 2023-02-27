@@ -1,7 +1,8 @@
 /** ------------------- ARTISTS SEARCH ------------------------ */
 
-import { useQuery } from 'react-query';
+import { QueryKey, useQuery } from 'react-query';
 import { getRequest, searchRequest } from 'store/request-builder';
+import { failedQuery } from 'store/store-utils';
 import { artistsKeys } from './artists.query-keys';
 import {
   transformArtistApi,
@@ -52,8 +53,29 @@ async function artistGetOrCreate(artistUUID: string) {
   return transformArtistApi(response.data);
 }
 
-export function useArtistGetOrCreateQuery(artistUUID: string) {
-  return useQuery<Artist, unknown, Artist>(artistsKeys.artist(artistUUID), () =>
-    artistGetOrCreate(artistUUID),
+export function useArtistGetOrCreateQuery({
+  artistUUID,
+  enabled,
+  onSuccess,
+}: {
+  artistUUID: string | undefined;
+  enabled: boolean;
+  onSuccess?: (artist: Artist) => void;
+}) {
+  let queryKey: QueryKey = artistsKeys.null;
+
+  if (artistUUID) {
+    queryKey = artistsKeys.artistByUUID(artistUUID);
+  }
+
+  return useQuery<Artist, unknown, Artist>(
+    queryKey,
+    () =>
+      artistUUID
+        ? artistGetOrCreate(artistUUID)
+        : failedQuery(
+            'Invalid uuid. Artist uuid must be defined to get or create artist',
+          ),
+    { enabled, onSuccess },
   );
 }
