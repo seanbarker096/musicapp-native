@@ -15,7 +15,6 @@ type Props = BottomTabScreenProps<
   setSelectedScreen: (screen: PrimaryScreens) => void;
 };
 
-// TODO: Type this
 const UserProfileStack =
   createNativeStackNavigator<UserProfileStackParamList>();
 

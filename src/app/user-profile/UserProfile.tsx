@@ -1,6 +1,6 @@
 import { AppText } from 'components/app-text';
-import Gallery from 'components/gallery/Gallery';
-import { default as ProfileImage } from 'components/profile-image/ProfileImage';
+import { Gallery } from 'components/gallery/Gallery';
+import { ProfileImage } from 'components/profile-image';
 import React, { FC, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
@@ -60,7 +60,7 @@ const UserProfile: FC<UserProfileProps> = () => {
             {user.firstName} {user.secondName}
           </AppText>
           <Text>@{user.username}</Text>
-          <Gallery></Gallery>
+          <Gallery itemOwnerId={user.id}></Gallery>
         </>
       )}
       {(userLoading || fileLoading) && <Loading></Loading>}

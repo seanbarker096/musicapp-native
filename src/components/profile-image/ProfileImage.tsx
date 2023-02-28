@@ -6,14 +6,14 @@ import { ProfileImageSize } from './profile-image.types';
 interface ProfileImageProps {
   imageUrl?: string;
   size?: ProfileImageSize;
-  styles: ViewStyle;
+  styles?: ViewStyle;
 }
 
 const avatarImage = require('./../../assets/avatar.png');
 
-const ProfileImage: FC<ProfileImageProps> = ({
+export const ProfileImage: FC<ProfileImageProps> = ({
   imageUrl,
-  styles,
+  styles = {},
   size = 'small',
 }) => {
   const height = profileImageSizeGenerator(size);
@@ -42,5 +42,3 @@ const style = StyleSheet.create({
     width: '100%',
   },
 });
-
-export default ProfileImage;

@@ -32,5 +32,3 @@ export const AppText: FC<AppTextProps> = ({
     </View>
   );
 };
-
-export default AppText;

@@ -14,6 +14,7 @@ type SearchProps = NativeStackScreenProps<SearchStackScreenParamList, 'Search'>;
 
 const SEARCH_DEBOUNCE_TIME = 500;
 
+// TODO: Add loading state for when an artist is selected and we nav to their artist profile
 const Search: FC<SearchProps> = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');

@@ -1,18 +1,18 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
-import { AuthStateContext } from 'store/auth/auth.contexts';
 import { COLOR_PRIMARY } from 'styles';
 import GalleryLayout from './gallery-layout/GalleryLayout';
 
-interface GalleryProps {}
+interface GalleryProps {
+  itemOwnerId: number;
+}
 
-const Gallery: FC<GalleryProps> = () => {
-  const { authState } = useContext(AuthStateContext);
-
+export const Gallery: FC<GalleryProps> = ({ itemOwnerId }) => {
+  // TODO: MOve up to parent as need to get posts in various ways
   const { isLoading, postsWithAttachmentsAndFiles } =
-    useGetPostsWithAttachmentsAndFilesQuery(authState.authUser.userId);
+    useGetPostsWithAttachmentsAndFilesQuery(itemOwnerId);
 
   const loading = !postsWithAttachmentsAndFiles && isLoading;
 
@@ -28,8 +28,6 @@ const Gallery: FC<GalleryProps> = () => {
     </View>
   );
 };
-
-export default Gallery;
 
 const styles = StyleSheet.create({
   headerContainer: {
