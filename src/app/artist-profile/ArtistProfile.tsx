@@ -5,6 +5,12 @@ import { Gallery } from 'components/gallery';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useFeaturesGetQuery } from 'store/features/features.queries';
+import {
+  FeatureContextType,
+  FeatureOwnerType,
+} from 'store/features/features.types';
+import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 type ArtistProfileProps = NativeStackScreenProps<
   SearchStackScreenParamList,
@@ -16,11 +22,26 @@ const ArtistProfile: FC<ArtistProfileProps> = ({
     params: { artist },
   },
 }) => {
-  // get features
+  const {
+    data: features,
+    isLoading: isFeaturesGetLoading,
+    error: featuresGetError,
+  } = useFeaturesGetQuery({
+    queryParams: {
+      ownerId: artist.id,
+      ownerType: FeatureOwnerType.ARTIST,
+      contextType: FeatureContextType.POST,
+    },
+  });
 
-  // get post ids from features
+  const featuresLoading = !features && isFeaturesGetLoading;
 
-  // get posts by setting filter for useGetPostsWithAttachmentsAndFilesQuery
+  const postIds = features?.map(feature => feature.contextId);
+
+  const { isLoading: isPostsGetLoading, postsWithAttachmentsAndFiles } =
+    useGetPostsWithAttachmentsAndFilesQuery({ id: postIds });
+
+  const postsLoading = !postsWithAttachmentsAndFiles && isPostsGetLoading;
 
   return (
     <View style={styles.container}>
@@ -31,7 +52,13 @@ const ArtistProfile: FC<ArtistProfileProps> = ({
       >
         {artist.name}
       </AppText>
-      <Gallery itemOwnerId={artist.id}></Gallery>
+      {postsWithAttachmentsAndFiles && (
+        <Gallery
+          isLoading={isPostsGetLoading}
+          postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
+        ></Gallery>
+      )}
+      {(postsLoading || featuresLoading) && <AppText>Loading...</AppText>}
     </View>
   );
 };

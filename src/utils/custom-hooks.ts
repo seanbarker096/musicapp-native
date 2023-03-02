@@ -2,15 +2,23 @@ import { useFilesGetQuery } from 'store/files/files.queries';
 import { File } from 'store/files/files.types';
 import { usePostAttachmentsGetQuery } from 'store/post-attachments';
 import { PostAttachment } from 'store/post-attachments/post-attachments.types';
-import { usePostsGetQuery } from 'store/posts';
+import { Post, PostsGetQueryField, usePostsGetQuery } from 'store/posts';
 
-export function useGetPostsWithAttachmentsAndFilesQuery(ownerId: number) {
+// TODO: Add error handling/return error if it occurs for client to handle
+export function useGetPostsWithAttachmentsAndFilesQuery({
+  ownerId,
+  id,
+}: Pick<PostsGetQueryField, 'ownerId' | 'id'>): {
+  isLoading: boolean;
+  postsWithAttachmentsAndFiles: readonly Post[] | undefined;
+} {
   const {
     data: posts,
     isLoading: postsLoading,
     isError: postsError,
   } = usePostsGetQuery({
     ownerId,
+    id,
   });
 
   const postsReady = !!posts && !postsLoading;

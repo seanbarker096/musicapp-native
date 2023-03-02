@@ -20,7 +20,7 @@ type PostAttachmentGetQueryField = Partial<{
 
 async function usePostAttachmentsGet(
   params: PostAttachmentsStoreSlice['Get']['RequestParametersType'],
-) {
+): Promise<readonly PostAttachmentsStoreSlice['ObjectType'][]> {
   const response = await getRequest<PostAttachmentsStoreSlice>({
     url: 'posts/0.1/attachments',
     params,

@@ -1,21 +1,19 @@
 import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
+import { Post } from 'store/posts';
 import { COLOR_PRIMARY } from 'styles';
 import GalleryLayout from './gallery-layout/GalleryLayout';
 
 interface GalleryProps {
-  itemOwnerId: number;
+  postsWithAttachmentsAndFiles: readonly Post[]; // note that this should have files defined in each attachment
+  isLoading: boolean;
 }
 
-export const Gallery: FC<GalleryProps> = ({ itemOwnerId }) => {
-  // TODO: MOve up to parent as need to get posts in various ways
-  const { isLoading, postsWithAttachmentsAndFiles } =
-    useGetPostsWithAttachmentsAndFilesQuery(itemOwnerId);
-
-  const loading = !postsWithAttachmentsAndFiles && isLoading;
-
+export const Gallery: FC<GalleryProps> = ({
+  postsWithAttachmentsAndFiles,
+  isLoading,
+}) => {
   return (
     <View style={{ width: '100%' }}>
       {postsWithAttachmentsAndFiles && (
@@ -24,7 +22,7 @@ export const Gallery: FC<GalleryProps> = ({ itemOwnerId }) => {
           <GalleryLayout posts={postsWithAttachmentsAndFiles}></GalleryLayout>
         </>
       )}
-      {loading && <Text>...Loading</Text>}
+      {isLoading && <Text>...Loading</Text>}
     </View>
   );
 };

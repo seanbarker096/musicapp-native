@@ -1,9 +1,9 @@
-import AppText from 'components/app-text/AppText';
+import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ArtistSearchArtist } from 'store/artists';
 import { SPACING_XXSMALL } from 'styles';
-import ProfileImage from '../profile-image/ProfileImage';
+import { ProfileImage } from '../profile-image';
 
 interface ArtistSearchCardProps {
   artist: ArtistSearchArtist;

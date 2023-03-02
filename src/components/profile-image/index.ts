@@ -1,3 +1,3 @@
+export * from './profile-image.styles';
+export * from './profile-image.types';
 export * from './ProfileImage';
-export * from './ProfileImage.styles';
-export * from './ProfileImage.types';

@@ -1,5 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
+import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
 import { postsKeys } from './posts.query-keys';
 import {
@@ -16,7 +17,7 @@ import {
 type PostObjectFields = keyof PostsStoreSlice['ObjectType'];
 
 /** -------------- POSTS GET ------------------ */
-type PostsGetQueryField = Partial<{
+export type PostsGetQueryField = Partial<{
   [key in PostObjectFields]:
     | PostsStoreSlice['ObjectType'][key]
     | readonly PostsStoreSlice['ObjectType'][key][];
@@ -27,7 +28,10 @@ const postsGet = async (
 ) => {
   const response = await getRequest<PostsStoreSlice>({
     url: 'posts/0.1/posts',
-    params,
+    params: {
+      owner_ids: params.owner_ids,
+      ids: params.ids,
+    },
   });
 
   const postsAndAttachments = response.data;
@@ -35,18 +39,33 @@ const postsGet = async (
   return postsAndAttachments.posts.map(post => transformPostApi(post));
 };
 
-export const usePostsGetQuery = ({ ownerId }: PostsGetQueryField) => {
-  if (!ownerId) {
-    throw Error('ownerId must be defined to get posts');
+export const usePostsGetQuery = ({ ownerId, id }: PostsGetQueryField) => {
+  let apiQueryParams:
+    | PostsStoreSlice['Get']['RequestParametersType']
+    | undefined = undefined;
+
+  let queryKey: QueryKey = postsKeys.null;
+
+  if (ownerId) {
+    const processedOwnerId = isArray(ownerId) ? ownerId : [ownerId];
+    apiQueryParams = { owner_ids: processedOwnerId };
+    queryKey = postsKeys.postsByOwnerIds(processedOwnerId);
   }
 
-  const processedOwnerId = isArray(ownerId) ? ownerId : [ownerId];
+  if (id) {
+    const processedPostId = isArray(id) ? id : [id];
+    apiQueryParams = { ids: processedPostId };
+    queryKey = postsKeys.postsByIds(processedPostId);
+  }
 
-  let apiQueryParams = { owner_ids: processedOwnerId };
-
-  return useQuery<readonly Post[], unknown, readonly Post[]>(
-    postsKeys.postsByOwnerIds(processedOwnerId),
-    () => postsGet(apiQueryParams),
+  return useQuery<readonly Post[], unknown, readonly Post[]>(queryKey, () =>
+    apiQueryParams
+      ? postsGet(apiQueryParams)
+      : failedQuery(
+          `Invalid Posts get query params or unsupported query. Query: ${JSON.stringify(
+            apiQueryParams,
+          )}`,
+        ),
   );
 };
 

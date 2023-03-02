@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
+import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface UserProfileProps {}
 
@@ -36,6 +37,11 @@ const UserProfile: FC<UserProfileProps> = () => {
     enabled: !!userReady,
   });
 
+  const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
+    useGetPostsWithAttachmentsAndFilesQuery({
+      ownerId: authState.authUser.userId,
+    });
+
   const fileReady = files && !filesGetLoading;
   const fileLoading = !fileReady && filesGetLoading;
   const filesError = !fileReady && filesGetError;
@@ -50,7 +56,7 @@ const UserProfile: FC<UserProfileProps> = () => {
 
   return (
     <View style={styles.container}>
-      {user && file && (
+      {user && file && postsWithAttachmentsAndFiles && (
         <>
           <ProfileImage imageUrl={file.url}></ProfileImage>
           <AppText
@@ -60,10 +66,13 @@ const UserProfile: FC<UserProfileProps> = () => {
             {user.firstName} {user.secondName}
           </AppText>
           <Text>@{user.username}</Text>
-          <Gallery itemOwnerId={user.id}></Gallery>
+          <Gallery
+            postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
+            isLoading={postsLoading}
+          ></Gallery>
         </>
       )}
-      {(userLoading || fileLoading) && <Loading></Loading>}
+      {(userLoading || fileLoading || postsLoading) && <Loading></Loading>}
       {(!!userError || !!filesError) && <Error></Error>}
     </View>
   );

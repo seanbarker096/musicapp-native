@@ -51,7 +51,7 @@ export interface PostsGetResultApi {
 }
 
 export interface PostsGetFilterApi {
-  post_ids?: readonly number[];
+  ids?: readonly number[];
   is_deleted?: boolean;
   owner_ids?: readonly number[];
 }
