@@ -1,10 +1,9 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SearchStackScreenParamList } from 'app/search/search-types';
 import { AppText } from 'components/app-text';
 import { Gallery } from 'components/gallery';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Artist } from 'store/artists';
 import { useFeaturesGetQuery } from 'store/features/features.queries';
 import {
   FeatureContextType,
@@ -12,16 +11,11 @@ import {
 } from 'store/features/features.types';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
-type ArtistProfileProps = NativeStackScreenProps<
-  SearchStackScreenParamList,
-  'ArtistProfile'
->;
+type ArtistProfileProps = {
+  artist: Artist;
+};
 
-const ArtistProfile: FC<ArtistProfileProps> = ({
-  route: {
-    params: { artist },
-  },
-}) => {
+const ArtistProfile: FC<ArtistProfileProps> = ({ artist }) => {
   const {
     data: features,
     isLoading: isFeaturesGetLoading,

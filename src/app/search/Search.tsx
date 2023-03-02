@@ -39,7 +39,8 @@ const Search: FC<SearchProps> = ({ navigation }) => {
   } = useArtistGetOrCreateQuery({
     artistUUID: selectedSearchArtist?.uuid,
     enabled: !!selectedSearchArtist,
-    onSuccess: artist => navigation.navigate('ArtistProfile', { artist }),
+    onSuccess: artist =>
+      navigation.navigate('ArtistProfileStackScreen', { artist }),
   });
 
   useEffect(() => {

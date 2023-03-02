@@ -2,7 +2,7 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
-import ArtistProfile from 'app/artist-profile/ArtistProfile';
+import ArtistProfileStackScreen from 'app/artist-profile/ArtistProfileStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC, useCallback } from 'react';
 import Search from './Search';
@@ -32,8 +32,9 @@ const SearchStackScreen: FC<Props> = ({ setSelectedScreen }) => {
         name="Search"
       ></SearchStackNavigator.Screen>
       <SearchStackNavigator.Screen
-        component={ArtistProfile}
-        name="ArtistProfile"
+        component={ArtistProfileStackScreen}
+        name="ArtistProfileStackScreen"
+        options={{ headerShown: false }}
       ></SearchStackNavigator.Screen>
     </SearchStackNavigator.Navigator>
   );
