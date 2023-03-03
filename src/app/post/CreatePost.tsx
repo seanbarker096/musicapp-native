@@ -1,7 +1,9 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppText } from 'components/app-text';
-import ProfileImage from 'components/profile-image/ProfileImage';
+import { ArtistSearch } from 'components/artist-search';
+import { ArtistSearchCard } from 'components/artist-search-card';
+import { ProfileImage } from 'components/profile-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
@@ -12,6 +14,7 @@ import {
   PlaceholderMedia,
   Shine,
 } from 'rn-placeholder';
+import { Artist } from 'store/artists';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import {
   useFileCreateMutation,
@@ -46,6 +49,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   navigation,
 }: CreatePostStackScreenProps) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
+  const [taggedArtist, setTaggedArtist] = useState<Artist | undefined>(
+    undefined,
+  );
 
   const { authState } = useContext(AuthStateContext);
 
@@ -169,6 +175,14 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     console.log('cancelled');
   };
 
+  function handleArtistSelection(artist: Artist) {
+    setTaggedArtist(artist);
+  }
+
+  function handleTaggedArtistPress() {
+    setTaggedArtist(undefined);
+  }
+
   // Todo: make a resuable component as also used in Post. Make it fetch the user and the file
   // after taking in a userId
   const UserHeader =
@@ -273,14 +287,22 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                 value={values.caption}
                 placeholder="Write a caption..."
               />
-              <Text style={{ width: '100%' }}>Artist</Text>
-              <TextInput
-                style={{ width: '100%', ...styles.textInput }}
-                onChangeText={handleChange('artistId')}
-                onBlur={handleBlur('artistId')}
-                value={values.artistId}
-                placeholder="e.g. Travis Scott"
-              />
+              <View style={{ ...styles.flexColumnContainer }}>
+                <Text style={{ width: '100%' }}>Artist</Text>
+                {!taggedArtist && (
+                  <ArtistSearch
+                    scrollable={true}
+                    height={100}
+                    onArtistSelect={handleArtistSelection}
+                  ></ArtistSearch>
+                )}
+                {taggedArtist && (
+                  <ArtistSearchCard
+                    artist={taggedArtist}
+                    onPress={handleTaggedArtistPress}
+                  ></ArtistSearchCard>
+                )}
+              </View>
               <View
                 style={{
                   ...styles.flexRowContainer,

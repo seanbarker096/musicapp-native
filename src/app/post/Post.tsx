@@ -1,13 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { UserProfileStackParamList } from 'app/user-profile/user-profile.types';
-import AppText from 'components/app-text/AppText';
+import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
   LikeHeartSVG,
   PicturePlusSVG,
   PlayButtonSVG,
 } from 'components/icon/svg-components';
-import ProfileImage from 'components/profile-image/ProfileImage';
+import { ProfileImage } from 'components/profile-image';
 
 import {
   AVPlaybackStatus,
