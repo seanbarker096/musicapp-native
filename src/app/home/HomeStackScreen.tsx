@@ -2,13 +2,17 @@ import {
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
+import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import Home from './Home';
 import { HomeStackParamList } from './home.types';
 
-type Props = BottomTabScreenProps<HomeStackParamList, 'Home'>;
+type Props = BottomTabScreenProps<
+  AppShellStackNavigatorParamList,
+  PrimaryScreens.HOME
+>;
 
 const HomeTab = createBottomTabNavigator<HomeStackParamList>();
 

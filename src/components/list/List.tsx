@@ -1,6 +1,6 @@
 import React, { FC, ReactElement } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { SPACING_XXSMALL } from 'styles';
+import { COLOR_NEUTRAL_XXXXLIGHT, SPACING_XXSMALL } from 'styles';
 import { ListItemComponent, ListItemProps } from './list-item/ListItem';
 import { ListPadding, listPaddingMap } from './list.styles';
 
@@ -40,6 +40,7 @@ export const List: FC<ListProps> = ({
         <ScrollView
           contentContainerStyle={{
             ...styles.listContainer,
+            backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
             paddingLeft: listPadding,
             paddingRight: listPadding,
           }}
