@@ -30,7 +30,7 @@ const Login: FC<LoginProps> = ({ handleLoginSuccess }) => {
         onSubmit={handleFormSubmit}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
+          <View style={{ margin: 10 }}>
             <TextInput
               style={styles.text}
               onChangeText={handleChange('username')}

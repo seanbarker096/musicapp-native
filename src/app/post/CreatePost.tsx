@@ -232,7 +232,14 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
           onSubmit={handleFormSubmit}
         >
           {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <>
+            <View
+              style={{
+                ...styles.flexColumnContainer,
+                width: '100%',
+                height: '100%',
+                paddingBottom: SPACING_SMALL,
+              }}
+            >
               <View style={{ ...styles.flexRowContainer }}>
                 <Image
                   source={{
@@ -287,12 +294,12 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                 value={values.caption}
                 placeholder="Write a caption..."
               />
-              <View style={{ ...styles.flexColumnContainer }}>
+              <View style={{ ...styles.flexColumnContainer, height: 200 }}>
                 <Text style={{ width: '100%' }}>Artist</Text>
                 {!taggedArtist && (
                   <ArtistSearch
                     scrollable={true}
-                    height={100}
+                    height={200}
                     onArtistSelect={handleArtistSelection}
                   ></ArtistSearch>
                 )}
@@ -306,9 +313,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
               <View
                 style={{
                   ...styles.flexRowContainer,
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  width: '100%',
+                  marginTop: 'auto',
                 }}
               >
                 <View
@@ -337,7 +342,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                   />
                 </View>
               </View>
-            </>
+            </View>
           )}
         </Formik>
       )}
@@ -353,6 +358,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    width: '100%',
   },
   flexRowContainer: {
     alignItems: 'flex-start',

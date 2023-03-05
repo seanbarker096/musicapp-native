@@ -33,7 +33,9 @@ export const List: FC<ListProps> = ({
   ));
 
   return (
-    <SafeAreaView style={{ height: maxHeight, width: '100%' }}>
+    <SafeAreaView
+      style={{ height: maxHeight, width: '100%', zIndex: scrollable ? 1 : 0 }}
+    >
       {scrollable ? (
         <ScrollView
           contentContainerStyle={{

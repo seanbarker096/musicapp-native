@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useRoute } from '@react-navigation/native';
 import Home from 'app/home/Home';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
 import CreatePostStackScreen from 'app/post/UploadStackScreen';
@@ -40,11 +41,15 @@ const LoggedInScreens = () => {
     PrimaryScreens.HOME,
   );
 
+  const route = useRoute();
+
+  console.log('route', route);
+
   const Tab = createBottomTabNavigator<AppShellStackNavigatorParamList>();
 
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}
       tabBar={props => (
         <PrimaryNav
           navigation={props.navigation}
