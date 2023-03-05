@@ -1,9 +1,8 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
-import Home from 'app/home/Home';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
 import CreatePostStackScreen from 'app/post/UploadStackScreen';
-import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SearchStackScreen from 'app/search/SearchStackScreen';
 import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
@@ -45,59 +44,56 @@ const LoggedInScreens = () => {
 
   console.log('route', route);
 
-  const Tab = createBottomTabNavigator<AppShellStackNavigatorParamList>();
+  const Stack = createNativeStackNavigator<AppShellStackNavigatorParamList>();
 
   return (
-    <Tab.Navigator
-      screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}
-      tabBar={props => (
-        <PrimaryNav
-          navigation={props.navigation}
-          currentScreen={selectedScreen}
-        ></PrimaryNav>
-      )}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animation: 'none',
+        contentStyle: {
+          backgroundColor: '#FFFFFF',
+        },
+      }}
     >
-      <Tab.Screen name={PrimaryScreens.HOME}>
+      <Stack.Screen
+        name={PrimaryScreens.HOME}
+        component={HomeStackScreen}
+      >
         {/* TODO: Make sure to use react memo here https://reactnavigation.org/docs/hello-react-navigation/#passing-additional-props*/}
-        {props => (
-          <Home
-            {...props}
-            setSelectedScreen={setSelectedScreen}
-          ></Home>
-        )}
-      </Tab.Screen>
-      <Tab.Screen name={PrimaryScreens.SEARCH}>
+      </Stack.Screen>
+      <Stack.Screen name={PrimaryScreens.SEARCH}>
         {props => (
           <SearchStackScreen
             {...props}
             setSelectedScreen={setSelectedScreen}
           ></SearchStackScreen>
         )}
-      </Tab.Screen>
-      <Tab.Screen name={PrimaryScreens.PROFILE}>
+      </Stack.Screen>
+      <Stack.Screen name={PrimaryScreens.PROFILE}>
         {props => (
           <UserProfileStackScreen
             {...props}
             setSelectedScreen={setSelectedScreen}
           ></UserProfileStackScreen>
         )}
-      </Tab.Screen>
-      <Tab.Screen name={PrimaryScreens.MANAGE}>
+      </Stack.Screen>
+      <Stack.Screen name={PrimaryScreens.MANAGE}>
         {props => (
           <ManageStackScreen
             {...props}
             setSelectedScreen={setSelectedScreen}
           ></ManageStackScreen>
         )}
-      </Tab.Screen>
-      <Tab.Screen name={PrimaryScreens.CREATE_POST}>
+      </Stack.Screen>
+      <Stack.Screen name={PrimaryScreens.CREATE_POST}>
         {props => (
           <CreatePostStackScreen
             {...props}
             setSelectedScreen={setSelectedScreen}
           ></CreatePostStackScreen>
         )}
-      </Tab.Screen>
-    </Tab.Navigator>
+      </Stack.Screen>
+    </Stack.Navigator>
   );
 };

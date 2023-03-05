@@ -1,47 +1,41 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { useFocusEffect } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { Post as PostComponent } from 'app/post/Post';
+import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { UserProfileStackParamList } from './user-profile.types';
 import UserProfile from './UserProfile';
 
 type Props = BottomTabScreenProps<
   AppShellStackNavigatorParamList,
   PrimaryScreens.PROFILE
-> & {
-  setSelectedScreen: (screen: PrimaryScreens) => void;
-};
+>;
 
-const UserProfileStack =
-  createNativeStackNavigator<UserProfileStackParamList>();
+const UserProfileTab = createBottomTabNavigator<UserProfileStackParamList>();
 
-const UserProfileStackScreen: FC<Props> = ({ setSelectedScreen }) => {
-  useFocusEffect(
-    useCallback(() => {
-      setSelectedScreen(PrimaryScreens.PROFILE);
-    }, [setSelectedScreen]),
-  );
-
+const UserProfileStackScreen: FC<Props> = () => {
   return (
-    <UserProfileStack.Navigator
-      screenOptions={{
-        contentStyle: {
-          backgroundColor: '#FFFFFF',
-        },
-      }}
+    <UserProfileTab.Navigator
+      tabBar={props => (
+        <PrimaryNav
+          navigation={props.navigation}
+          currentScreen={PrimaryScreens.PROFILE}
+        ></PrimaryNav>
+      )}
     >
-      <UserProfileStack.Screen
+      <UserProfileTab.Screen
         name="UserProfile"
         component={UserProfile}
-      ></UserProfileStack.Screen>
-      <UserProfileStack.Screen
+      ></UserProfileTab.Screen>
+      <UserProfileTab.Screen
         name="ViewPost"
         component={PostComponent}
-      ></UserProfileStack.Screen>
-    </UserProfileStack.Navigator>
+      ></UserProfileTab.Screen>
+    </UserProfileTab.Navigator>
   );
 };
 

@@ -1,34 +1,35 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { useFocusEffect } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
+import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import Manage from './Manage';
 
-const ManageStackNavigator = createNativeStackNavigator();
+const ManageTabNavigator = createBottomTabNavigator();
 
 type Props = BottomTabScreenProps<
   AppShellStackNavigatorParamList,
   PrimaryScreens.MANAGE
-> & {
-  setSelectedScreen: (screen: PrimaryScreens) => void;
-};
+>;
 
-const ManageStackScreen: FC<Props> = ({ setSelectedScreen }) => {
-  useFocusEffect(
-    useCallback(() => {
-      setSelectedScreen(PrimaryScreens.MANAGE);
-    }, [setSelectedScreen]),
-  );
-
+const ManageStackScreen: FC<Props> = () => {
   return (
-    <ManageStackNavigator.Navigator>
-      <ManageStackNavigator.Screen
+    <ManageTabNavigator.Navigator
+      tabBar={props => (
+        <PrimaryNav
+          navigation={props.navigation}
+          currentScreen={PrimaryScreens.MANAGE}
+        ></PrimaryNav>
+      )}
+    >
+      <ManageTabNavigator.Screen
         component={Manage}
         name="Manage"
-      ></ManageStackNavigator.Screen>
-    </ManageStackNavigator.Navigator>
+      ></ManageTabNavigator.Screen>
+    </ManageTabNavigator.Navigator>
   );
 };
 
