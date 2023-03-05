@@ -8,6 +8,7 @@ import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
 import React, { FC } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
+import { APP_BACKGROUND_COLOR } from 'styles';
 import { AppShellStackNavigatorParamList } from './appShell.types';
 
 interface LoggedInAppShellProps {
@@ -42,7 +43,7 @@ const LoggedInScreens = () => {
         headerShown: false,
         animation: 'none',
         contentStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: APP_BACKGROUND_COLOR,
         },
       }}
     >

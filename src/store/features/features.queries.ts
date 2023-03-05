@@ -11,6 +11,7 @@ import {
 
 type FeatureObjectFields = keyof FeaturesStoreSlice['ObjectType'];
 
+/* -------------------- GET FEATURES -------------------- */
 type FeaturesGetQueryField = Partial<{
   [key in FeatureObjectFields]: FeaturesStoreSlice['ObjectType'][key];
 }>;
@@ -69,3 +70,5 @@ export function useFeaturesGetQuery({
     },
   );
 }
+
+/* -------------------- FEATURE CREATE -------------------- */
