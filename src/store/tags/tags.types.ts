@@ -4,12 +4,12 @@ export interface TagsStoreSlice extends StoreSlice {
   Name: 'tags';
   ObjectType: Tag;
   Get: {
-    RequestParametersType: TagsGetFilterApi;
-    ResultType: TagsGetResultApi;
+    RequestParametersType: {};
+    ResultType: {};
     ErrorType: {};
   };
   Post: {
-    RequestParametersType: TagsCreateRequestApi;
+    RequestBodyType: TagsCreateRequestApi;
     ResultType: TagsCreateResultApi;
     ErrorType: {};
   };
