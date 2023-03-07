@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
+import 'react-native-get-random-values';
 import { QueryKey, useMutation, useQuery } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';

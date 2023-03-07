@@ -21,6 +21,12 @@ import {
   useFilesGetQuery,
 } from 'store/files/files.queries';
 import { usePostCreateMutation } from 'store/posts';
+import { useTagCreateMutation } from 'store/tags/tags.queries';
+import {
+  TagCreatorType,
+  TaggedEntityType,
+  TaggedInEntityType,
+} from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
 import {
   BUTTON_COLOR_DISABLED,
@@ -39,7 +45,6 @@ interface PostFile {
 }
 
 interface PostCreateFormValues {
-  artistId: number | undefined;
   eventDate: string | undefined;
   eventName: string | undefined;
   caption: string | undefined;
@@ -67,6 +72,12 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     isLoading: createFileLoading,
     isError: createFileError,
   } = useFileCreateMutation();
+
+  const {
+    mutateAsync: createTag,
+    isLoading: createTagLoading,
+    isError: createTagError,
+  } = useTagCreateMutation();
 
   const {
     data: user,
@@ -143,7 +154,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!form.artistId || !form.caption || !form.eventDate || !form.eventName) {
+    if (!taggedArtist || !form.caption || !form.eventDate || !form.eventName) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -166,6 +177,21 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     if (!postResult) {
       throw Error('failed to create post');
+    }
+
+    const post = postResult.post;
+
+    const tagResult = await createTag({
+      taggedEntityType: TaggedEntityType.ARTIST,
+      taggedEntityId: taggedArtist.id,
+      taggedInEntityType: TaggedInEntityType.POST,
+      taggedInEntityId: post.id,
+      creatorType: TagCreatorType.USER,
+      creatorId: userId,
+    });
+
+    if (!tagResult) {
+      throw Error('Failed to create tag');
     }
 
     navigation.navigate(PrimaryScreens.PROFILE);

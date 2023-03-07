@@ -1,10 +1,11 @@
-import { QueryKey, useQuery } from 'react-query';
-import { getRequest } from 'store/request-builder';
+import { QueryKey, useMutation, useQuery } from 'react-query';
+import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { featuresKeys } from './features.query-keys';
 import { transformFeatureApi } from './features.transformations';
 import {
   FeatureContextType,
+  FeatureCreateRequest,
   FeatureOwnerType,
   FeaturesStoreSlice,
 } from './features.types';
@@ -72,3 +73,24 @@ export function useFeaturesGetQuery({
 }
 
 /* -------------------- FEATURE CREATE -------------------- */
+async function featureCreate(request: FeatureCreateRequest) {
+  const response = await postRequest<FeaturesStoreSlice>({
+    url: 'features/0.1/features',
+    body: {
+      context_type: request.contextType,
+      context_id: request.contextId,
+      owner_type: request.ownerType,
+      owner_id: request.ownerId,
+    },
+  });
+
+  return transformFeatureApi(response.data.feature);
+}
+
+export function useFeatureCreateMutation() {
+  return useMutation<
+    FeaturesStoreSlice['ObjectType'],
+    any,
+    FeatureCreateRequest
+  >(request => featureCreate(request));
+}

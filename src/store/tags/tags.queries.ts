@@ -29,8 +29,7 @@ async function tagCreate({
 }
 
 export const useTagCreateMutation = () => {
-  return useMutation<Tag, any, TagCreateRequest>(
-    (request: TagCreateRequest) => tagCreate(request),
-    {},
+  return useMutation<Tag, any, TagCreateRequest>((request: TagCreateRequest) =>
+    tagCreate(request),
   );
 };

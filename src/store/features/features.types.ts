@@ -8,6 +8,11 @@ export interface FeaturesStoreSlice extends StoreSlice {
     ResultType: FeaturesGetResultApi;
     ErrorType: {};
   };
+  Post: {
+    RequestBodyType: FeatureCreateRequestApi;
+    ResultType: FeatureCreateResultApi;
+    ErrorType: {};
+  };
 }
 
 export interface Feature {
@@ -44,4 +49,22 @@ export interface FeaturesGetFilterApi {
 
 export interface FeaturesGetResultApi {
   features: readonly FeatureApi[];
+}
+
+export interface FeatureCreateRequest {
+  contextType: FeatureContextType;
+  contextId: number;
+  ownerType: FeatureOwnerType;
+  ownerId: number;
+}
+
+export interface FeatureCreateRequestApi {
+  context_type: FeatureContextType;
+  context_id: number;
+  owner_type: FeatureOwnerType;
+  owner_id: number;
+}
+
+export interface FeatureCreateResultApi {
+  feature: FeatureApi;
 }
