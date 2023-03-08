@@ -4,7 +4,7 @@ export interface FilesStoreSlice extends StoreSlice {
   Name: 'files';
   ObjectType: File;
   Get: {
-    RequestParametersType: FilesGetFilter;
+    RequestParametersType: FilesGetFilterApi;
     ResultType: FilesGetResultApi;
     ErrorType: {};
   };
@@ -43,6 +43,11 @@ export interface FilesGetFilter {
 
 export interface FilesGetResult {
   files: readonly File[];
+}
+
+export interface FilesGetFilterApi {
+  uuids?: readonly string[];
+  ids?: readonly number[];
 }
 
 export interface FilesGetResultApi {

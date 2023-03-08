@@ -26,6 +26,7 @@ export interface PostsStoreSlice extends StoreSlice {
 export interface Post {
   id: number;
   ownerId: number;
+  ownerType: PostOwnerType;
   content: string;
   createTime: number;
   updateTime?: number;
@@ -39,10 +40,16 @@ export interface Post {
 export interface PostApi {
   id: number;
   owner_id: number;
+  owner_type: PostOwnerType;
   content: string;
   create_time: number;
   is_deleted: boolean;
   update_time?: number;
+}
+
+export enum PostOwnerType {
+  ARTIST = 'artist',
+  USER = 'user',
 }
 
 export interface PostsGetResultApi {
@@ -54,6 +61,7 @@ export interface PostsGetFilterApi {
   ids?: readonly number[];
   is_deleted?: boolean;
   owner_ids?: readonly number[];
+  owner_types?: readonly PostOwnerType[];
 }
 
 export type Test = {
@@ -62,6 +70,7 @@ export type Test = {
 
 export interface PostCreateRequest {
   ownerId: number;
+  ownerType: PostOwnerType;
   content: string;
   attachmentFileIds: readonly number[];
 }
@@ -69,6 +78,7 @@ export interface PostCreateRequestApi {
   attachment_file_ids: readonly number[];
   content: string;
   owner_id: number;
+  owner_type: PostOwnerType;
 }
 
 export interface PostCreateResultApi {

@@ -7,8 +7,9 @@ import { Post, PostsGetQueryField, usePostsGetQuery } from 'store/posts';
 // TODO: Add error handling/return error if it occurs for client to handle
 export function useGetPostsWithAttachmentsAndFilesQuery({
   ownerId,
+  ownerType,
   id,
-}: Pick<PostsGetQueryField, 'ownerId' | 'id'>): {
+}: Pick<PostsGetQueryField, 'ownerId' | 'ownerType' | 'id'>): {
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
@@ -19,6 +20,7 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
   } = usePostsGetQuery({
     ownerId,
     id,
+    ownerType,
   });
 
   const postsReady = !!posts && !postsLoading;

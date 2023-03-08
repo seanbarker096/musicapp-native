@@ -26,10 +26,12 @@ export type PostsGetQueryField = Partial<{
 const postsGet = async (
   params: PostsStoreSlice['Get']['RequestParametersType'],
 ) => {
+  console.log(params);
   const response = await getRequest<PostsStoreSlice>({
     url: 'posts/0.1/posts',
     params: {
       owner_ids: params.owner_ids,
+      owner_types: params.owner_types,
       ids: params.ids,
     },
   });
@@ -39,17 +41,30 @@ const postsGet = async (
   return postsAndAttachments.posts.map(post => transformPostApi(post));
 };
 
-export const usePostsGetQuery = ({ ownerId, id }: PostsGetQueryField) => {
+export const usePostsGetQuery = ({
+  ownerId,
+  id,
+  ownerType,
+}: PostsGetQueryField) => {
   let apiQueryParams:
     | PostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
   let queryKey: QueryKey = postsKeys.null;
 
-  if (ownerId) {
+  if (ownerId && ownerType) {
     const processedOwnerId = isArray(ownerId) ? ownerId : [ownerId];
-    apiQueryParams = { owner_ids: processedOwnerId };
-    queryKey = postsKeys.postsByOwnerIds(processedOwnerId);
+    const processedOwnerType = isArray(ownerType) ? ownerType : [ownerType];
+
+    apiQueryParams = {
+      owner_ids: processedOwnerId,
+      owner_types: processedOwnerType,
+    };
+
+    queryKey =
+      !isArray(ownerId) && !isArray(ownerType)
+        ? postsKeys.postsByOwner(ownerId, ownerType)
+        : postsKeys.postsByOwnerIds(processedOwnerId);
   }
 
   if (id) {
@@ -73,6 +88,7 @@ export const usePostsGetQuery = ({ ownerId, id }: PostsGetQueryField) => {
 
 const postCreate = async function ({
   ownerId,
+  ownerType,
   content,
   attachmentFileIds,
 }: PostCreateRequest): Promise<PostCreateResult> {
@@ -86,6 +102,7 @@ const postCreate = async function ({
     url: 'posts/0.1/posts/',
     body: {
       owner_id: ownerId,
+      owner_type: ownerType,
       content,
       attachment_file_ids: attachmentFileIds,
     },
@@ -112,8 +129,7 @@ export const usePostCreateMutation = ({
   };
 
   return useMutation<PostCreateResult, any, PostCreateRequest>(
-    ({ ownerId, content, attachmentFileIds }: PostCreateRequest) =>
-      postCreate({ ownerId, content, attachmentFileIds }),
+    (request: PostCreateRequest) => postCreate(request),
     { onSuccess: onSuccessCallback },
   );
 };

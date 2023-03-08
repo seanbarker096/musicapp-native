@@ -26,6 +26,7 @@ export function transformPostAndAttachmentsApi(
     post: {
       id: post.id,
       ownerId: post.owner_id,
+      ownerType: post.owner_type,
       content: post.content,
       createTime: post.create_time,
       updateTime: post.update_time,

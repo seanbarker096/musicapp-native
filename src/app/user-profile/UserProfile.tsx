@@ -5,6 +5,7 @@ import React, { FC, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
+import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
@@ -40,6 +41,7 @@ const UserProfile: FC<UserProfileProps> = () => {
   const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
     useGetPostsWithAttachmentsAndFilesQuery({
       ownerId: authState.authUser.userId,
+      ownerType: PostOwnerType.USER, // TODO: Update this
     });
 
   const fileReady = files && !filesGetLoading;

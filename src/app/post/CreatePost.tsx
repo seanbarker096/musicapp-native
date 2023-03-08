@@ -20,7 +20,7 @@ import {
   useFileCreateMutation,
   useFilesGetQuery,
 } from 'store/files/files.queries';
-import { usePostCreateMutation } from 'store/posts';
+import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
 import {
   TagCreatorType,
@@ -171,6 +171,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const postResult = await createPost({
       ownerId: userId,
+      ownerType: PostOwnerType.USER, // todo: update this
       content: form.caption,
       attachmentFileIds: [fileResult.file.id],
     });
@@ -181,6 +182,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const post = postResult.post;
 
+    // TODO: Remove hardcoding of EntityType
     const tagResult = await createTag({
       taggedEntityType: TaggedEntityType.ARTIST,
       taggedEntityId: taggedArtist.id,
