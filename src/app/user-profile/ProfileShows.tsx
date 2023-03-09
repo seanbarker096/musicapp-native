@@ -1,18 +1,21 @@
 import { Gallery } from 'components/gallery';
 import React, { FC } from 'react';
-import { PostOwnerType } from 'store/posts';
-import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
+import { ProfileType } from 'store/profile-posts';
+import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface ProfileShowsProps {
   profileId: number; // Can be artist or user
-  postOwnerType: PostOwnerType;
+  profileType: ProfileType;
 }
 
-const ProfileShows: FC<ProfileShowsProps> = ({ profileId, postOwnerType }) => {
+const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
   const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
-    useGetPostsWithAttachmentsAndFilesQuery({
-      ownerId: profileId,
-      ownerType: postOwnerType, // TODO: Update this
+    useGetProfilePostsWithAttachmentsAndFilesQuery({
+      profileId,
+      profileType,
+      includeFeatured: true,
+      includeOwned: true,
+      includeTagged: false,
     });
 
   return (

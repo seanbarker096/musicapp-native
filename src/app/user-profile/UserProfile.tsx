@@ -4,14 +4,14 @@ import React, { FC, useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFilesGetQuery } from 'store/files/files.queries';
-import { PostOwnerType } from 'store/posts';
+import { ProfileType } from 'store/profile-posts';
 import { useUserGetQuery } from 'store/users';
 import {
   COLOR_PRIMARY,
   FONT_WEIGHT_BOLD,
   SPACING_LARGE,
   SPACING_SMALL,
-  SPACING_XXSMALL
+  SPACING_XXSMALL,
 } from 'styles';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
@@ -72,71 +72,68 @@ const UserProfile: FC<UserProfileProps> = () => {
 
   return (
     <View style={styles.colContainer}>
-      {user &&
-        file && (
-          <>
+      {user && file && (
+        <>
+          <View
+            style={{
+              ...styles.rowContainer,
+              height: '30%',
+              width: '100%',
+            }}
+          >
+            <View style={{ ...styles.colContainer }}>
+              <ProfileImage imageUrl={file.url}></ProfileImage>
+              <AppText
+                size="large"
+                weight="bold"
+              >
+                {user.firstName} {user.secondName}
+              </AppText>
+              <Text>@{user.username}</Text>
+            </View>
             <View
               style={{
                 ...styles.rowContainer,
-                height: '30%',
-                width: '100%',
+                flexGrow: 1,
+                justifyContent: 'space-between',
+                marginTop: SPACING_SMALL,
+                paddingLeft: SPACING_LARGE,
+                paddingRight: SPACING_LARGE,
               }}
             >
-              <View style={{ ...styles.colContainer }}>
-                <ProfileImage imageUrl={file.url}></ProfileImage>
-                <AppText
-                  size="large"
-                  weight="bold"
-                >
-                  {user.firstName} {user.secondName}
-                </AppText>
-                <Text>@{user.username}</Text>
-              </View>
-              <View
-                style={{
-                  ...styles.rowContainer,
-                  flexGrow: 1,
-                  justifyContent: 'space-between',
-                  marginTop: SPACING_SMALL,
-                  paddingLeft: SPACING_LARGE,
-                  paddingRight: SPACING_LARGE,
-                }}
-              >
-                <AppText weight={FONT_WEIGHT_BOLD}>20 Posts</AppText>
-                <AppText weight={FONT_WEIGHT_BOLD}>5 Features</AppText>
-                <Pressable>
-                  <AppText weight={FONT_WEIGHT_BOLD}>12 Tags</AppText>
-                </Pressable>
-              </View>
-            </View>
-            <View style={styles.headerContainer}>
-              <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
-                <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
-              </Pressable>
-              <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
-                <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
-              </Pressable>
-              <Pressable
-                onPress={() => handleTabSelected(SelectedTab.TIMELINE)}
-              >
-                <AppText weight={FONT_WEIGHT_BOLD}>Timeline</AppText>
+              <AppText weight={FONT_WEIGHT_BOLD}>20 Posts</AppText>
+              <AppText weight={FONT_WEIGHT_BOLD}>5 Features</AppText>
+              <Pressable>
+                <AppText weight={FONT_WEIGHT_BOLD}>12 Tags</AppText>
               </Pressable>
             </View>
-            {selectedTab === SelectedTab.SHOWS && (
-              <ProfileShows
-                profileId={authState.authUser.userId}
-                postOwnerType={PostOwnerType.USER} // TODO: Update this to be dynamic
-              ></ProfileShows>
-            )}
-            {selectedTab === SelectedTab.TAGGED && (
-              <ProfileTaggedPosts 
-                profileId={authState.authUser.userId} 
-                postOwnerType={PostOwnerType.USER}
-              ></ProfileTaggedPosts>
-            )}
-            {selectedTab === SelectedTab.TIMELINE && <Text>timeline</Text>}
-          </>,
-        )}
+          </View>
+          <View style={styles.headerContainer}>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
+            </Pressable>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
+            </Pressable>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>Timeline</AppText>
+            </Pressable>
+          </View>
+          {selectedTab === SelectedTab.SHOWS && (
+            <ProfileShows
+              profileId={authState.authUser.userId}
+              profileType={ProfileType.USER} // TODO: Update this to be dynamic
+            ></ProfileShows>
+          )}
+          {selectedTab === SelectedTab.TAGGED && (
+            <ProfileTaggedPosts
+              profileId={authState.authUser.userId}
+              profileType={ProfileType.USER}
+            ></ProfileTaggedPosts>
+          )}
+          {selectedTab === SelectedTab.TIMELINE && <Text>timeline</Text>}
+        </>
+      )}
       {(userLoading || fileLoading) && <Loading></Loading>}
       {(!!userError || !!filesError) && <Error></Error>}
     </View>
