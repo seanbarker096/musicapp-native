@@ -41,7 +41,7 @@ export function useFilesGetQuery({
   enabled = true,
 }: {
   queryParams: FilesGetQueryField;
-  enabled: boolean;
+  enabled?: boolean;
 }) {
   const { uuid, id } = queryParams;
 

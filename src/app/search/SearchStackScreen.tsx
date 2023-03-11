@@ -1,8 +1,8 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
-  BottomTabScreenProps,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
@@ -11,18 +11,13 @@ import React, { FC } from 'react';
 import Search from './Search';
 import { InternalSearchStackScreenParamList } from './search-types';
 
-type Props = BottomTabScreenProps<
+type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
   PrimaryScreens.SEARCH
 >;
 
-type SearchStackScreenParamList = {
-  [PrimaryScreens.SEARCH]: undefined;
-};
-
 export const SearchStackScreen: FC<Props> = () => {
-  const SearchTabNavigator =
-    createBottomTabNavigator<SearchStackScreenParamList>();
+  const SearchTabNavigator = createBottomTabNavigator<{ main: undefined }>();
 
   return (
     <SearchTabNavigator.Navigator
@@ -36,7 +31,7 @@ export const SearchStackScreen: FC<Props> = () => {
       <SearchTabNavigator.Screen
         options={{ headerShown: false }}
         component={SearchInternalStackScreen}
-        name={PrimaryScreens.SEARCH}
+        name="main"
       ></SearchTabNavigator.Screen>
     </SearchTabNavigator.Navigator>
   );
@@ -50,11 +45,12 @@ export const SearchInternalStackScreen = () => {
     <SearchStack.Navigator>
       <SearchStack.Screen
         component={Search}
-        name="Search"
+        name="search"
       ></SearchStack.Screen>
       <SearchStack.Screen
+        // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
-        name="ProfileInternalStackScreen"
+        name="profileInternalStackScreen"
         options={{ headerShown: false }}
       ></SearchStack.Screen>
     </SearchStack.Navigator>

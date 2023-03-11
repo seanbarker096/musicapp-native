@@ -33,7 +33,13 @@ const usersGet = async (
 // TODO: Add to docs
 // -  warpper around react query for building the axios param object. Converts fields on object into snake case for api
 // - defines the transformation function
-export const useUserGetQuery = ({ id }: UserGetQueryField) => {
+export const useUserGetQuery = ({
+  queryParams: { id },
+  enabled = true,
+}: {
+  queryParams: UserGetQueryField;
+  enabled?: boolean;
+}) => {
   if (!id) {
     throw Error('Id must be defined to get user');
   }
@@ -47,6 +53,7 @@ export const useUserGetQuery = ({ id }: UserGetQueryField) => {
     () => usersGet(apiQueryParams),
     {
       select: users => users.map(user => transformUserApi(user)),
+      enabled,
     },
   );
 };

@@ -37,7 +37,7 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postsReady,
+    enabled: postsReady && posts.length > 0,
   });
 
   const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
@@ -52,39 +52,16 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
         ? postsAttachments.map(attachment => attachment.fileId)
         : undefined,
     },
-    enabled: postsAttachmentsReady,
+    enabled: postsAttachmentsReady && postsAttachments.length > 0,
   });
 
   const filesReady = !!files && !filesLoading;
 
-  const filesByIdMap: { [fileId: number]: File } = {};
-
-  files?.forEach(file => {
-    filesByIdMap[file.id] = file;
-  });
-
-  const postAttachmentsByPostIdMap: {
-    [postId: number]: readonly PostAttachment[];
-  } = {};
-
-  postsAttachments?.forEach(attachment => {
-    const attachmentWithFile = { ...attachment };
-    attachmentWithFile.file = filesByIdMap[attachment.fileId];
-
-    postAttachmentsByPostIdMap[attachment.postId] = [
-      ...(postAttachmentsByPostIdMap[attachment.postId] ?? []),
-      attachmentWithFile,
-    ];
-  });
-
-  const postsWithAttachmentsAndFiles = posts
-    ? posts.map(post => {
-        const postWithAttachments = { ...post };
-
-        postWithAttachments.attachments = postAttachmentsByPostIdMap[post.id];
-        return postWithAttachments;
-      })
-    : undefined;
+  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+    files,
+    postsAttachments,
+    posts,
+  );
 
   const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
 
@@ -127,7 +104,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postsReady,
+    enabled: postsReady && posts.length > 0,
   });
 
   const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
@@ -142,11 +119,30 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
         ? postsAttachments.map(attachment => attachment.fileId)
         : undefined,
     },
-    enabled: postsAttachmentsReady,
+    enabled: postsAttachmentsReady && postsAttachments.length > 0,
   });
 
   const filesReady = !!files && !filesLoading;
 
+  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+    files,
+    postsAttachments,
+    posts,
+  );
+
+  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
+
+  return {
+    isLoading,
+    postsWithAttachmentsAndFiles,
+  };
+}
+
+function createPostsWithAttachmentsAndFiles(
+  files?: readonly File[],
+  attachments?: readonly PostAttachment[],
+  posts?: readonly Post[],
+) {
   const filesByIdMap: { [fileId: number]: File } = {};
 
   files?.forEach(file => {
@@ -157,7 +153,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     [postId: number]: readonly PostAttachment[];
   } = {};
 
-  postsAttachments?.forEach(attachment => {
+  attachments?.forEach(attachment => {
     const attachmentWithFile = { ...attachment };
     attachmentWithFile.file = filesByIdMap[attachment.fileId];
 
@@ -167,7 +163,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     ];
   });
 
-  const postsWithAttachmentsAndFiles = posts
+  return posts
     ? posts.map(post => {
         const postWithAttachments = { ...post };
 
@@ -175,11 +171,4 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
         return postWithAttachments;
       })
     : undefined;
-
-  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
-
-  return {
-    isLoading,
-    postsWithAttachmentsAndFiles,
-  };
 }

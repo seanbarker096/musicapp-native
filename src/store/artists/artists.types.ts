@@ -55,6 +55,7 @@ export interface ArtistSearchArtistApi {
 }
 
 export interface ArtistsGetFilterApi {
+  ids?: readonly number[];
   uuids?: readonly string[];
   search_query?: string;
 }

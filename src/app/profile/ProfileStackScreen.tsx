@@ -1,35 +1,35 @@
-import {
-  BottomTabScreenProps,
-  createBottomTabNavigator,
-} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
-import { Post as PostComponent } from 'app/post/Post';
+import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import { InternalSearchStackScreenParamList } from 'app/search/search-types';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
+import { AuthStateContext } from 'store/auth/auth.contexts';
+import { ProfileType } from 'store/profile-posts';
 import Profile from './Profile';
-import { ProfileStackParamList } from './user-profile.types';
+import {
+  ProfileInternalStackScreenParams,
+  ProfileStackParamList,
+} from './profile.types';
 
-type Props = BottomTabScreenProps<
+type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
   PrimaryScreens.PROFILE
 >;
 
-type ProfileStackScreenParamList = {
-  [PrimaryScreens.PROFILE]: undefined;
-};
-
-const LoggedInShellTab =
-  createBottomTabNavigator<ProfileStackScreenParamList>();
-
 const ProfileStackScreen: FC<Props> = () => {
+  const { authState } = useContext(AuthStateContext);
+
+  const ProfileTab = createBottomTabNavigator<{
+    main: ProfileInternalStackScreenParams;
+  }>();
+
   return (
-    <LoggedInShellTab.Navigator
+    <ProfileTab.Navigator
       tabBar={props => (
         <PrimaryNav
           navigation={props.navigation}
@@ -37,46 +37,50 @@ const ProfileStackScreen: FC<Props> = () => {
         ></PrimaryNav>
       )}
     >
-      <LoggedInShellTab.Screen
+      <ProfileTab.Screen
         options={{ headerShown: false }}
+        // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
-        name={PrimaryScreens.PROFILE}
-      ></LoggedInShellTab.Screen>
-    </LoggedInShellTab.Navigator>
+        name="main"
+        initialParams={{
+          profileId: authState.authUser.userId,
+          profileType: ProfileType.USER,
+        }}
+      ></ProfileTab.Screen>
+    </ProfileTab.Navigator>
   );
 };
 
 export default ProfileStackScreen;
 
+type InternalStackScreenProps = {
+  route: { params: ProfileInternalStackScreenParams };
+};
+
 /**
- * In order to be able to hide the bottom tab navigator on certain primary screens (e.g. PrimaryScreens.CREATE_POST) we need to create a new tab navigator for each primary screen. We then create a stack navigator internally for each primary screen so we can navigate back and forth between screens within the primary screen
- *
- * We use an intersection type here because a union of 2 types (rather than a indvidual union type) is actually the intersection of the two types (i.e. all common properties/type. No screen would have the intersection of BottomTabsScreenProps and NativeStackScreenProps so we need to use an intersection type here.
+ * Currently we can't type usages of this screen,because it is used by multiple navigators of various types (e.g. BottomTabNavigator, StackNavigator). We therefore need to add a @ts-ignore to the usages of this component in any navigators.
  */
-
-type ProfileInternalStackScreenProps = BottomTabScreenProps<
-  ProfileStackScreenParamList,
-  PrimaryScreens.PROFILE
-> & // This is the prop if this Screen is accessed via the bottom tab navigator
-  NativeStackScreenProps<
-    InternalSearchStackScreenParamList,
-    'ProfileInternalStackScreen'
-  >; // Props if screen accessed via any other navigators e.g in Search page
-
-export const ProfileInternalStackScreen: FC<
-  ProfileInternalStackScreenProps
-> = () => {
+export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
+  route: {
+    params: { profileId, profileType },
+  },
+}) => {
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen
-        name="Profile"
-        component={Profile}
-      ></ProfileStack.Screen>
+      <ProfileStack.Screen name="Profile">
+        {props => (
+          <Profile
+            {...props}
+            profileId={profileId}
+            profileType={profileType}
+          />
+        )}
+      </ProfileStack.Screen>
       <ProfileStack.Screen
         name="ViewPost"
-        component={PostComponent}
+        component={Post}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );

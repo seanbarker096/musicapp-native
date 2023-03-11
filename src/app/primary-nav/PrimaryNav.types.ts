@@ -1,24 +1,11 @@
-import { BottomTabNavigationEventMap } from '@react-navigation/bottom-tabs';
-import { NavigationHelpers } from '@react-navigation/native';
-
 /**
  * Screens managed by the primary navigation tabs. See /navigation for other screens
  */
+
 export enum PrimaryScreens {
-  PROFILE = 'profile',
-  MANAGE = 'manage',
-  CREATE_POST = 'create_post',
-  SEARCH = 'search',
-  HOME = 'home',
+  PROFILE = 'primaryScreenProfile',
+  MANAGE = 'primaryScreenManage',
+  CREATE_POST = 'primaryScreenCreatePost',
+  SEARCH = 'primaryScreenSearch',
+  HOME = 'primaryScreenHome',
 }
-export type PrimaryNavNavigatorParamList = Record<
-  'profile' | 'feed',
-  object | undefined
->;
-
-export type e = Record<string, object | undefined>;
-
-export type PrimaryNavNavigationProp = NavigationHelpers<
-  PrimaryNavNavigatorParamList,
-  BottomTabNavigationEventMap
->;

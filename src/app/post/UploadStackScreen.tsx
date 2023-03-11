@@ -1,12 +1,14 @@
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import CreatePost from './CreatePost';
 import { CreatePostStackParamList } from './post.types';
 
-type Props = BottomTabScreenProps<
+type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
   PrimaryScreens.CREATE_POST
 >;

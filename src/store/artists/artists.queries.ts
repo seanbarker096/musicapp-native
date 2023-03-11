@@ -3,6 +3,7 @@
 import { QueryKey, useQuery } from 'react-query';
 import { getRequest, searchRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
+import { isArray } from 'utils/utils';
 import { artistsKeys } from './artists.query-keys';
 import {
   transformArtistApi,
@@ -77,5 +78,56 @@ export function useArtistGetOrCreateQuery({
             'Invalid uuid. Artist uuid must be defined to get or create artist',
           ),
     { enabled, onSuccess },
+  );
+}
+
+/** ------------------ ARTIST_GET --------------------------- */
+
+type ArtistObjectFields = keyof ArtistsStoreSlice['ObjectType'];
+
+type ArtistsGetQueryFields = Partial<{
+  [key in ArtistObjectFields]:
+    | ArtistsStoreSlice['ObjectType'][key]
+    | readonly ArtistsStoreSlice['ObjectType'][key][];
+}>;
+
+async function artistGet(
+  params: ArtistsStoreSlice['Get']['RequestParametersType'],
+) {
+  const response = await getRequest<ArtistsStoreSlice>({
+    url: `artists/0.1/artists`,
+    params,
+  });
+
+  return response.data.artists.map(artist => transformArtistApi(artist));
+}
+
+export function useArtistsGetQuery({
+  queryParams: { id },
+  enabled = true,
+}: {
+  queryParams: ArtistsGetQueryFields;
+  enabled?: boolean;
+}) {
+  let apiQueryParams:
+    | ArtistsStoreSlice['Get']['RequestParametersType']
+    | undefined = undefined;
+
+  let queryKey: QueryKey = artistsKeys.null;
+
+  if (id) {
+    const processedId = isArray(id) ? id : [id];
+
+    apiQueryParams = {
+      ids: processedId,
+    };
+
+    queryKey = artistsKeys.artistsByIds(processedId);
+  }
+
+  return useQuery<readonly Artist[], unknown, readonly Artist[]>(queryKey, () =>
+    apiQueryParams
+      ? artistGet(apiQueryParams)
+      : failedQuery(`Invalid query params. ${JSON.stringify(apiQueryParams)}`),
   );
 }

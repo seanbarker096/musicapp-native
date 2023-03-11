@@ -83,7 +83,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     data: user,
     isLoading: isUserLoading,
     isError: isUserGetError,
-  } = useUserGetQuery({ id: userId });
+  } = useUserGetQuery({ queryParams: { id: userId } });
 
   const postCreator = user && user[0];
 

@@ -1,147 +1,58 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
-import { ProfileImage } from 'components/profile-image';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { AuthStateContext } from 'store/auth/auth.contexts';
-import { useFilesGetQuery } from 'store/files/files.queries';
 import { ProfileType } from 'store/profile-posts';
-import { useUserGetQuery } from 'store/users';
-import {
-  COLOR_PRIMARY,
-  FONT_WEIGHT_BOLD,
-  SPACING_LARGE,
-  SPACING_SMALL,
-  SPACING_XXSMALL,
-} from 'styles';
+import { COLOR_PRIMARY, FONT_WEIGHT_BOLD, SPACING_XXSMALL } from 'styles';
+import ProfileHeader from './profile-header/ProfileHeader';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
-import { ProfileStackParamList } from './user-profile.types';
 
 enum SelectedTab {
   SHOWS = 'shows',
   TAGGED = 'tagged',
   TIMELINE = 'timeline',
 }
-type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
+type ProfileProps = { profileId: number; profileType: ProfileType };
 
-const Profile: FC<ProfileProps> = ({
-  route: {
-    params: { profile, profileType },
-  },
-}) => {
-  const { authState } = useContext(AuthStateContext);
-
+const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
   const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
     SelectedTab.SHOWS,
   );
-
-  const {
-    isLoading: userGetLoading,
-    isError: isUsersGetError,
-    data,
-    error: usersGetError,
-  } = useUserGetQuery({ id: authState.authUser.userId });
-
-  const userReady = data && !userGetLoading;
-  const userLoading = !userReady && userGetLoading;
-  // Error if no data exists AND error. If error but previous data exists don't render error state
-  const userError = !userReady && usersGetError;
-
-  const user = userReady ? data[0] : undefined;
-
-  const {
-    isLoading: filesGetLoading,
-    isError: isFilesGetError,
-    data: files,
-    error: filesGetError,
-  } = useFilesGetQuery({
-    queryParams: { uuid: data ? data[0].avatarFileUuid : undefined },
-    enabled: !!userReady,
-  });
-
-  const fileReady = files && !filesGetLoading;
-  const fileLoading = !fileReady && filesGetLoading;
-  const filesError = !fileReady && filesGetError;
-
-  const file = files ? files[0] : undefined;
 
   function handleTabSelected(selectedTab: SelectedTab) {
     setSelectedTab(selectedTab);
   }
 
-  /************************* Templates ********************************/
-
-  const Loading = () => <Text>Loading...</Text>;
-
-  const Error = () => <Text>Error...</Text>;
-
   return (
     <View style={styles.colContainer}>
-      {user && file && (
-        <>
-          <View
-            style={{
-              ...styles.rowContainer,
-              height: '30%',
-              width: '100%',
-            }}
-          >
-            <View style={{ ...styles.colContainer }}>
-              <ProfileImage imageUrl={file.url}></ProfileImage>
-              <AppText
-                size="large"
-                weight="bold"
-              >
-                {user.firstName} {user.secondName}
-              </AppText>
-              <Text>@{user.username}</Text>
-            </View>
-            <View
-              style={{
-                ...styles.rowContainer,
-                flexGrow: 1,
-                justifyContent: 'space-between',
-                marginTop: SPACING_SMALL,
-                paddingLeft: SPACING_LARGE,
-                paddingRight: SPACING_LARGE,
-              }}
-            >
-              <AppText weight={FONT_WEIGHT_BOLD}>20 Posts</AppText>
-              <AppText weight={FONT_WEIGHT_BOLD}>5 Features</AppText>
-              <Pressable>
-                <AppText weight={FONT_WEIGHT_BOLD}>12 Tags</AppText>
-              </Pressable>
-            </View>
-          </View>
-          <View style={styles.headerContainer}>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
-            </Pressable>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
-            </Pressable>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>Timeline</AppText>
-            </Pressable>
-          </View>
-          {selectedTab === SelectedTab.SHOWS && (
-            <ProfileShows
-              profileId={authState.authUser.userId}
-              profileType={ProfileType.USER} // TODO: Update this to be dynamic
-            ></ProfileShows>
-          )}
-          {selectedTab === SelectedTab.TAGGED && (
-            <ProfileTaggedPosts
-              profileId={authState.authUser.userId}
-              profileType={ProfileType.USER}
-            ></ProfileTaggedPosts>
-          )}
-          {selectedTab === SelectedTab.TIMELINE && <Text>timeline</Text>}
-        </>
+      <ProfileHeader
+        profileId={profileId}
+        profileType={profileType}
+      ></ProfileHeader>
+      <View style={styles.headerContainer}>
+        <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+          <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
+        </Pressable>
+        <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+          <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
+        </Pressable>
+        <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
+          <AppText weight={FONT_WEIGHT_BOLD}>Timeline</AppText>
+        </Pressable>
+      </View>
+      {selectedTab === SelectedTab.SHOWS && (
+        <ProfileShows
+          profileId={profileId}
+          profileType={profileType} // TODO: Update this to be dynamic
+        ></ProfileShows>
       )}
-      {(userLoading || fileLoading) && <Loading></Loading>}
-      {(!!userError || !!filesError) && <Error></Error>}
+      {selectedTab === SelectedTab.TAGGED && (
+        <ProfileTaggedPosts
+          profileId={profileId}
+          profileType={profileType}
+        ></ProfileTaggedPosts>
+      )}
+      {selectedTab === SelectedTab.TIMELINE && <Text>timeline</Text>}
     </View>
   );
 };

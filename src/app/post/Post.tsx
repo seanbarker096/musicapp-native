@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ProfileStackParamList } from 'app/profile/user-profile.types';
+import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
@@ -7,7 +7,6 @@ import {
   PicturePlusSVG,
   PlayButtonSVG,
 } from 'components/icon/svg-components';
-import { ProfileImage } from 'components/profile-image';
 
 import {
   AVPlaybackStatus,
@@ -24,9 +23,12 @@ import {
   PlaceholderMedia,
   Shine,
 } from 'rn-placeholder';
-import { useFilesGetQuery } from 'store/files/files.queries';
+import { useArtistsGetQuery } from 'store/artists/artists.queries';
+import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import ArtistPostHeader from './ArtistPostHeader';
+import UserPostHeader from './UserPostHeader';
 
 type PostProps = NativeStackScreenProps<ProfileStackParamList, 'ViewPost'>;
 
@@ -49,24 +51,29 @@ export const Post: FC<PostProps> = ({
   },
 }) => {
   const {
-    data: user,
+    data: userData,
     isLoading: isPostOwnerLoading,
     isError: isPostOwnerGetError,
-  } = useUserGetQuery({ id: post.ownerId });
-
-  const postOwner = user && user[0];
-
-  const {
-    isLoading: filesGetLoading,
-    isError: isFilesGetError,
-    data: files,
-    error: filesGetError,
-  } = useFilesGetQuery({
-    queryParams: { uuid: postOwner ? postOwner.avatarFileUuid : undefined },
-    enabled: !isPostOwnerLoading,
+  } = useUserGetQuery({
+    queryParams: { id: post.ownerId },
+    enabled: post.ownerType === PostOwnerType.USER,
   });
 
-  const avatarFile = files && files[0];
+  console.log(post);
+
+  const {
+    data: artistData,
+    isLoading: isArtistLoading,
+    isError: isArtistGetError,
+  } = useArtistsGetQuery({
+    queryParams: { id: post.ownerId },
+    enabled: post.ownerType === PostOwnerType.ARTIST,
+  });
+
+  const user = userData && userData[0];
+  const artist = artistData && artistData[0];
+
+  const ownerReady = artist || user;
 
   const video = React.useRef<Video>(null);
 
@@ -156,16 +163,28 @@ export const Post: FC<PostProps> = ({
     }
   };
 
-  const UserHeader =
-    postOwner && avatarFile ? (
-      <>
-        <ProfileImage
-          size="small"
-          styles={{ marginRight: SPACING_XXSMALL }}
-          imageUrl={avatarFile.url}
-        ></ProfileImage>
-        <AppText size="large">{postOwner.username}</AppText>
-      </>
+  const PostHeader = () =>
+    ownerReady ? (
+      <View
+        style={{
+          padding: SPACING_XSMALL,
+          ...styles.header,
+          ...styles.flexRowContainer,
+        }}
+      >
+        {post.ownerType === PostOwnerType.ARTIST && artist && (
+          <ArtistPostHeader
+            profileImageUrl={artist.imageUrl}
+            displayName={artist.name}
+          ></ArtistPostHeader>
+        )}
+        {post.ownerType === PostOwnerType.USER && user && (
+          <UserPostHeader
+            avatarFileUuid={user.avatarFileUuid}
+            username={user.username}
+          ></UserPostHeader>
+        )}
+      </View>
     ) : (
       <Placeholder
         Animation={props => (
@@ -192,15 +211,7 @@ export const Post: FC<PostProps> = ({
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          padding: SPACING_XSMALL,
-          ...styles.header,
-          ...styles.flexRowContainer,
-        }}
-      >
-        {UserHeader}
-      </View>
+      <PostHeader />
       <Pressable
         onPress={handlePlayPress}
         style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}

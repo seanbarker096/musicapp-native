@@ -6,6 +6,7 @@ export function transformPostApi(post: PostApi): Post {
   return {
     id: post.id,
     ownerId: post.owner_id,
+    ownerType: post.owner_type,
     content: post.content,
     createTime: post.create_time,
     isDeleted: post.is_deleted,
