@@ -80,7 +80,8 @@ export function useFilesGetQuery({
     () =>
       apiQueryParams
         ? filesGet(apiQueryParams)
-        : failedQuery('Invalid uuids and ids. At least one must be defined'),
+        : // TODO: Make it clear this could be just because of waiting for external variables to be defined (e.g in chanined requests)
+          failedQuery('Invalid uuids and ids. At least one must be defined'),
     {
       select: files => files.map(file => transformFileApi(file)),
       enabled,

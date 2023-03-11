@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC, useContext } from 'react';
@@ -15,15 +16,20 @@ import {
 } from 'styles';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
+import { ProfileStackParamList } from './user-profile.types';
 
 enum SelectedTab {
   SHOWS = 'shows',
   TAGGED = 'tagged',
   TIMELINE = 'timeline',
 }
-interface UserProfileProps {}
+type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'>;
 
-const UserProfile: FC<UserProfileProps> = () => {
+const Profile: FC<ProfileProps> = ({
+  route: {
+    params: { profile, profileType },
+  },
+}) => {
   const { authState } = useContext(AuthStateContext);
 
   const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
@@ -170,4 +176,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserProfile;
+export default Profile;

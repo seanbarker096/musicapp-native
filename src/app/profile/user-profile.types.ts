@@ -1,7 +1,7 @@
 import { Post } from 'store/posts/posts.types';
 
-export type UserProfileStackParamList = {
-  UserProfile: undefined;
+export type ProfileStackParamList = {
+  Profile: {};
   ViewPost: {
     post: Post;
   };

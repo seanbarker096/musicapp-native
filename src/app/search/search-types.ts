@@ -1,8 +1,11 @@
 import { Artist } from 'store/artists';
+import { ProfileType } from 'store/profile-posts';
+import { User } from 'store/users/users.types';
 
-export type SearchStackScreenParamList = {
+export type InternalSearchStackScreenParamList = {
   Search: undefined;
-  ArtistProfileStackScreen: {
-    artist: Artist;
+  ProfileInternalStackScreen: {
+    profile: Artist | User;
+    profileType: ProfileType;
   };
 };

@@ -3,6 +3,7 @@ import { ArtistSearch } from 'components/artist-search';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Artist } from 'store/artists';
+import { ProfileType } from 'store/profile-posts';
 import { SearchStackScreenParamList } from './search-types';
 
 type SearchProps = NativeStackScreenProps<SearchStackScreenParamList, 'Search'>;
@@ -10,7 +11,10 @@ type SearchProps = NativeStackScreenProps<SearchStackScreenParamList, 'Search'>;
 // TODO: Add loading state for when an artist is selected and we nav to their artist profile
 const Search: FC<SearchProps> = ({ navigation }) => {
   const onArtistSearchGetOrCreateSuccess = (artist: Artist) =>
-    navigation.navigate('ArtistProfileStackScreen', { artist });
+    navigation.navigate('ProfileInternalStackScreen', {
+      profileType: ProfileType.ARTIST,
+      profile: artist,
+    });
 
   return (
     <View style={styles.container}>

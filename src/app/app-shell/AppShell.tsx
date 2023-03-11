@@ -3,8 +3,8 @@ import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
 import CreatePostStackScreen from 'app/post/UploadStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
-import SearchStackScreen from 'app/search/SearchStackScreen';
-import UserProfileStackScreen from 'app/user-profile/UserProfileStackScreen';
+import ProfileStackScreen from 'app/profile/ProfileStackScreen';
+import { SearchStackScreen } from 'app/search/SearchStackScreen';
 import React, { FC } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
@@ -36,6 +36,9 @@ export default LoggedInAppShell;
  * This component exists to initialise Tab in seperate component to LoggedInApp shell. Because of the conditional rendering of the template the Tab Navigator was rendering at the top of the screen
  **/
 const LoggedInScreens = () => {
+  /**
+   In order to be able to hide the bottom tab navigator on certain primary screens (e.g. PrimaryScreens.CREATE_POST) we use a stack navigator here, and then csreate a new tab navigator for each primary screen. We then create a stack navigator internally for each primary screen so we can navigate back and forth between screens within that primary screen
+   */
   const Stack = createNativeStackNavigator<AppShellStackNavigatorParamList>();
   return (
     <Stack.Navigator
@@ -56,7 +59,7 @@ const LoggedInScreens = () => {
         name={PrimaryScreens.SEARCH}
       ></Stack.Screen>
       <Stack.Screen
-        component={UserProfileStackScreen}
+        component={ProfileStackScreen}
         name={PrimaryScreens.PROFILE}
       ></Stack.Screen>
       <Stack.Screen
