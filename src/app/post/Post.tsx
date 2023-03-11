@@ -5,7 +5,7 @@ import { IconColor, SVGIcon } from 'components/icon';
 import {
   LikeHeartSVG,
   PicturePlusSVG,
-  PlayButtonSVG,
+  PlayButtonSVG
 } from 'components/icon/svg-components';
 
 import {
@@ -13,7 +13,7 @@ import {
   AVPlaybackStatusSuccess,
   ResizeMode,
   Video,
-  VideoReadyForDisplayEvent,
+  VideoReadyForDisplayEvent
 } from 'expo-av';
 import React, { FC } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
@@ -21,9 +21,11 @@ import {
   Placeholder,
   PlaceholderLine,
   PlaceholderMedia,
-  Shine,
+  Shine
 } from 'rn-placeholder';
 import { useArtistsGetQuery } from 'store/artists/artists.queries';
+import { useFeatureCreateMutation } from 'store/features/features.queries';
+import { FeatureContextType, FeatureOwnerType } from 'store/features/features.types';
 import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
@@ -59,8 +61,6 @@ export const Post: FC<PostProps> = ({
     enabled: post.ownerType === PostOwnerType.USER,
   });
 
-  console.log(post);
-
   const {
     data: artistData,
     isLoading: isArtistLoading,
@@ -75,6 +75,13 @@ export const Post: FC<PostProps> = ({
 
   const ownerReady = artist || user;
 
+  const {
+    mutateAsync: createFeature,
+    isLoading: createFeatureLoading,
+    isError: createFeatureError,
+  } = useFeatureCreateMutation();
+
+  // TODO: Move all video to its own component
   const video = React.useRef<Video>(null);
 
   const [videoStatus, setStatus] = React.useState<
@@ -162,6 +169,15 @@ export const Post: FC<PostProps> = ({
       });
     }
   };
+
+  async function handleFeaturePress() {
+    await createFeature({
+      contextType: FeatureContextType.POST,
+      contextId: post.id,
+      ownerType: FeatureOwnerType.USER,
+      ownerId: number;
+    }) 
+  }
 
   const PostHeader = () =>
     ownerReady ? (
@@ -263,14 +279,15 @@ export const Post: FC<PostProps> = ({
           </SVGIcon>
           <AppText>Like</AppText>
         </View>
-        <View
+        <Pressable
+          onPress={handleFeaturePress}
           style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
         >
           <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
             <PicturePlusSVG></PicturePlusSVG>
           </SVGIcon>
           <AppText>Feature on your profile</AppText>
-        </View>
+        </Pressable>
       </View>
       <View
         style={{
