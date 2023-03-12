@@ -1,5 +1,5 @@
+import { ProfileType } from 'contexts/profile.context';
 import { Post } from 'store/posts/posts.types';
-import { ProfileType } from 'store/profile-posts';
 
 export type ProfileStackParamList = {
   Profile: {};

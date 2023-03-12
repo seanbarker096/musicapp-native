@@ -6,8 +6,8 @@ import { StyleSheet, View } from 'react-native';
 import { Artist } from 'store/artists';
 import { useFeaturesGetQuery } from 'store/features/features.queries';
 import {
-  FeatureContextType,
-  FeatureOwnerType,
+  FeaturedEntityType,
+  FeaturerType,
 } from 'store/features/features.types';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
@@ -22,15 +22,15 @@ const ArtistProfile: FC<ArtistProfileProps> = ({ artist }) => {
     error: featuresGetError,
   } = useFeaturesGetQuery({
     queryParams: {
-      ownerId: artist.id,
-      ownerType: FeatureOwnerType.ARTIST,
-      contextType: FeatureContextType.POST,
+      featurerId: artist.id,
+      featurerType: FeaturerType.ARTIST,
+      featuredEntityType: FeaturedEntityType.POST,
     },
   });
 
   const featuresLoading = !features && isFeaturesGetLoading;
 
-  const postIds = features?.map(feature => feature.contextId);
+  const postIds = features?.map(feature => feature.featuredEntityId);
 
   const { isLoading: isPostsGetLoading, postsWithAttachmentsAndFiles } =
     useGetPostsWithAttachmentsAndFilesQuery({ id: postIds });

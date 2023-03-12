@@ -4,9 +4,9 @@ import { failedQuery } from 'store/store-utils';
 import { featuresKeys } from './features.query-keys';
 import { transformFeatureApi } from './features.transformations';
 import {
-  FeatureContextType,
   FeatureCreateRequest,
-  FeatureOwnerType,
+  FeaturedEntityType,
+  FeaturerType,
   FeaturesStoreSlice,
 } from './features.types';
 
@@ -41,18 +41,18 @@ export function useFeaturesGetQuery({
     | FeaturesStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  const { ownerType, ownerId, contextType } = queryParams;
+  const { featurerType, featurerId, featuredEntityType } = queryParams;
 
   if (
-    contextType === FeatureContextType.POST &&
-    ownerType === FeatureOwnerType.ARTIST &&
-    ownerId
+    featuredEntityType === FeaturedEntityType.POST &&
+    featurerType === FeaturerType.ARTIST &&
+    featurerId
   ) {
-    queryKey = featuresKeys.postFeaturesByArtistId(ownerId);
+    queryKey = featuresKeys.postFeaturesByArtistId(featurerId);
     apiQueryParams = {
-      owner_type: ownerType,
-      owner_id: ownerId,
-      context_type: contextType,
+      featurer_type: featurerType,
+      featurer_id: featurerId,
+      featured_entity_type: featuredEntityType,
     };
   }
 
@@ -77,10 +77,10 @@ async function featureCreate(request: FeatureCreateRequest) {
   const response = await postRequest<FeaturesStoreSlice>({
     url: 'features/0.1/features',
     body: {
-      context_type: request.contextType,
-      context_id: request.contextId,
-      owner_type: request.ownerType,
-      owner_id: request.ownerId,
+      featured_entity_type: request.featuredEntityType,
+      featured_entity_id: request.featuredEntityId,
+      featurer_type: request.featurerType,
+      featurer_id: request.featurerId,
     },
   });
 

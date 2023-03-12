@@ -17,34 +17,36 @@ export interface FeaturesStoreSlice extends StoreSlice {
 
 export interface Feature {
   id: number;
-  contextType: FeatureContextType;
-  contextId: number;
-  ownerType: FeatureOwnerType;
-  ownerId: number;
+  featuredEntityType: FeaturedEntityType;
+  featuredEntityId: number;
+  featurerType: FeaturerType;
+  featurerId: number;
+  creatorId: number;
 }
 
 export interface FeatureApi {
   id: number;
-  context_type: FeatureContextType;
-  context_id: number;
-  owner_type: FeatureOwnerType;
-  owner_id: number;
+  featured_entity_type: FeaturedEntityType;
+  featured_entity_id: number;
+  featurer_type: FeaturerType;
+  featurer_id: number;
+  creator_id: number;
 }
 
-export enum FeatureContextType {
+export enum FeaturedEntityType {
   POST = 'post',
 }
 
-export enum FeatureOwnerType {
+export enum FeaturerType {
   USER = 'user',
   ARTIST = 'artist',
 }
 
 export interface FeaturesGetFilterApi {
-  owner_type?: FeatureOwnerType;
-  owner_id?: number;
-  context_type?: FeatureContextType;
-  context_id?: number;
+  featurer_type?: FeaturerType;
+  featurer_id?: number;
+  featured_entity_type?: FeaturedEntityType;
+  featured_entity_id?: number;
 }
 
 export interface FeaturesGetResultApi {
@@ -52,17 +54,17 @@ export interface FeaturesGetResultApi {
 }
 
 export interface FeatureCreateRequest {
-  contextType: FeatureContextType;
-  contextId: number;
-  ownerType: FeatureOwnerType;
-  ownerId: number;
+  featuredEntityType: FeaturedEntityType;
+  featuredEntityId: number;
+  featurerType: FeaturerType;
+  featurerId: number;
 }
 
 export interface FeatureCreateRequestApi {
-  context_type: FeatureContextType;
-  context_id: number;
-  owner_type: FeatureOwnerType;
-  owner_id: number;
+  featured_entity_type: FeaturedEntityType;
+  featured_entity_id: number;
+  featurer_type: FeaturerType;
+  featurer_id: number;
 }
 
 export interface FeatureCreateResultApi {

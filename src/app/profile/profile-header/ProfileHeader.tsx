@@ -1,5 +1,5 @@
+import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
-import { ProfileType } from 'store/profile-posts';
 import ArtistProfileHeader from './ArtistProfileHeader';
 import UserProfileHeader from './UserProfileHeader';
 

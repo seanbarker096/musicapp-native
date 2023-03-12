@@ -1,6 +1,7 @@
+import { ProfileState, ProfileType } from 'contexts/profile.context';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
-import { useContext, useEffect } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { Platform } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useAuthTokenCreateMutation } from 'store/auth/auth.queries';
@@ -12,7 +13,8 @@ import {
 } from 'store/auth/auth.types';
 
 export async function authenticateUserOnAppStartup(
-  setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>,
+  setAuthState: Dispatch<SetStateAction<AuthState | undefined>>,
+  setProfileState: Dispatch<SetStateAction<ProfileState | undefined>>,
 ) {
   const { mutateAsync } = useAuthTokenCreateMutation();
 
@@ -41,6 +43,12 @@ export async function authenticateUserOnAppStartup(
         SecureStore.setItemAsync('access_token', accessToken);
 
         setAuthState({ status: AuthStatus.AUTHENTICATED, authUser });
+
+        // Default to user profile on login
+        setProfileState({
+          profileId: authUser.userId,
+          profileType: ProfileType.USER,
+        });
       } catch (e) {}
     };
     _authenticateUser();

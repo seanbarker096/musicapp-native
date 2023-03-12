@@ -25,7 +25,10 @@ import {
 } from 'rn-placeholder';
 import { useArtistsGetQuery } from 'store/artists/artists.queries';
 import { useFeatureCreateMutation } from 'store/features/features.queries';
-import { FeatureContextType, FeatureOwnerType } from 'store/features/features.types';
+import {
+  FeaturedEntityType,
+  FeaturerType
+} from 'store/features/features.types';
 import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
@@ -172,11 +175,12 @@ export const Post: FC<PostProps> = ({
 
   async function handleFeaturePress() {
     await createFeature({
-      contextType: FeatureContextType.POST,
-      contextId: post.id,
-      ownerType: FeatureOwnerType.USER,
-      ownerId: number;
-    }) 
+      featuredEntityId: post.id,
+      featuredEntityType: FeaturedEntityType.POST,
+      featurerId: ,
+      featurerType: FeaturerType.ARTIST,
+      creatorId: 
+    });
   }
 
   const PostHeader = () =>

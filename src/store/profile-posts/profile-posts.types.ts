@@ -11,11 +11,6 @@ export interface ProfilePostsStoreSlice extends StoreSlice {
   };
 }
 
-export enum ProfileType {
-  ARTIST = 'artist',
-  USER = 'user',
-}
-
 export interface ProfilePostsGetFilterApi {
   profile_id?: number;
   profile_type: ProfileType;

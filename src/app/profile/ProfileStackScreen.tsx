@@ -7,9 +7,9 @@ import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { ProfileType } from 'store/profile-posts';
 import Profile from './Profile';
 import {
   ProfileInternalStackScreenParams,

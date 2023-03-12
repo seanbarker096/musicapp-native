@@ -1,6 +1,6 @@
 import { Gallery } from 'components/gallery';
+import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
-import { ProfileType } from 'store/profile-posts';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface ProfileShowsProps {

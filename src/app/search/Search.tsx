@@ -1,9 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ArtistSearch } from 'components/artist-search';
+import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Artist } from 'store/artists';
-import { ProfileType } from 'store/profile-posts';
 import { InternalSearchStackScreenParamList } from './search-types';
 
 type SearchProps = NativeStackScreenProps<
