@@ -7,7 +7,6 @@ export function transformTagApi(tag: TagApi): Tag {
     taggedEntityId: tag.tagged_entity_id,
     taggedInEntityType: tag.tagged_in_entity_type,
     taggedInEntityId: tag.tagged_in_entity_id,
-    creatorType: tag.creator_type,
     creatorId: tag.creator_id,
     createTime: tag.create_time,
   };

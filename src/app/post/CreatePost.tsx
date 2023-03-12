@@ -22,11 +22,7 @@ import {
 } from 'store/files/files.queries';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
-import {
-  TagCreatorType,
-  TaggedEntityType,
-  TaggedInEntityType,
-} from 'store/tags/tags.types';
+import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
 import {
   BUTTON_COLOR_DISABLED,
@@ -188,7 +184,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       taggedEntityId: taggedArtist.id,
       taggedInEntityType: TaggedInEntityType.POST,
       taggedInEntityId: post.id,
-      creatorType: TagCreatorType.USER,
       creatorId: userId,
     });
 

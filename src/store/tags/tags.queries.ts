@@ -11,7 +11,6 @@ async function tagCreate({
   taggedInEntityId,
   taggedInEntityType,
   creatorId,
-  creatorType,
 }: TagCreateRequest) {
   const response = await postRequest<TagsStoreSlice>({
     url: 'tags/0.1/tags',
@@ -20,7 +19,6 @@ async function tagCreate({
       tagged_entity_id: taggedEntityId,
       tagged_in_entity_type: taggedInEntityType,
       tagged_in_entity_id: taggedInEntityId,
-      creator_type: creatorType,
       creator_id: creatorId,
     },
   });

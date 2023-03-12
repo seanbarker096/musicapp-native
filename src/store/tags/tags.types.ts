@@ -20,7 +20,6 @@ export interface TagsCreateRequestApi {
   tagged_entity_id: number;
   tagged_in_entity_type: TaggedInEntityType;
   tagged_in_entity_id: number;
-  creator_type: TagCreatorType;
   creator_id: number;
 }
 
@@ -29,7 +28,6 @@ export interface TagCreateRequest {
   taggedEntityId: number;
   taggedInEntityType: TaggedInEntityType;
   taggedInEntityId: number;
-  creatorType: TagCreatorType;
   creatorId: number;
 }
 
@@ -43,7 +41,6 @@ export interface Tag {
   taggedEntityId: number;
   taggedInEntityType: string;
   taggedInEntityId: number;
-  creatorType: string;
   creatorId: number;
   createTime: number;
 }
@@ -54,7 +51,6 @@ export interface TagApi {
   tagged_entity_id: number;
   tagged_in_entity_type: TaggedInEntityType;
   tagged_in_entity_id: number;
-  creator_type: TagCreatorType;
   creator_id: number;
   create_time: number;
 }
@@ -66,8 +62,4 @@ export enum TaggedEntityType {
 
 export enum TaggedInEntityType {
   POST = 'post',
-}
-
-export enum TagCreatorType {
-  USER = 'user',
 }

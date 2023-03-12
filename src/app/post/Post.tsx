@@ -182,6 +182,7 @@ export const Post: FC<PostProps> = ({
         `Failed to create feature because the profile type of the user is not a valid FeatureType. Profile Type: ${profileState.profileType}`,
       );
     }
+
     await createFeature({
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
