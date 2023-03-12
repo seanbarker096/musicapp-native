@@ -5,29 +5,30 @@ import { IconColor, SVGIcon } from 'components/icon';
 import {
   LikeHeartSVG,
   PicturePlusSVG,
-  PlayButtonSVG
+  PlayButtonSVG,
 } from 'components/icon/svg-components';
+import { ProfileContext } from 'contexts/profile.context';
 
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
   ResizeMode,
   Video,
-  VideoReadyForDisplayEvent
+  VideoReadyForDisplayEvent,
 } from 'expo-av';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import {
   Placeholder,
   PlaceholderLine,
   PlaceholderMedia,
-  Shine
+  Shine,
 } from 'rn-placeholder';
 import { useArtistsGetQuery } from 'store/artists/artists.queries';
 import { useFeatureCreateMutation } from 'store/features/features.queries';
 import {
   FeaturedEntityType,
-  FeaturerType
+  FeaturerType,
 } from 'store/features/features.types';
 import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
@@ -55,6 +56,8 @@ export const Post: FC<PostProps> = ({
     params: { post },
   },
 }) => {
+  const { profileState } = useContext(ProfileContext);
+
   const {
     data: userData,
     isLoading: isPostOwnerLoading,
@@ -174,12 +177,16 @@ export const Post: FC<PostProps> = ({
   };
 
   async function handleFeaturePress() {
+    if (!isValidFeaturerType(profileState.profileType)) {
+      throw Error(
+        `Failed to create feature because the profile type of the user is not a valid FeatureType. Profile Type: ${profileState.profileType}`,
+      );
+    }
     await createFeature({
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
-      featurerId: ,
-      featurerType: FeaturerType.ARTIST,
-      creatorId: 
+      featurerId: profileState.profileId,
+      featurerType: profileState.profileType,
     });
   }
 
@@ -337,3 +344,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -25 }, { translateY: -25 }],
   },
 });
+
+function isValidFeaturerType(profileType: string): profileType is FeaturerType {
+  return Object.values(FeaturerType).includes(profileType as FeaturerType);
+}
