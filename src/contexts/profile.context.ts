@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction } from 'react';
+import { createContext } from 'react';
 
 export enum ProfileType {
   ARTIST = 'artist',
@@ -12,7 +12,6 @@ export type ProfileState = {
 
 export interface ProfileContext {
   profileState: ProfileState;
-  setProfileState: Dispatch<SetStateAction<ProfileState | undefined>>;
 }
 
 export const ProfileContext = createContext<ProfileContext>(

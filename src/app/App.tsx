@@ -69,13 +69,14 @@ const App = function () {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {authState?.status === AuthStatus.AUTHENTICATED ? (
+        {profileState && authState?.status === AuthStatus.AUTHENTICATED ? (
           <Stack.Screen name="LoggedInApp">
             {/* TODO: Make sure to use react memo here https://reactnavigation.org/docs/hello-react-navigation/#passing-additional-props*/}
             {props => (
               <LoggedInAppShell
                 {...props}
                 authState={authState}
+                profileState={profileState}
               ></LoggedInAppShell>
             )}
           </Stack.Screen>

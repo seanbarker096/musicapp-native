@@ -1,10 +1,8 @@
+import { FeaturerType } from './features.types';
+
 export const featuresKeys = {
   all: ['features'] as const,
-  postFeaturesByArtistId: (artistId: number) => [
-    'features',
-    'posts',
-    'artists',
-    artistId,
-  ],
+  postFeaturesByFeaturer: (featurerId: number, featurerType: FeaturerType) =>
+    [...featuresKeys.all, 'posts', featurerType, featurerId] as const,
   null: [],
 };

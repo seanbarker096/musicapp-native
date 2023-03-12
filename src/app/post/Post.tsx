@@ -2,12 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
-import {
-  LikeHeartSVG,
-  PicturePlusSVG,
-  PlayButtonSVG,
-} from 'components/icon/svg-components';
-import { ProfileContext } from 'contexts/profile.context';
+import { PlayButtonSVG } from 'components/icon/svg-components';
 
 import {
   AVPlaybackStatus,
@@ -16,7 +11,7 @@ import {
   Video,
   VideoReadyForDisplayEvent,
 } from 'expo-av';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import {
   Placeholder,
@@ -25,15 +20,11 @@ import {
   Shine,
 } from 'rn-placeholder';
 import { useArtistsGetQuery } from 'store/artists/artists.queries';
-import { useFeatureCreateMutation } from 'store/features/features.queries';
-import {
-  FeaturedEntityType,
-  FeaturerType,
-} from 'store/features/features.types';
 import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
-import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 import ArtistPostHeader from './ArtistPostHeader';
+import PostFooter from './PostFooter';
 import UserPostHeader from './UserPostHeader';
 
 type PostProps = NativeStackScreenProps<ProfileStackParamList, 'ViewPost'>;
@@ -56,8 +47,6 @@ export const Post: FC<PostProps> = ({
     params: { post },
   },
 }) => {
-  const { profileState } = useContext(ProfileContext);
-
   const {
     data: userData,
     isLoading: isPostOwnerLoading,
@@ -80,12 +69,6 @@ export const Post: FC<PostProps> = ({
   const artist = artistData && artistData[0];
 
   const ownerReady = artist || user;
-
-  const {
-    mutateAsync: createFeature,
-    isLoading: createFeatureLoading,
-    isError: createFeatureError,
-  } = useFeatureCreateMutation();
 
   // TODO: Move all video to its own component
   const video = React.useRef<Video>(null);
@@ -176,21 +159,6 @@ export const Post: FC<PostProps> = ({
     }
   };
 
-  async function handleFeaturePress() {
-    if (!isValidFeaturerType(profileState.profileType)) {
-      throw Error(
-        `Failed to create feature because the profile type of the user is not a valid FeatureType. Profile Type: ${profileState.profileType}`,
-      );
-    }
-
-    await createFeature({
-      featuredEntityId: post.id,
-      featuredEntityType: FeaturedEntityType.POST,
-      featurerId: profileState.profileId,
-      featurerType: profileState.profileType,
-    });
-  }
-
   const PostHeader = () =>
     ownerReady ? (
       <View
@@ -276,31 +244,7 @@ export const Post: FC<PostProps> = ({
           </SVGIcon>
         )}
       </Pressable>
-      <View
-        style={{
-          ...styles.sidePadding,
-          ...styles.flexRowContainer,
-          marginBottom: SPACING_SMALL,
-        }}
-      >
-        <View
-          style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
-        >
-          <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-            <LikeHeartSVG></LikeHeartSVG>
-          </SVGIcon>
-          <AppText>Like</AppText>
-        </View>
-        <Pressable
-          onPress={handleFeaturePress}
-          style={{ ...styles.flexRowContainer, marginRight: SPACING_XSMALL }}
-        >
-          <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-            <PicturePlusSVG></PicturePlusSVG>
-          </SVGIcon>
-          <AppText>Feature on your profile</AppText>
-        </Pressable>
-      </View>
+      <PostFooter post={post}></PostFooter>
       <View
         style={{
           ...styles.sidePadding,
@@ -345,7 +289,3 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -25 }, { translateY: -25 }],
   },
 });
-
-function isValidFeaturerType(profileType: string): profileType is FeaturerType {
-  return Object.values(FeaturerType).includes(profileType as FeaturerType);
-}

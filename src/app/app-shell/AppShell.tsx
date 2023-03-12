@@ -5,6 +5,7 @@ import CreatePostStackScreen from 'app/post/UploadStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import ProfileStackScreen from 'app/profile/ProfileStackScreen';
 import { SearchStackScreen } from 'app/search/SearchStackScreen';
+import { ProfileContext, ProfileState } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
@@ -13,17 +14,23 @@ import { AppShellStackNavigatorParamList } from './appShell.types';
 
 interface LoggedInAppShellProps {
   authState: AuthState;
+  profileState: ProfileState;
 }
-const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
-  if (!!authState) {
-    //console.warn('Logged in app shell initialised without an authState');
+const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
+  authState,
+  profileState,
+}) => {
+  if (!authState || !profileState) {
+    console.warn('Logged in app shell initialised without an authState');
   }
 
   return (
     <>
       {authState && (
         <AuthStateContext.Provider value={{ authState }}>
-          <LoggedInScreens></LoggedInScreens>
+          <ProfileContext.Provider value={{ profileState }}>
+            <LoggedInScreens></LoggedInScreens>
+          </ProfileContext.Provider>
         </AuthStateContext.Provider>
       )}
     </>

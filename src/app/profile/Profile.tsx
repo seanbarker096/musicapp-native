@@ -14,6 +14,7 @@ enum SelectedTab {
 }
 type ProfileProps = { profileId: number; profileType: ProfileType };
 
+// TODO: Might be better to just have a sigle artist profile and user profile component, rather than creating things like ProfileHeader which internally branches either to artist or proifle
 const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
   const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
     SelectedTab.SHOWS,

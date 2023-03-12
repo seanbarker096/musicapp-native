@@ -1,4 +1,4 @@
-import { QueryKey, useMutation, useQuery } from 'react-query';
+import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { featuresKeys } from './features.query-keys';
@@ -6,7 +6,6 @@ import { transformFeatureApi } from './features.transformations';
 import {
   FeatureCreateRequest,
   FeaturedEntityType,
-  FeaturerType,
   FeaturesStoreSlice,
 } from './features.types';
 
@@ -41,18 +40,21 @@ export function useFeaturesGetQuery({
     | FeaturesStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  const { featurerType, featurerId, featuredEntityType } = queryParams;
+  const { featurerType, featurerId, featuredEntityType, featuredEntityId } =
+    queryParams;
 
   if (
     featuredEntityType === FeaturedEntityType.POST &&
-    featurerType === FeaturerType.ARTIST &&
-    featurerId
+    featurerType &&
+    featurerId &&
+    featuredEntityId
   ) {
-    queryKey = featuresKeys.postFeaturesByArtistId(featurerId);
+    queryKey = featuresKeys.postFeaturesByFeaturer(featurerId, featurerType);
     apiQueryParams = {
       featurer_type: featurerType,
       featurer_id: featurerId,
       featured_entity_type: featuredEntityType,
+      featured_entity_id: featuredEntityId,
     };
   }
 
@@ -88,9 +90,17 @@ async function featureCreate(request: FeatureCreateRequest) {
 }
 
 export function useFeatureCreateMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation<
     FeaturesStoreSlice['ObjectType'],
     any,
     FeatureCreateRequest
-  >(request => featureCreate(request));
+  >(request => featureCreate(request), {
+    onSuccess: data => {
+      return queryClient.invalidateQueries(
+        featuresKeys.postFeaturesByFeaturer(data.featurerId, data.featurerType),
+      );
+    },
+  });
 }
