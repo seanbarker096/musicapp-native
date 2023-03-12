@@ -28,6 +28,7 @@ export interface Post {
   ownerId: number;
   ownerType: PostOwnerType;
   content: string;
+  creatorId: number;
   createTime: number;
   updateTime?: number;
   isDeleted?: boolean;
@@ -42,6 +43,7 @@ export interface PostApi {
   owner_id: number;
   owner_type: PostOwnerType;
   content: string;
+  creator_id: number;
   create_time: number;
   is_deleted: boolean;
   update_time?: number;

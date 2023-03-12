@@ -1,3 +1,4 @@
+import { ProfileType } from 'contexts/profile.context';
 import { Post, PostApi } from 'store/posts';
 import { StoreSlice } from 'store/store.types';
 
