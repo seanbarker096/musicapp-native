@@ -178,7 +178,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const post = postResult.post;
 
-    // TODO: Remove hardcoding of EntityType
+    // Tag the post with the show it was taken at
     const tagResult = await createTag({
       taggedEntityType: TaggedEntityType.ARTIST,
       taggedEntityId: taggedArtist.id,

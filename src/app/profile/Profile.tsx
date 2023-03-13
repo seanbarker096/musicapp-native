@@ -47,7 +47,8 @@ const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
           profileType={profileType} // TODO: Update this to be dynamic
         ></ProfileShows>
       )}
-      {selectedTab === SelectedTab.TAGGED && (
+
+      {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for artist profiles
         <ProfileTaggedPosts
           profileId={profileId}
           profileType={profileType}
