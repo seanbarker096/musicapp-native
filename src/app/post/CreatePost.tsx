@@ -178,6 +178,10 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const post = postResult.post;
 
+    // Create the show if we haven't found it
+
+    // send of post and show requests. Then promise.all and when resolved create tag
+
     // Tag the post with the show it was taken at
     const tagResult = await createTag({
       taggedEntityType: TaggedEntityType.ARTIST,
