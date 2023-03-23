@@ -8,6 +8,11 @@ export interface PerformancesStoreSlice extends StoreSlice {
     ResultType: PerformancesGetResultApi;
     ErrorType: {};
   };
+  Post: {
+    RequestBodyType: PerformanceCreateRequestApi;
+    ResultType: PerformanceCreateResultApi;
+    ErrorType: {};
+  };
 }
 
 export interface PerformanceApi {
@@ -29,11 +34,27 @@ export interface Performance {
 }
 
 export interface PerformancesGetFilterApi {
-  ids: readonly number[];
-  artist_ids: readonly number[];
-  performance_dates: readonly number[];
+  ids?: readonly number[];
+  performer_ids?: readonly number[];
+  performance_date?: number;
 }
 
 export interface PerformancesGetResultApi {
   performances: readonly PerformanceApi[];
+}
+
+export interface PerformanceCreateRequestApi {
+  performance_date: number;
+  performer_id: number;
+  venue_id?: number;
+}
+
+export interface PerformanceCreateRequest {
+  performanceDate: number;
+  performerId: number;
+  venueId?: number;
+}
+
+export interface PerformanceCreateResultApi {
+  performance: PerformanceApi;
 }

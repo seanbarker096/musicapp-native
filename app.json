@@ -19,7 +19,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "music.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -39,7 +40,6 @@
     "plugins": [
       [
         "expo-dev-client"
-        
       ],
       [
         "expo-image-picker",

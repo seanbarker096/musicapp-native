@@ -1,3 +1,7 @@
+import DateTimePicker, {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { useFocusEffect } from '@react-navigation/native';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppText } from 'components/app-text';
@@ -7,7 +11,15 @@ import { ProfileImage } from 'components/profile-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Button,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import {
   Placeholder,
   PlaceholderLine,
@@ -20,7 +32,16 @@ import {
   useFileCreateMutation,
   useFilesGetQuery,
 } from 'store/files/files.queries';
-import { PostOwnerType, usePostCreateMutation } from 'store/posts';
+import {
+  usePerformanceCreateMutation,
+  usePerformancesGetQuery,
+} from 'store/performances/performances.queries';
+import { Performance } from 'store/performances/performances.types';
+import {
+  PostCreateResult,
+  PostOwnerType,
+  usePostCreateMutation,
+} from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
@@ -31,6 +52,7 @@ import {
   SPACING_XSMALL,
   SPACING_XXSMALL,
 } from 'styles';
+import { toNumber } from 'utils/utils';
 import { CreatePostStackScreenProps } from './post.types';
 
 interface PostFile {
@@ -41,7 +63,6 @@ interface PostFile {
 }
 
 interface PostCreateFormValues {
-  eventDate: string | undefined;
   eventName: string | undefined;
   caption: string | undefined;
 }
@@ -53,6 +74,10 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   const [taggedArtist, setTaggedArtist] = useState<Artist | undefined>(
     undefined,
   );
+  const [performanceDate, setPerformanceDate] = useState<Date | undefined>(
+    undefined,
+  );
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const { authState } = useContext(AuthStateContext);
 
@@ -61,6 +86,8 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   const { mutateAsync: createPost } = usePostCreateMutation({
     ownerId: userId,
   });
+
+  const today = new Date();
 
   const {
     mutateAsync: createFile,
@@ -94,6 +121,29 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   });
 
   const avatarFile = files && files[0];
+
+  const {
+    isLoading: performancesLoading,
+    isError: performancesError,
+    data: performances,
+    error: performancesGetError,
+  } = usePerformancesGetQuery({
+    queryParams: {
+      performerId: taggedArtist?.id,
+      performanceDate: toNumber(performanceDate?.getTime()),
+    },
+    enabled: !!taggedArtist && !!performanceDate,
+  });
+
+  const performance = performances && performances[0];
+
+  console.log(performance);
+
+  const {
+    mutateAsync: performanceCreate,
+    isLoading: createPerformanceLoading,
+    isError: isPerformanceCreateError,
+  } = usePerformanceCreateMutation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -150,7 +200,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!taggedArtist || !form.caption || !form.eventDate || !form.eventName) {
+    if (!taggedArtist || !form.caption || !performanceDate || !form.eventName) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -165,12 +215,35 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('create file request failed');
     }
 
-    const postResult = await createPost({
+    // use promise.all here to send both queries simaltaneously
+    let promises:
+      | [Promise<PostCreateResult>, Promise<Performance>]
+      | [Promise<PostCreateResult>];
+
+    const createPostPromise = createPost({
       ownerId: userId,
       ownerType: PostOwnerType.USER, // todo: update this
       content: form.caption,
       attachmentFileIds: [fileResult.file.id],
     });
+
+    let performancePromise: Promise<Performance> | undefined = undefined;
+
+    if (!performance) {
+      // create the performance so we can tag the show in it
+      performancePromise = performanceCreate({
+        performerId: taggedArtist.id,
+        performanceDate: toNumber(performanceDate.getTime()),
+      });
+    }
+
+    promises = performancePromise
+      ? [createPostPromise, performancePromise]
+      : [createPostPromise];
+
+    const createResults = await Promise.all(promises);
+
+    const postResult = createResults[0];
 
     if (!postResult) {
       throw Error('failed to create post');
@@ -178,14 +251,18 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const post = postResult.post;
 
-    // Create the show if we haven't found it
+    const performanceResult = createResults[1];
 
-    // send of post and show requests. Then promise.all and when resolved create tag
+    const taggedPerformance = performance || performanceResult;
 
+    // Throw if not performance selected or created at this stage
+    if (!taggedPerformance) {
+      throw Error('Failed to create performance');
+    }
     // Tag the post with the show it was taken at
     const tagResult = await createTag({
-      taggedEntityType: TaggedEntityType.ARTIST,
-      taggedEntityId: taggedArtist.id,
+      taggedEntityType: TaggedEntityType.PERFORMANCE,
+      taggedEntityId: taggedPerformance.id,
       taggedInEntityType: TaggedInEntityType.POST,
       taggedInEntityId: post.id,
       creatorId: userId,
@@ -208,6 +285,32 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
   function handleTaggedArtistPress() {
     setTaggedArtist(undefined);
+  }
+
+  function handleDateInputPress() {
+    console.log('date input pressed');
+    console.log(Platform.OS);
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: performanceDate ?? today,
+        onChange: handlePerformanceDateChange,
+        mode: 'date',
+        is24Hour: true,
+      });
+    } else {
+      setShowDatePicker(true);
+    }
+  }
+
+  function handlePerformanceDateChange(
+    event: DateTimePickerEvent,
+    date?: Date,
+  ) {
+    if (event.type === 'set') {
+      setPerformanceDate(date);
+    }
+
+    setShowDatePicker(false);
   }
 
   // Todo: make a resuable component as also used in Post. Make it fetch the user and the file
@@ -252,7 +355,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         <Formik
           initialValues={{
             artistId: undefined,
-            eventDate: undefined,
             eventName: '',
             caption: '',
           }}
@@ -303,15 +405,27 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                   <Text>Event date</Text>
                   <TextInput
                     style={{
+                      width: '100%',
                       display: 'flex',
-
                       ...styles.textInput,
                     }}
-                    onChangeText={handleChange('eventDate')}
-                    onBlur={handleBlur('eventDate')}
-                    value={values.eventDate}
-                    placeholder="Enter a date"
+                    onPressIn={handleDateInputPress}
+                    value={
+                      performanceDate
+                        ? performanceDate.toDateString()
+                        : undefined
+                    }
+                    placeholder="DD/MM/YYYY"
                   />
+                  {showDatePicker && (
+                    <DateTimePicker
+                      value={performanceDate ?? today}
+                      mode="date"
+                      is24Hour={true}
+                      display="default"
+                      onChange={handlePerformanceDateChange}
+                    />
+                  )}
                 </View>
               </View>
               <TextInput

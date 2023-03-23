@@ -58,6 +58,7 @@ export interface TagApi {
 export enum TaggedEntityType {
   ARTIST = 'artist',
   USER = 'user',
+  PERFORMANCE = 'performance',
 }
 
 export enum TaggedInEntityType {
