@@ -130,14 +130,16 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   } = usePerformancesGetQuery({
     queryParams: {
       performerId: taggedArtist?.id,
-      performanceDate: toNumber(performanceDate?.getTime()),
+      performanceDate: toNumber(
+        performanceDate
+          ? Math.ceil(performanceDate.getTime() / 1000)
+          : undefined,
+      ),
     },
     enabled: !!taggedArtist && !!performanceDate,
   });
 
   const performance = performances && performances[0];
-
-  console.log(performance);
 
   const {
     mutateAsync: performanceCreate,
@@ -233,7 +235,8 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       // create the performance so we can tag the show in it
       performancePromise = performanceCreate({
         performerId: taggedArtist.id,
-        performanceDate: toNumber(performanceDate.getTime()),
+        // Convert to seconds so its a unix timestamp
+        performanceDate: Math.ceil(performanceDate.getTime() / 1000),
       });
     }
 
