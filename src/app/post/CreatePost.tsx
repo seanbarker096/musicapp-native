@@ -63,7 +63,6 @@ interface PostFile {
 }
 
 interface PostCreateFormValues {
-  eventName: string | undefined;
   caption: string | undefined;
 }
 
@@ -202,7 +201,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!taggedArtist || !form.caption || !performanceDate || !form.eventName) {
+    if (!taggedArtist || !form.caption || !performanceDate) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -358,7 +357,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         <Formik
           initialValues={{
             artistId: undefined,
-            eventName: '',
             caption: '',
           }}
           onSubmit={handleFormSubmit}
@@ -393,18 +391,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                   >
                     {UserHeader}
                   </View>
-                  <Text>Event name</Text>
-                  <TextInput
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      ...styles.textInput,
-                    }}
-                    onChangeText={handleChange('eventName')}
-                    onBlur={handleBlur('eventName')}
-                    value={values.eventName}
-                    placeholder="e.g. Travis Scott, O2 London"
-                  />
                   <Text>Event date</Text>
                   <TextInput
                     style={{

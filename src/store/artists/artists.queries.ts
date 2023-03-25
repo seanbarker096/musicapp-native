@@ -18,7 +18,7 @@ const artistsSearch = async (searchQuery: string) => {
   }
 
   const response = await searchRequest<ArtistsStoreSlice>({
-    url: 'artists/0.1/artists/search',
+    url: 'performers/0.1/performers/search',
     body: { search_query: searchQuery },
   });
 
@@ -47,7 +47,7 @@ async function artistGetOrCreate(artistUUID: string) {
   }
 
   const response = await getRequest<ArtistsStoreSlice<'Document'>>({
-    url: `artists/0.1/artist/${artistUUID}`,
+    url: `performers/0.1/performer/${artistUUID}`,
     params: {},
   });
 
@@ -95,7 +95,7 @@ async function artistGet(
   params: ArtistsStoreSlice['Get']['RequestParametersType'],
 ) {
   const response = await getRequest<ArtistsStoreSlice>({
-    url: `artists/0.1/artists`,
+    url: `performers/0.1/performers`,
     params,
   });
 
