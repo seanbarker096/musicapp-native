@@ -37,6 +37,7 @@ export interface PerformancesGetFilterApi {
   ids?: readonly number[];
   performer_ids?: readonly number[];
   performance_date?: number;
+  attendee_ids?: readonly number[];
 }
 
 export interface PerformancesGetResultApi {

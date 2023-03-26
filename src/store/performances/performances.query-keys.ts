@@ -21,4 +21,19 @@ export const performancesKeys = {
     'performanceDate',
     performanceDate,
   ],
+  performancesByPerformerIds: (performerIds: readonly number[]) => [
+    ...performancesKeys.all,
+    'performerIds',
+    ...performerIds,
+  ],
+  attendeePerformancesByPerformerIds: (
+    performerIds: readonly number[],
+    attendeeIds: readonly number[],
+  ) => [
+    ...performancesKeys.all,
+    'performerIds',
+    ...performerIds,
+    'attendeeIds',
+    ...attendeeIds,
+  ],
 };

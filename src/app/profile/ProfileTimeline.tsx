@@ -9,7 +9,7 @@ export const ProfileTimeline: FC<Props> = ({ profileId, profileType }) => {
   return (
     <>
       {profileType === ProfileType.PERFORMER && (
-        <PerformanceList></PerformanceList>
+        <PerformanceList performerId={profileId}></PerformanceList>
       )}
       {profileType === ProfileType.USER && (
         <PerformerShowCountsList userId={profileId}></PerformerShowCountsList>

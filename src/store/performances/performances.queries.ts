@@ -13,11 +13,14 @@ import {
 // ------------------- PERFORMANCES GET -------------------------------  //
 type PerformanceObjectFields = keyof PerformancesStoreSlice['ObjectType'];
 
-type PerformancesGetQueryField = Partial<{
-  [key in PerformanceObjectFields]:
-    | PerformancesStoreSlice['ObjectType'][key]
-    | readonly PerformancesStoreSlice['ObjectType'][key][];
-}>;
+type PerformancesGetQueryField = Partial<
+  {
+    [key in PerformanceObjectFields]:
+      | PerformancesStoreSlice['ObjectType'][key]
+      | readonly PerformancesStoreSlice['ObjectType'][key][];
+  } & { attendeeId?: number }
+  // TODO: Find a better way to allow querying by fields that dont exist on the store objectType
+>;
 
 async function performancesGet(
   params: PerformancesStoreSlice['Get']['RequestParametersType'],
@@ -37,7 +40,7 @@ export function usePerformancesGetQuery({
   queryParams: PerformancesGetQueryField;
   enabled?: boolean;
 }) {
-  const { performerId, performanceDate } = queryParams;
+  const { performerId, performanceDate, attendeeId } = queryParams;
 
   let apiQueryParams:
     | PerformancesStoreSlice['Get']['RequestParametersType']
@@ -47,6 +50,19 @@ export function usePerformancesGetQuery({
 
   if (isArray(performanceDate)) {
     throw Error('Querying by multiple performance dates is not supported');
+  }
+
+  if (performerId && !performanceDate && !attendeeId) {
+    const processedPerformerId = isArray(performerId)
+      ? performerId
+      : [performerId];
+
+    apiQueryParams = {
+      performer_ids: processedPerformerId,
+    };
+
+    queryKey =
+      performancesKeys.performancesByPerformerIds(processedPerformerId);
   }
 
   if (performerId && performanceDate) {
@@ -62,6 +78,24 @@ export function usePerformancesGetQuery({
     queryKey = performancesKeys.performancesByPerformerIdsAndPerformanceDate(
       processedPerformerId,
       performanceDate,
+    );
+  }
+
+  if (performerId && attendeeId) {
+    const processedPerformerId = isArray(performerId)
+      ? performerId
+      : [performerId];
+
+    const processedAttendeeId = isArray(attendeeId) ? attendeeId : [attendeeId];
+
+    apiQueryParams = {
+      performer_ids: processedPerformerId,
+      attendee_ids: processedAttendeeId,
+    };
+
+    queryKey = performancesKeys.attendeePerformancesByPerformerIds(
+      processedPerformerId,
+      processedAttendeeId,
     );
   }
 
