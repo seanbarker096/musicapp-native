@@ -1,6 +1,5 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { PerformerProfileStackParamList } from 'app/performer-profile/performer-profile.types';
-import { UserProfileStackParamList } from 'app/user-profile/user-profile.types';
+import { ProfileStackParamList } from 'app/profile/profile.types';
 
 import { IconColor, SVGIcon } from 'components/icon/index';
 import { PlayButtonSVG } from 'components/icon/svg-components';
@@ -20,10 +19,7 @@ const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
 const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
-  const navigation =
-    useNavigation<
-      NavigationProp<UserProfileStackParamList | PerformerProfileStackParamList>
-    >();
+  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 
   const video = React.useRef<Video>(null);
   function handleItemPress() {

@@ -25,6 +25,8 @@ const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
     setSelectedTab(selectedTab);
   }
 
+  console.log('profile!!');
+
   return (
     <View style={styles.colContainer}>
       <ProfileHeader
