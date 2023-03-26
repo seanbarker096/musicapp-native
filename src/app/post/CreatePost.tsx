@@ -5,8 +5,8 @@ import DateTimePicker, {
 import { useFocusEffect } from '@react-navigation/native';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppText } from 'components/app-text';
-import { ArtistSearch } from 'components/artist-search';
-import { ArtistSearchCard } from 'components/artist-search-card';
+import { PerformerSearch } from 'components/performer-search';
+import { PerformerSearchCard } from 'components/performer-search-card';
 import { ProfileImage } from 'components/profile-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Formik } from 'formik';
@@ -26,7 +26,6 @@ import {
   PlaceholderMedia,
   Shine,
 } from 'rn-placeholder';
-import { Artist } from 'store/artists';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import {
   useFileCreateMutation,
@@ -37,6 +36,7 @@ import {
   usePerformancesGetQuery,
 } from 'store/performances/performances.queries';
 import { Performance } from 'store/performances/performances.types';
+import { Performer } from 'store/performers';
 import {
   PostCreateResult,
   PostOwnerType,
@@ -70,7 +70,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   navigation,
 }: CreatePostStackScreenProps) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
-  const [taggedArtist, setTaggedArtist] = useState<Artist | undefined>(
+  const [taggedPerformer, setTaggedPerformer] = useState<Performer | undefined>(
     undefined,
   );
   const [performanceDate, setPerformanceDate] = useState<Date | undefined>(
@@ -128,14 +128,14 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     error: performancesGetError,
   } = usePerformancesGetQuery({
     queryParams: {
-      performerId: taggedArtist?.id,
+      performerId: taggedPerformer?.id,
       performanceDate: toNumber(
         performanceDate
           ? Math.ceil(performanceDate.getTime() / 1000)
           : undefined,
       ),
     },
-    enabled: !!taggedArtist && !!performanceDate,
+    enabled: !!taggedPerformer && !!performanceDate,
   });
 
   const performance = performances && performances[0];
@@ -201,7 +201,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!taggedArtist || !form.caption || !performanceDate) {
+    if (!taggedPerformer || !form.caption || !performanceDate) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -233,7 +233,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     if (!performance) {
       // create the performance so we can tag the show in it
       performancePromise = performanceCreate({
-        performerId: taggedArtist.id,
+        performerId: taggedPerformer.id,
         // Convert to seconds so its a unix timestamp
         performanceDate: Math.ceil(performanceDate.getTime() / 1000),
       });
@@ -281,12 +281,12 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     console.log('cancelled');
   };
 
-  function handleArtistSelection(artist: Artist) {
-    setTaggedArtist(artist);
+  function handlePerformerSelection(performer: Performer) {
+    setTaggedPerformer(performer);
   }
 
-  function handleTaggedArtistPress() {
-    setTaggedArtist(undefined);
+  function handleTaggedPerformerPress() {
+    setTaggedPerformer(undefined);
   }
 
   function handleDateInputPress() {
@@ -356,7 +356,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       {postFile && (
         <Formik
           initialValues={{
-            artistId: undefined,
+            performerId: undefined,
             caption: '',
           }}
           onSubmit={handleFormSubmit}
@@ -425,19 +425,19 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                 placeholder="Write a caption..."
               />
               <View style={{ ...styles.flexColumnContainer, height: 200 }}>
-                <Text style={{ width: '100%' }}>Artist</Text>
-                {!taggedArtist && (
-                  <ArtistSearch
+                <Text style={{ width: '100%' }}>Performer</Text>
+                {!taggedPerformer && (
+                  <PerformerSearch
                     scrollable={true}
                     height={200}
-                    onArtistSelect={handleArtistSelection}
-                  ></ArtistSearch>
+                    onPerformerSelect={handlePerformerSelection}
+                  ></PerformerSearch>
                 )}
-                {taggedArtist && (
-                  <ArtistSearchCard
-                    artist={taggedArtist}
-                    onPress={handleTaggedArtistPress}
-                  ></ArtistSearchCard>
+                {taggedPerformer && (
+                  <PerformerSearchCard
+                    performer={taggedPerformer}
+                    onPress={handleTaggedPerformerPress}
+                  ></PerformerSearchCard>
                 )}
               </View>
               <View

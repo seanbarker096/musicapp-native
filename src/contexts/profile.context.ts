@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 export enum ProfileType {
-  ARTIST = 'artist',
+  PERFORMER = 'performer',
   USER = 'user',
 }
 

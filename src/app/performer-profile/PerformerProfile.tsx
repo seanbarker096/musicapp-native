@@ -3,27 +3,27 @@ import { Gallery } from 'components/gallery';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Artist } from 'store/artists';
 import { useFeaturesGetQuery } from 'store/features/features.queries';
 import {
   FeaturedEntityType,
   FeaturerType,
 } from 'store/features/features.types';
+import { Performer } from 'store/performers';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
-type ArtistProfileProps = {
-  artist: Artist;
+type PerformerProfileProps = {
+  performer: Performer;
 };
 
-const ArtistProfile: FC<ArtistProfileProps> = ({ artist }) => {
+const PerformerProfile: FC<PerformerProfileProps> = ({ performer }) => {
   const {
     data: features,
     isLoading: isFeaturesGetLoading,
     error: featuresGetError,
   } = useFeaturesGetQuery({
     queryParams: {
-      featurerId: artist.id,
-      featurerType: FeaturerType.ARTIST,
+      featurerId: performer.id,
+      featurerType: FeaturerType.PERFORMER,
       featuredEntityType: FeaturedEntityType.POST,
     },
   });
@@ -39,12 +39,12 @@ const ArtistProfile: FC<ArtistProfileProps> = ({ artist }) => {
 
   return (
     <View style={styles.container}>
-      <ProfileImage imageUrl={artist.imageUrl}></ProfileImage>
+      <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
       <AppText
         size="large"
         weight="bold"
       >
-        {artist.name}
+        {performer.name}
       </AppText>
       {postsWithAttachmentsAndFiles && (
         <Gallery
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArtistProfile;
+export default PerformerProfile;

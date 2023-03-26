@@ -3,12 +3,12 @@ import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { SPACING_XXSMALL } from 'styles';
 
-interface ArtistPostHeaderProps {
+interface PerformerPostHeaderProps {
   profileImageUrl?: string;
   displayName: string;
 }
 
-const ArtistPostHeader: FC<ArtistPostHeaderProps> = ({
+const PerformerPostHeader: FC<PerformerPostHeaderProps> = ({
   profileImageUrl,
   displayName,
 }) => {
@@ -24,4 +24,4 @@ const ArtistPostHeader: FC<ArtistPostHeaderProps> = ({
   );
 };
 
-export default ArtistPostHeader;
+export default PerformerPostHeader;

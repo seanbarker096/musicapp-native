@@ -39,7 +39,7 @@ export enum FeaturedEntityType {
 
 export enum FeaturerType {
   USER = 'user',
-  ARTIST = 'artist',
+  PERFORMER = 'performer',
 }
 
 export interface FeaturesGetFilterApi {

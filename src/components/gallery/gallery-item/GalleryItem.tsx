@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { ArtistProfileStackParamList } from 'app/artist-profile/artist-profile.types';
+import { PerformerProfileStackParamList } from 'app/performer-profile/performer-profile.types';
 import { UserProfileStackParamList } from 'app/user-profile/user-profile.types';
 
 import { IconColor, SVGIcon } from 'components/icon/index';
@@ -22,7 +22,7 @@ const LOOPING_TYPE_ONE = 1;
 const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
   const navigation =
     useNavigation<
-      NavigationProp<UserProfileStackParamList | ArtistProfileStackParamList>
+      NavigationProp<UserProfileStackParamList | PerformerProfileStackParamList>
     >();
 
   const video = React.useRef<Video>(null);

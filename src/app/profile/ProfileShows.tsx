@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface ProfileShowsProps {
-  profileId: number; // Can be artist or user
+  profileId: number; // Can be performer or user
   profileType: ProfileType;
 }
 

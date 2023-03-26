@@ -19,11 +19,11 @@ import {
   PlaceholderMedia,
   Shine,
 } from 'rn-placeholder';
-import { useArtistsGetQuery } from 'store/artists/artists.queries';
+import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { PostOwnerType } from 'store/posts';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
-import ArtistPostHeader from './ArtistPostHeader';
+import PerformerPostHeader from './PerformerPostHeader';
 import PostFooter from './PostFooter';
 import UserPostHeader from './UserPostHeader';
 
@@ -57,18 +57,18 @@ export const Post: FC<PostProps> = ({
   });
 
   const {
-    data: artistData,
-    isLoading: isArtistLoading,
-    isError: isArtistGetError,
-  } = useArtistsGetQuery({
+    data: performerData,
+    isLoading: isPerformerLoading,
+    isError: isPerformerGetError,
+  } = usePerformersGetQuery({
     queryParams: { id: post.ownerId },
-    enabled: post.ownerType === PostOwnerType.ARTIST,
+    enabled: post.ownerType === PostOwnerType.PERFORMER,
   });
 
   const user = userData && userData[0];
-  const artist = artistData && artistData[0];
+  const performer = performerData && performerData[0];
 
-  const ownerReady = artist || user;
+  const ownerReady = performer || user;
 
   // TODO: Move all video to its own component
   const video = React.useRef<Video>(null);
@@ -168,11 +168,11 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {post.ownerType === PostOwnerType.ARTIST && artist && (
-          <ArtistPostHeader
-            profileImageUrl={artist.imageUrl}
-            displayName={artist.name}
-          ></ArtistPostHeader>
+        {post.ownerType === PostOwnerType.PERFORMER && performer && (
+          <PerformerPostHeader
+            profileImageUrl={performer.imageUrl}
+            displayName={performer.name}
+          ></PerformerPostHeader>
         )}
         {post.ownerType === PostOwnerType.USER && user && (
           <UserPostHeader

@@ -14,7 +14,7 @@ enum SelectedTab {
 }
 type ProfileProps = { profileId: number; profileType: ProfileType };
 
-// TODO: Might be better to just have a sigle artist profile and user profile component, rather than creating things like ProfileHeader which internally branches either to artist or proifle
+// TODO: Might be better to just have a sigle performer profile and user profile component, rather than creating things like ProfileHeader which internally branches either to performer or proifle
 // Benefit of current approach is Profile now doesn't ened to know how to deal with different profile types
 const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
   const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
@@ -49,7 +49,7 @@ const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
         ></ProfileShows>
       )}
 
-      {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for artist profiles
+      {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
         <ProfileTaggedPosts
           profileId={profileId}
           profileType={profileType}

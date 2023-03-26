@@ -2,32 +2,32 @@ import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { useArtistsGetQuery } from 'store/artists/artists.queries';
+import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { FONT_WEIGHT_BOLD, SPACING_LARGE, SPACING_SMALL } from 'styles';
 
-interface ArtistHeaderProps {
-  artistId: number;
+interface PerformerHeaderProps {
+  performerId: number;
 }
 
-const ArtistHeader: FC<ArtistHeaderProps> = ({ artistId }) => {
+const PerformerHeader: FC<PerformerHeaderProps> = ({ performerId }) => {
   const {
-    isLoading: artistGetLoading,
-    isError: isArtistsGetError,
-    data: artistData,
-    error: artistsGetError,
-  } = useArtistsGetQuery({
-    queryParams: { id: artistId },
+    isLoading: performerGetLoading,
+    isError: isPerformersGetError,
+    data: performerData,
+    error: performersGetError,
+  } = usePerformersGetQuery({
+    queryParams: { id: performerId },
   });
 
-  const artist = artistData ? artistData[0] : undefined;
+  const performer = performerData ? performerData[0] : undefined;
 
-  const artistLoading = !artist && artistGetLoading;
+  const performerLoading = !performer && performerGetLoading;
 
-  const artistError = !artist && artistsGetError;
+  const performerError = !performer && performersGetError;
 
   return (
     <>
-      {artist && (
+      {performer && (
         <View
           style={{
             ...styles.rowContainer,
@@ -36,12 +36,12 @@ const ArtistHeader: FC<ArtistHeaderProps> = ({ artistId }) => {
           }}
         >
           <View style={{ ...styles.colContainer }}>
-            <ProfileImage imageUrl={artist.imageUrl}></ProfileImage>
+            <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
             <AppText
               size="large"
               weight="bold"
             >
-              {artist.name}
+              {performer.name}
             </AppText>
           </View>
           <View
@@ -62,8 +62,8 @@ const ArtistHeader: FC<ArtistHeaderProps> = ({ artistId }) => {
           </View>
         </View>
       )}
-      {artistGetLoading && <AppText>Loading...</AppText>}
-      {isArtistsGetError && <AppText>Error...</AppText>}
+      {performerGetLoading && <AppText>Loading...</AppText>}
+      {isPerformersGetError && <AppText>Error...</AppText>}
     </>
   );
 };
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArtistHeader;
+export default PerformerHeader;

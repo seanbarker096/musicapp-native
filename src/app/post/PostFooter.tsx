@@ -27,8 +27,8 @@ const PostFooter: FC<PostFooterProps> = ({ post }) => {
   const { profileState } = useContext(ProfileContext);
 
   const featurerType =
-    profileState.profileType === ProfileType.ARTIST
-      ? FeaturerType.ARTIST
+    profileState.profileType === ProfileType.PERFORMER
+      ? FeaturerType.PERFORMER
       : FeaturerType.USER;
 
   const {

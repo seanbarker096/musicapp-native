@@ -30,6 +30,6 @@ export interface GetRequestConfig<S extends StoreSlice> {
 }
 
 /**
- * Document represents requests for a single object from a given store slice. For example, a store * slice might be capable of requesting a collection of artists, or a single artist by their UUID
+ * Document represents requests for a single object from a given store slice. For example, a store * slice might be capable of requesting a collection of performers, or a single performer by their UUID
  */
 export type GetRequestTypes = 'Collection' | 'Document';

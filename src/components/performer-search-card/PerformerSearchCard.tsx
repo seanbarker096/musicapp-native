@@ -1,17 +1,17 @@
 import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { GestureResponderEvent, Pressable, StyleSheet } from 'react-native';
-import { ArtistSearchArtist } from 'store/artists';
+import { PerformerSearchPerformer } from 'store/performers';
 import { SPACING_XXSMALL } from 'styles';
 import { ProfileImage } from '../profile-image';
 
-interface ArtistSearchCardProps {
-  artist: ArtistSearchArtist;
+interface PerformerSearchCardProps {
+  performer: PerformerSearchPerformer;
   onPress?: (event: GestureResponderEvent) => void;
 }
 
-export const ArtistSearchCard: FC<ArtistSearchCardProps> = ({
-  artist,
+export const PerformerSearchCard: FC<PerformerSearchCardProps> = ({
+  performer,
   onPress = () => {},
 }) => (
   <Pressable
@@ -20,9 +20,9 @@ export const ArtistSearchCard: FC<ArtistSearchCardProps> = ({
   >
     <ProfileImage
       styles={styles.profileImage}
-      imageUrl={artist.imageUrl}
+      imageUrl={performer.imageUrl}
     ></ProfileImage>
-    <AppText weight="bold">{artist.name}</AppText>
+    <AppText weight="bold">{performer.name}</AppText>
   </Pressable>
 );
 

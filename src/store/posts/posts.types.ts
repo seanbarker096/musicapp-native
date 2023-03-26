@@ -50,7 +50,7 @@ export interface PostApi {
 }
 
 export enum PostOwnerType {
-  ARTIST = 'artist',
+  PERFORMER = 'performer',
   USER = 'user',
 }
 

@@ -1,10 +1,10 @@
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
-import ArtistProfileHeader from './ArtistProfileHeader';
+import PerformerProfileHeader from './PerformerProfileHeader';
 import UserProfileHeader from './UserProfileHeader';
 
 interface ProfileHeaderProps {
-  profileId: number; // Can be artist or user
+  profileId: number; // Can be performer or user
   profileType: ProfileType;
 }
 
@@ -14,8 +14,10 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ profileId, profileType }) => {
       {profileType === ProfileType.USER && (
         <UserProfileHeader userId={profileId}></UserProfileHeader>
       )}
-      {profileType === ProfileType.ARTIST && (
-        <ArtistProfileHeader artistId={profileId}></ArtistProfileHeader>
+      {profileType === ProfileType.PERFORMER && (
+        <PerformerProfileHeader
+          performerId={profileId}
+        ></PerformerProfileHeader>
       )}
     </>
   );
