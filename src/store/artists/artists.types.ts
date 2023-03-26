@@ -65,7 +65,7 @@ export interface ArtistSearchRequestApi {
 }
 
 export interface ArtistsGetResultApi {
-  artists: readonly ArtistApi[];
+  performers: readonly ArtistApi[];
 }
 
 export interface ArtistCreateRequestApi {

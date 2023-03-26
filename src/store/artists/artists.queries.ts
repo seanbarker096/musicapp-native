@@ -22,7 +22,7 @@ const artistsSearch = async (searchQuery: string) => {
     body: { search_query: searchQuery },
   });
 
-  return response.data.artists.map(artistSearchArtistApi =>
+  return response.data.performers.map(artistSearchArtistApi =>
     transformArtistSearchArtistApi(artistSearchArtistApi),
   );
 };
@@ -99,7 +99,7 @@ async function artistGet(
     params,
   });
 
-  return response.data.artists.map(artist => transformArtistApi(artist));
+  return response.data.performers.map(artist => transformArtistApi(artist));
 }
 
 export function useArtistsGetQuery({
