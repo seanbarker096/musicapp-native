@@ -81,7 +81,7 @@ export function useArtistGetOrCreateQuery({
   );
 }
 
-/** ------------------ ARTIST_GET --------------------------- */
+// ------------------ ARTIST_GET --------------------------- //
 
 type ArtistObjectFields = keyof ArtistsStoreSlice['ObjectType'];
 
