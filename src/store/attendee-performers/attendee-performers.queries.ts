@@ -6,18 +6,19 @@ import { failedQuery } from 'store/store-utils';
 import { attendeePerformerKeys } from './attendee-performers.query-keys';
 import { transformAttendeePerformerApi } from './attendee-performers.transformations';
 import {
+  AttendeePerformer,
   AttendeePerformersGetFilterApi,
   AttendeePerformersStoreSlice,
 } from './attendee-performers.types';
 
 async function attendeePerformersGet({
   attendee_id,
-  get_count,
+  get_counts,
 }: AttendeePerformersGetFilterApi) {
   const response = await getRequest<AttendeePerformersStoreSlice>({
-    url: `performers/0.1/attendees/${attendee_id}/performers}`,
+    url: `performers/0.1/attendees/${attendee_id}`,
     params: {
-      get_count,
+      get_counts,
       attendee_id, // alreayd passed in the url, but sending it here avoids having to change the params type. This keeps the filter type consistent with the backend filter def
     },
   });
@@ -39,11 +40,15 @@ export function useAttendeePerformersGetQuery({
     queryKey = attendeePerformerKeys.attendeePerformersByAttendeeId(attendeeId);
     apiQueryParams = {
       attendee_id: attendeeId,
-      get_count: true,
+      get_counts: true,
     };
   }
 
-  return useQuery(
+  return useQuery<
+    readonly AttendeePerformer[],
+    unknown,
+    readonly AttendeePerformer[]
+  >(
     queryKey,
     () =>
       apiQueryParams

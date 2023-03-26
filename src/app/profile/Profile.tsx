@@ -1,11 +1,12 @@
 import { AppText } from 'components/app-text';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { COLOR_PRIMARY, FONT_WEIGHT_BOLD, SPACING_XXSMALL } from 'styles';
 import ProfileHeader from './profile-header/ProfileHeader';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
+import { ProfileTimeline } from './ProfileTimeline';
 
 enum SelectedTab {
   SHOWS = 'shows',
@@ -57,7 +58,12 @@ const Profile: FC<ProfileProps> = ({ profileId, profileType }) => {
           profileType={profileType}
         ></ProfileTaggedPosts>
       )}
-      {selectedTab === SelectedTab.TIMELINE && <Text>timeline</Text>}
+      {selectedTab === SelectedTab.TIMELINE && (
+        <ProfileTimeline
+          profileId={profileId}
+          profileType={profileType}
+        ></ProfileTimeline>
+      )}
     </View>
   );
 };

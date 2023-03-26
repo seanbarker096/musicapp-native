@@ -13,7 +13,7 @@ export interface AttendeePerformersStoreSlice extends StoreSlice {
 
 export interface AttendeePerformersGetFilterApi {
   attendee_id: number;
-  get_count: boolean;
+  get_counts: boolean;
   limit?: number;
 }
 

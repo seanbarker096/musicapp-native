@@ -11,5 +11,6 @@
     }
   },
   "usesCssModule": false,
-  "cssPreprocessor": "styl"
+  "cssPreprocessor": "styl",
+  "usesStyledComponents": false
 }
