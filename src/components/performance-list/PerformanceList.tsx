@@ -2,6 +2,7 @@ import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
 import { FC } from 'react';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { PerformanceListItem } from './PerformanceListItem';
 
 type Props = {
   attendeeId?: number;
@@ -34,8 +35,9 @@ export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
         >
           {performances?.map(performance => (
             <ListItem>
-              <AppText>Performer: {performance.performerId}</AppText>
-              <AppText>Venue: {performance.venueId}</AppText>
+              <PerformanceListItem
+                performance={performance}
+              ></PerformanceListItem>
             </ListItem>
           ))}
         </List>

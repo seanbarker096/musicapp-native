@@ -401,7 +401,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                     onPressIn={handleDateInputPress}
                     value={
                       performanceDate
-                        ? performanceDate.toDateString()
+                        ? performanceDate.toLocaleDateString()
                         : undefined
                     }
                     placeholder="DD/MM/YYYY"

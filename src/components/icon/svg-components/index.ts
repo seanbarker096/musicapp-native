@@ -8,3 +8,5 @@ export * from './PicturePlusSVG';
 export * from './PlayButtonSVG';
 export * from './SearchOutlineSVG';
 export * from './UserAvatarSVG';
+export * from './VideoCameraSVG';
+
