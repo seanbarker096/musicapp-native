@@ -2,11 +2,15 @@ import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { View } from 'react-native';
 
-interface TimelineProps {}
+interface TimelineProps {
+  performerId: number;
+  attendeeId: number;
+}
 
-const Timeline: FC<TimelineProps> = () => (
+const Timeline: FC<TimelineProps> = ({ performerId, attendeeId }) => (
   <View>
-    <AppText>Timeline</AppText>
+    <AppText>{performerId}</AppText>
+    <AppText>{attendeeId}</AppText>
   </View>
 );
 

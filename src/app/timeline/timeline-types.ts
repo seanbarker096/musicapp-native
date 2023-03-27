@@ -1,3 +1,6 @@
 export type TimelineStackParamList = {
-  timeline: undefined;
+  timeline: {
+    attendeeId: number;
+    performerId: number;
+  };
 };

@@ -6,6 +6,10 @@ export type ProfileStackParamList = {
   ViewPost: {
     post: Post;
   };
+  ProfileTimeline: {
+    attendeeId: number;
+    performerId: number;
+  };
 };
 
 /**

@@ -7,6 +7,7 @@ import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
@@ -81,6 +82,10 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
       <ProfileStack.Screen
         name="ViewPost"
         component={Post}
+      ></ProfileStack.Screen>
+      <ProfileStack.Screen
+        name="ProfileTimeline"
+        component={TimelineStackScreen}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );

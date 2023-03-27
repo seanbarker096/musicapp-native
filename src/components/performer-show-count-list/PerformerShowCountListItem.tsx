@@ -10,14 +10,19 @@ import { SPACING_XXSMALL } from 'styles';
 type Props = {
   performer: Performer;
   showCount: number;
+  handlePress: () => void;
 };
 
 export const PerformerShowCountsListItem: FC<Props> = ({
   performer,
   showCount,
+  handlePress,
 }) => {
   return (
-    <Pressable style={styles.rowContainer}>
+    <Pressable
+      style={styles.rowContainer}
+      onPress={handlePress}
+    >
       <ProfileImage
         styles={{ marginRight: SPACING_XXSMALL }}
         imageUrl={performer.imageUrl}
