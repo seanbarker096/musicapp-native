@@ -1,4 +1,5 @@
 export * from './BorderedPlusSVG';
+export * from './CalendarSVG';
 export * from './HomeOutlineSVG';
 export * from './LikeHeartSVG';
 export * from './PeopleSVG';

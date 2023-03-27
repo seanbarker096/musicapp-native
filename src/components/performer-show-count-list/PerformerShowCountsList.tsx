@@ -2,6 +2,7 @@ import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
 import { FC } from 'react';
 import { useAttendeePerformersGetQuery } from 'store/attendee-performers';
+import { PerformerShowCountsListItem } from './PerformerShowCountListItem';
 
 interface Props {
   userId: number;
@@ -22,13 +23,16 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
     <>
       {performers && (
         <List
-          sidePadding="small"
+          sidePadding="medium"
+          verticalPadding="small"
           scrollable={true}
         >
           {performers?.map(performer => (
-            <ListItem>
-              <AppText>Artist: {performer.name}</AppText>
-              <AppText>Count: {performer.count}</AppText>
+            <ListItem key={performer.id}>
+              <PerformerShowCountsListItem
+                performer={performer}
+                showCount={performer.count}
+              ></PerformerShowCountsListItem>
             </ListItem>
           ))}
         </List>

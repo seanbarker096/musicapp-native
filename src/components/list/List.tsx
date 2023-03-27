@@ -7,25 +7,30 @@ import { ListPadding, listPaddingMap } from './list.styles';
 interface ListProps {
   children: ReactElement<ListItemProps, ListItemComponent>[];
   sidePadding?: ListPadding;
+  verticalPadding?: ListPadding;
   scrollable?: boolean;
   maxHeight?: number; // Max height before which content becomes scrollable
 }
 
 export const List: FC<ListProps> = ({
   children,
+  verticalPadding,
   sidePadding,
   scrollable = false,
   maxHeight,
 }) => {
-  const listPadding = listPaddingMap[sidePadding ?? 'none'];
+  const leftRightPadding = listPaddingMap[sidePadding ?? 'none'];
+  const topBottomPadding = listPaddingMap[verticalPadding ?? 'none'];
 
   const childrenContent = children.map((listItem, i) => (
     <View
       key={i}
       style={{
         ...styles.listContainer,
-        paddingLeft: listPadding,
-        paddingRight: listPadding,
+        paddingLeft: leftRightPadding,
+        paddingRight: leftRightPadding,
+        paddingBottom: topBottomPadding,
+        paddingTop: topBottomPadding,
       }}
     >
       {listItem}
@@ -41,8 +46,10 @@ export const List: FC<ListProps> = ({
           contentContainerStyle={{
             ...styles.listContainer,
             backgroundColor: APP_BACKGROUND_COLOR,
-            paddingLeft: listPadding,
-            paddingRight: listPadding,
+            paddingLeft: leftRightPadding,
+            paddingRight: leftRightPadding,
+            paddingBottom: topBottomPadding,
+            paddingTop: topBottomPadding,
           }}
         >
           {childrenContent}

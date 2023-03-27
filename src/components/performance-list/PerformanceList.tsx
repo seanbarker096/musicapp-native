@@ -29,6 +29,7 @@ export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
       {performances && (
         <List
           sidePadding="small"
+          verticalPadding="none"
           scrollable={true}
         >
           {performances?.map(performance => (
