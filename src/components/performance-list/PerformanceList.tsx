@@ -1,6 +1,7 @@
 import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
 import { FC } from 'react';
+import { usePerformancesCountsGetQuery } from 'store/performances-counts';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceListItem } from './PerformanceListItem';
 
@@ -21,22 +22,40 @@ export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
     },
   });
 
-  const loading = !performances && performancesLoading;
+  const {
+    data: performancesWithCounts,
+    isLoading: performancesWithCountsLoading,
+    error: performancesWithCountsGetError,
+  } = usePerformancesCountsGetQuery({
+    queryParams: {
+      performanceIds: performances?.map(performance => performance.id),
+      includeAttendeeCount: false,
+      includeTagCount: true,
+      includeFeaturesCount: true,
+    },
+    enabled: !!performances,
+  });
 
-  const error = !performances && performancesGetError;
+  const loading =
+    (!performances || !performancesWithCounts) &&
+    (performancesLoading || performancesWithCountsLoading);
+
+  const error =
+    (!performances || !performancesWithCounts) &&
+    (performancesGetError || performancesWithCountsGetError);
 
   return (
     <>
-      {performances && (
+      {performancesWithCounts && (
         <List
           sidePadding="small"
           verticalPadding="none"
           scrollable={true}
         >
-          {performances?.map(performance => (
+          {performancesWithCounts?.map(performanceWithCounts => (
             <ListItem>
               <PerformanceListItem
-                performance={performance}
+                performanceWithCounts={performanceWithCounts}
               ></PerformanceListItem>
             </ListItem>
           ))}

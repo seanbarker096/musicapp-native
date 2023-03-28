@@ -3,14 +3,20 @@ import { SVGIcon } from 'components/icon';
 import { VideoCameraSVG } from 'components/icon/svg-components';
 import { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Performance } from 'store/performances/performances.types';
+import { PerformanceWithCounts } from 'store/performances-counts';
 
 type Props = {
-  performance: Performance;
+  performanceWithCounts: PerformanceWithCounts;
 };
 
-export const PerformanceListItem: FC<Props> = ({ performance }) => {
-  const date = new Date(performance.createTime * 1000);
+export const PerformanceListItem: FC<Props> = ({ performanceWithCounts }) => {
+  const date = new Date(performanceWithCounts.createTime * 1000);
+
+  const captures =
+    performanceWithCounts.featuresCount + performanceWithCounts.tagCount;
+
+  const captureText =
+    captures > 1 ? `${captures} captures` : `${captures} capture`;
 
   return (
     <Pressable style={styles.columnContainer}>
@@ -19,6 +25,7 @@ export const PerformanceListItem: FC<Props> = ({ performance }) => {
         <SVGIcon>
           <VideoCameraSVG></VideoCameraSVG>
         </SVGIcon>
+        <AppText>{captureText}</AppText>
       </View>
     </Pressable>
   );
