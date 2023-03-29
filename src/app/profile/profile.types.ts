@@ -10,6 +10,11 @@ export type ProfileStackParamList = {
     attendeeId: number;
     performerId: number;
   };
+  // Clicking a performance from their profile timeline will take us to a new screen for that performance
+  ProfilePerformance: {
+    performanceId: number;
+    performerId: number;
+  };
 };
 
 /**

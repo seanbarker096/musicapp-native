@@ -2,6 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
+import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { FC } from 'react';
 import Timeline from './Timeline';
@@ -21,7 +22,7 @@ export const TimelineStackScreen: FC<TimelineStackScreenProps> = ({
 
   return (
     <TimelineStack.Navigator screenOptions={{ headerShown: false }}>
-      <TimelineStack.Screen name="timeline">
+      <TimelineStack.Screen name="Timeline">
         {props => (
           <Timeline
             {...props}
@@ -30,6 +31,11 @@ export const TimelineStackScreen: FC<TimelineStackScreenProps> = ({
           ></Timeline>
         )}
       </TimelineStack.Screen>
+      <TimelineStack.Screen
+        name="TimelinePerformance"
+        // @ts-ignore Currently we can't type check screens inside a navigator if that screen is used in multiple navigators (https://github.com/react-navigation/react-navigation/issues/11028)
+        component={PerformanceStackScreen}
+      ></TimelineStack.Screen>
     </TimelineStack.Navigator>
   );
 };

@@ -4,6 +4,7 @@ import { VideoCameraSVG } from 'components/icon/svg-components';
 import { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { PerformanceWithCounts } from 'store/performances-counts';
+import { SPACING_XSMALL } from 'styles';
 
 type Props = {
   performanceWithCounts: PerformanceWithCounts;
@@ -15,14 +16,13 @@ export const PerformanceListItem: FC<Props> = ({ performanceWithCounts }) => {
   const captures =
     performanceWithCounts.featuresCount + performanceWithCounts.tagCount;
 
-  const captureText =
-    captures > 1 ? `${captures} captures` : `${captures} capture`;
+  const captureText = captures === 1 ? '1 capture' : `${captures} captures`;
 
   return (
     <Pressable style={styles.columnContainer}>
       <AppText>{date.toLocaleDateString()}</AppText>
-      <View>
-        <SVGIcon>
+      <View style={styles.rowContainer}>
+        <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>
           <VideoCameraSVG></VideoCameraSVG>
         </SVGIcon>
         <AppText>{captureText}</AppText>
@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
   columnContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
 });

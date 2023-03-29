@@ -4,6 +4,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
+import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
@@ -86,6 +87,10 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
       <ProfileStack.Screen
         name="ProfileTimeline"
         component={TimelineStackScreen}
+      ></ProfileStack.Screen>
+      <ProfileStack.Screen
+        name="ProfilePerformance"
+        component={PerformanceStackScreen}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );

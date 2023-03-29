@@ -1,6 +1,10 @@
 export type TimelineStackParamList = {
-  timeline: {
+  Timeline: {
     attendeeId: number;
+    performerId: number;
+  };
+  TimelinePerformance: {
+    performanceId: number;
     performerId: number;
   };
 };

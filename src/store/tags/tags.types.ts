@@ -4,8 +4,8 @@ export interface TagsStoreSlice extends StoreSlice {
   Name: 'tags';
   ObjectType: Tag;
   Get: {
-    RequestParametersType: {};
-    ResultType: {};
+    RequestParametersType: TagsGetFilterApi;
+    ResultType: TagsGetResultApi;
     ErrorType: {};
   };
   Post: {
@@ -37,9 +37,9 @@ export interface TagsCreateResultApi {
 
 export interface Tag {
   id: number;
-  taggedEntityType: string;
+  taggedEntityType: TaggedEntityType;
   taggedEntityId: number;
-  taggedInEntityType: string;
+  taggedInEntityType: TaggedInEntityType;
   taggedInEntityId: number;
   creatorId: number;
   createTime: number;
@@ -63,4 +63,18 @@ export enum TaggedEntityType {
 
 export enum TaggedInEntityType {
   POST = 'post',
+}
+
+export interface TagsGetFilterApi {
+  tagged_entity_type?: TaggedEntityType;
+  tagged_entity_id?: number;
+}
+
+export interface TagsGetFilter {
+  taggedEntityType?: TaggedEntityType;
+  taggedEntityId?: number;
+}
+
+export interface TagsGetResultApi {
+  tags: TagApi[];
 }
