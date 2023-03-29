@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { usePerformancesCountsGetQuery } from 'store/performances-counts';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { PerformanceStackParamList } from './performance-types';
+import { PerformancePosts } from './PerformancePosts';
 
 type PerformanceScreenProps = NativeStackScreenProps<
   PerformanceStackParamList,
@@ -47,5 +48,9 @@ export const Performance: FC<PerformanceScreenProps> = ({
   const error =
     (!performance && performanceGetError) || (!performer && performerGetError);
 
-  return <View></View>;
+  return (
+    <View>
+      <PerformancePosts performanceId={performanceId}></PerformancePosts>
+    </View>
+  );
 };

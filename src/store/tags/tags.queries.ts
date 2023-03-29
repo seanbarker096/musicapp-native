@@ -49,18 +49,16 @@ async function tagsGet({
   tagged_entity_id,
   tagged_entity_type,
 }: TagsStoreSlice['Get']['RequestParametersType']) {
-  return async () => {
-    const response = await getRequest<TagsStoreSlice>({
-      url: 'tags/0.1/tags',
-      params: {
-        tagged_entity_type,
-        tagged_entity_id,
-      },
-    });
+  const response = await getRequest<TagsStoreSlice>({
+    url: 'tags/0.1/tags',
+    params: {
+      tagged_entity_type,
+      tagged_entity_id,
+    },
+  });
 
-    return response.data.tags.map(tag => transformTagApi(tag));
-  };
-}
+  return response.data.tags.map(tag => transformTagApi(tag));
+};
 
 export function useTagsGetQuery({
   queryParams,

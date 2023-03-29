@@ -26,6 +26,7 @@ interface PostFooterProps {
 const PostFooter: FC<PostFooterProps> = ({ post }) => {
   const { profileState } = useContext(ProfileContext);
 
+  // TODO: Update this to ideally have the post by featured by the performance the post is tagged in, not the performer
   const featurerType =
     profileState.profileType === ProfileType.PERFORMER
       ? FeaturerType.PERFORMER

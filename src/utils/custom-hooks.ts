@@ -10,10 +10,12 @@ import {
 
 // TODO: Add error handling/return error if it occurs for client to handle
 export function useGetPostsWithAttachmentsAndFilesQuery({
-  ownerId,
-  ownerType,
-  id,
-}: Pick<PostsGetQueryField, 'ownerId' | 'ownerType' | 'id'>): {
+  queryParams: { ownerId, ownerType, id },
+  enabled = true,
+}: {
+  queryParams: Pick<PostsGetQueryField, 'ownerId' | 'ownerType' | 'id'>;
+  enabled?: boolean;
+}): {
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
