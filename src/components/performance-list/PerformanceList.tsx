@@ -1,7 +1,12 @@
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
 import { FC } from 'react';
-import { usePerformancesCountsGetQuery } from 'store/performances-counts';
+import {
+  PerformanceWithCounts,
+  usePerformancesCountsGetQuery,
+} from 'store/performances-counts';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceListItem } from './PerformanceListItem';
 
@@ -11,6 +16,8 @@ type Props = {
 };
 
 export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
+  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
+
   const {
     data: performances,
     isLoading: performancesLoading,
@@ -44,6 +51,16 @@ export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
     (!performances || !performancesWithCounts) &&
     (performancesGetError || performancesWithCountsGetError);
 
+  function handlePerformancePress(
+    performanceWithCounts: PerformanceWithCounts,
+  ) {
+    console.log('pressed');
+    navigation.navigate('ProfilePerformance', {
+      performanceId: performanceWithCounts.id,
+      performerId: performanceWithCounts.performerId,
+    });
+  }
+
   return (
     <>
       {performancesWithCounts && (
@@ -53,8 +70,9 @@ export const PerformanceList: FC<Props> = ({ performerId, attendeeId }) => {
           scrollable={true}
         >
           {performancesWithCounts?.map(performanceWithCounts => (
-            <ListItem>
+            <ListItem key={performanceWithCounts.id}>
               <PerformanceListItem
+                onListItemPress={handlePerformancePress}
                 performanceWithCounts={performanceWithCounts}
               ></PerformanceListItem>
             </ListItem>

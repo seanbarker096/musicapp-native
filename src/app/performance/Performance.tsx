@@ -3,8 +3,8 @@ import { FC } from 'react';
 import { View } from 'react-native';
 import { usePerformancesCountsGetQuery } from 'store/performances-counts';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { PerformanceStackParamList } from './performance-types';
 import { PerformancePosts } from './PerformancePosts';
+import { PerformanceStackParamList } from './performance-types';
 
 type PerformanceScreenProps = NativeStackScreenProps<
   PerformanceStackParamList,

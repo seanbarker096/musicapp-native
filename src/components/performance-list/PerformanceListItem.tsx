@@ -8,9 +8,13 @@ import { SPACING_XSMALL } from 'styles';
 
 type Props = {
   performanceWithCounts: PerformanceWithCounts;
+  onListItemPress: (performanceWithCounts: PerformanceWithCounts) => void;
 };
 
-export const PerformanceListItem: FC<Props> = ({ performanceWithCounts }) => {
+export const PerformanceListItem: FC<Props> = ({
+  performanceWithCounts,
+  onListItemPress,
+}) => {
   const date = new Date(performanceWithCounts.createTime * 1000);
 
   const captures =
@@ -19,7 +23,10 @@ export const PerformanceListItem: FC<Props> = ({ performanceWithCounts }) => {
   const captureText = captures === 1 ? '1 capture' : `${captures} captures`;
 
   return (
-    <Pressable style={styles.columnContainer}>
+    <Pressable
+      onPress={() => onListItemPress(performanceWithCounts)}
+      style={styles.columnContainer}
+    >
       <AppText>{date.toLocaleDateString()}</AppText>
       <View style={styles.rowContainer}>
         <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>

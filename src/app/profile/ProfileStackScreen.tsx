@@ -87,10 +87,12 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
       <ProfileStack.Screen
         name="ProfileTimeline"
         component={TimelineStackScreen}
+        options={{ headerShown: false }}
       ></ProfileStack.Screen>
       <ProfileStack.Screen
         name="ProfilePerformance"
         component={PerformanceStackScreen}
+        options={{ headerShown: false }}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );
