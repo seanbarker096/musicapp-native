@@ -46,8 +46,7 @@ export function useFeaturesGetQuery({
   if (
     featuredEntityType === FeaturedEntityType.POST &&
     featurerType &&
-    featurerId &&
-    featuredEntityId
+    featurerId
   ) {
     queryKey = featuresKeys.postFeaturesByFeaturer(featurerId, featurerType);
     apiQueryParams = {

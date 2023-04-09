@@ -1,11 +1,16 @@
 export const performancesKeys = {
-  all: 'performances',
+  all: ['performances'],
   null: [],
+  performancesByIds: (ids: readonly number[]) => [
+    ...performancesKeys.all,
+    'id',
+    ...ids,
+  ],
   performancesByDateAndPerformerId: (
     performanceDate: number,
     performerId: number,
   ) => [
-    performancesKeys.all,
+    ...performancesKeys.all,
     'performanceDate',
     performanceDate,
     'performerId',
@@ -15,7 +20,7 @@ export const performancesKeys = {
     performerIds: readonly number[],
     performanceDate: number,
   ) => [
-    performancesKeys.all,
+    ...performancesKeys.all,
     'performerIds',
     ...performerIds,
     'performanceDate',

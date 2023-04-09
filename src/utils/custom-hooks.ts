@@ -24,9 +24,12 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     isLoading: postsLoading,
     isError: postsError,
   } = usePostsGetQuery({
-    ownerId,
-    id,
-    ownerType,
+    queryParams: {
+      ownerId,
+      id,
+      ownerType,
+    },
+    enabled,
   });
 
   const postsReady = !!posts && !postsLoading;

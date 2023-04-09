@@ -15,7 +15,7 @@ export const PerformanceListItem: FC<Props> = ({
   performanceWithCounts,
   onListItemPress,
 }) => {
-  const date = new Date(performanceWithCounts.createTime * 1000);
+  const date = new Date(performanceWithCounts.performanceDate * 1000);
 
   const captures =
     performanceWithCounts.featuresCount + performanceWithCounts.tagCount;

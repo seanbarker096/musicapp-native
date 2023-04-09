@@ -1,25 +1,70 @@
 import { AppText } from 'components/app-text';
 import { Gallery } from 'components/gallery';
+import { SVGIcon } from 'components/icon';
+import { CalendarSVG } from 'components/icon/svg-components';
+import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Button, Pressable, StyleSheet, View } from 'react-native';
 import { useFeaturesGetQuery } from 'store/features/features.queries';
-import { FeaturerType } from 'store/features/features.types';
+import {
+  FeaturedEntityType,
+  FeaturerType,
+} from 'store/features/features.types';
+import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType } from 'store/tags/tags.types';
-import { COLOR_PRIMARY, FONT_WEIGHT_BOLD, SPACING_XXSMALL } from 'styles';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_PRIMARY,
+  FONT_WEIGHT_BOLD,
+  SPACING_XXSMALL,
+} from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 import { PerformancePostTabs } from './performance-types';
 
 type PerformancePostsProps = {
   performanceId: number;
+  performerId: number;
+  handleCreatePostPress: () => void;
 };
 
 export const PerformancePosts: FC<PerformancePostsProps> = ({
   performanceId,
+  performerId,
+  handleCreatePostPress,
 }) => {
   const [selectedTab, setSelectedTab] = React.useState<PerformancePostTabs>(
     PerformancePostTabs.FAN_CAPTURES,
   );
+
+  const {
+    data: performerList,
+    isLoading: performerLoading,
+    error: performerGetError,
+  } = usePerformersGetQuery({
+    queryParams: {
+      id: performerId,
+    },
+  });
+
+  const performer = performerList?.[0];
+
+  const {
+    data: performanceList,
+    isLoading: performanceLoading,
+    error: performanceGetError,
+  } = usePerformancesGetQuery({
+    queryParams: {
+      id: performanceId,
+    },
+  });
+
+  const performance = performanceList?.[0];
+
+  const performanceDate = performance
+    ? new Date(performance.performanceDate * 1000)
+    : undefined;
 
   const {
     data: performanceTags,
@@ -32,20 +77,19 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
     },
   });
 
-  const loading = !performanceTags && performanceTagsLoading;
-  const error = !performanceTags && performanceTagsGetError;
-
   const taggedPostIds = performanceTags?.map(tag => tag.taggedInEntityId);
 
   const {
-    postsWithAttachmentsAndFiles: taggedPosts,
+    postsWithAttachmentsAndFiles: taggedPostsList,
     isLoading: taggedPostsLoading,
   } = useGetPostsWithAttachmentsAndFilesQuery({
     queryParams: {
       id: taggedPostIds,
     },
-    enabled: !!taggedPostIds,
+    enabled: taggedPostIds && !!taggedPostIds.length,
   });
+
+  const taggedPosts = taggedPostsList?.length ? taggedPostsList : [];
 
   const {
     data: features,
@@ -55,20 +99,37 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
     queryParams: {
       featurerId: performanceId,
       featurerType: FeaturerType.PERFORMANCE,
+      featuredEntityType: FeaturedEntityType.POST,
     },
   });
 
   const featuredPostIds = features?.map(feature => feature.featuredEntityId);
 
   const {
-    postsWithAttachmentsAndFiles: featuredPosts,
+    postsWithAttachmentsAndFiles: featuredPostsList,
     isLoading: featuredPostsLoading,
   } = useGetPostsWithAttachmentsAndFilesQuery({
     queryParams: {
       id: featuredPostIds,
     },
-    enabled: !!featuredPostIds,
+    enabled: featuredPostIds && !!featuredPostIds.length,
   });
+
+  const featuredPosts = featuredPostsList?.length ? featuredPostsList : [];
+
+  const loading =
+    (!performance && performanceLoading) ||
+    (!performanceTags && performanceTagsLoading) ||
+    (!features && featuresLoading) ||
+    (!performer && performerLoading) ||
+    (!taggedPosts && taggedPostsLoading) ||
+    (!featuredPosts && featuredPostsLoading);
+
+  const error =
+    (!performance && performanceGetError) ||
+    (!performanceTags && performanceTagsGetError) ||
+    (!features && featuresGetError) ||
+    (!performer && performerGetError);
 
   function handleTabSelected(tab: PerformancePostTabs) {
     setSelectedTab(tab);
@@ -76,8 +137,46 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
 
   return (
     <>
-      {featuredPosts && taggedPosts && (
+      {featuredPosts && taggedPosts && performer && performance && (
         <View>
+          <View style={styles.colContainer}>
+            <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
+            <AppText
+              size="large"
+              weight="bold"
+            >
+              {performer.name}
+            </AppText>
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
+              <SVGIcon
+                styles={{ marginRight: SPACING_XXSMALL }}
+                height={18}
+                width={18}
+              >
+                <CalendarSVG></CalendarSVG>
+              </SVGIcon>
+              <AppText>{performanceDate?.toLocaleDateString()}</AppText>
+            </View>
+          </View>
+          <AppText>
+            {taggedPosts.length + featuredPosts.length === 1 &&
+              '1 fan has shared a post for this performance'}
+            {taggedPosts.length + featuredPosts.length > 1 &&
+              `${
+                taggedPosts.length + featuredPosts.length
+              } fans have shared posts for this performance`}
+            {taggedPosts.length + featuredPosts.length === 0 &&
+              'No fans have shared posts for this performance. Be the first!'}
+          </AppText>
+          {taggedPosts.length + featuredPosts.length && (
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                onPress={handleCreatePostPress}
+                title={'Create a Post'}
+                color={BUTTON_COLOR_PRIMARY}
+              ></Button>
+            </View>
+          )}
           {/* TODO: Make these tabs reusable component along with the styles for it*/}
           <View style={styles.headerContainer}>
             <Pressable
@@ -116,6 +215,12 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
 };
 
 const styles = StyleSheet.create({
+  colContainer: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+  },
   headerContainer: {
     alignItems: 'center',
     backgroundColor: COLOR_PRIMARY,

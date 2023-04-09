@@ -20,7 +20,7 @@ export const TimelineStackScreen: FC<TimelineStackScreenProps> = ({
   const TimelineStack = createNativeStackNavigator<TimelineStackParamList>();
 
   return (
-    <TimelineStack.Navigator screenOptions={{ headerShown: false }}>
+    <TimelineStack.Navigator>
       <TimelineStack.Screen name="Timeline">
         {props => (
           <Timeline

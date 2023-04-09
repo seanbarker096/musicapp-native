@@ -40,7 +40,7 @@ export function usePerformancesGetQuery({
   queryParams: PerformancesGetQueryField;
   enabled?: boolean;
 }) {
-  const { performerId, performanceDate, attendeeId } = queryParams;
+  const { performerId, performanceDate, attendeeId, id } = queryParams;
 
   let apiQueryParams:
     | PerformancesStoreSlice['Get']['RequestParametersType']
@@ -97,6 +97,16 @@ export function usePerformancesGetQuery({
       processedPerformerId,
       processedAttendeeId,
     );
+  }
+
+  if (id) {
+    const processedId = isArray(id) ? id : [id];
+
+    apiQueryParams = {
+      ids: processedId,
+    };
+
+    queryKey = performancesKeys.performancesByIds(processedId);
   }
 
   return useQuery<readonly Performance[], unknown, readonly Performance[]>(

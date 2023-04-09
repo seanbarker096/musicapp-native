@@ -42,10 +42,12 @@ const postsGet = async (
 };
 
 export const usePostsGetQuery = ({
-  ownerId,
-  id,
-  ownerType,
-}: PostsGetQueryField) => {
+  queryParams: { ownerId, id, ownerType },
+  enabled = true,
+}: {
+  queryParams: PostsGetQueryField;
+  enabled: boolean;
+}) => {
   let apiQueryParams:
     | PostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
@@ -73,14 +75,19 @@ export const usePostsGetQuery = ({
     queryKey = postsKeys.postsByIds(processedPostId);
   }
 
-  return useQuery<readonly Post[], unknown, readonly Post[]>(queryKey, () =>
-    apiQueryParams
-      ? postsGet(apiQueryParams)
-      : failedQuery(
-          `Invalid Posts get query params or unsupported query. Query: ${JSON.stringify(
-            apiQueryParams,
-          )}`,
-        ),
+  return useQuery<readonly Post[], unknown, readonly Post[]>(
+    queryKey,
+    () =>
+      apiQueryParams
+        ? postsGet(apiQueryParams)
+        : failedQuery(
+            `Invalid Posts get query params or unsupported query. Query: ${JSON.stringify(
+              apiQueryParams,
+            )}`,
+          ),
+    {
+      enabled,
+    },
   );
 };
 
