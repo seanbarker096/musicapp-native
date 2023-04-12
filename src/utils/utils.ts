@@ -12,3 +12,7 @@ export function toNumber(
 ): number | undefined {
   return typeof value === 'number' || value ? Number(value) : undefined;
 }
+
+export function isDefined(value: any): value is NonNullable<typeof value> {
+  return !(typeof value === 'undefined' || value === null);
+}

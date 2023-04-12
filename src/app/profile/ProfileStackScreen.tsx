@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   createNativeStackNavigator,
+  NativeStackHeaderProps,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
@@ -9,10 +10,16 @@ import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import SettingsStackScreen from 'app/settings/SettingsStackScreen';
 import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
+import { AppText } from 'components/app-text';
+import { SVGIcon } from 'components/icon';
+import { BurgerMenuSVG } from 'components/icon/svg-components';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
+import { View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
+import { SPACING_MID } from 'styles';
 import Profile from './Profile';
 import {
   ProfileInternalStackScreenParams,
@@ -71,7 +78,11 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
   return (
-    <ProfileStack.Navigator>
+    <ProfileStack.Navigator
+      screenOptions={{
+        header: ProfileStackScreenHeader,
+      }}
+    >
       <ProfileStack.Screen name="Profile">
         {props => (
           <Profile
@@ -100,6 +111,43 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
         component={CreatePerformanceStackScreen}
         options={{ headerShown: false }}
       ></ProfileStack.Screen>
+      <ProfileStack.Screen
+        name="ProfileSettings"
+        component={SettingsStackScreen}
+        options={{ animation: 'none' }}
+      ></ProfileStack.Screen>
     </ProfileStack.Navigator>
+  );
+};
+
+const ProfileStackScreenHeader: FC<NativeStackHeaderProps> = ({
+  navigation,
+  route,
+}) => {
+  function navigate() {
+    if (route.name === 'ProfileSettings') {
+      navigation.goBack();
+    } else {
+      navigation.navigate('ProfileSettings');
+    }
+  }
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingRight: SPACING_MID,
+        paddingLeft: SPACING_MID,
+        paddingBottom: SPACING_MID,
+      }}
+    >
+      <AppText>My App</AppText>
+      <SVGIcon
+        handlePress={navigate}
+        styles={{ flexShrink: 1 }}
+      >
+        <BurgerMenuSVG></BurgerMenuSVG>
+      </SVGIcon>
+    </View>
   );
 };

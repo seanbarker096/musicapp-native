@@ -3,7 +3,7 @@
 import { QueryKey, useQuery } from 'react-query';
 import { getRequest, searchRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
-import { isArray } from 'utils/utils';
+import { isArray, isDefined } from 'utils/utils';
 import { performersKeys } from './performers.query-keys';
 import {
   transformPerformerApi,
@@ -109,7 +109,7 @@ async function performerGet(
 }
 
 export function usePerformersGetQuery({
-  queryParams: { id },
+  queryParams: { id, ownerId },
   enabled = true,
 }: {
   queryParams: PerformersGetQueryFields;
@@ -129,6 +129,18 @@ export function usePerformersGetQuery({
     };
 
     queryKey = performersKeys.performersByIds(processedId);
+  }
+
+  if (ownerId) {
+    const processedOwnerId = isArray(ownerId)
+      ? ownerId.filter(isDefined)
+      : [ownerId];
+
+    apiQueryParams = {
+      owner_ids: processedOwnerId,
+    };
+
+    queryKey = performersKeys.performersByOwnerIds(processedOwnerId);
   }
 
   return useQuery<readonly Performer[], unknown, readonly Performer[]>(

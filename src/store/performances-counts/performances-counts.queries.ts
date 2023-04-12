@@ -6,10 +6,10 @@ import { performancesCountsKeys } from './performances-counts.query-keys';
 import { transformPerformanceCountsApi } from './performances-counts.transformations';
 import {
   PerformanceCountsApi,
+  PerformanceWithCounts,
   PerformancesCountsGetFilter,
   PerformancesCountsGetFilterApi,
   PerformancesCountsStoreSlice,
-  PerformanceWithCounts,
 } from './performances-counts.types';
 
 async function performancesCountsGet(

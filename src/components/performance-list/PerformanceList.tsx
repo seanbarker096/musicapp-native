@@ -62,7 +62,7 @@ export const PerformanceList: FC<Props> = ({
       includeTagCount: true,
       includeFeaturesCount: true,
     },
-    enabled: !!performances,
+    enabled: !!performances && !!performances.length,
   });
 
   const loading =
@@ -76,7 +76,6 @@ export const PerformanceList: FC<Props> = ({
   function handlePerformancePress(
     performanceWithCounts: PerformanceWithCounts,
   ) {
-    console.log('pressed');
     navigation.navigate('ProfilePerformance', {
       performanceId: performanceWithCounts.id,
       performerId: performanceWithCounts.performerId,
@@ -114,7 +113,7 @@ export const PerformanceList: FC<Props> = ({
           </List>
         </>
       )}
-      {performancesWithCounts && !performancesWithCounts.length && (
+      {performances && !performances.length && (
         <>
           {!loggedInUserIsPerformer && (
             <>

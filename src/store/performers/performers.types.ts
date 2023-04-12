@@ -57,6 +57,7 @@ export interface PerformerSearchPerformerApi {
 export interface PerformersGetFilterApi {
   ids?: readonly number[];
   uuids?: readonly string[];
+  owner_ids?: readonly number[];
   search_query?: string;
 }
 
