@@ -15,6 +15,7 @@ export type ProfileStackParamList = {
     performanceId: number;
     performerId: number;
   };
+  ProfileCreatePerformance: undefined;
 };
 
 /**

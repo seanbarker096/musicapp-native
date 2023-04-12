@@ -168,11 +168,11 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
             {taggedPosts.length + featuredPosts.length === 0 &&
               'No fans have shared posts for this performance. Be the first!'}
           </AppText>
-          {taggedPosts.length + featuredPosts.length && (
+          {taggedPosts.length + featuredPosts.length === 0 && (
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                 onPress={handleCreatePostPress}
-                title={'Create a Post'}
+                title="Create a Post"
                 color={BUTTON_COLOR_PRIMARY}
               ></Button>
             </View>
