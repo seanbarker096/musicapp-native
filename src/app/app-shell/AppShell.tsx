@@ -29,6 +29,8 @@ const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
     console.warn('Logged in app shell initialised without an authState');
   }
 
+  console.log('re-rendering app shell');
+
   return (
     <>
       {authState && (
