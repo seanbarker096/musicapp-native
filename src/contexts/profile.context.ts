@@ -12,6 +12,7 @@ export type ProfileState = {
 
 export interface ProfileContext {
   profileState: ProfileState;
+  setProfileState: React.Dispatch<React.SetStateAction<ProfileState>>;
 }
 
 export const ProfileContext = createContext<ProfileContext>(

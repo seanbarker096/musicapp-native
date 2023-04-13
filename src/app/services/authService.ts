@@ -1,4 +1,3 @@
-import { ProfileState, ProfileType } from 'contexts/profile.context';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
@@ -14,7 +13,6 @@ import {
 
 export async function authenticateUserOnAppStartup(
   setAuthState: Dispatch<SetStateAction<AuthState | undefined>>,
-  setProfileState: Dispatch<SetStateAction<ProfileState | undefined>>,
 ) {
   const { mutateAsync } = useAuthTokenCreateMutation();
 
@@ -43,12 +41,6 @@ export async function authenticateUserOnAppStartup(
         SecureStore.setItemAsync('access_token', accessToken);
 
         setAuthState({ status: AuthStatus.AUTHENTICATED, authUser });
-
-        // Default to user profile on login
-        setProfileState({
-          profileId: authUser.userId,
-          profileType: ProfileType.USER,
-        });
       } catch (e) {}
     };
     _authenticateUser();

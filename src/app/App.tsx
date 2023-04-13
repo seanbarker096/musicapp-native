@@ -1,7 +1,6 @@
 import { NavigationContainer, ParamListBase } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from 'app/login/Login';
-import { ProfileState, ProfileType } from 'contexts/profile.context';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 // import * as SecureStore from 'expo-secure-store';
@@ -18,16 +17,14 @@ const Stack = createNativeStackNavigator<ParamListBase>();
 
 const App = function () {
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
-  const [profileState, setProfileState] = useState<ProfileState | undefined>(
-    undefined,
-  );
+
   // try {
   //   console.log('CLEARING SECURE STORAGE FOR DEV PURPOSES');
   //   SecureStore.deleteItemAsync('refresh_token');
   //   SecureStore.deleteItemAsync('access_token');
   // } catch (e) {}
 
-  authenticateUserOnAppStartup(setAuthState, setProfileState);
+  authenticateUserOnAppStartup(setAuthState);
 
   const loggedOutPages = (
     <>
@@ -52,31 +49,22 @@ const App = function () {
 
   function handleLoginSuccess(authState: AuthState) {
     setAuthState(authState);
-    setProfileState({
-      profileType: ProfileType.USER,
-      profileId: authState.authUser.userId,
-    });
   }
 
   function handleSignUpSuccess(authState: AuthState) {
     setAuthState(authState);
-    setProfileState({
-      profileType: ProfileType.USER,
-      profileId: authState.authUser.userId,
-    });
   }
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {profileState && authState?.status === AuthStatus.AUTHENTICATED ? (
+        {authState?.status === AuthStatus.AUTHENTICATED ? (
           <Stack.Screen name="LoggedInApp">
             {/* TODO: Make sure to use react memo here https://reactnavigation.org/docs/hello-react-navigation/#passing-additional-props*/}
             {props => (
               <LoggedInAppShell
                 {...props}
                 authState={authState}
-                profileState={profileState}
               ></LoggedInAppShell>
             )}
           </Stack.Screen>

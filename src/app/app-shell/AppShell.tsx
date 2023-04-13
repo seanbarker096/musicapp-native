@@ -5,8 +5,12 @@ import CreatePostStackScreen from 'app/post/UploadStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import ProfileStackScreen from 'app/profile/ProfileStackScreen';
 import { SearchStackScreen } from 'app/search/SearchStackScreen';
-import { ProfileContext, ProfileState } from 'contexts/profile.context';
-import React, { FC } from 'react';
+import {
+  ProfileContext,
+  ProfileState,
+  ProfileType,
+} from 'contexts/profile.context';
+import React, { FC, useState } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { AuthState } from 'store/auth/auth.types';
 import { APP_BACKGROUND_COLOR } from 'styles';
@@ -14,13 +18,14 @@ import { AppShellStackNavigatorParamList } from './appShell.types';
 
 interface LoggedInAppShellProps {
   authState: AuthState;
-  profileState: ProfileState;
 }
-const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
-  authState,
-  profileState,
-}) => {
-  if (!authState || !profileState) {
+const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
+  const [profileState, setProfileState] = useState<ProfileState>({
+    profileType: ProfileType.USER,
+    profileId: authState.authUser.userId,
+  });
+
+  if (!authState) {
     console.warn('Logged in app shell initialised without an authState');
   }
 
@@ -28,7 +33,7 @@ const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
     <>
       {authState && (
         <AuthStateContext.Provider value={{ authState }}>
-          <ProfileContext.Provider value={{ profileState }}>
+          <ProfileContext.Provider value={{ profileState, setProfileState }}>
             <LoggedInScreens></LoggedInScreens>
           </ProfileContext.Provider>
         </AuthStateContext.Provider>

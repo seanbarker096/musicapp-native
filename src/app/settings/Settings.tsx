@@ -10,7 +10,7 @@ import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { SPACING_MID, SPACING_SMALL } from 'styles';
 
 const Settings = () => {
-  const { profileState } = useContext(ProfileContext);
+  const { profileState, setProfileState } = useContext(ProfileContext);
   const { profileType } = profileState;
 
   const { authState } = useContext(AuthStateContext);
@@ -41,17 +41,27 @@ const Settings = () => {
         profileType === ProfileType.PERFORMER ? 'user' : 'artist'
       } account`,
       icon: UserAvatarBorderedSVG,
-      action: () => console.log('pressed'),
+      // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
+      action: () =>
+        profileState.profileType === ProfileType.PERFORMER
+          ? setProfileState({
+              profileType: ProfileType.USER,
+              profileId: authUser.userId,
+            })
+          : setProfileState({
+              profileType: ProfileType.PERFORMER,
+              profileId: performer.id,
+            }),
     });
   }
 
   return (
     <>
-      {performer && (
+      {performer && settingItems.length && (
         <View style={{ paddingLeft: SPACING_MID, paddingRight: SPACING_MID }}>
           <List>
             {settingItems.map(item => (
-              <ListItem>
+              <ListItem key={item.text}>
                 <Pressable
                   style={{ flexDirection: 'row' }}
                   onPress={item.action}
