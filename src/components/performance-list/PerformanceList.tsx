@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
-import { SVGIcon } from 'components/icon';
+import { IconColor, SVGIcon } from 'components/icon';
 import { BorderedPlusSVG } from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -12,7 +12,12 @@ import {
   usePerformancesCountsGetQuery,
 } from 'store/performances-counts';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
-import { BUTTON_COLOR_PRIMARY, SPACING_XSMALL } from 'styles';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_SECONDARY_XXDARK,
+  SPACING_XSMALL,
+  SPACING_XXXSMALL,
+} from 'styles';
 import { PerformanceListItem } from './PerformanceListItem';
 
 type Props = {
@@ -88,18 +93,27 @@ export const PerformanceList: FC<Props> = ({
           {loggedInUserIsPerformer && (
             <Pressable
               onPress={() => handleCreatePerformancePress()}
-              style={styles.columnContainer}
+              style={{
+                ...styles.rowContainer,
+                paddingRight: SPACING_XXXSMALL,
+                paddingLeft: SPACING_XXXSMALL,
+              }}
             >
-              <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>
+              <SVGIcon
+                color={IconColor.SECONDARY}
+                styles={{ marginRight: SPACING_XSMALL }}
+              >
                 <BorderedPlusSVG></BorderedPlusSVG>
               </SVGIcon>
-              <AppText>Create performance</AppText>
+              <AppText textColor={COLOR_SECONDARY_XXDARK}>
+                Create performance
+              </AppText>
             </Pressable>
           )}
 
           <List
-            sidePadding="small"
-            verticalPadding="small"
+            sidePadding="xxxsmall"
+            verticalPadding="xxxsmall"
             scrollable={true}
           >
             {performancesWithCounts?.map(performanceWithCounts => (
@@ -153,6 +167,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    width: '100%',
+  },
+  rowContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     width: '100%',
   },
 });

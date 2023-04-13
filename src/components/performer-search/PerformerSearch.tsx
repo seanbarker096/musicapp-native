@@ -91,7 +91,7 @@ export const PerformerSearch: FC<Props> = ({
           searchPerformers.length > 0 &&
           !isPerformersSearchError && (
             <List
-              sidePadding="small"
+              sidePadding="xxxsmall"
               verticalPadding="none"
               scrollable={scrollable}
               maxHeight={height}

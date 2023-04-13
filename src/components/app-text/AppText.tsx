@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { COLOR_XXXXDARK } from 'styles';
 import { textSizeMap, textWeightMap } from './AppText.styles';
 import { TextSize, TextWeight } from './AppText.types';
 
@@ -11,11 +12,13 @@ interface AppTextProps {
   marginRight?: string | number;
   marginTop?: string | number;
   marginBottom?: string | number;
+  textColor?: string;
 }
 
 export const AppText: FC<AppTextProps> = ({
   size = 'regular',
   weight = 'normal',
+  textColor = COLOR_XXXXDARK,
   children,
   ...margins
 }) => {
@@ -28,7 +31,7 @@ export const AppText: FC<AppTextProps> = ({
 
   return (
     <View style={{ ...margins }}>
-      <Text style={{ ...styles.text }}>{children}</Text>
+      <Text style={{ ...styles.text, color: textColor }}>{children}</Text>
     </View>
   );
 };

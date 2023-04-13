@@ -289,6 +289,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     setTaggedPerformer(undefined);
   }
 
+  // TODO: Create a date input component because i am reusing this logic in CreatePerformance
   function handleDateInputPress() {
     console.log('date input pressed');
     console.log(Platform.OS);

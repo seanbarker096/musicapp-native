@@ -52,8 +52,11 @@ export interface PerformanceCreateRequestApi {
 
 export interface PerformanceCreateRequest {
   performanceDate: number;
+  eventStartDate: number;
+  eventEndDate: number;
+  isFestival: boolean;
   performerId: number;
-  venueId?: number;
+  venueName: string;
 }
 
 export interface PerformanceCreateResultApi {

@@ -37,8 +37,8 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
     <>
       {performers && (
         <List
-          sidePadding="medium"
-          verticalPadding="small"
+          sidePadding="xsmall"
+          verticalPadding="xxxsmall"
           scrollable={true}
         >
           {performers?.map(performer => (

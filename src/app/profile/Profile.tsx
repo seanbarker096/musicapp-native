@@ -32,7 +32,7 @@ const Profile: FC<ProfileProps> = ({ profileId, profileType, navigation }) => {
   }
 
   function handleCreatePerformancePress() {
-    navigation.navigate('ProfileCreatePerformance');
+    navigation.navigate('ProfileCreatePerformance', {});
   }
 
   function handleViewProfilePress() {

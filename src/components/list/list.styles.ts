@@ -5,11 +5,11 @@ import {
   SPACING_XXXSMALL,
 } from 'styles';
 
-export type ListPadding = 'none' | 'small' | 'medium' | 'large';
+export type ListPadding = 'none' | 'xxxsmall' | 'xsmall' | 'small';
 
 export const listPaddingMap = {
   none: SPACING_NONE,
-  small: SPACING_XXXSMALL,
-  medium: SPACING_XSMALL,
-  large: SPACING_SMALL,
+  xxxsmall: SPACING_XXXSMALL,
+  xsmall: SPACING_XSMALL,
+  small: SPACING_SMALL,
 };

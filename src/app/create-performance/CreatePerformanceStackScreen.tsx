@@ -1,19 +1,19 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { FC } from 'react';
-import { Text, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import CreatePerformance from './CreatePerformance';
 import { CreatePerformanceStackParamList } from './create-performance.types';
 
-type CreatePerformanceProps = NativeStackScreenProps<
-  CreatePerformanceStackParamList,
-  'CreatePerformance'
->;
+const CreatePeformanceStackScreen = () => {
+  const CreatePerformanceStack =
+    createNativeStackNavigator<CreatePerformanceStackParamList>();
 
-const CreatePerformance: FC<CreatePerformanceProps> = () => {
   return (
-    <View>
-      <Text>CreatePerformance</Text>
-    </View>
+    <CreatePerformanceStack.Navigator>
+      <CreatePerformanceStack.Screen
+        name="CreatePerformance"
+        component={CreatePerformance}
+      ></CreatePerformanceStack.Screen>
+    </CreatePerformanceStack.Navigator>
   );
 };
 
-export default CreatePerformance;
+export default CreatePeformanceStackScreen;
