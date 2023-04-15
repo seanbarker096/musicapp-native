@@ -6,15 +6,10 @@ export const performancesKeys = {
     'id',
     ...ids,
   ],
-  performancesByDateAndPerformerId: (
-    performanceDate: number,
-    performerId: number,
-  ) => [
+  performancesByPerformerIds: (performerIds: readonly number[]) => [
     ...performancesKeys.all,
-    'performanceDate',
-    performanceDate,
-    'performerId',
-    performerId,
+    'performerIds',
+    ...performerIds,
   ],
   performancesByPerformerIdsAndPerformanceDate: (
     performerIds: readonly number[],
@@ -25,11 +20,6 @@ export const performancesKeys = {
     ...performerIds,
     'performanceDate',
     performanceDate,
-  ],
-  performancesByPerformerIds: (performerIds: readonly number[]) => [
-    ...performancesKeys.all,
-    'performerIds',
-    ...performerIds,
   ],
   attendeePerformancesByPerformerIds: (
     performerIds: readonly number[],

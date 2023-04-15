@@ -10,6 +10,7 @@ import { Formik } from 'formik';
 import { FC, useContext, useState } from 'react';
 import { Button, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { usePerformanceCreateMutation } from 'store/performances/performances.queries';
+import { EventType } from 'store/performances/performances.types';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import {
   BUTTON_COLOR_DISABLED,
@@ -58,7 +59,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     mutateAsync: performanceCreate,
     isLoading: createPerformanceLoading,
     isError: isPerformanceCreateError,
-  } = usePerformanceCreateMutation();
+  } = usePerformanceCreateMutation({ performerId: profileId });
 
   const performer = performers?.[0];
 
@@ -67,14 +68,16 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
   const error = !performer && !performersGetError;
 
   function handleVenueSelected(venue: string) {
+    console.log('venue selected: ', venue);
     setSelectedVenue(venue);
+    setShowVenueList(false);
   }
 
   function searchVenues() {}
 
-  const handleCancelClick = function (form: PerformanceCreateFormValues) {
+  function handleCancelClick() {
     console.log('cancelled');
-  };
+  }
 
   async function handleFormSubmit(formValues: PerformanceCreateFormValues) {
     if (
@@ -95,12 +98,16 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
       // Convert to seconds so its a unix timestamp
       performanceDate: Math.ceil(performanceDate.getTime() / 1000),
       venueName: selectedVenue,
-      isFestival: formValues.isFestival.toLowerCase() === 'yes',
+      eventType:
+        formValues.isFestival.toLowerCase() === 'yes'
+          ? EventType.MUSIC_FESTIVAL
+          : EventType.MUSIC_CONCERT,
     });
 
     navigation.goBack();
   }
 
+  // TODO: Add frontend validation of form fields e.g. performance date lies inbetween event start and end dates
   return (
     <>
       {profileType === ProfileType.PERFORMER && performer && (
@@ -135,10 +142,6 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                   ...styles.textInput,
                 }}
                 onPressIn={() => setShowVenueList(true)}
-                onBlur={() => {
-                  setShowVenueList(false);
-                  handleBlur('venue');
-                }}
                 onChangeText={() => {
                   handleChange('venue');
                   searchVenues();
@@ -152,7 +155,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                     sidePadding="xxxsmall"
                     verticalPadding="none"
                     scrollable={true}
-                    maxHeight={20}
+                    maxHeight={60}
                   >
                     {venues.map(venue => (
                       <Pressable

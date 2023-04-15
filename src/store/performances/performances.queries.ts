@@ -1,4 +1,4 @@
-import { QueryKey, useMutation, useQuery } from 'react-query';
+import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
@@ -125,22 +125,44 @@ export function usePerformancesGetQuery({
 async function performanceCreate({
   performanceDate,
   performerId,
-  venueId,
+  eventEndDate,
+  eventStartDate,
+  venueName,
+  eventType,
 }: PerformanceCreateRequest) {
   const repsonse = await postRequest<PerformancesStoreSlice>({
     url: `performances/0.1/performances`,
     body: {
       performer_id: performerId,
       performance_date: performanceDate,
-      venue_id: venueId,
+      event_start_date: eventStartDate,
+      event_end_date: eventEndDate,
+      venue_name: venueName,
+      event_type: eventType,
     },
   });
 
   return transformPerformanceApi(repsonse.data.performance);
 }
 
-export function usePerformanceCreateMutation() {
+export function usePerformanceCreateMutation({
+  performerId,
+}: {
+  performerId: number;
+}) {
+  const queryClient = useQueryClient();
+  const onSuccessCallback = async () => {
+    // invalidate relevant query keys
+    // return the promise to mutation is still loading until queries invalidated
+    return queryClient.invalidateQueries(
+      performancesKeys.performancesByPerformerIds([performerId]),
+    );
+  };
+
   return useMutation<Performance, any, PerformanceCreateRequest>(
     (request: PerformanceCreateRequest) => performanceCreate(request),
+    {
+      onSuccess: onSuccessCallback,
+    },
   );
 }
