@@ -1,3 +1,4 @@
+import { Event, EventType } from 'store/events/events.types';
 import { StoreSlice } from 'store/store.types';
 
 export interface PerformancesStoreSlice extends StoreSlice {
@@ -17,7 +18,7 @@ export interface PerformancesStoreSlice extends StoreSlice {
 
 export interface PerformanceApi {
   id: number;
-  venue_id: number;
+  event_id: number;
   performer_id: number;
   performance_date: number;
   create_time: number;
@@ -26,17 +27,14 @@ export interface PerformanceApi {
 
 export interface Performance {
   id: number;
-  venueId: number;
+  eventId: number;
   performerId: number;
   performanceDate: number;
   createTime: number;
   updateTime?: number;
 }
 
-export enum EventType {
-  MUSIC_CONCERT = 'music_concert',
-  MUSIC_FESTIVAL = 'music_festival',
-}
+export type PerformanceWithEvent = Performance & Omit<Event, 'id'>;
 
 export interface PerformancesGetFilterApi {
   ids?: readonly number[];

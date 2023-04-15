@@ -1,4 +1,6 @@
 import { QueryKey, useQuery } from 'react-query';
+import { transformEventApi } from 'store/events/events.transformations';
+import { Event, EventsStoreSlice } from 'store/events/events.types';
 import { transformPerformanceApi } from 'store/performances/performances.transformations';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
@@ -20,8 +22,34 @@ async function performancesCountsGet(
     params: params,
   });
 
-  const { counts, performances } = response.data;
+  const { counts, performances: performancesApi } = response.data;
 
+  // Add the event information to the performance
+  const eventsResponse = await getRequest<EventsStoreSlice>({
+    url: `events/0.1/events`,
+    params: {
+      ids: performancesApi.map(performance => performance.event_id),
+    },
+  });
+
+  const eventsByIdMap: { [id: number]: Event } = {};
+
+  eventsResponse.data.events.map(transformEventApi).forEach(event => {
+    eventsByIdMap[event.id] = event;
+  });
+
+  const performancesWithEventInfo = performancesApi
+    .map(transformPerformanceApi)
+    .map(performance => {
+      const { id, ...eventWithoutId } = eventsByIdMap[performance.eventId];
+
+      return {
+        ...performance,
+        ...eventWithoutId,
+      };
+    });
+
+  // add the counts to the performance
   const performanceCountsByPerformanceIds: {
     [performanceId: number]: PerformanceCountsApi;
   } = {};
@@ -30,7 +58,7 @@ async function performancesCountsGet(
     performanceCountsByPerformanceIds[count.performance_id] = count;
   });
 
-  const performancesWithCounts = performances.map(performance => {
+  return performancesWithEventInfo.map(performance => {
     const performanceCountsApi =
       performanceCountsByPerformanceIds[performance.id];
 
@@ -38,12 +66,10 @@ async function performancesCountsGet(
       transformPerformanceCountsApi(performanceCountsApi);
 
     return {
-      ...transformPerformanceApi(performance),
+      ...performance,
       ...performanceCounts,
     };
   });
-
-  return performancesWithCounts;
 }
 
 export function usePerformancesCountsGetQuery({

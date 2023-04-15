@@ -5,7 +5,7 @@ export function transformPerformanceApi(
 ): Performance {
   return {
     id: performance.id,
-    venueId: performance.venue_id,
+    eventId: performance.event_id,
     performerId: performance.performer_id,
     performanceDate: performance.performance_date,
     createTime: performance.create_time,

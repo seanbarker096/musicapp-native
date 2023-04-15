@@ -1,4 +1,6 @@
 import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { transformEventApi } from 'store/events/events.transformations';
+import { Event, EventsStoreSlice } from 'store/events/events.types';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
@@ -7,6 +9,7 @@ import { transformPerformanceApi } from './performances.transformations';
 import {
   Performance,
   PerformanceCreateRequest,
+  PerformanceWithEvent,
   PerformancesStoreSlice,
 } from './performances.types';
 
@@ -24,13 +27,35 @@ type PerformancesGetQueryField = Partial<
 
 async function performancesGet(
   params: PerformancesStoreSlice['Get']['RequestParametersType'],
-) {
+): Promise<readonly PerformanceWithEvent[]> {
   const response = await getRequest<PerformancesStoreSlice>({
     url: `performances/0.1/performances`,
     params: params,
   });
 
-  return response.data.performances.map(transformPerformanceApi);
+  const performancesApi = response.data.performances;
+
+  const eventsResponse = await getRequest<EventsStoreSlice>({
+    url: `events/0.1/events`,
+    params: {
+      ids: performancesApi.map(performance => performance.event_id),
+    },
+  });
+
+  const eventsByIdMap: { [id: number]: Event } = {};
+
+  eventsResponse.data.events.map(transformEventApi).forEach(event => {
+    eventsByIdMap[event.id] = event;
+  });
+
+  return performancesApi.map(transformPerformanceApi).map(performance => {
+    const { id, ...eventWithoutId } = eventsByIdMap[performance.eventId];
+
+    return {
+      ...performance,
+      ...eventWithoutId,
+    };
+  });
 }
 
 export function usePerformancesGetQuery({

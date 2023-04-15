@@ -1,6 +1,6 @@
 import {
-  Performance,
   PerformanceApi,
+  PerformanceWithEvent,
 } from 'store/performances/performances.types';
 import { StoreSlice } from 'store/store.types';
 
@@ -23,7 +23,7 @@ export interface PerformanceCountsApi {
   features_count: number;
 }
 
-export type PerformanceWithCounts = Performance & {
+export type PerformanceWithCounts = PerformanceWithEvent & {
   attendeeCount: number;
   tagCount: number;
   featuresCount: number;

@@ -27,7 +27,9 @@ export const PerformanceListItem: FC<Props> = ({
       onPress={() => onListItemPress(performanceWithCounts)}
       style={styles.columnContainer}
     >
-      <AppText>{date.toLocaleDateString()}</AppText>
+      <AppText>{`${
+        performanceWithCounts.venueName
+      } ${date.toLocaleDateString()}`}</AppText>
       <View style={styles.rowContainer}>
         <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>
           <VideoCameraSVG></VideoCameraSVG>

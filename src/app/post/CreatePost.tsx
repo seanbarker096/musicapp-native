@@ -31,10 +31,7 @@ import {
   useFileCreateMutation,
   useFilesGetQuery,
 } from 'store/files/files.queries';
-import {
-  usePerformanceCreateMutation,
-  usePerformancesGetQuery,
-} from 'store/performances/performances.queries';
+import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { Performance } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
 import {
@@ -140,11 +137,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
   const performance = performances && performances[0];
 
-  const {
-    mutateAsync: performanceCreate,
-    isLoading: createPerformanceLoading,
-    isError: isPerformanceCreateError,
-  } = usePerformanceCreateMutation();
 
   useFocusEffect(
     React.useCallback(() => {
