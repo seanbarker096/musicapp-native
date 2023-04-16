@@ -134,7 +134,11 @@ export function usePerformancesGetQuery({
     queryKey = performancesKeys.performancesByIds(processedId);
   }
 
-  return useQuery<readonly Performance[], unknown, readonly Performance[]>(
+  return useQuery<
+    readonly PerformanceWithEvent[],
+    unknown,
+    readonly PerformanceWithEvent[]
+  >(
     queryKey,
     () =>
       apiQueryParams

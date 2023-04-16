@@ -1,10 +1,13 @@
 import { AppText } from 'components/app-text';
-import { SVGIcon } from 'components/icon';
+import { IconColor, SVGIcon } from 'components/icon';
 import {
+  FilledLikeHeartSVG,
   LikeHeartSVG,
+  LinkSVG,
   PictureCheckMarkSVG,
   PicturePlusSVG,
 } from 'components/icon/svg-components';
+import { PostFooterAction } from 'components/post-footer-action';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -21,14 +24,21 @@ import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PostFooterProps {
   post: Post;
+  postPerformerId: number;
 }
 
-const PostFooter: FC<PostFooterProps> = ({ post }) => {
+const PostFooter: FC<PostFooterProps> = ({ post, postPerformerId }) => {
   const { profileState } = useContext(ProfileContext);
+  const {
+    profileId: viewingUserProfileId,
+    profileType: viewingUserProfileType,
+  } = profileState;
+  // TODO: Update ot use api call
+  const [postLiked, setPostLiked] = React.useState(false);
 
   // TODO: Update this to ideally have the post by featured by the performance the post is tagged in, not the performer
   const featurerType =
-    profileState.profileType === ProfileType.PERFORMER
+    viewingUserProfileType === ProfileType.PERFORMER
       ? FeaturerType.PERFORMER
       : FeaturerType.USER;
 
@@ -41,14 +51,11 @@ const PostFooter: FC<PostFooterProps> = ({ post }) => {
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
       featurerType: featurerType,
-      featurerId: profileState.profileId,
+      featurerId: viewingUserProfileId,
     },
   });
 
   const feature = features ? features[0] : undefined;
-
-  console.log(feature);
-  console.log(post);
 
   const userHasFeaturedPost = !!feature;
 
@@ -61,15 +68,25 @@ const PostFooter: FC<PostFooterProps> = ({ post }) => {
     isError: createFeatureError,
   } = useFeatureCreateMutation();
 
-  async function handleFeaturePress() {
+  async function featurePost() {
     console.log('pressed');
     await createFeature({
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
-      featurerId: profileState.profileId,
+      featurerId: viewingUserProfileId,
       featurerType: featurerType,
     });
   }
+
+  async function likePostClicked() {
+    setPostLiked(!postLiked);
+  }
+
+  async function unFeaturePost() {
+    console.log('unfeature');
+  }
+
+  async function tagPerformanceInPost() {}
 
   return (
     <>
@@ -82,51 +99,54 @@ const PostFooter: FC<PostFooterProps> = ({ post }) => {
               marginBottom: SPACING_SMALL,
             }}
           >
-            <View
-              style={{
-                ...styles.flexRowContainer,
-                marginRight: SPACING_XSMALL,
+            <PostFooterAction
+              actionCompleted={postLiked}
+              actionCompletedState={{
+                icon: FilledLikeHeartSVG,
+                iconColor: IconColor.PRIMARY,
+                text: undefined,
+                onIconPress: likePostClicked,
               }}
-            >
-              <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-                <LikeHeartSVG></LikeHeartSVG>
-              </SVGIcon>
-              <AppText>Like</AppText>
-            </View>
-            {userHasFeaturedPost && (
-              <View
-                style={{
-                  ...styles.flexRowContainer,
-                  marginRight: SPACING_XSMALL,
-                }}
-              >
-                <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-                  <PictureCheckMarkSVG></PictureCheckMarkSVG>
-                </SVGIcon>
-                <AppText>Featured</AppText>
-              </View>
-            )}
-            {!userHasFeaturedPost && (
-              <Pressable
-                onPress={handleFeaturePress}
-                style={{
-                  ...styles.flexRowContainer,
-                  marginRight: SPACING_XSMALL,
-                }}
-              >
-                <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-                  <PicturePlusSVG></PicturePlusSVG>
-                </SVGIcon>
-                <AppText>Feature on your profile</AppText>
-              </Pressable>
-            )}
+              actionUncompletedState={{
+                icon: LikeHeartSVG,
+                text: undefined,
+                onIconPress: likePostClicked,
+              }}
+            ></PostFooterAction>
+
+            <PostFooterAction
+              actionCompleted={!!userHasFeaturedPost}
+              actionCompletedState={{
+                icon: PictureCheckMarkSVG,
+                text: 'Featured',
+                onIconPress: unFeaturePost,
+              }}
+              actionUncompletedState={{
+                icon: PicturePlusSVG,
+                text: 'Feature on your profile',
+                onIconPress: featurePost,
+              }}
+            ></PostFooterAction>
+
+            {viewingUserProfileType === ProfileType.PERFORMER &&
+              viewingUserProfileId === postPerformerId && (
+                <Pressable
+                  onPress={tagPerformanceInPost}
+                  style={{
+                    ...styles.flexRowContainer,
+                    marginRight: SPACING_XSMALL,
+                  }}
+                >
+                  <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+                    <LinkSVG></LinkSVG>
+                  </SVGIcon>
+                  <AppText>Link to your performances</AppText>
+                </Pressable>
+              )}
           </View>
         )}
         {!feature && loading && <AppText>Loading...</AppText>}
         {!feature && error && <AppText>Error...</AppText>}
-      </View>
-      <View>
-        <AppText>Test</AppText>
       </View>
     </>
   );

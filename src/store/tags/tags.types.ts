@@ -68,6 +68,8 @@ export enum TaggedInEntityType {
 export interface TagsGetFilterApi {
   tagged_entity_type?: TaggedEntityType;
   tagged_entity_id?: number;
+  tagged_in_entity_type?: TaggedInEntityType;
+  tagged_in_entity_id?: number;
 }
 
 export interface TagsGetFilter {

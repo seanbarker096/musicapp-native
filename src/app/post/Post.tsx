@@ -19,8 +19,11 @@ import {
   PlaceholderMedia,
   Shine,
 } from 'rn-placeholder';
+import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { PostOwnerType } from 'store/posts';
+import { useTagsGetQuery } from 'store/tags/tags.queries';
+import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 import PerformerPostHeader from './PerformerPostHeader';
@@ -56,6 +59,7 @@ export const Post: FC<PostProps> = ({
     enabled: post.ownerType === PostOwnerType.USER,
   });
 
+  // TODO: Move to a post header component
   const {
     data: performerData,
     isLoading: isPerformerLoading,
@@ -69,6 +73,68 @@ export const Post: FC<PostProps> = ({
   const performer = performerData && performerData[0];
 
   const ownerReady = performer || user;
+
+  // Fetch any performances tagged in this post
+  const {
+    data: performanceTags,
+    isLoading: performanceTagsLoading,
+    error: performanceTagsError,
+  } = useTagsGetQuery({
+    queryParams: {
+      taggedInEntityType: TaggedInEntityType.POST,
+      taggedInEntityId: post.id,
+      taggedEntityType: TaggedEntityType.PERFORMANCE,
+    },
+  });
+
+  // If one exists, get performance, and use to get performer_id
+  const taggedPerformanceId =
+    performanceTags && performanceTags[0].taggedEntityId;
+
+  const {
+    data: taggedPerformances,
+    isLoading: taggedPerformanceLoading,
+    error: taggedPerformanceGetError,
+  } = usePerformancesGetQuery({
+    queryParams: {
+      id: taggedPerformanceId,
+    },
+    enabled: !!taggedPerformanceId,
+  });
+
+  const taggedPerformance = taggedPerformances && taggedPerformances[0];
+
+  // otherwise, check if post has been tagged with a performer
+  const {
+    data: postPerformerTags,
+    isLoading: postPerformerTagsLoading,
+    error: postPerformerTagsError,
+  } = useTagsGetQuery({
+    queryParams: {
+      taggedInEntityType: TaggedInEntityType.POST,
+      taggedInEntityId: post.id,
+      taggedEntityType: TaggedEntityType.PERFORMER,
+    },
+    enabled: !taggedPerformanceId, // we only need to check user tags if there is no performance linked to the post
+  });
+
+  const performerTag = postPerformerTags && postPerformerTags[0];
+
+  const taggedPerformerId = performerTag && performerTag.taggedEntityId;
+
+  console.log(taggedPerformance, taggedPerformerId);
+  const {
+    data: performers,
+    isLoading: taggedPerformerLoading,
+    error: taggedPerformerGetError,
+  } = usePerformersGetQuery({
+    queryParams: {
+      id: taggedPerformance?.performerId ?? taggedPerformerId,
+    },
+    enabled: !!taggedPerformance?.performerId || !!taggedPerformerId,
+  });
+
+  const postPerformer = performers && performers[0];
 
   // TODO: Move all video to its own component
   const video = React.useRef<Video>(null);
@@ -159,6 +225,7 @@ export const Post: FC<PostProps> = ({
     }
   };
 
+  console.log(postPerformer);
   const PostHeader = () =>
     ownerReady ? (
       <View
@@ -168,16 +235,24 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {post.ownerType === PostOwnerType.PERFORMER && performer && (
-          <PerformerPostHeader
-            profileImageUrl={performer.imageUrl}
-            displayName={performer.name}
-          ></PerformerPostHeader>
-        )}
-        {post.ownerType === PostOwnerType.USER && user && (
+        {post.ownerType === PostOwnerType.PERFORMER &&
+          performer &&
+          postPerformer && (
+            <PerformerPostHeader
+              profileImageUrl={performer.imageUrl}
+              displayName={performer.name}
+              performanceText={`${postPerformer.name}${
+                taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
+              }`}
+            ></PerformerPostHeader>
+          )}
+        {post.ownerType === PostOwnerType.USER && user && postPerformer && (
           <UserPostHeader
             avatarFileUuid={user.avatarFileUuid}
             username={user.username}
+            performanceText={`${postPerformer.name}${
+              taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
+            }`}
           ></UserPostHeader>
         )}
       </View>
@@ -244,7 +319,10 @@ export const Post: FC<PostProps> = ({
           </SVGIcon>
         )}
       </Pressable>
-      <PostFooter post={post}></PostFooter>
+      <PostFooter
+        post={post}
+        postPerformerId={taggedPerformance?.performerId ?? taggedPerformerId}
+      ></PostFooter>
       <View
         style={{
           ...styles.sidePadding,

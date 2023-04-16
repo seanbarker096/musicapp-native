@@ -1,14 +1,14 @@
 import { BottomTabNavigationEventMap } from '@react-navigation/bottom-tabs';
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native';
 import { Avatar, AvatarSize } from 'components/avatar';
+import { SVGIcon } from 'components/icon/SVGIcon';
 import { IconColor } from 'components/icon/icon.types';
 import {
   BorderedPlusSVG,
   HomeOutlineSVG,
-  PeopleSVG,
+  MailSVG,
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
-import { SVGIcon } from 'components/icon/SVGIcon';
 import { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
@@ -69,7 +69,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
         }
         handlePress={() => handleIconPress(PrimaryScreens.MANAGE)}
       >
-        <PeopleSVG></PeopleSVG>
+        <MailSVG></MailSVG>
       </SVGIcon>
       <Avatar
         style={

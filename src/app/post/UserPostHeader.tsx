@@ -1,15 +1,21 @@
 import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
+import { View } from 'react-native';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { SPACING_XXSMALL } from 'styles';
 
 interface PostHeaderProps {
   avatarFileUuid?: string;
   username: string;
+  performanceText?: string;
 }
 
-const UserPostHeader: FC<PostHeaderProps> = ({ avatarFileUuid, username }) => {
+const UserPostHeader: FC<PostHeaderProps> = ({
+  avatarFileUuid,
+  username,
+  performanceText,
+}) => {
   const {
     isLoading: filesGetLoading,
     isError: isFilesGetError,
@@ -28,7 +34,10 @@ const UserPostHeader: FC<PostHeaderProps> = ({ avatarFileUuid, username }) => {
         styles={{ marginRight: SPACING_XXSMALL }}
         imageUrl={avatarFile?.url}
       ></ProfileImage>
-      <AppText size="large">{username}</AppText>
+      <View style={{ flexDirection: 'column' }}>
+        <AppText size="large">{username}</AppText>
+        <AppText size="small">{performanceText}</AppText>
+      </View>
     </>
   );
 };

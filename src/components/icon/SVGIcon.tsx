@@ -1,11 +1,6 @@
 import { iconColorGenerator } from 'components/icon/icon-utils';
 import React, { FC } from 'react';
-import {
-  GestureResponderEvent,
-  Pressable,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { GestureResponderEvent, Pressable, ViewStyle } from 'react-native';
 import Svg from 'react-native-svg';
 import { IconColor, SVGProps } from './icon.types';
 
@@ -43,7 +38,6 @@ export const SVGIcon: FC<IconProps> = ({
       style={{
         position,
         ...styles,
-        ...styles.iconContainer,
         width,
         height,
       }}
@@ -61,12 +55,3 @@ export const SVGIcon: FC<IconProps> = ({
     </Pressable>
   );
 };
-
-const styles = StyleSheet.create({
-  iconContainer: {
-    // // display: 'flex',
-    // padding: 2,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-});

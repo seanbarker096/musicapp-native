@@ -1,16 +1,13 @@
-import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ProfileInternalStackScreenProps } from 'app/profile/ProfileStackScreen';
 import { AppText } from 'components/app-text';
 import { DateInput } from 'components/date-input';
-import { List, ListItem } from 'components/list';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { Formik } from 'formik';
 import { FC, useContext, useState } from 'react';
-import { Button, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Button, StyleSheet, TextInput, View } from 'react-native';
+import { EventType } from 'store/events/events.types';
 import { usePerformanceCreateMutation } from 'store/performances/performances.queries';
-import { EventType } from 'store/performances/performances.types';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import {
   BUTTON_COLOR_DISABLED,
@@ -21,21 +18,20 @@ import {
 import { isDefined } from 'utils/utils';
 import { CreatePerformanceStackParamList } from './create-performance.types';
 
-type CreatePerformanceProps = CompositeScreenProps<
-  NativeStackScreenProps<CreatePerformanceStackParamList, 'CreatePerformance'>,
-  ProfileInternalStackScreenProps
+type CreatePerformanceProps = NativeStackScreenProps<
+  CreatePerformanceStackParamList,
+  'CreatePerformance'
 >;
 
 interface PerformanceCreateFormValues {
   isFestival: string;
+  venue: string;
 }
 
 const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
   const { profileState } = useContext(ProfileContext);
   const { profileType, profileId } = profileState;
 
-  const [selectedVenue, setSelectedVenue] = useState<string>('');
-  const [showVenueList, setShowVenueList] = useState<boolean>(false);
   const [eventStartDate, setEventStartDate] = useState<Date | undefined>(
     undefined,
   );
@@ -44,7 +40,6 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     undefined,
   );
 
-  const venues = ['O2 Academy', 'The Forum', 'The Roundhouse', 'The Garage'];
   const {
     data: performers,
     isLoading: performersLoading,
@@ -67,14 +62,6 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
 
   const error = !performer && !performersGetError;
 
-  function handleVenueSelected(venue: string) {
-    console.log('venue selected: ', venue);
-    setSelectedVenue(venue);
-    setShowVenueList(false);
-  }
-
-  function searchVenues() {}
-
   function handleCancelClick() {
     console.log('cancelled');
   }
@@ -84,7 +71,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
       !performanceDate ||
       !eventStartDate ||
       !eventEndDate ||
-      !selectedVenue ||
+      !formValues.venue ||
       !isDefined(formValues.isFestival)
     ) {
       throw Error('Form incomplete. At least one required field is undefined');
@@ -97,7 +84,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
       eventEndDate: Math.ceil(eventEndDate.getTime() / 1000),
       // Convert to seconds so its a unix timestamp
       performanceDate: Math.ceil(performanceDate.getTime() / 1000),
-      venueName: selectedVenue,
+      venueName: formValues.venue,
       eventType:
         formValues.isFestival.toLowerCase() === 'yes'
           ? EventType.MUSIC_FESTIVAL
@@ -113,6 +100,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
       {profileType === ProfileType.PERFORMER && performer && (
         <Formik
           initialValues={{
+            venue: '',
             isFestival: 'No',
           }}
           onSubmit={handleFormSubmit}
@@ -141,35 +129,11 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                   display: 'flex',
                   ...styles.textInput,
                 }}
-                onPressIn={() => setShowVenueList(true)}
-                onChangeText={() => {
-                  handleChange('venue');
-                  searchVenues();
-                }}
-                value={selectedVenue}
+                onChangeText={handleChange('venue')}
+                onBlur={handleBlur('venue')}
+                value={values.venue}
                 placeholder="e.g. Wireless Festival, O2 Academy Brixton"
               />
-              <>
-                {venues && showVenueList && (
-                  <List
-                    sidePadding="xxxsmall"
-                    verticalPadding="none"
-                    scrollable={true}
-                    maxHeight={60}
-                  >
-                    {venues.map(venue => (
-                      <Pressable
-                        key={venue}
-                        onPress={() => handleVenueSelected(venue)}
-                      >
-                        <ListItem>
-                          <AppText>{venue}</AppText>
-                        </ListItem>
-                      </Pressable>
-                    ))}
-                  </List>
-                )}
-              </>
 
               <DateInput
                 handleDateSelected={setEventStartDate}

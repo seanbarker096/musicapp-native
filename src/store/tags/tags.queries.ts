@@ -67,7 +67,12 @@ export function useTagsGetQuery({
   queryParams: TagsGetQueryField;
   enabled?: boolean;
 }) {
-  const { taggedEntityId, taggedEntityType } = queryParams;
+  const {
+    taggedEntityId,
+    taggedEntityType,
+    taggedInEntityId,
+    taggedInEntityType,
+  } = queryParams;
 
   let apiQueryParams:
     | TagsStoreSlice['Get']['RequestParametersType']
@@ -92,6 +97,32 @@ export function useTagsGetQuery({
     queryKey = tagKeys.tagsByEntityTypesAndIds(
       taggedEntityType,
       taggedEntityId,
+    );
+  }
+
+  if (taggedInEntityId && taggedInEntityType && taggedEntityType) {
+    if (
+      isArray(taggedInEntityId) ||
+      isArray(taggedInEntityType) ||
+      isArray(taggedEntityType)
+    ) {
+      throw Error(
+        `Invalid query prarms for tags GET. Currently only getting tags for a single tagged entity is supported. Request: ${JSON.stringify(
+          queryParams,
+        )}`,
+      );
+    }
+
+    apiQueryParams = {
+      tagged_in_entity_id: taggedInEntityId,
+      tagged_in_entity_type: taggedInEntityType,
+      tagged_entity_type: taggedEntityType,
+    };
+
+    queryKey = tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
+      taggedInEntityType,
+      taggedInEntityId,
+      taggedEntityType,
     );
   }
 

@@ -1,4 +1,5 @@
 import {
+  COLOR_PRIMARY_DARK,
   COLOR_SECONDARY_XXDARK,
   ICON_COLOR_DARK,
   ICON_COLOR_LIGHT,
@@ -16,6 +17,8 @@ export function iconColorGenerator(color: IconColor): string {
       return ICON_COLOR_LIGHT;
     case IconColor.SECONDARY:
       return COLOR_SECONDARY_XXDARK;
+    case IconColor.PRIMARY:
+      return COLOR_PRIMARY_DARK;
     default:
       throw Error('Icon color not defined');
   }
