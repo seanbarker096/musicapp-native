@@ -98,7 +98,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
   } = useFeaturesGetQuery({
     queryParams: {
       featurerId: performanceId,
-      featurerType: FeaturerType.PERFORMANCE,
+      featurerType: FeaturerType.PERFORMER,
       featuredEntityType: FeaturedEntityType.POST,
     },
   });

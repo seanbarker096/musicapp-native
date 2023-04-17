@@ -36,7 +36,6 @@ const PostFooter: FC<PostFooterProps> = ({ post, postPerformerId }) => {
   // TODO: Update ot use api call
   const [postLiked, setPostLiked] = React.useState(false);
 
-  // TODO: Update this to ideally have the post by featured by the performance the post is tagged in, not the performer
   const featurerType =
     viewingUserProfileType === ProfileType.PERFORMER
       ? FeaturerType.PERFORMER

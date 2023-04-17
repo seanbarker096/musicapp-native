@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Post } from 'store/posts';
@@ -6,11 +6,13 @@ import GalleryLayout from './gallery-layout/GalleryLayout';
 
 interface GalleryProps {
   postsWithAttachmentsAndFiles: readonly Post[]; // note that this should have files defined in each attachment
+  galleryItemFooter?: ReactElement;
   isLoading: boolean;
 }
 
 export const Gallery: FC<GalleryProps> = ({
   postsWithAttachmentsAndFiles,
+  galleryItemFooter,
   isLoading,
 }) => {
   return (

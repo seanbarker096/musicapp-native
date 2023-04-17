@@ -1,12 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import Manage from './Manage';
-
-const ManageTabNavigator = createBottomTabNavigator();
+import { ManageStackParamList } from './manage-types';
 
 type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
@@ -14,8 +16,10 @@ type Props = NativeStackScreenProps<
 >;
 
 const ManageStackScreen: FC<Props> = () => {
+  const ManageTab = createBottomTabNavigator();
+
   return (
-    <ManageTabNavigator.Navigator
+    <ManageTab.Navigator
       tabBar={props => (
         <PrimaryNav
           navigation={props.navigation}
@@ -23,12 +27,27 @@ const ManageStackScreen: FC<Props> = () => {
         ></PrimaryNav>
       )}
     >
-      <ManageTabNavigator.Screen
-        component={Manage}
-        name="Manage"
-      ></ManageTabNavigator.Screen>
-    </ManageTabNavigator.Navigator>
+      <ManageTab.Screen
+        options={{ headerShown: false }}
+        component={InternalManageStackScreen}
+        name="main"
+      ></ManageTab.Screen>
+    </ManageTab.Navigator>
   );
 };
 
 export default ManageStackScreen;
+
+const InternalManageStackScreen = () => {
+  const InternalManageStack =
+    createNativeStackNavigator<ManageStackParamList>();
+
+  return (
+    <InternalManageStack.Navigator>
+      <InternalManageStack.Screen
+        component={Manage}
+        name="Manage"
+      ></InternalManageStack.Screen>
+    </InternalManageStack.Navigator>
+  );
+};
