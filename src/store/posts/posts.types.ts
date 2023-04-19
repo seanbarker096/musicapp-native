@@ -2,6 +2,7 @@
  * Store slice type definitions
  */
 
+import { Performer, PerformerApi } from 'store/performers';
 import {
   PostAttachment,
   PostAttachmentApi,
@@ -36,6 +37,11 @@ export interface Post {
    * Added on frontend for convienent access. Not received in API response.
    */
   attachments: readonly PostAttachment[];
+  /**
+   * The performer who this post is about, and how has featured it on their profile. If the have not featured this post on their profile, this will be undefined.
+   */
+  featuringPerformer: Performer;
+  featureCount: number;
 }
 
 export interface PostApi {
@@ -47,6 +53,8 @@ export interface PostApi {
   create_time: number;
   is_deleted: boolean;
   update_time?: number;
+  feature_count: number;
+  featuring_performer: PerformerApi;
 }
 
 export enum PostOwnerType {

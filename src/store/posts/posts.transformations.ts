@@ -1,3 +1,4 @@
+import { transformPerformerApi } from 'store/performers/performers.transformations';
 import { transformPostAttachmentApi } from 'store/post-attachments/post-attachments.trasnformations';
 import { PostAttachmentApi } from 'store/post-attachments/post-attachments.types';
 import { Post, PostApi, PostCreateResult } from './posts.types';
@@ -13,6 +14,8 @@ export function transformPostApi(post: PostApi): Post {
     isDeleted: post.is_deleted,
     updateTime: post.update_time,
     attachments: [],
+    featuringPerformer: transformPerformerApi(post.featuring_performer),
+    featureCount: post.feature_count,
   };
 }
 
@@ -35,6 +38,8 @@ export function transformPostAndAttachmentsApi(
       updateTime: post.update_time,
       isDeleted: post.is_deleted,
       attachments: transformedAttachments,
+      featuringPerformer: transformPerformerApi(post.featuring_performer),
+      featureCount: post.feature_count,
     },
     attachments: transformedAttachments,
   };
