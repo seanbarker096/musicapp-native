@@ -17,7 +17,7 @@ export const PerformanceListItem: FC<Props> = ({
 }) => {
   const date = new Date(performances.performanceDate * 1000);
 
-  const captures = performances.attendeeCount;
+  const captures = performances.attendanceCount;
 
   const captureText = captures === 1 ? '1 capture' : `${captures} captures`;
 

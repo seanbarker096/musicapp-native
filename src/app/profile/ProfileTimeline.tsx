@@ -1,9 +1,7 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { PerformanceList } from 'components/performance-list';
 import { PerformerShowCountsList } from 'components/performer-show-count-list';
 import { ProfileType } from 'contexts/profile.context';
 import { FC } from 'react';
-import { ProfileStackParamList } from './profile.types';
 
 type Props = {
   profileId: number;
@@ -18,8 +16,6 @@ export const ProfileTimeline: FC<Props> = ({
   handleCreatePerformancePress,
   handleViewProfilePress,
 }) => {
-  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
-
   return (
     <>
       {profileType === ProfileType.PERFORMER && (
