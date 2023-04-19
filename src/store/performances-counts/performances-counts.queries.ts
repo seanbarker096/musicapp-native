@@ -72,6 +72,7 @@ async function performancesCountsGet(
   });
 }
 
+//TODO: Stop using this and add counts as a projection to the performance endpoint
 export function usePerformancesCountsGetQuery({
   queryParams,
   enabled = true,

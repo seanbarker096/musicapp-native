@@ -35,6 +35,7 @@ async function performancesGet(
 
   const performancesApi = response.data.performances;
 
+  // TODO: Always return the evnet with the performance as a projection
   const eventsResponse = await getRequest<EventsStoreSlice>({
     url: `events/0.1/events`,
     params: {
@@ -133,6 +134,12 @@ export function usePerformancesGetQuery({
 
     queryKey = performancesKeys.performancesByIds(processedId);
   }
+
+  // We always want to include the attendee count
+  apiQueryParams = {
+    ...apiQueryParams,
+    include_attendance_count: true,
+  };
 
   return useQuery<
     readonly PerformanceWithEvent[],

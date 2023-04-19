@@ -7,11 +7,8 @@ import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
 import { Button, Pressable, StyleSheet } from 'react-native';
-import {
-  PerformanceWithCounts,
-  usePerformancesCountsGetQuery,
-} from 'store/performances-counts';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { PerformanceWithEvent } from 'store/performances/performances.types';
 import {
   BUTTON_COLOR_PRIMARY,
   COLOR_SECONDARY_XXDARK,
@@ -56,31 +53,11 @@ export const PerformanceList: FC<Props> = ({
     },
   });
 
-  const {
-    data: performancesWithCounts,
-    isLoading: performancesWithCountsLoading,
-    error: performancesWithCountsGetError,
-  } = usePerformancesCountsGetQuery({
-    queryParams: {
-      performanceIds: performances?.map(performance => performance.id),
-      includeAttendeeCount: false,
-      includeTagCount: true,
-      includeFeaturesCount: true,
-    },
-    enabled: !!performances && !!performances.length,
-  });
+  const loading = !performances && performancesLoading;
 
-  const loading =
-    (!performances || !performancesWithCounts) &&
-    (performancesLoading || performancesWithCountsLoading);
+  const error = !performances && performancesGetError;
 
-  const error =
-    (!performances || !performancesWithCounts) &&
-    (performancesGetError || performancesWithCountsGetError);
-
-  function handlePerformancePress(
-    performanceWithCounts: PerformanceWithCounts,
-  ) {
+  function handlePerformancePress(performanceWithCounts: PerformanceWithEvent) {
     navigation.navigate('ProfilePerformance', {
       performanceId: performanceWithCounts.id,
       performerId: performanceWithCounts.performerId,
@@ -88,7 +65,7 @@ export const PerformanceList: FC<Props> = ({
   }
   return (
     <>
-      {performancesWithCounts && performancesWithCounts.length && (
+      {performances && performances.length && (
         <>
           {loggedInUserIsPerformer && (
             <Pressable
@@ -116,11 +93,11 @@ export const PerformanceList: FC<Props> = ({
             verticalPadding="xxxsmall"
             scrollable={true}
           >
-            {performancesWithCounts?.map(performanceWithCounts => (
-              <ListItem key={performanceWithCounts.id}>
+            {performances?.map(performances => (
+              <ListItem key={performances.id}>
                 <PerformanceListItem
                   onListItemPress={handlePerformancePress}
-                  performanceWithCounts={performanceWithCounts}
+                  performances={performances}
                 ></PerformanceListItem>
               </ListItem>
             ))}

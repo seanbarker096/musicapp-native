@@ -23,6 +23,7 @@ export interface PerformanceApi {
   performance_date: number;
   create_time: number;
   update_time?: number;
+  attendance_count?: number;
 }
 
 export interface Performance {
@@ -32,6 +33,7 @@ export interface Performance {
   performanceDate: number;
   createTime: number;
   updateTime?: number;
+  attendanceCount?: number;
 }
 
 export type PerformanceWithEvent = Performance & Omit<Event, 'id'>;
@@ -41,6 +43,7 @@ export interface PerformancesGetFilterApi {
   performer_ids?: readonly number[];
   performance_date?: number;
   attendee_ids?: readonly number[];
+  include_attendance_count?: boolean;
 }
 
 export interface PerformancesGetResultApi {

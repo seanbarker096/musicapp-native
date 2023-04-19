@@ -159,16 +159,14 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
             </View>
           </View>
           <AppText>
-            {taggedPosts.length + featuredPosts.length === 1 &&
+            {taggedPosts.length === 1 &&
               '1 fan has shared a post for this performance'}
-            {taggedPosts.length + featuredPosts.length > 1 &&
-              `${
-                taggedPosts.length + featuredPosts.length
-              } fans have shared posts for this performance`}
-            {taggedPosts.length + featuredPosts.length === 0 &&
+            {taggedPosts.length > 1 &&
+              `${taggedPosts.length} fans have shared posts for this performance`}
+            {taggedPosts.length === 0 &&
               'No fans have shared posts for this performance. Be the first!'}
           </AppText>
-          {taggedPosts.length + featuredPosts.length === 0 && (
+          {taggedPosts.length === 0 && (
             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                 onPress={handleCreatePostPress}

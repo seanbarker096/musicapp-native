@@ -3,32 +3,31 @@ import { SVGIcon } from 'components/icon';
 import { VideoCameraSVG } from 'components/icon/svg-components';
 import { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { PerformanceWithCounts } from 'store/performances-counts';
+import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { SPACING_XSMALL } from 'styles';
 
 type Props = {
-  performanceWithCounts: PerformanceWithCounts;
-  onListItemPress: (performanceWithCounts: PerformanceWithCounts) => void;
+  performances: PerformanceWithEvent;
+  onListItemPress: (performances: PerformanceWithEvent) => void;
 };
 
 export const PerformanceListItem: FC<Props> = ({
-  performanceWithCounts,
+  performances,
   onListItemPress,
 }) => {
-  const date = new Date(performanceWithCounts.performanceDate * 1000);
+  const date = new Date(performances.performanceDate * 1000);
 
-  const captures =
-    performanceWithCounts.featuresCount + performanceWithCounts.tagCount;
+  const captures = performances.attendeeCount;
 
   const captureText = captures === 1 ? '1 capture' : `${captures} captures`;
 
   return (
     <Pressable
-      onPress={() => onListItemPress(performanceWithCounts)}
+      onPress={() => onListItemPress(performances)}
       style={styles.columnContainer}
     >
       <AppText>{`${
-        performanceWithCounts.venueName
+        performances.venueName
       } ${date.toLocaleDateString()}`}</AppText>
       <View style={styles.rowContainer}>
         <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>

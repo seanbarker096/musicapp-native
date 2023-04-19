@@ -17,9 +17,9 @@ async function getUsersPostsFeatures(
     params,
   });
 
-  return response.data.features_by_post_id.map(feature =>
-    transformFeatureApi(feature),
-  );
+  return Object(response.data.features_by_post_id)
+    .keys()
+    .map(post_id => transformFeatureApi(feature));
 }
 
 export function useUsersPostsFeaturesGetQuery({

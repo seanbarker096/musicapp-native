@@ -10,5 +10,6 @@ export function transformPerformanceApi(
     performanceDate: performance.performance_date,
     createTime: performance.create_time,
     updateTime: performance.update_time,
+    attendanceCount: performance.attendance_count,
   };
 }
