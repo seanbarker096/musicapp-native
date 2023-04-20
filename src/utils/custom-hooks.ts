@@ -1,3 +1,7 @@
+import {
+  FeaturedPostsGetQueryFields,
+  useFeaturedPostsGetQuery,
+} from 'store/featured-posts/featured-posts.queries';
 import { useFilesGetQuery } from 'store/files/files.queries';
 import { File } from 'store/files/files.types';
 import { usePostAttachmentsGetQuery } from 'store/post-attachments';
@@ -97,6 +101,69 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     includeFeatured,
     includeOwned,
     includeTagged,
+  });
+
+  const postsReady = !!posts && !postsLoading;
+
+  const postIds = posts?.map(post => post.id);
+
+  const {
+    data: postsAttachments,
+    isLoading: postsAttachmentsLoading,
+    isError: postsAttachmentsError,
+  } = usePostAttachmentsGetQuery({
+    queryParams: { postId: postIds },
+    enabled: postsReady && posts.length > 0,
+  });
+
+  const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
+
+  const {
+    data: files,
+    isLoading: filesLoading,
+    isError: filesError,
+  } = useFilesGetQuery({
+    queryParams: {
+      id: postsAttachments
+        ? postsAttachments.map(attachment => attachment.fileId)
+        : undefined,
+    },
+    enabled: postsAttachmentsReady && postsAttachments.length > 0,
+  });
+
+  const filesReady = !!files && !filesLoading;
+
+  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+    files,
+    postsAttachments,
+    posts,
+  );
+
+  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
+
+  return {
+    isLoading,
+    postsWithAttachmentsAndFiles,
+  };
+}
+
+function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
+  ownerId,
+  ownerType,
+  isFeaturedByUsers,
+  isFeaturedByPerformers,
+}: FeaturedPostsGetQueryFields) {
+  const {
+    data: posts,
+    isLoading: postsLoading,
+    isError: postsError,
+  } = useFeaturedPostsGetQuery({
+    queryParams: {
+      ownerId,
+      ownerType,
+      isFeaturedByPerformers,
+      isFeaturedByUsers,
+    },
   });
 
   const postsReady = !!posts && !postsLoading;

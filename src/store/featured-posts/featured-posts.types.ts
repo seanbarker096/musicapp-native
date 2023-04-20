@@ -1,4 +1,4 @@
-import { Post, PostApi, PostsGetFilterApi } from 'store/posts';
+import { Post, PostApi, PostOwnerType } from 'store/posts';
 import { StoreSlice } from 'store/store.types';
 
 export interface FeaturedPostsStoreSlice extends StoreSlice {
@@ -12,9 +12,18 @@ export interface FeaturedPostsStoreSlice extends StoreSlice {
   Post: never;
 }
 
-export type FeaturedPostsGetFilterApi = PostsGetFilterApi & {
-  featured_by_users: boolean;
-  featured_by_performers: boolean;
+export type FeaturedPostsGetFilter = {
+  ownerId: number;
+  ownerType: PostOwnerType;
+  isFeaturedByUsers: boolean;
+  isFeaturedByPerformers: boolean;
+};
+
+export type FeaturedPostsGetFilterApi = {
+  owner_id: number;
+  owner_type: PostOwnerType;
+  is_featured_by_users: boolean;
+  is_featured_by_performers: boolean;
 };
 
 export interface FeaturedPostsGetResultApi {
