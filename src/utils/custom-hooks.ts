@@ -147,12 +147,18 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   };
 }
 
-function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
-  ownerId,
-  ownerType,
-  isFeaturedByUsers,
-  isFeaturedByPerformers,
-}: FeaturedPostsGetQueryFields) {
+export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
+  queryParams: {
+    ownerId,
+    ownerType,
+    isFeaturedByUsers,
+    isFeaturedByPerformers,
+  },
+  enabled = true,
+}: {
+  queryParams: FeaturedPostsGetQueryFields;
+  enabled?: boolean;
+}) {
   const {
     data: posts,
     isLoading: postsLoading,

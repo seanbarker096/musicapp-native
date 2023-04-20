@@ -6,7 +6,10 @@ import GalleryLayout from './gallery-layout/GalleryLayout';
 
 interface GalleryProps {
   postsWithAttachmentsAndFiles: readonly Post[]; // note that this should have files defined in each attachment
-  galleryItemFooter?: ReactElement;
+  /**
+   * A function that returns a ReactElement to be rendered as the footer of each gallery item.
+   */
+  galleryItemFooter?: (post: Post) => ReactElement;
   isLoading: boolean;
 }
 
@@ -19,7 +22,10 @@ export const Gallery: FC<GalleryProps> = ({
     <View style={{ width: '100%' }}>
       {postsWithAttachmentsAndFiles && (
         <>
-          <GalleryLayout posts={postsWithAttachmentsAndFiles}></GalleryLayout>
+          <GalleryLayout
+            posts={postsWithAttachmentsAndFiles}
+            galleryItemFooter={galleryItemFooter}
+          ></GalleryLayout>
         </>
       )}
       {isLoading && <Text>...Loading</Text>}

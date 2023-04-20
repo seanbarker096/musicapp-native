@@ -60,13 +60,16 @@ export function useFeaturedPostsGetQuery({
     queryKey = featuredPostKeys.featuredPostsByOwner(ownerId, ownerType);
   }
 
-  return useQuery<readonly Post[], unknown, readonly Post[]>(queryKey, () =>
-    apiQueryParams
-      ? featuredPostsGet(apiQueryParams)
-      : failedQuery(
-          `Invalid Featured Posts get query params or unsupported query. Query: ${JSON.stringify(
-            apiQueryParams,
-          )}`,
-        ),
+  return useQuery<readonly Post[], unknown, readonly Post[]>(
+    queryKey,
+    () =>
+      apiQueryParams
+        ? featuredPostsGet(apiQueryParams)
+        : failedQuery(
+            `Invalid Featured Posts get query params or unsupported query. Query: ${JSON.stringify(
+              apiQueryParams,
+            )}`,
+          ),
+    { enabled },
   );
 }

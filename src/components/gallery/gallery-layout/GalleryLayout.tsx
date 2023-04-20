@@ -1,16 +1,23 @@
 import { Column } from 'components/column';
 import { Grid } from 'components/grid';
-import React, { FC } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { FC, ReactElement } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
 import GalleryItem from '../gallery-item/GalleryItem';
 
 interface GalleryLayoutProps {
   posts: readonly Post[];
+  /**
+   * A function that returns a ReactElement to be rendered as the footer of each gallery item.
+   */
+  galleryItemFooter?: (post: Post) => ReactElement;
 }
 
-const GalleryLayout: FC<GalleryLayoutProps> = ({ posts }) => (
+const GalleryLayout: FC<GalleryLayoutProps> = ({
+  posts,
+  galleryItemFooter,
+}) => (
   <Grid gridPadding={styles.gridPadding}>
     {posts.map(post => (
       <Column
@@ -18,9 +25,21 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({ posts }) => (
         columnWidth={4}
       >
         <GalleryItem
-          galleryItemStyles={styles.item}
+          galleryItemStyles={{ ...styles.item, position: 'relative' }}
           post={post}
         ></GalleryItem>
+        {galleryItemFooter && (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              flexGrow: 1,
+              flexShrink: 0,
+            }}
+          >
+            galleryItemFooter(post)
+          </View>
+        )}
       </Column>
     ))}
   </Grid>

@@ -1,28 +1,24 @@
+import { Gallery } from 'components/gallery';
 import { FC } from 'react';
-import { FeaturerType } from 'store/features/features.types';
-import { useUsersPostsFeaturesGetQuery } from 'store/users-posts-features/users-posts-features.queries';
+import { PostOwnerType } from 'store/posts';
+import { useGetFeaturedPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface UserFeaturedPostsGalleryProps {
   postOwnerId: number;
+  postOwnerType: PostOwnerType;
 }
 
 export const UserFeaturedPostGallery: FC<UserFeaturedPostsGalleryProps> = ({
   postOwnerId,
+  postOwnerType,
 }) => {
-  const {
-    data: features,
-    isLoading: featuresLoading,
-    error: featuresError,
-  } = useUsersPostsFeaturesGetQuery({
-    queryParams: {
-      postOwnerId: postOwnerId,
-      featurerType: FeaturerType.USER,
-    },
-  });
-
-  const postIds = features?.map(feature => {
-    return feature.featuredEntityId;
-  });
+  const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
+    useGetFeaturedPostsWithAttachmentsAndFilesQuery({
+      ownerId: postOwnerId,
+      ownerType: postOwnerType,
+      isFeaturedByUsers: true,
+      isFeaturedByPerformers: false,
+    });
 
   return (
     <>
