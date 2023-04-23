@@ -54,6 +54,7 @@ export const Post: FC<PostProps> = ({
   route: {
     params: { postId },
   },
+  navigation,
 }) => {
   const { profileState } = useContext(ProfileContext);
   const { profileId, profileType } = profileState;
@@ -352,6 +353,7 @@ export const Post: FC<PostProps> = ({
             postPerformerId={
               taggedPerformance?.performerId ?? taggedPerformerId
             }
+            handleLinkToPerformancePress={() => navigation.navigate()}
           ></PostFooter>
           <View
             style={{

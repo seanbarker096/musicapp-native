@@ -32,13 +32,8 @@ import {
   useFilesGetQuery,
 } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
-import { Performance } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
-import {
-  PostCreateResult,
-  PostOwnerType,
-  usePostCreateMutation,
-} from 'store/posts';
+import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
@@ -67,9 +62,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   navigation,
 }: CreatePostStackScreenProps) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
-  const [taggedPerformer, setTaggedPerformer] = useState<Performer | undefined>(
-    undefined,
-  );
+  const [performer, setPerformer] = useState<Performer | undefined>(undefined);
   const [performanceDate, setPerformanceDate] = useState<Date | undefined>(
     undefined,
   );
@@ -125,18 +118,17 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     error: performancesGetError,
   } = usePerformancesGetQuery({
     queryParams: {
-      performerId: taggedPerformer?.id,
+      performerId: performer?.id,
       performanceDate: toNumber(
         performanceDate
           ? Math.ceil(performanceDate.getTime() / 1000)
           : undefined,
       ),
     },
-    enabled: !!taggedPerformer && !!performanceDate,
+    enabled: !!performer && !!performanceDate,
   });
 
   const performance = performances && performances[0];
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -193,7 +185,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!taggedPerformer || !form.caption || !performanceDate) {
+    if (!performer || !form.caption || !performanceDate) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -208,59 +200,39 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('create file request failed');
     }
 
-    // use promise.all here to send both queries simaltaneously
-    let promises:
-      | [Promise<PostCreateResult>, Promise<Performance>]
-      | [Promise<PostCreateResult>];
-
-    const createPostPromise = createPost({
+    const postResult = await createPost({
       ownerId: userId,
       ownerType: PostOwnerType.USER, // todo: update this
       content: form.caption,
       attachmentFileIds: [fileResult.file.id],
     });
 
-    let performancePromise: Promise<Performance> | undefined = undefined;
+    const createdPost = postResult && postResult.post;
 
-    if (!performance) {
-      // create the performance so we can tag the show in it
-      performancePromise = performanceCreate({
-        performerId: taggedPerformer.id,
-        // Convert to seconds so its a unix timestamp
-        performanceDate: Math.ceil(performanceDate.getTime() / 1000),
-      });
-    }
-
-    promises = performancePromise
-      ? [createPostPromise, performancePromise]
-      : [createPostPromise];
-
-    const createResults = await Promise.all(promises);
-
-    const postResult = createResults[0];
-
-    if (!postResult) {
+    if (!createdPost) {
       throw Error('failed to create post');
     }
 
-    const post = postResult.post;
-
-    const performanceResult = createResults[1];
-
-    const taggedPerformance = performance || performanceResult;
-
-    // Throw if not performance selected or created at this stage
-    if (!taggedPerformance) {
-      throw Error('Failed to create performance');
+    // if no performance found for the artist and show dates, tag the artist in the post so they cna view it later
+    let tagResult;
+    if (!performance) {
+      tagResult = await createTag({
+        taggedEntityType: TaggedEntityType.PERFORMER,
+        taggedEntityId: performer.id,
+        taggedInEntityType: TaggedInEntityType.POST,
+        taggedInEntityId: createdPost.id,
+        creatorId: userId,
+      });
+    } else {
+      // Otherwise tag the post with the performance
+      tagResult = await createTag({
+        taggedEntityType: TaggedEntityType.PERFORMANCE,
+        taggedEntityId: performance.id,
+        taggedInEntityType: TaggedInEntityType.POST,
+        taggedInEntityId: createdPost.id,
+        creatorId: userId,
+      });
     }
-    // Tag the post with the show it was taken at
-    const tagResult = await createTag({
-      taggedEntityType: TaggedEntityType.PERFORMANCE,
-      taggedEntityId: taggedPerformance.id,
-      taggedInEntityType: TaggedInEntityType.POST,
-      taggedInEntityId: post.id,
-      creatorId: userId,
-    });
 
     if (!tagResult) {
       throw Error('Failed to create tag');
@@ -274,11 +246,11 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   };
 
   function handlePerformerSelection(performer: Performer) {
-    setTaggedPerformer(performer);
+    setPerformer(performer);
   }
 
   function handleTaggedPerformerPress() {
-    setTaggedPerformer(undefined);
+    setPerformer(undefined);
   }
 
   // TODO: Create a date input component because i am reusing this logic in CreatePerformance
@@ -419,16 +391,16 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
               />
               <View style={{ ...styles.flexColumnContainer, height: 200 }}>
                 <Text style={{ width: '100%' }}>Performer</Text>
-                {!taggedPerformer && (
+                {!performer && (
                   <PerformerSearch
                     scrollable={true}
                     height={200}
                     onPerformerSelect={handlePerformerSelection}
                   ></PerformerSearch>
                 )}
-                {taggedPerformer && (
+                {performer && (
                   <PerformerSearchCard
-                    performer={taggedPerformer}
+                    performer={performer}
                     onPress={handleTaggedPerformerPress}
                   ></PerformerSearchCard>
                 )}
@@ -460,6 +432,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                 >
                   <Button
                     color={BUTTON_COLOR_PRIMARY}
+                    disabled={performancesLoading} // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post
                     onPress={handleSubmit}
                     title="Share"
                   />
