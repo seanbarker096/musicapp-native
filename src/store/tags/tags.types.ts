@@ -20,7 +20,6 @@ export interface TagsCreateRequestApi {
   tagged_entity_id: number;
   tagged_in_entity_type: TaggedInEntityType;
   tagged_in_entity_id: number;
-  creator_id: number;
 }
 
 export interface TagCreateRequest {
@@ -28,7 +27,6 @@ export interface TagCreateRequest {
   taggedEntityId: number;
   taggedInEntityType: TaggedInEntityType;
   taggedInEntityId: number;
-  creatorId: number;
 }
 
 export interface TagsCreateResultApi {
@@ -79,4 +77,12 @@ export interface TagsGetFilter {
 
 export interface TagsGetResultApi {
   tags: TagApi[];
+}
+
+export interface TagDeleteRequest {
+  ids: number[];
+}
+
+export interface TagDeleteRequestApi {
+  ids: number[];
 }

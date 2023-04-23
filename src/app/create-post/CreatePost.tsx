@@ -221,7 +221,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         taggedEntityId: performer.id,
         taggedInEntityType: TaggedInEntityType.POST,
         taggedInEntityId: createdPost.id,
-        creatorId: userId,
       });
     } else {
       // Otherwise tag the post with the performance
@@ -230,7 +229,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
         taggedEntityId: performance.id,
         taggedInEntityType: TaggedInEntityType.POST,
         taggedInEntityId: createdPost.id,
-        creatorId: userId,
       });
     }
 

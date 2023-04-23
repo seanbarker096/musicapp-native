@@ -1,19 +1,24 @@
 /* ----------- TAG CREATE ------------ */
 
-import { QueryKey, useMutation, useQuery } from 'react-query';
-import { getRequest, postRequest } from 'store/request-builder';
+import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { deleteRequest, getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
 import { tagKeys } from './tags.query-keys';
 import { transformTagApi } from './tags.transformations';
-import { Tag, TagCreateRequest, TagsStoreSlice } from './tags.types';
+import {
+  Tag,
+  TagCreateRequest,
+  TagDeleteRequest,
+  TagsStoreSlice,
+} from './tags.types';
 
+// ------------------ TAG CREATE ------------------ //
 async function tagCreate({
   taggedEntityId,
   taggedEntityType,
   taggedInEntityId,
   taggedInEntityType,
-  creatorId,
 }: TagCreateRequest) {
   const response = await postRequest<TagsStoreSlice>({
     url: 'tags/0.1/tags',
@@ -22,7 +27,6 @@ async function tagCreate({
       tagged_entity_id: taggedEntityId,
       tagged_in_entity_type: taggedInEntityType,
       tagged_in_entity_id: taggedInEntityId,
-      creator_id: creatorId,
     },
   });
 
@@ -32,6 +36,34 @@ async function tagCreate({
 export const useTagCreateMutation = () => {
   return useMutation<Tag, any, TagCreateRequest>((request: TagCreateRequest) =>
     tagCreate(request),
+  );
+};
+
+// ------------------ TAG DELETE ------------------ //
+
+async function tagsDelete({ ids }: TagDeleteRequest) {
+  const response = await deleteRequest<TagsStoreSlice>({
+    url: 'tags/0.1/tags',
+    params: {
+      ids,
+    },
+  });
+
+  return response.data;
+}
+
+export const useTagDeleteMutation = () => {
+  const queryClient = useQueryClient();
+
+  const onSuccessCallback = async () => {
+    return queryClient.invalidateQueries(tagKeys.all);
+  };
+
+  return useMutation<void, any, TagDeleteRequest>(
+    (request: TagDeleteRequest) => tagsDelete(request),
+    {
+      onSuccess: onSuccessCallback,
+    },
   );
 };
 
@@ -58,7 +90,7 @@ async function tagsGet({
   });
 
   return response.data.tags.map(tag => transformTagApi(tag));
-};
+}
 
 export function useTagsGetQuery({
   queryParams,

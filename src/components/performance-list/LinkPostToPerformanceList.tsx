@@ -8,8 +8,16 @@ import React, { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
-import { useTagsGetQuery } from 'store/tags/tags.queries';
-import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
+import {
+  useTagCreateMutation,
+  useTagDeleteMutation,
+  useTagsGetQuery,
+} from 'store/tags/tags.queries';
+import {
+  Tag,
+  TaggedEntityType,
+  TaggedInEntityType,
+} from 'store/tags/tags.types';
 import { SPACING_XSMALL } from 'styles';
 
 type LinkToPerformancListProps = {
@@ -29,6 +37,18 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 }) => {
   const { profileState } = useContext(ProfileContext);
   const { profileId: loggedInUserProfileId } = profileState;
+
+  const {
+    mutateAsync: createTag,
+    isLoading: createTagLoading,
+    isError: createTagError,
+  } = useTagCreateMutation();
+
+  const {
+    mutateAsync: deleteTag,
+    isLoading: deleteTagLoading,
+    isError: deleteTagError,
+  } = useTagDeleteMutation();
 
   const {
     data: performances,
@@ -63,8 +83,6 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   }) => {
     const date = new Date(performance.performanceDate * 1000);
 
-    console.log(performance);
-
     return (
       <ListItem key={performance.id}>
         <View style={styles.container}>
@@ -73,12 +91,20 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
           } ${date.toLocaleDateString()}`}</AppText>
           {!performanceTag ||
             (performance.id !== performanceTag.taggedEntityId && (
-              <SVGIcon handlePress={handleLinkToPerformanceIconClick}>
+              <SVGIcon
+                handlePress={() =>
+                  handleLinkToPerformanceIconClick(performance)
+                }
+              >
                 <PlusSVG></PlusSVG>
               </SVGIcon>
             ))}
           {performance.id == performanceTag?.taggedEntityId && (
-            <SVGIcon handlePress={handleUnlinkToPerformanceIconClick}>
+            <SVGIcon
+              handlePress={() =>
+                handleUnlinkToPerformanceIconClick(performanceTag)
+              }
+            >
               <CheckMarkSVG></CheckMarkSVG>
             </SVGIcon>
           )}
@@ -87,9 +113,20 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
     );
   };
 
-  function handleLinkToPerformanceIconClick() {}
+  async function handleLinkToPerformanceIconClick(
+    performance: PerformanceWithEvent,
+  ) {
+    await createTag({
+      taggedEntityId: performance.id,
+      taggedEntityType: TaggedEntityType.PERFORMANCE,
+      taggedInEntityId: postId,
+      taggedInEntityType: TaggedInEntityType.POST,
+    });
+  }
 
-  function handleUnlinkToPerformanceIconClick() {}
+  async function handleUnlinkToPerformanceIconClick(performanceTag: Tag) {
+    await deleteTag({ ids: [performanceTag.id] });
+  }
 
   return (
     <>

@@ -22,6 +22,11 @@ export interface StoreSlice {
     ResultType: any;
     ErrorType: any;
   };
+  Delete: {
+    RequestParametersType: { [paramName: string]: any };
+    ResultType: any;
+    ErrorType: any;
+  };
 }
 
 export interface GetRequestConfig<S extends StoreSlice> {
