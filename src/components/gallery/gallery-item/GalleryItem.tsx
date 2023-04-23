@@ -11,6 +11,7 @@ import { Post } from 'store/posts/posts.types';
 interface GalleryItemProps {
   post: Post;
   galleryItemStyles: { [style: string]: any };
+  hidePlayButton?: boolean;
 }
 
 const LOADING_STRING = '... loading ...';
@@ -18,7 +19,11 @@ const BUFFERING_STRING = '...buffering...';
 const LOOPING_TYPE_ALL = 0;
 const LOOPING_TYPE_ONE = 1;
 
-const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
+const GalleryItem: FC<GalleryItemProps> = ({
+  post,
+  galleryItemStyles,
+  hidePlayButton = false,
+}) => {
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 
   const video = React.useRef<Video>(null);
@@ -43,13 +48,15 @@ const GalleryItem: FC<GalleryItemProps> = ({ post, galleryItemStyles }) => {
             resizeMode={ResizeMode.COVER}
             shouldPlay={false}
           />
-          <SVGIcon
-            styles={styles.playIcon}
-            color={IconColor.LIGHT}
-            position={'absolute'}
-          >
-            <PlayButtonSVG></PlayButtonSVG>
-          </SVGIcon>
+          {hidePlayButton && (
+            <SVGIcon
+              styles={styles.playIcon}
+              color={IconColor.LIGHT}
+              position={'absolute'}
+            >
+              <PlayButtonSVG></PlayButtonSVG>
+            </SVGIcon>
+          )}
         </Pressable>
       )}
     </View>

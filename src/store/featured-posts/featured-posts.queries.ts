@@ -3,6 +3,7 @@ import { Post } from 'store/posts';
 import { transformPostApi } from 'store/posts/posts.transformations';
 import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
+import { isDefined } from 'utils/utils';
 import { featuredPostKeys } from './featured-posts.query-keys';
 import { FeaturedPostsStoreSlice } from './featured-posts.types';
 
@@ -15,9 +16,9 @@ export type FeaturedPostsGetQueryFields = Partial<{
   isFeaturedByPerformers: boolean;
 };
 
-const featuredPostsGet = async (
+async function featuredPostsGet(
   params: FeaturedPostsStoreSlice['Get']['RequestParametersType'],
-) => {
+) {
   const response = await getRequest<FeaturedPostsStoreSlice>({
     url: 'posts/0.1/featured',
     params: {
@@ -31,7 +32,7 @@ const featuredPostsGet = async (
   const postsAndAttachments = response.data;
 
   return postsAndAttachments.posts.map(post => transformPostApi(post));
-};
+}
 
 export function useFeaturedPostsGetQuery({
   queryParams,
@@ -43,13 +44,19 @@ export function useFeaturedPostsGetQuery({
   const { ownerId, ownerType, isFeaturedByUsers, isFeaturedByPerformers } =
     queryParams;
 
+  console.log(queryParams);
   let apiQueryParams:
     | FeaturedPostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
   let queryKey: QueryKey = featuredPostKeys.null;
 
-  if (ownerId && ownerType && isFeaturedByPerformers && isFeaturedByUsers) {
+  if (
+    ownerId &&
+    ownerType &&
+    isDefined(isFeaturedByPerformers) &&
+    isDefined(isFeaturedByUsers)
+  ) {
     apiQueryParams = {
       owner_id: ownerId,
       owner_type: ownerType,

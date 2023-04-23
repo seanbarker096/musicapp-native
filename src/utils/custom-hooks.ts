@@ -170,6 +170,7 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
       isFeaturedByPerformers,
       isFeaturedByUsers,
     },
+    enabled,
   });
 
   const postsReady = !!posts && !postsLoading;

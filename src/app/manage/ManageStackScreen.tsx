@@ -8,6 +8,8 @@ import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import Manage from './Manage';
+import { ManageFeaturedPosts } from './ManageFeaturedPosts';
+import { ManageTaggedPosts } from './ManageTaggedPosts';
 import { ManageStackParamList } from './manage-types';
 
 type Props = NativeStackScreenProps<
@@ -47,6 +49,14 @@ const InternalManageStackScreen = () => {
       <InternalManageStack.Screen
         component={Manage}
         name="Manage"
+      ></InternalManageStack.Screen>
+      <InternalManageStack.Screen
+        component={ManageFeaturedPosts}
+        name="ManageFeaturedPosts"
+      ></InternalManageStack.Screen>
+      <InternalManageStack.Screen
+        component={ManageTaggedPosts}
+        name="ManageTaggedPosts"
       ></InternalManageStack.Screen>
     </InternalManageStack.Navigator>
   );

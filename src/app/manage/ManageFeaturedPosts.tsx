@@ -10,8 +10,10 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
   COLOR_NEUTRAL_XXXXLIGHT,
+  COLOR_PRIMARY_DARK,
   FONT_WEIGHT_BOLD,
   SPACING_XXSMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
 import { useGetFeaturedPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 import { ManageStackParamList } from './manage-types';
@@ -73,13 +75,26 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         style={{
           ...styles.flexRowContainer,
           backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
-          opacity: 80,
+          opacity: 0.85,
+          paddingLeft: SPACING_XXSMALL,
+          paddingRight: SPACING_XXSMALL,
+          paddingTop: SPACING_XXXSMALL,
+          paddingBottom: SPACING_XXXSMALL,
         }}
       >
-        <SVGIcon>
+        <SVGIcon
+          width={18}
+          height={18}
+          styles={{ marginRight: SPACING_XXSMALL }}
+        >
           <PictureCheckMarkSVG></PictureCheckMarkSVG>
         </SVGIcon>
-        <AppText>{featureCount} features</AppText>
+        <AppText
+          size="small"
+          weight="bold"
+        >
+          {featureCount} features
+        </AppText>
       </View>
     );
   };
@@ -90,14 +105,24 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         style={{
           ...styles.flexRowContainer,
           backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
-          opacity: 80,
+          opacity: 0.85,
+          paddingLeft: SPACING_XXSMALL,
+          paddingRight: SPACING_XXSMALL,
+          paddingTop: SPACING_XXXSMALL,
+          paddingBottom: SPACING_XXXSMALL,
         }}
       >
         <ProfileImage
           imageUrl={featuringPerformer.imageUrl}
           styles={{ marginRight: SPACING_XXSMALL }}
+          size="xsmall"
         ></ProfileImage>
-        <AppText>{featuringPerformer.name}</AppText>
+        <AppText
+          size="small"
+          weight="bold"
+        >
+          {featuringPerformer.name}
+        </AppText>
       </View>
     );
   };
@@ -105,10 +130,22 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
   return (
     <>
       <View style={styles.headerContainer}>
-        <Pressable onPress={() => setSelectedTab(SelectedTab.USER_FEATURES)}>
+        <Pressable
+          style={
+            selectedTab === SelectedTab.USER_FEATURES
+              ? styles.selectedTab
+              : styles.tabItem
+          }
+          onPress={() => setSelectedTab(SelectedTab.USER_FEATURES)}
+        >
           <AppText weight={FONT_WEIGHT_BOLD}>Featured by users</AppText>
         </Pressable>
         <Pressable
+          style={
+            selectedTab === SelectedTab.PERFORMER_FEATURES
+              ? styles.selectedTab
+              : styles.tabItem
+          }
           onPress={() => setSelectedTab(SelectedTab.PERFORMER_FEATURES)}
         >
           <AppText weight={FONT_WEIGHT_BOLD}>Featured by artists</AppText>
@@ -161,5 +198,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
+    width: '100%',
+  },
+  selectedTab: {
+    borderWidth: 0,
+    borderBottomWidth: 5,
+    borderBottomColor: COLOR_PRIMARY_DARK,
+    padding: SPACING_XXSMALL,
+    paddingBottom: 0,
+  },
+  tabItem: {
+    padding: SPACING_XXSMALL,
+    paddingBottom: 0,
   },
 });

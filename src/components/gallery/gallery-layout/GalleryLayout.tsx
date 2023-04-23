@@ -17,33 +17,35 @@ interface GalleryLayoutProps {
 const GalleryLayout: FC<GalleryLayoutProps> = ({
   posts,
   galleryItemFooter,
-}) => (
-  <Grid gridPadding={styles.gridPadding}>
-    {posts.map(post => (
-      <Column
-        key={post.id}
-        columnWidth={4}
-      >
-        <GalleryItem
-          galleryItemStyles={{ ...styles.item, position: 'relative' }}
-          post={post}
-        ></GalleryItem>
-        {galleryItemFooter && (
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              flexGrow: 1,
-              flexShrink: 0,
-            }}
-          >
-            galleryItemFooter(post)
-          </View>
-        )}
-      </Column>
-    ))}
-  </Grid>
-);
+}) => {
+  return (
+    <Grid gridPadding={styles.gridPadding}>
+      {posts.map(post => (
+        <Column
+          key={post.id}
+          columnWidth={4}
+        >
+          <GalleryItem
+            galleryItemStyles={{ ...styles.item, position: 'relative' }}
+            post={post}
+          ></GalleryItem>
+          {galleryItemFooter && (
+            <View
+              style={{
+                position: 'absolute',
+                bottom: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
+                right: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
+                width: '100%',
+              }}
+            >
+              {galleryItemFooter(post)}
+            </View>
+          )}
+        </Column>
+      ))}
+    </Grid>
+  );
+};
 
 export default GalleryLayout;
 
@@ -52,7 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING_XXSMALL / 2,
     marginRight: SPACING_XXSMALL / 2,
     marginTop: 0,
-    maringLeft: SPACING_XXSMALL / 2,
+    marginLeft: 0,
   },
   gridPadding: {
     paddingTop: 0,
