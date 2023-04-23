@@ -4,6 +4,7 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
+import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
@@ -57,6 +58,10 @@ const InternalManageStackScreen = () => {
       <InternalManageStack.Screen
         component={ManageTaggedPosts}
         name="ManageTaggedPosts"
+      ></InternalManageStack.Screen>
+      <InternalManageStack.Screen
+        component={Post}
+        name="ViewPost"
       ></InternalManageStack.Screen>
     </InternalManageStack.Navigator>
   );

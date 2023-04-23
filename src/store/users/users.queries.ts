@@ -1,8 +1,10 @@
-import { useQuery } from 'react-query';
+import { QueryKey, useQuery } from 'react-query';
 import { getRequest } from 'store/request-builder';
+import { failedQuery } from 'store/store-utils';
+import { isArray } from 'utils/utils';
 import { transformUserApi } from './user.transformations';
 import { usersKeys } from './users.query-keys';
-import { User, UserApi, UsersStoreSlice } from './users.types';
+import { User, UsersStoreSlice } from './users.types';
 
 type UserObjectFields = keyof UsersStoreSlice['ObjectType'];
 
@@ -15,10 +17,6 @@ type UsersGetQueryField = Partial<{
     | readonly UsersStoreSlice['ObjectType'][key][];
 }>;
 
-type UserGetQueryField = Partial<{
-  [key in UserObjectFields]: UsersStoreSlice['ObjectType'][key];
-}>;
-
 const usersGet = async (
   params: UsersStoreSlice['Get']['RequestParametersType'],
 ) => {
@@ -27,7 +25,7 @@ const usersGet = async (
     params,
   });
 
-  return response.data.users;
+  return response.data.users.map(transformUserApi);
 };
 
 // TODO: Add to docs
@@ -37,22 +35,34 @@ export const useUserGetQuery = ({
   queryParams: { id },
   enabled = true,
 }: {
-  queryParams: UserGetQueryField;
+  queryParams: UsersGetQueryField;
   enabled?: boolean;
 }) => {
-  if (!id) {
-    throw Error('Id must be defined to get user');
+  let apiQueryParams:
+    | UsersStoreSlice['Get']['RequestParametersType']
+    | undefined = undefined;
+
+  let queryKey: QueryKey = usersKeys.null;
+
+  if (id) {
+    const processdUserId = isArray(id) ? id : [id];
+    apiQueryParams = {
+      user_ids: processdUserId,
+    };
+    queryKey = usersKeys.usersById(processdUserId);
   }
 
-  const apiQueryParams = {
-    user_ids: [id],
-  };
-
-  return useQuery<readonly UserApi[], unknown, readonly User[]>(
-    usersKeys.userById(id),
-    () => usersGet(apiQueryParams),
+  return useQuery<readonly User[], unknown, readonly User[]>(
+    queryKey,
+    () =>
+      apiQueryParams
+        ? usersGet(apiQueryParams)
+        : failedQuery(
+            `Invalid Featured Posts get query params or unsupported query. Query: ${JSON.stringify(
+              apiQueryParams,
+            )}`,
+          ),
     {
-      select: users => users.map(user => transformUserApi(user)),
       enabled,
     },
   );

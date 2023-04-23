@@ -1,4 +1,5 @@
 export const usersKeys = {
   all: ['users'] as const,
-  userById: (id: number) => [...usersKeys.all, id] as const,
+  usersById: (ids: readonly number[]) => [...usersKeys.all, ...ids] as const,
+  null: [],
 };

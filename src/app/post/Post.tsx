@@ -4,6 +4,8 @@ import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 
+import { ManageStackParamList } from 'app/manage/manage-types';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
@@ -11,7 +13,7 @@ import {
   Video,
   VideoReadyForDisplayEvent,
 } from 'expo-av';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import {
   Placeholder,
@@ -26,11 +28,14 @@ import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 import PerformerPostHeader from './PerformerPostHeader';
 import PostFooter from './PostFooter';
 import UserPostHeader from './UserPostHeader';
 
-type PostProps = NativeStackScreenProps<ProfileStackParamList, 'ViewPost'>;
+type PostProps =
+  | NativeStackScreenProps<ProfileStackParamList, 'ViewPost'>
+  | NativeStackScreenProps<ManageStackParamList, 'ViewPost'>;
 
 interface PostComponentState {
   showPlayIcon: boolean;
@@ -47,16 +52,36 @@ const VIDEO_CONTAINER_HEIGHT = (DEVICE_HEIGHT * 2.0) / 5.0 - 14 * 2;
 // Post component is more resuable
 export const Post: FC<PostProps> = ({
   route: {
-    params: { post },
+    params: { postId },
   },
 }) => {
+  const { profileState } = useContext(ProfileContext);
+  const { profileId, profileType } = profileState;
+
+  const postOwnerType =
+    profileType === ProfileType.PERFORMER
+      ? PostOwnerType.PERFORMER
+      : PostOwnerType.USER;
+
+  const { isLoading: postLoading, postsWithAttachmentsAndFiles: posts } =
+    useGetPostsWithAttachmentsAndFilesQuery({
+      queryParams: {
+        id: postId,
+        ownerType: postOwnerType,
+        ownerId: profileId,
+      },
+      enabled: true,
+    });
+
+  const post = posts && posts[0];
+
   const {
     data: userData,
     isLoading: isPostOwnerLoading,
     isError: isPostOwnerGetError,
   } = useUserGetQuery({
-    queryParams: { id: post.ownerId },
-    enabled: post.ownerType === PostOwnerType.USER,
+    queryParams: { id: post?.ownerId },
+    enabled: !!(post?.ownerType === PostOwnerType.USER),
   });
 
   // TODO: Move to a post header component
@@ -65,8 +90,8 @@ export const Post: FC<PostProps> = ({
     isLoading: isPerformerLoading,
     isError: isPerformerGetError,
   } = usePerformersGetQuery({
-    queryParams: { id: post.ownerId },
-    enabled: post.ownerType === PostOwnerType.PERFORMER,
+    queryParams: { id: post?.ownerId },
+    enabled: !!(post?.ownerType === PostOwnerType.PERFORMER),
   });
 
   const user = userData && userData[0];
@@ -82,9 +107,10 @@ export const Post: FC<PostProps> = ({
   } = useTagsGetQuery({
     queryParams: {
       taggedInEntityType: TaggedInEntityType.POST,
-      taggedInEntityId: post.id,
+      taggedInEntityId: post?.id,
       taggedEntityType: TaggedEntityType.PERFORMANCE,
     },
+    enabled: !!post?.id,
   });
 
   // If one exists, get performance, and use to get performer_id
@@ -112,7 +138,7 @@ export const Post: FC<PostProps> = ({
   } = useTagsGetQuery({
     queryParams: {
       taggedInEntityType: TaggedInEntityType.POST,
-      taggedInEntityId: post.id,
+      taggedInEntityId: post?.id,
       taggedEntityType: TaggedEntityType.PERFORMER,
     },
     enabled: !taggedPerformanceId, // we only need to check user tags if there is no performance linked to the post
@@ -235,7 +261,7 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {post.ownerType === PostOwnerType.PERFORMER &&
+        {post?.ownerType === PostOwnerType.PERFORMER &&
           performer &&
           postPerformer && (
             <PerformerPostHeader
@@ -246,7 +272,7 @@ export const Post: FC<PostProps> = ({
               }`}
             ></PerformerPostHeader>
           )}
-        {post.ownerType === PostOwnerType.USER && user && postPerformer && (
+        {post?.ownerType === PostOwnerType.USER && user && postPerformer && (
           <UserPostHeader
             avatarFileUuid={user.avatarFileUuid}
             username={user.username}
@@ -281,63 +307,69 @@ export const Post: FC<PostProps> = ({
     );
 
   return (
-    <View style={styles.container}>
-      <PostHeader />
-      <Pressable
-        onPress={handlePlayPress}
-        style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
-      >
-        <Video
-          ref={video}
-          style={{
-            width: componentState.videoWidth,
-            height: componentState.videoHeight,
-            maxWidth: DEVICE_WIDTH,
-          }}
-          source={{
-            uri:
-              post.attachments && post.attachments[0]?.file?.url
-                ? post.attachments[0].file.url
-                : '',
-          }}
-          useNativeControls={componentState.useNativeControls}
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping
-          onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
-          onReadyForDisplay={_onReadyForDisplay}
-        />
-        {componentState.showPlayIcon && (
-          <SVGIcon
-            styles={styles.playIcon}
-            color={IconColor.MID}
-            height={50}
-            position="absolute"
-            width={50}
-            handlePress={handlePlayPress}
+    <>
+      {post && (
+        <View style={styles.container}>
+          <PostHeader />
+          <Pressable
+            onPress={handlePlayPress}
+            style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
           >
-            <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
-          </SVGIcon>
-        )}
-      </Pressable>
-      <PostFooter
-        post={post}
-        postPerformerId={taggedPerformance?.performerId ?? taggedPerformerId}
-      ></PostFooter>
-      <View
-        style={{
-          ...styles.sidePadding,
-          ...styles.flexRowContainer,
-        }}
-      >
-        <AppText
-          weight="bold"
-          marginRight={SPACING_XXSMALL}
-        >
-          dan13
-        </AppText>
-        <AppText>{post.content}</AppText>
-      </View>
-    </View>
+            <Video
+              ref={video}
+              style={{
+                width: componentState.videoWidth,
+                height: componentState.videoHeight,
+                maxWidth: DEVICE_WIDTH,
+              }}
+              source={{
+                uri:
+                  post.attachments && post.attachments[0]?.file?.url
+                    ? post.attachments[0].file.url
+                    : '',
+              }}
+              useNativeControls={componentState.useNativeControls}
+              resizeMode={ResizeMode.CONTAIN}
+              isLooping
+              onPlaybackStatusUpdate={_onPlaybackStatusUpdate}
+              onReadyForDisplay={_onReadyForDisplay}
+            />
+            {componentState.showPlayIcon && (
+              <SVGIcon
+                styles={styles.playIcon}
+                color={IconColor.MID}
+                height={50}
+                position="absolute"
+                width={50}
+                handlePress={handlePlayPress}
+              >
+                <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
+              </SVGIcon>
+            )}
+          </Pressable>
+          <PostFooter
+            post={post}
+            postPerformerId={
+              taggedPerformance?.performerId ?? taggedPerformerId
+            }
+          ></PostFooter>
+          <View
+            style={{
+              ...styles.sidePadding,
+              ...styles.flexRowContainer,
+            }}
+          >
+            <AppText
+              weight="bold"
+              marginRight={SPACING_XXSMALL}
+            >
+              dan13
+            </AppText>
+            <AppText>{post.content}</AppText>
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 

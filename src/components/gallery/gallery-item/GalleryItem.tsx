@@ -28,7 +28,7 @@ const GalleryItem: FC<GalleryItemProps> = ({
 
   const video = React.useRef<Video>(null);
   function handleItemPress() {
-    navigation.navigate('ViewPost', { post });
+    navigation.navigate('ViewPost', { postId: post.id });
   }
 
   // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)

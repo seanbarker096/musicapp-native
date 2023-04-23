@@ -1,10 +1,9 @@
 import { ProfileType } from 'contexts/profile.context';
-import { Post } from 'store/posts/posts.types';
 
 export type ProfileStackParamList = {
   Profile: {};
   ViewPost: {
-    post: Post;
+    postId: number;
   };
   ProfileTimeline: {
     attendeeId: number;
