@@ -7,7 +7,7 @@ import {
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
-import { Post } from 'app/post/Post';
+import { PostStackScreen } from 'app/post/PostStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SettingsStackScreen from 'app/settings/SettingsStackScreen';
@@ -86,7 +86,8 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = () => {
       </ProfileStack.Screen>
       <ProfileStack.Screen
         name="ViewPost"
-        component={Post}
+        component={PostStackScreen}
+        options={{ headerShown: false }}
       ></ProfileStack.Screen>
       <ProfileStack.Screen
         name="ProfileTimeline"

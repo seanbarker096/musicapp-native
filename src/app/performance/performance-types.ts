@@ -3,6 +3,9 @@ export type PerformanceStackParamList = {
     performanceId: number;
     performerId: number;
   };
+  ViewPost: {
+    postId: number;
+  };
 };
 
 export enum PerformancePostTabs {

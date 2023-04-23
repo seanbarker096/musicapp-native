@@ -1,20 +1,14 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
-import { IconColor, SVGIcon } from 'components/icon';
-import { BorderedPlusSVG } from 'components/icon/svg-components';
+import { CreatePerformanceButton } from 'components/create-performance-button';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
-import { Button, Pressable, StyleSheet } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
-import {
-  BUTTON_COLOR_PRIMARY,
-  COLOR_SECONDARY_XXDARK,
-  SPACING_XSMALL,
-  SPACING_XXXSMALL,
-} from 'styles';
+import { BUTTON_COLOR_PRIMARY } from 'styles';
 import { PerformanceListItem } from './PerformanceListItem';
 
 type Props = {
@@ -68,24 +62,9 @@ export const PerformanceList: FC<Props> = ({
       {performances && performances.length && (
         <>
           {loggedInUserIsPerformer && (
-            <Pressable
-              onPress={() => handleCreatePerformancePress()}
-              style={{
-                ...styles.rowContainer,
-                paddingRight: SPACING_XXXSMALL,
-                paddingLeft: SPACING_XXXSMALL,
-              }}
-            >
-              <SVGIcon
-                color={IconColor.SECONDARY}
-                styles={{ marginRight: SPACING_XSMALL }}
-              >
-                <BorderedPlusSVG></BorderedPlusSVG>
-              </SVGIcon>
-              <AppText textColor={COLOR_SECONDARY_XXDARK}>
-                Create performance
-              </AppText>
-            </Pressable>
+            <CreatePerformanceButton
+              onPress={handleCreatePerformancePress}
+            ></CreatePerformanceButton>
           )}
 
           <List

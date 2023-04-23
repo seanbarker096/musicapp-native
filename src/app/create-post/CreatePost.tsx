@@ -45,7 +45,7 @@ import {
   SPACING_XXSMALL,
 } from 'styles';
 import { toNumber } from 'utils/utils';
-import { CreatePostStackScreenProps } from './post.types';
+import { CreatePostStackScreenProps } from './create-post.types';
 
 interface PostFile {
   imageInfo: ImagePicker.ImageInfo;

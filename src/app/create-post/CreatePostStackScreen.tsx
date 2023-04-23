@@ -5,8 +5,8 @@ import {
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
+import { CreatePostStackParamList } from './create-post.types';
 import CreatePost from './CreatePost';
-import { CreatePostStackParamList } from './post.types';
 
 type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,

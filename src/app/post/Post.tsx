@@ -1,10 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 
-import { ManageStackParamList } from 'app/manage/manage-types';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import {
   AVPlaybackStatus,
@@ -32,10 +30,9 @@ import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 import PerformerPostHeader from './PerformerPostHeader';
 import PostFooter from './PostFooter';
 import UserPostHeader from './UserPostHeader';
+import { PostStackParamList } from './post.types';
 
-type PostProps =
-  | NativeStackScreenProps<ProfileStackParamList, 'ViewPost'>
-  | NativeStackScreenProps<ManageStackParamList, 'ViewPost'>;
+type PostProps = NativeStackScreenProps<PostStackParamList, 'Post'>;
 
 interface PostComponentState {
   showPlayIcon: boolean;
@@ -353,7 +350,9 @@ export const Post: FC<PostProps> = ({
             postPerformerId={
               taggedPerformance?.performerId ?? taggedPerformerId
             }
-            handleLinkToPerformancePress={() => navigation.navigate()}
+            handleLinkToPerformancePress={() =>
+              navigation.navigate('PostLinkToPerformance', { postId: post.id })
+            }
           ></PostFooter>
           <View
             style={{

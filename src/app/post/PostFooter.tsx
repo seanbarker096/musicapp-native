@@ -24,10 +24,15 @@ import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PostFooterProps {
   post: Post;
-  postPerformerId: number;
+  postPerformerId?: number;
+  handleLinkToPerformancePress?: () => void;
 }
 
-const PostFooter: FC<PostFooterProps> = ({ post, postPerformerId }) => {
+const PostFooter: FC<PostFooterProps> = ({
+  post,
+  postPerformerId,
+  handleLinkToPerformancePress,
+}) => {
   const { profileState } = useContext(ProfileContext);
   const {
     profileId: viewingUserProfileId,
@@ -85,8 +90,6 @@ const PostFooter: FC<PostFooterProps> = ({ post, postPerformerId }) => {
     console.log('unfeature');
   }
 
-  async function tagPerformanceInPost() {}
-
   return (
     <>
       <View>
@@ -130,7 +133,7 @@ const PostFooter: FC<PostFooterProps> = ({ post, postPerformerId }) => {
             {viewingUserProfileType === ProfileType.PERFORMER &&
               viewingUserProfileId === postPerformerId && (
                 <Pressable
-                  onPress={tagPerformanceInPost}
+                  onPress={handleLinkToPerformancePress}
                   style={{
                     ...styles.flexRowContainer,
                     marginRight: SPACING_XSMALL,

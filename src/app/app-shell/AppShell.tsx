@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
-import CreatePostStackScreen from 'app/post/UploadStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import ProfileStackScreen from 'app/profile/ProfileStackScreen';
 import { SearchStackScreen } from 'app/search/SearchStackScreen';
