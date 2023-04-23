@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Post } from 'store/posts';
 import GalleryLayout from './gallery-layout/GalleryLayout';
@@ -10,13 +10,13 @@ interface GalleryProps {
    * A function that returns a ReactElement to be rendered as the footer of each gallery item.
    */
   galleryItemFooter?: (post: Post) => ReactElement;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export const Gallery: FC<GalleryProps> = ({
   postsWithAttachmentsAndFiles,
   galleryItemFooter,
-  isLoading,
+  isLoading = false, // TODO: Remove this and determine loading states in parent
 }) => {
   return (
     <View style={{ width: '100%' }}>
@@ -28,7 +28,6 @@ export const Gallery: FC<GalleryProps> = ({
           ></GalleryLayout>
         </>
       )}
-      {isLoading && <Text>...Loading</Text>}
     </View>
   );
 };

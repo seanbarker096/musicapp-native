@@ -4,6 +4,7 @@ import {
   createNativeStackNavigator,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
+import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import { Post } from 'app/post/Post';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
@@ -62,6 +63,11 @@ const InternalManageStackScreen = () => {
       <InternalManageStack.Screen
         component={Post}
         name="ViewPost"
+      ></InternalManageStack.Screen>
+      <InternalManageStack.Screen
+        options={{ headerShown: false }}
+        component={CreatePerformanceStackScreen}
+        name="ManageCreatePerformance"
       ></InternalManageStack.Screen>
     </InternalManageStack.Navigator>
   );
