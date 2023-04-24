@@ -13,7 +13,7 @@ import {
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
-import { TaggedEntityType } from 'store/tags/tags.types';
+import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
   BUTTON_COLOR_PRIMARY,
   COLOR_PRIMARY,
@@ -74,6 +74,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
     queryParams: {
       taggedEntityId: performanceId,
       taggedEntityType: TaggedEntityType.PERFORMANCE,
+      taggedInEntityType: TaggedInEntityType.POST,
     },
   });
 

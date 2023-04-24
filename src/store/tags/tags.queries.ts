@@ -10,6 +10,8 @@ import {
   Tag,
   TagCreateRequest,
   TagDeleteRequest,
+  TaggedEntityType,
+  TaggedInEntityType,
   TagsStoreSlice,
 } from './tags.types';
 
@@ -33,9 +35,32 @@ async function tagCreate({
   return transformTagApi(response.data.tag);
 }
 
-export const useTagCreateMutation = () => {
-  return useMutation<Tag, any, TagCreateRequest>((request: TagCreateRequest) =>
-    tagCreate(request),
+export const useTagCreateMutation = ({
+  taggedInEntityId,
+  taggedEntityType,
+}: { taggedInEntityId?: number; taggedEntityType?: TaggedEntityType } = {}) => {
+  const queryClient = useQueryClient();
+
+  const onSuccessCallback = async () => {
+    // Be specific with invalidation if we can, otherwise invalidate all tags
+    if (taggedInEntityId && taggedEntityType) {
+      return queryClient.invalidateQueries(
+        tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
+          TaggedInEntityType.POST, // Currently the only taggedInEntityType is POST
+          taggedInEntityId,
+          taggedEntityType,
+        ),
+      );
+    } else {
+      return queryClient.invalidateQueries(tagKeys.all);
+    }
+  };
+
+  return useMutation<Tag, any, TagCreateRequest>(
+    (request: TagCreateRequest) => tagCreate(request),
+    {
+      onSuccess: onSuccessCallback,
+    },
   );
 };
 
@@ -52,11 +77,24 @@ async function tagsDelete({ ids }: TagDeleteRequest) {
   return response.data;
 }
 
-export const useTagDeleteMutation = () => {
+export const useTagDeleteMutation = ({
+  taggedInEntityId,
+  taggedEntityType,
+}: { taggedInEntityId?: number; taggedEntityType?: TaggedEntityType } = {}) => {
   const queryClient = useQueryClient();
 
   const onSuccessCallback = async () => {
-    return queryClient.invalidateQueries(tagKeys.all);
+    if (taggedInEntityId && taggedEntityType) {
+      return queryClient.invalidateQueries(
+        tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
+          TaggedInEntityType.POST, // Currently the only taggedInEntityType is POST
+          taggedInEntityId,
+          taggedEntityType,
+        ),
+      );
+    } else {
+      return queryClient.invalidateQueries(tagKeys.all);
+    }
   };
 
   return useMutation<void, any, TagDeleteRequest>(

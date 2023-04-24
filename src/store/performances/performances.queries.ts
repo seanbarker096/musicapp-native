@@ -36,6 +36,11 @@ async function performancesGet(
   const performancesApi = response.data.performances;
 
   // TODO: Always return the evnet with the performance as a projection
+
+  if (performancesApi.length === 0) {
+    return [];
+  }
+  
   const eventsResponse = await getRequest<EventsStoreSlice>({
     url: `events/0.1/events`,
     params: {

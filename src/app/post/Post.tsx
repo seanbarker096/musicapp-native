@@ -113,7 +113,7 @@ export const Post: FC<PostProps> = ({
 
   // If one exists, get performance, and use to get performer_id
   const taggedPerformanceId =
-    performanceTags && performanceTags[0].taggedEntityId;
+    performanceTags && performanceTags[0]?.taggedEntityId;
 
   const {
     data: taggedPerformances,

@@ -42,13 +42,19 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
     mutateAsync: createTag,
     isLoading: createTagLoading,
     isError: createTagError,
-  } = useTagCreateMutation();
+  } = useTagCreateMutation({
+    taggedEntityType: TaggedEntityType.PERFORMANCE,
+    taggedInEntityId: postId,
+  });
 
   const {
     mutateAsync: deleteTag,
     isLoading: deleteTagLoading,
     isError: deleteTagError,
-  } = useTagDeleteMutation();
+  } = useTagDeleteMutation({
+    taggedEntityType: TaggedEntityType.PERFORMANCE,
+    taggedInEntityId: postId,
+  });
 
   const {
     data: performances,
@@ -89,16 +95,16 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
           <AppText marginRight={SPACING_XSMALL}>{`${
             performance.venueName
           } ${date.toLocaleDateString()}`}</AppText>
-          {!performanceTag ||
-            (performance.id !== performanceTag.taggedEntityId && (
-              <SVGIcon
-                handlePress={() =>
-                  handleLinkToPerformanceIconClick(performance)
-                }
-              >
-                <PlusSVG></PlusSVG>
-              </SVGIcon>
-            ))}
+
+          {(!performanceTag ||
+            performance.id !== performanceTag.taggedEntityId) && (
+            <SVGIcon
+              handlePress={() => handleLinkToPerformanceIconClick(performance)}
+            >
+              <PlusSVG></PlusSVG>
+            </SVGIcon>
+          )}
+
           {performance.id == performanceTag?.taggedEntityId && (
             <SVGIcon
               handlePress={() =>
