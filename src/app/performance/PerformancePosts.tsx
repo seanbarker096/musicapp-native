@@ -98,7 +98,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
     error: featuresGetError,
   } = useFeaturesGetQuery({
     queryParams: {
-      featurerId: performanceId,
+      featurerId: performerId,
       featurerType: FeaturerType.PERFORMER,
       featuredEntityType: FeaturedEntityType.POST,
     },
@@ -148,6 +148,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
             >
               {performer.name}
             </AppText>
+            <AppText>{performance.venueName}</AppText>
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <SVGIcon
                 styles={{ marginRight: SPACING_XXSMALL }}
@@ -156,6 +157,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               >
                 <CalendarSVG></CalendarSVG>
               </SVGIcon>
+
               <AppText>{performanceDate?.toLocaleDateString()}</AppText>
             </View>
           </View>

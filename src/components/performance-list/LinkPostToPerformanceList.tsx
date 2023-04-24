@@ -94,7 +94,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
         <View style={styles.container}>
           <AppText marginRight={SPACING_XSMALL}>{`${
             performance.venueName
-          } ${date.toLocaleDateString()}`}</AppText>
+          } - ${date.toLocaleDateString()}`}</AppText>
 
           {(!performanceTag ||
             performance.id !== performanceTag.taggedEntityId) && (

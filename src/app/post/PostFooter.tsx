@@ -1,8 +1,6 @@
 import { AppText } from 'components/app-text';
-import { IconColor, SVGIcon } from 'components/icon';
+import { SVGIcon } from 'components/icon';
 import {
-  FilledLikeHeartSVG,
-  LikeHeartSVG,
   LinkSVG,
   PictureCheckMarkSVG,
   PicturePlusSVG,
@@ -13,9 +11,11 @@ import React, { FC, useContext } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import {
   useFeatureCreateMutation,
+  useFeaturesDeleteMutation,
   useFeaturesGetQuery,
 } from 'store/features/features.queries';
 import {
+  Feature,
   FeaturedEntityType,
   FeaturerType,
 } from 'store/features/features.types';
@@ -38,8 +38,6 @@ const PostFooter: FC<PostFooterProps> = ({
     profileId: viewingUserProfileId,
     profileType: viewingUserProfileType,
   } = profileState;
-  // TODO: Update ot use api call
-  const [postLiked, setPostLiked] = React.useState(false);
 
   const featurerType =
     viewingUserProfileType === ProfileType.PERFORMER
@@ -61,8 +59,6 @@ const PostFooter: FC<PostFooterProps> = ({
 
   const feature = features ? features[0] : undefined;
 
-  const userHasFeaturedPost = !!feature;
-
   const loading = featuresGetLoading;
   const error = !feature && featuresGetError;
 
@@ -72,8 +68,13 @@ const PostFooter: FC<PostFooterProps> = ({
     isError: createFeatureError,
   } = useFeatureCreateMutation();
 
+  const {
+    mutateAsync: deleteFeature,
+    isLoading: deleteFeatureLoading,
+    isError: deleteFeatureError,
+  } = useFeaturesDeleteMutation();
+
   async function featurePost() {
-    console.log('pressed');
     await createFeature({
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
@@ -82,12 +83,10 @@ const PostFooter: FC<PostFooterProps> = ({
     });
   }
 
-  async function likePostClicked() {
-    setPostLiked(!postLiked);
-  }
-
-  async function unFeaturePost() {
-    console.log('unfeature');
+  async function unFeaturePost(feature: Feature) {
+    await deleteFeature({
+      ids: [feature.id],
+    });
   }
 
   return (
@@ -102,26 +101,12 @@ const PostFooter: FC<PostFooterProps> = ({
             }}
           >
             <PostFooterAction
-              actionCompleted={postLiked}
-              actionCompletedState={{
-                icon: FilledLikeHeartSVG,
-                iconColor: IconColor.PRIMARY,
-                text: undefined,
-                onIconPress: likePostClicked,
-              }}
-              actionUncompletedState={{
-                icon: LikeHeartSVG,
-                text: undefined,
-                onIconPress: likePostClicked,
-              }}
-            ></PostFooterAction>
-
-            <PostFooterAction
-              actionCompleted={!!userHasFeaturedPost}
+              actionCompleted={!!feature}
               actionCompletedState={{
                 icon: PictureCheckMarkSVG,
                 text: 'Featured',
-                onIconPress: unFeaturePost,
+                onIconPress: () =>
+                  !!feature ? unFeaturePost(feature) : () => {},
               }}
               actionUncompletedState={{
                 icon: PicturePlusSVG,

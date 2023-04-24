@@ -84,6 +84,7 @@ export const useTagDeleteMutation = ({
   const queryClient = useQueryClient();
 
   const onSuccessCallback = async () => {
+    // Be specific with invalidation if we can, otherwise invalidate all tags
     if (taggedInEntityId && taggedEntityType) {
       return queryClient.invalidateQueries(
         tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
@@ -113,17 +114,23 @@ export type TagsGetQueryField = Partial<{
   [key in TagObjectFields]:
     | TagsStoreSlice['ObjectType'][key]
     | readonly TagsStoreSlice['ObjectType'][key][];
-}>;
+}> & { onlySingleTaggedEntityType?: boolean };
 
 async function tagsGet({
   tagged_entity_id,
   tagged_entity_type,
+  tagged_in_entity_id,
+  tagged_in_entity_type,
+  only_single_tagged_entity_type,
 }: TagsStoreSlice['Get']['RequestParametersType']) {
   const response = await getRequest<TagsStoreSlice>({
     url: 'tags/0.1/tags',
     params: {
       tagged_entity_type,
       tagged_entity_id,
+      tagged_in_entity_id,
+      tagged_in_entity_type,
+      only_single_tagged_entity_type,
     },
   });
 
@@ -142,6 +149,7 @@ export function useTagsGetQuery({
     taggedEntityType,
     taggedInEntityId,
     taggedInEntityType,
+    onlySingleTaggedEntityType,
   } = queryParams;
 
   let apiQueryParams:
@@ -194,6 +202,13 @@ export function useTagsGetQuery({
       taggedInEntityId,
       taggedEntityType,
     );
+  }
+
+  if (onlySingleTaggedEntityType) {
+    apiQueryParams = {
+      ...apiQueryParams,
+      only_single_tagged_entity_type: onlySingleTaggedEntityType,
+    };
   }
 
   return useQuery(

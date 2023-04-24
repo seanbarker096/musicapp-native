@@ -13,6 +13,11 @@ export interface TagsStoreSlice extends StoreSlice {
     ResultType: TagsCreateResultApi;
     ErrorType: {};
   };
+  Delete: {
+    RequestParametersType: TagDeleteRequestApi;
+    ResultType: undefined;
+    ErrorType: {};
+  };
 }
 
 export interface TagsCreateRequestApi {
@@ -68,6 +73,7 @@ export interface TagsGetFilterApi {
   tagged_entity_id?: number;
   tagged_in_entity_type?: TaggedInEntityType;
   tagged_in_entity_id?: number;
+  only_single_tagged_entity_type?: boolean;
 }
 
 export interface TagsGetFilter {

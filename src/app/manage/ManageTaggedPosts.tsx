@@ -42,6 +42,7 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
       taggedEntityType: taggedEntityType,
       taggedEntityId: profileId,
       taggedInEntityType: TaggedInEntityType.POST,
+      onlySingleTaggedEntityType: true,
     },
   });
 
@@ -105,11 +106,12 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
             size="regular"
             marginBottom={SPACING_XSMALL}
           >
-            Your fans have not tagged you in any of their videos yet.
+            There aren't any fan videos left for you to add to your
+            performances.
           </AppText>
           <AppText marginBottom={SPACING_SMALL}>
-            Make it easy for everyone to see your fan's videos by creating
-            performances that they can link them to.
+            Save yourself time, and showcase your fan's videos. Create
+            performances so that fans can add their videos to them.
           </AppText>
           <Button
             color={BUTTON_COLOR_PRIMARY}

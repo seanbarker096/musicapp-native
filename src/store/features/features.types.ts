@@ -13,6 +13,11 @@ export interface FeaturesStoreSlice extends StoreSlice {
     ResultType: FeatureCreateResultApi;
     ErrorType: {};
   };
+  Delete: {
+    RequestParametersType: FeaturesDeleteRequestApi;
+    ResultType: undefined;
+    ErrorType: {};
+  };
 }
 
 export interface Feature {
@@ -70,4 +75,12 @@ export interface FeatureCreateRequestApi {
 
 export interface FeatureCreateResultApi {
   feature: FeatureApi;
+}
+
+export interface FeaturesDeleteRequest {
+  ids: readonly number[];
+}
+
+export interface FeaturesDeleteRequestApi {
+  ids: readonly number[];
 }
