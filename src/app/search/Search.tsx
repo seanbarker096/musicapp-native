@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PerformerSearch } from 'components/performer-search';
+import { PillFilters } from 'components/pill-filters/PillFilters';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -19,12 +20,22 @@ const Search: FC<SearchProps> = ({ navigation }) => {
       profileId: performer.id,
     });
 
+  const filterFormGroup = {
+    controls: {
+      performer: { value: false },
+      user: { value: false },
+    },
+  };
+
   return (
-    <View style={styles.container}>
-      <PerformerSearch
-        onPerformerSelect={onPerformerSearchGetOrCreateSuccess}
-      ></PerformerSearch>
-    </View>
+    <>
+      <PillFilters filterFormGroup={filterFormGroup}></PillFilters>
+      <View style={styles.container}>
+        <PerformerSearch
+          onPerformerSelect={onPerformerSearchGetOrCreateSuccess}
+        ></PerformerSearch>
+      </View>
+    </>
   );
 };
 
@@ -44,3 +55,5 @@ const styles = StyleSheet.create({
 });
 
 export default Search;
+
+
