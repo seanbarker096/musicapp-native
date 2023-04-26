@@ -1,4 +1,4 @@
-import { ProfileType } from './profile-posts.types';
+import { ProfileType } from 'contexts/profile.context';
 
 export const profilePostsKeys = {
   all: ['profilePosts'] as const,

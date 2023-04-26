@@ -4,24 +4,13 @@ import { SVGIcon } from 'components/icon';
 import { CalendarSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
-import { Button, Pressable, StyleSheet, View } from 'react-native';
-import { useFeaturesGetQuery } from 'store/features/features.queries';
-import {
-  FeaturedEntityType,
-  FeaturerType,
-} from 'store/features/features.types';
+import { Button, StyleSheet, View } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
-import {
-  BUTTON_COLOR_PRIMARY,
-  COLOR_PRIMARY,
-  FONT_WEIGHT_BOLD,
-  SPACING_XXSMALL,
-} from 'styles';
+import { BUTTON_COLOR_PRIMARY, COLOR_PRIMARY, SPACING_XXSMALL } from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
-import { PerformancePostTabs } from './performance-types';
 
 type PerformancePostsProps = {
   performanceId: number;
@@ -34,10 +23,6 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
   performerId,
   handleCreatePostPress,
 }) => {
-  const [selectedTab, setSelectedTab] = React.useState<PerformancePostTabs>(
-    PerformancePostTabs.FAN_CAPTURES,
-  );
-
   const {
     data: performerList,
     isLoading: performerLoading,
@@ -92,53 +77,20 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
 
   const taggedPosts = taggedPostsList?.length ? taggedPostsList : [];
 
-  const {
-    data: features,
-    isLoading: featuresLoading,
-    error: featuresGetError,
-  } = useFeaturesGetQuery({
-    queryParams: {
-      featurerId: performerId,
-      featurerType: FeaturerType.PERFORMER,
-      featuredEntityType: FeaturedEntityType.POST,
-    },
-  });
-
-  const featuredPostIds = features?.map(feature => feature.featuredEntityId);
-
-  const {
-    postsWithAttachmentsAndFiles: featuredPostsList,
-    isLoading: featuredPostsLoading,
-  } = useGetPostsWithAttachmentsAndFilesQuery({
-    queryParams: {
-      id: featuredPostIds,
-    },
-    enabled: featuredPostIds && !!featuredPostIds.length,
-  });
-
-  const featuredPosts = featuredPostsList?.length ? featuredPostsList : [];
-
   const loading =
     (!performance && performanceLoading) ||
     (!performanceTags && performanceTagsLoading) ||
-    (!features && featuresLoading) ||
     (!performer && performerLoading) ||
-    (!taggedPosts && taggedPostsLoading) ||
-    (!featuredPosts && featuredPostsLoading);
+    (!taggedPosts && taggedPostsLoading);
 
   const error =
     (!performance && performanceGetError) ||
     (!performanceTags && performanceTagsGetError) ||
-    (!features && featuresGetError) ||
     (!performer && performerGetError);
-
-  function handleTabSelected(tab: PerformancePostTabs) {
-    setSelectedTab(tab);
-  }
 
   return (
     <>
-      {featuredPosts && taggedPosts && performer && performance && (
+      {taggedPosts && performer && performance && (
         <View>
           <View style={styles.colContainer}>
             <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
@@ -161,16 +113,18 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               <AppText>{performanceDate?.toLocaleDateString()}</AppText>
             </View>
           </View>
-          <AppText>
-            {taggedPosts.length === 1 &&
-              '1 fan has shared a post for this performance'}
-            {taggedPosts.length > 1 &&
-              `${taggedPosts.length} fans have shared posts for this performance`}
-            {taggedPosts.length === 0 &&
-              'No fans have shared posts for this performance. Be the first!'}
-          </AppText>
           {taggedPosts.length === 0 && (
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <View
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              <AppText>
+                No fans have shared videos for this performance yet. Be the
+                first!
+              </AppText>
               <Button
                 onPress={handleCreatePostPress}
                 title="Create a Post"
@@ -178,35 +132,10 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               ></Button>
             </View>
           )}
-          {/* TODO: Make these tabs reusable component along with the styles for it*/}
-          <View style={styles.headerContainer}>
-            <Pressable
-              onPress={() => handleTabSelected(PerformancePostTabs.FEATURED)}
-            >
-              <AppText weight={FONT_WEIGHT_BOLD}>Featured</AppText>
-            </Pressable>
-            <Pressable
-              onPress={() =>
-                handleTabSelected(PerformancePostTabs.FAN_CAPTURES)
-              }
-            >
-              <AppText weight={FONT_WEIGHT_BOLD}>Fan Captures</AppText>
-            </Pressable>
-          </View>
-
-          {selectedTab === PerformancePostTabs.FEATURED && (
-            <Gallery
-              postsWithAttachmentsAndFiles={featuredPosts}
-              isLoading={featuredPostsLoading}
-            ></Gallery>
-          )}
-
-          {selectedTab === PerformancePostTabs.FAN_CAPTURES && (
-            <Gallery
-              postsWithAttachmentsAndFiles={taggedPosts}
-              isLoading={taggedPostsLoading}
-            ></Gallery>
-          )}
+          <Gallery
+            postsWithAttachmentsAndFiles={taggedPosts}
+            isLoading={taggedPostsLoading}
+          ></Gallery>
         </View>
       )}
       {loading && <AppText>Loading...</AppText>}
