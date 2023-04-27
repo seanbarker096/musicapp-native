@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppText } from 'components/app-text';
 import { PerformerSearch } from 'components/performer-search';
 import { PillFilters } from 'components/pill-filters/PillFilters';
 import { ProfileType } from 'contexts/profile.context';
@@ -14,7 +15,7 @@ type SearchProps = NativeStackScreenProps<
 >;
 
 type SearchFilterGroup = {
-  Performer: boolean;
+  Artist: boolean;
   User: boolean;
 };
 
@@ -30,7 +31,7 @@ const Search: FC<SearchProps> = ({ navigation }) => {
     boolean,
     SearchFilterGroup
   >({
-    Performer: false,
+    Artist: false,
     User: false,
   });
 
@@ -63,9 +64,12 @@ const Search: FC<SearchProps> = ({ navigation }) => {
           controls={controls}
           valueChanged={handleFormControlValueChanged}
         ></PillFilters>
-        <PerformerSearch
-          onPerformerSelect={onPerformerSearchGetOrCreateSuccess}
-        ></PerformerSearch>
+        {formGroupRawValues.Artist && (
+          <PerformerSearch
+            onPerformerSelect={onPerformerSearchGetOrCreateSuccess}
+          ></PerformerSearch>
+        )}
+        {formGroupRawValues.User && <AppText>tEST</AppText>}
       </View>
     </>
   );
