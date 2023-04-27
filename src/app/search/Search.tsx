@@ -5,12 +5,18 @@ import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Performer } from 'store/performers';
+import { FormControl, useFormGroup } from 'utils/form-controls';
 import { InternalSearchStackScreenParamList } from './search-types';
 
 type SearchProps = NativeStackScreenProps<
   InternalSearchStackScreenParamList,
   'search'
 >;
+
+type SearchFilterGroup = {
+  Performer: boolean;
+  User: boolean;
+};
 
 // TODO: Add loading state for when an performer is selected and we nav to their performer profile
 const Search: FC<SearchProps> = ({ navigation }) => {
@@ -20,17 +26,43 @@ const Search: FC<SearchProps> = ({ navigation }) => {
       profileId: performer.id,
     });
 
-  const filterFormGroup = {
-    controls: {
-      performer: { value: false },
-      user: { value: false },
-    },
-  };
+  const { controls, setFormGroupRawValues, formGroupRawValues } = useFormGroup<
+    boolean,
+    SearchFilterGroup
+  >({
+    Performer: false,
+    User: false,
+  });
+
+  function handleFormControlValueChanged(
+    updatedControl: FormControl<boolean>,
+    newValue: boolean,
+  ) {
+    const otherControls = Object.keys(formGroupRawValues).filter(
+      filterField => filterField !== updatedControl.field,
+    );
+
+    const newOtherFilterValues = otherControls.reduce(
+      (otherControlsObject, otherControl) => ({
+        ...otherControlsObject,
+        [otherControl]: !newValue,
+      }),
+      {} as SearchFilterGroup,
+    );
+
+    setFormGroupRawValues({
+      ...newOtherFilterValues,
+      [updatedControl.field]: newValue,
+    });
+  }
 
   return (
     <>
-      <PillFilters filterFormGroup={filterFormGroup}></PillFilters>
       <View style={styles.container}>
+        <PillFilters
+          controls={controls}
+          valueChanged={handleFormControlValueChanged}
+        ></PillFilters>
         <PerformerSearch
           onPerformerSelect={onPerformerSearchGetOrCreateSuccess}
         ></PerformerSearch>
