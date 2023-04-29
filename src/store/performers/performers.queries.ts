@@ -31,13 +31,37 @@ const performersSearch = async (searchQuery: string) => {
   );
 };
 
-export function usePerformersSearchQuery(searchQuery: string) {
+export function usePerformersSearchQuery({
+  searchQuery,
+  enabled = true,
+}: {
+  searchQuery?: string;
+  enabled?: boolean;
+}) {
+  let query: string | undefined = undefined;
+
+  let queryKey: QueryKey = performersKeys.null;
+
+  if (searchQuery) {
+    query = searchQuery;
+    queryKey = performersKeys.performersBySearchQuery(searchQuery);
+  }
+
   return useQuery<
     readonly PerformerSearchPerformer[],
     unknown,
     readonly PerformerSearchPerformer[]
-  >(performersKeys.performersBySearchQuery(searchQuery), () =>
-    performersSearch(searchQuery),
+  >(
+    queryKey,
+    () =>
+      query
+        ? performersSearch(query)
+        : failedQuery(
+            'Invalid search query. Search query must be defined to search performers',
+          ),
+    {
+      enabled,
+    },
   );
 }
 

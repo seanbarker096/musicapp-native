@@ -6,6 +6,7 @@ export const transformUserApi = function (user: UserApi): User {
     username: user.username,
     firstName: user.first_name,
     secondName: user.second_name,
+    fullName: user.full_name,
     createTime: user.create_time,
     isDeleted: user.is_deleted,
     email: user.email,

@@ -12,6 +12,11 @@ export interface UsersStoreSlice extends StoreSlice {
     ResultType: UsersGetResultApi;
     ErrorType: {};
   };
+  Search: {
+    RequestBodyType: UsersSearchRequestApi;
+    ResultType: UsersGetResultApi;
+    ErrorType: {};
+  };
 }
 
 /**
@@ -22,6 +27,7 @@ export interface User {
   username: string;
   firstName: string;
   secondName: string;
+  fullName: string;
   createTime: number;
   isDeleted: boolean;
   email: string;
@@ -36,6 +42,7 @@ export interface UserApi {
   username: string;
   first_name: string;
   second_name: string;
+  full_name: string;
   create_time: number;
   is_deleted: boolean;
   email: string;
@@ -47,8 +54,13 @@ export interface UserApi {
 
 export interface UsersGetFilterApi {
   user_ids?: readonly number[];
+  search_query?: string;
 }
 
 export interface UsersGetResultApi {
   users: readonly UserApi[];
+}
+
+export interface UsersSearchRequestApi {
+  search_query: string;
 }

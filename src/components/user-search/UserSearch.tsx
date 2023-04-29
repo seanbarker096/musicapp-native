@@ -1,6 +1,8 @@
+import { AppText } from 'components/app-text';
 import { SearchBar } from 'components/search';
 import React, { FC, useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { useUserGetQuery } from 'store/users';
 
 type Props = {};
 
@@ -8,6 +10,19 @@ type Props = {};
 export const PerformerSearch: FC<Props> = ({}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState(undefined);
+
+  const {
+    data: users,
+    isLoading: userLoading,
+    error: usersGetError,
+  } = useUserGetQuery({
+    queryParams: {
+      searchQuery: searchTerm,
+    },
+  });
+
+  const loading = !users && userLoading;
+  const error = !users && usersGetError;
 
   function handleSearchTermChange(term: string) {
     setSearchTerm(term);
@@ -21,7 +36,9 @@ export const PerformerSearch: FC<Props> = ({}) => {
     console.log('user selected');
   }
 
-  const searchResults = [<Pressable onPress={handleUserSelected}></Pressable>];
+  const searchResults = users ? users.map(user => (
+    
+  )) : [<AppText>No users found.</AppText>];
 
   return (
     <>

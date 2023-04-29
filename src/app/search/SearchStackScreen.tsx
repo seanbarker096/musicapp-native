@@ -50,8 +50,8 @@ export const SearchInternalStackScreen = () => {
       <SearchStack.Screen
         // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
-        name="profileInternalStackScreen"
-        options={{ headerShown: false }}
+        name="searchProfile"
+        options={{ headerTitle: 'Profile' }}
       ></SearchStack.Screen>
     </SearchStack.Navigator>
   );

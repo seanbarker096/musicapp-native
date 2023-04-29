@@ -1,6 +1,6 @@
-import { ProfileInternalStackScreenParams } from 'app/profile/profile.types';
+import { ProfileType } from 'contexts/profile.context';
 
 export type InternalSearchStackScreenParamList = {
   search: undefined;
-  profileInternalStackScreen: ProfileInternalStackScreenParams;
+  searchProfile: { profileType: ProfileType; profileId: number };
 };

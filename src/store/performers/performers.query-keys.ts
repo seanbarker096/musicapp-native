@@ -5,7 +5,7 @@ export const performersKeys = {
   performersByOwnerIds: (ownerIds: readonly number[]) =>
     [...performersKeys.all, ...ownerIds] as const,
   performersBySearchQuery: (searchQuery: string) =>
-    [...performersKeys.all, searchQuery] as const,
+    [...performersKeys.all, 'searchQuery', searchQuery] as const,
   performerByUUID: (performerUUID: string) =>
     [...performersKeys.all, performerUUID] as const,
   null: [],

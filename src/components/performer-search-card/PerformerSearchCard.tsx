@@ -10,6 +10,7 @@ interface PerformerSearchCardProps {
   onPress?: (event: GestureResponderEvent) => void;
 }
 
+// TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
 export const PerformerSearchCard: FC<PerformerSearchCardProps> = ({
   performer,
   onPress = () => {},

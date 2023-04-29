@@ -67,3 +67,47 @@ export const useUserGetQuery = ({
     },
   );
 };
+
+
+// ------------------------------ Users Search ------------------------------ //
+
+const usersSearch = async (
+  params: UsersStoreSlice['Search']['RequestBodyType'],
+) => {
+  const response = await getRequest<UsersStoreSlice>({
+    url: `users/0.1/search`,
+    params,
+  });
+
+  return response.data.users.map(transformUserApi);
+};
+
+export function userUsersSearchQuery({
+  queryParams: { searchQuery },
+  enabled = true,
+}: {
+  queryParams: { searchQuery?: string };
+  enabled?: boolean;
+}) {
+  let apiQueryParams:
+    | UsersStoreSlice['Search']['RequestBodyType']
+    | undefined = undefined;
+
+  let queryKey: QueryKey = usersKeys.null;
+
+  if (searchQuery) {
+    apiQueryParams = { search_query: searchQuery };
+    queryKey = usersKeys.usersBySearchQuery(searchQuery);
+  }
+
+  return useQuery<readonly User[], unknown, readonly User[]>(queryKey, () =>
+    apiQueryParams
+      ? usersSearch(apiQueryParams)
+      : failedQuery(
+          'Invalid search query. Search query must be defined to search performers',
+        ),
+        {
+          enabled
+        }
+  );
+}

@@ -1,4 +1,4 @@
-import { List } from 'components/list';
+import { List, ListItem } from 'components/list';
 import React, { FC, useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -66,8 +66,8 @@ export const SearchBar: FC<Props> = ({
             scrollable={scrollable}
             maxHeight={height}
           >
-            {searchResults.map(searchResult => (
-              <>{searchResult}</>
+            {searchResults.map((searchResult, index) => (
+              <ListItem key={index}>{searchResult}</ListItem>
             ))}
           </List>
         )}

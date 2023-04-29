@@ -15,8 +15,7 @@ import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
-import { ProfileContext } from 'contexts/profile.context';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { View } from 'react-native';
 import { SPACING_MID } from 'styles';
 import Profile from './Profile';
@@ -63,10 +62,11 @@ type InternalStackScreenProps = {
 /**
  * Currently we can't type usages of this screen,because it is used by multiple navigators of various types (e.g. BottomTabNavigator, StackNavigator). We therefore need to add a @ts-ignore to the usages of this component in any navigators.
  */
-export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = () => {
-  const { profileState } = useContext(ProfileContext);
-  const { profileId, profileType } = profileState;
-
+export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
+  route: {
+    params: { profileId, profileType },
+  },
+}) => {
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
   return (
