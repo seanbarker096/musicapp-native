@@ -52,7 +52,7 @@ export const PerformanceList: FC<Props> = ({
   const error = !performances && performancesGetError;
 
   function handlePerformancePress(performanceWithCounts: PerformanceWithEvent) {
-    navigation.navigate('ProfilePerformance', {
+    navigation.navigate('PerformanceStack', {
       performanceId: performanceWithCounts.id,
       performerId: performanceWithCounts.performerId,
     });

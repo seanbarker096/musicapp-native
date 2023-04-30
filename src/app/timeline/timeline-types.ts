@@ -1,10 +1,16 @@
+import { ProfileType } from 'contexts/profile.context';
+
 export type TimelineStackParamList = {
   Timeline: {
     attendeeId: number;
     performerId: number;
   };
-  TimelinePerformance: {
+  PerformanceStack: {
     performanceId: number;
     performerId: number;
+  };
+  ProfileStack: {
+    profileId: number;
+    profileType: ProfileType;
   };
 };

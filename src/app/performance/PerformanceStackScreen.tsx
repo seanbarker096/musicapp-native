@@ -10,8 +10,8 @@ import { Performance } from './Performance';
 import { PerformanceStackParamList } from './performance-types';
 
 type PerformanceStackScreenProps =
-  | NativeStackScreenProps<TimelineStackParamList, 'TimelinePerformance'>
-  | NativeStackScreenProps<ProfileStackParamList, 'ProfilePerformance'>;
+  | NativeStackScreenProps<TimelineStackParamList, 'PerformanceStack'>
+  | NativeStackScreenProps<ProfileStackParamList, 'PerformanceStack'>;
 
 export const PerformanceStackScreen: FC<PerformanceStackScreenProps> = ({
   route: {

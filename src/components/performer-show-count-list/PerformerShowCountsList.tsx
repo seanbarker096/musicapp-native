@@ -27,7 +27,7 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
   const error = !performers && performersGetError;
 
   function handleListItemPress(performer: AttendeePerformer) {
-    navigation.navigate('ProfileTimeline', {
+    navigation.navigate('TimelineStack', {
       attendeeId: performer.attendeeId,
       performerId: performer.id,
     });
