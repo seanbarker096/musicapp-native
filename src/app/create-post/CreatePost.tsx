@@ -27,10 +27,7 @@ import {
   Shine,
 } from 'rn-placeholder';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import {
-  useFileCreateMutation,
-  useFilesGetQuery,
-} from 'store/files/files.queries';
+import { useFileCreateMutation } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { Performer } from 'store/performers';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
@@ -101,18 +98,6 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   } = useUserGetQuery({ queryParams: { id: userId } });
 
   const postCreator = user && user[0];
-
-  const {
-    isLoading: filesGetLoading,
-    isError: isFilesGetError,
-    data: files,
-    error: filesGetError,
-  } = useFilesGetQuery({
-    queryParams: { uuid: postCreator ? postCreator.avatarFileUuid : undefined },
-    enabled: !isUserLoading,
-  });
-
-  const avatarFile = files && files[0];
 
   const {
     isLoading: performancesLoading,
@@ -283,39 +268,38 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
   // Todo: make a resuable component as also used in Post. Make it fetch the user and the file
   // after taking in a userId
-  const UserHeader =
-    postCreator && avatarFile ? (
-      <>
-        <ProfileImage
-          size="small"
-          styles={{ marginRight: SPACING_XXSMALL }}
-          imageUrl={avatarFile.url}
-        ></ProfileImage>
-        <AppText size="large">{postCreator.username}</AppText>
-      </>
-    ) : (
-      <Placeholder
-        Animation={props => (
-          <Shine
-            {...props}
-            reverse={false}
-          ></Shine>
-        )}
-      >
-        <View style={{ ...styles.flexRowContainer }}>
-          <PlaceholderMedia
-            isRound={true}
-            size={48}
-            style={{ marginRight: SPACING_XXSMALL }}
-          ></PlaceholderMedia>
-          <PlaceholderLine
-            height={20}
-            width={40}
-            noMargin={true}
-          />
-        </View>
-      </Placeholder>
-    );
+  const UserHeader = postCreator ? (
+    <>
+      <ProfileImage
+        size="small"
+        styles={{ marginRight: SPACING_XXSMALL }}
+        imageUrl={postCreator.avatarFile?.url}
+      ></ProfileImage>
+      <AppText size="large">{postCreator.username}</AppText>
+    </>
+  ) : (
+    <Placeholder
+      Animation={props => (
+        <Shine
+          {...props}
+          reverse={false}
+        ></Shine>
+      )}
+    >
+      <View style={{ ...styles.flexRowContainer }}>
+        <PlaceholderMedia
+          isRound={true}
+          size={48}
+          style={{ marginRight: SPACING_XXSMALL }}
+        ></PlaceholderMedia>
+        <PlaceholderLine
+          height={20}
+          width={40}
+          noMargin={true}
+        />
+      </View>
+    </Placeholder>
+  );
 
   return (
     <>

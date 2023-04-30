@@ -2,7 +2,6 @@ import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { useFilesGetQuery } from 'store/files/files.queries';
 import { useUserGetQuery } from 'store/users';
 import { FONT_WEIGHT_BOLD, SPACING_LARGE, SPACING_SMALL } from 'styles';
 
@@ -27,23 +26,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
 
   const user = userReady ? userData[0] : undefined;
 
-  const {
-    isLoading: filesGetLoading,
-    isError: isFilesGetError,
-    data: files,
-    error: filesGetError,
-  } = useFilesGetQuery({
-    queryParams: { uuid: userData ? userData[0].avatarFileUuid : undefined },
-    enabled: !!userReady,
-  });
-
-  const fileReady = files && !filesGetLoading;
-  const fileLoading = !fileReady && filesGetLoading;
-  const filesError = !fileReady && filesGetError;
-
-  const file = files ? files[0] : undefined;
-
-  const profileReady = user && file;
+  const profileReady = user;
 
   return (
     <>
@@ -56,7 +39,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
           }}
         >
           <View style={{ ...styles.colContainer }}>
-            <ProfileImage imageUrl={file?.url} />
+            <ProfileImage imageUrl={user.avatarFile?.url} />
             <AppText
               size="large"
               weight="bold"

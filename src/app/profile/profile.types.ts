@@ -24,4 +24,11 @@ export type ProfileStackParamList = {
 export interface ProfileInternalStackScreenParams {
   profileId: number;
   profileType: ProfileType;
+  /**
+   * Used to determine whether to use the up to date ProfileContext when rendering the Profile screen, or whether to use
+   * the route params.
+   *
+   * @see ProfileStackScreen for more details
+   */
+  isLoggedInUsersProfile: boolean;
 }

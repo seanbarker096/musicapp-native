@@ -2,6 +2,7 @@
  * Store slice type definitions
  */
 
+import { File, FileApi } from 'store/files/files.types';
 import { StoreSlice } from 'store/store.types';
 
 export interface UsersStoreSlice extends StoreSlice {
@@ -35,6 +36,7 @@ export interface User {
   avatarFileUuid?: string;
   languageId?: string;
   timezoneId?: string;
+  avatarFile?: File;
 }
 
 export interface UserApi {
@@ -50,11 +52,12 @@ export interface UserApi {
   avatar_file_uuid?: string;
   language_id?: string;
   timezone_id?: string;
+  avatar_file?: FileApi;
 }
 
 export interface UsersGetFilterApi {
   user_ids?: readonly number[];
-  search_query?: string;
+  include_profile_image?: boolean;
 }
 
 export interface UsersGetResultApi {
@@ -63,4 +66,5 @@ export interface UsersGetResultApi {
 
 export interface UsersSearchRequestApi {
   search_query: string;
+  include_profile_image?: boolean;
 }

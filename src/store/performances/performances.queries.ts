@@ -30,7 +30,7 @@ async function performancesGet(
 ): Promise<readonly PerformanceWithEvent[]> {
   const response = await getRequest<PerformancesStoreSlice>({
     url: `performances/0.1/performances`,
-    params: params,
+    params: { ...params, include_attendance_count: true }, // We always want to include the attendee count
   });
 
   const performancesApi = response.data.performances;
@@ -40,7 +40,7 @@ async function performancesGet(
   if (performancesApi.length === 0) {
     return [];
   }
-  
+
   const eventsResponse = await getRequest<EventsStoreSlice>({
     url: `events/0.1/events`,
     params: {
@@ -139,12 +139,6 @@ export function usePerformancesGetQuery({
 
     queryKey = performancesKeys.performancesByIds(processedId);
   }
-
-  // We always want to include the attendee count
-  apiQueryParams = {
-    ...apiQueryParams,
-    include_attendance_count: true,
-  };
 
   return useQuery<
     readonly PerformanceWithEvent[],

@@ -15,7 +15,7 @@ type UsersGetQueryField = Partial<{
   [key in UserObjectFields]:
     | UsersStoreSlice['ObjectType'][key]
     | readonly UsersStoreSlice['ObjectType'][key][];
-}>;
+}> & { includeProfileImage?: boolean };
 
 const usersGet = async (
   params: UsersStoreSlice['Get']['RequestParametersType'],
@@ -32,7 +32,7 @@ const usersGet = async (
 // -  warpper around react query for building the axios param object. Converts fields on object into snake case for api
 // - defines the transformation function
 export const useUserGetQuery = ({
-  queryParams: { id },
+  queryParams: { id, includeProfileImage = true },
   enabled = true,
 }: {
   queryParams: UsersGetQueryField;
@@ -52,6 +52,14 @@ export const useUserGetQuery = ({
     queryKey = usersKeys.usersById(processdUserId);
   }
 
+  // if other query params provided, add in ones for projections
+  if (apiQueryParams) {
+    apiQueryParams = {
+      ...apiQueryParams,
+      include_profile_image: includeProfileImage,
+    };
+  }
+
   return useQuery<readonly User[], unknown, readonly User[]>(
     queryKey,
     () =>
@@ -68,7 +76,6 @@ export const useUserGetQuery = ({
   );
 };
 
-
 // ------------------------------ Users Search ------------------------------ //
 
 const usersSearch = async (
@@ -83,31 +90,35 @@ const usersSearch = async (
 };
 
 export function userUsersSearchQuery({
-  queryParams: { searchQuery },
+  queryParams: { searchQuery, includeProfileImage = true },
   enabled = true,
 }: {
-  queryParams: { searchQuery?: string };
+  queryParams: { searchQuery: string; includeProfileImage?: boolean };
   enabled?: boolean;
 }) {
-  let apiQueryParams:
-    | UsersStoreSlice['Search']['RequestBodyType']
-    | undefined = undefined;
+  let apiQueryParams: UsersStoreSlice['Search']['RequestBodyType'] | undefined =
+    undefined;
 
   let queryKey: QueryKey = usersKeys.null;
 
   if (searchQuery) {
-    apiQueryParams = { search_query: searchQuery };
+    apiQueryParams = {
+      search_query: searchQuery,
+      include_profile_image: includeProfileImage,
+    };
     queryKey = usersKeys.usersBySearchQuery(searchQuery);
   }
 
-  return useQuery<readonly User[], unknown, readonly User[]>(queryKey, () =>
-    apiQueryParams
-      ? usersSearch(apiQueryParams)
-      : failedQuery(
-          'Invalid search query. Search query must be defined to search performers',
-        ),
-        {
-          enabled
-        }
+  return useQuery<readonly User[], unknown, readonly User[]>(
+    queryKey,
+    () =>
+      apiQueryParams
+        ? usersSearch(apiQueryParams)
+        : failedQuery(
+            'Invalid search query. Search query must be defined to search performers',
+          ),
+    {
+      enabled,
+    },
   );
 }

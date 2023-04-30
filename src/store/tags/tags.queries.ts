@@ -204,7 +204,8 @@ export function useTagsGetQuery({
     );
   }
 
-  if (onlySingleTaggedEntityType) {
+  // If main query params defined by now due to main filter fields being provided, add only_single_tagged_entity_type
+  if (onlySingleTaggedEntityType && apiQueryParams) {
     apiQueryParams = {
       ...apiQueryParams,
       only_single_tagged_entity_type: onlySingleTaggedEntityType,

@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { useFilesGetQuery } from 'store/files/files.queries';
 import { User } from 'store/users/users.types';
 import { SPACING_XXSMALL } from 'styles';
 import { ProfileImage } from '../profile-image';
@@ -21,45 +20,22 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
   user,
   onPress = () => {},
 }) => {
-  const {
-    isLoading: filesGetLoading,
-    isError: isFilesGetError,
-    data: files,
-    error: filesGetError,
-  } = useFilesGetQuery({
-    queryParams: { uuid: user.avatarFileUuid },
-    enabled: !!user.avatarFileUuid,
-  });
-
-  const fileLoading = !files && filesGetLoading;
-  const filesError = !files && filesGetError;
-
-  const file = files ? files[0] : undefined;
-
-  console.log(file);
-  console.log(filesGetLoading);
-
   return (
-    <>
-      {!fileLoading && (
-        <Pressable
-          onPress={onPress}
-          style={styles.container}
-        >
-          <ProfileImage
-            styles={styles.profileImage}
-            imageUrl={file?.url}
-          ></ProfileImage>
-          <View style={styles.columnContainer}>
-            <AppText weight="normal">{user.username}</AppText>
-            <AppText weight="light">
-              {user.firstName} {user.secondName}
-            </AppText>
-          </View>
-        </Pressable>
-      )}
-      {fileLoading && <AppText>File Loading...</AppText>}
-    </>
+    <Pressable
+      onPress={onPress}
+      style={styles.container}
+    >
+      <ProfileImage
+        styles={styles.profileImage}
+        imageUrl={user.avatarFile?.url}
+      ></ProfileImage>
+      <View style={styles.columnContainer}>
+        <AppText weight="normal">{user.username}</AppText>
+        <AppText weight="light">
+          {user.firstName} {user.secondName}
+        </AppText>
+      </View>
+    </Pressable>
   );
 };
 

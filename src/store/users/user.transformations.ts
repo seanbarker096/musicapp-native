@@ -1,3 +1,4 @@
+import { transformFileApi } from 'store/files/files.transformations';
 import { User, UserApi } from './users.types';
 
 export const transformUserApi = function (user: UserApi): User {
@@ -14,5 +15,8 @@ export const transformUserApi = function (user: UserApi): User {
     avatarFileUuid: user.avatar_file_uuid,
     languageId: user.language_id,
     timezoneId: user.timezone_id,
+    avatarFile: user.avatar_file
+      ? transformFileApi(user.avatar_file)
+      : undefined,
   };
 };

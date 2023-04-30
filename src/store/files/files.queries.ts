@@ -72,8 +72,6 @@ export function useFilesGetQuery({
       apiQueryParams['ids'] = processedId;
       queryKey = filesKeys.filesByIds(processedId);
     }
-
-    console.log(enabled);
   }
 
   return useQuery<readonly File[], unknown, readonly File[]>(

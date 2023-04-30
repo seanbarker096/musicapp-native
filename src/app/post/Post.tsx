@@ -272,7 +272,7 @@ export const Post: FC<PostProps> = ({
           )}
         {post?.ownerType === PostOwnerType.USER && user && postPerformer && (
           <UserPostHeader
-            avatarFileUuid={user.avatarFileUuid}
+            avatarImageUrl={user.avatarFile?.url}
             username={user.username}
             performanceText={`${postPerformer.name}${
               taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''

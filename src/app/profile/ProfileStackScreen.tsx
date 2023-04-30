@@ -49,7 +49,7 @@ const ProfileStackScreen: FC<Props> = () => {
     >
       <ProfileTab.Screen
         options={{ headerShown: false }}
-        initialParams={{ profileId, profileType }}
+        initialParams={{ profileId, profileType, isLoggedInUsersProfile: true }}
         // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
         name="main"
@@ -69,10 +69,28 @@ type InternalStackScreenProps = {
  */
 export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
   route: {
-    params: { profileId, profileType },
+    params: { profileId, profileType, isLoggedInUsersProfile = false },
   },
 }) => {
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+
+  const { profileState } = useContext(ProfileContext);
+  const { profileId: contextProfileId, profileType: contextProfileType } =
+    profileState;
+
+  let profileScreenProps = {
+    profileId,
+    profileType,
+  };
+
+  // The logged in user can switch between viewing the app from their artist profile (if they have one) and their usre profile. Therefore, if the profile being viewed is the logged in users profile, we should use the up to date profile context. This is because initialParams passed in by ProfileStackScreen will be stale once the user has switched between the two
+
+  if (isLoggedInUsersProfile) {
+    profileScreenProps = {
+      profileId: contextProfileId,
+      profileType: contextProfileType,
+    };
+  }
 
   return (
     <ProfileStack.Navigator
@@ -84,8 +102,8 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
         {props => (
           <Profile
             {...props}
-            profileId={profileId}
-            profileType={profileType}
+            profileId={profileScreenProps.profileId}
+            profileType={profileScreenProps.profileType}
           />
         )}
       </ProfileStack.Screen>
