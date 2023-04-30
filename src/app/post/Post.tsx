@@ -306,7 +306,7 @@ export const Post: FC<PostProps> = ({
 
   return (
     <>
-      {post && (
+      {post && postPerformer && (
         <View style={styles.container}>
           <PostHeader />
           <Pressable
@@ -347,13 +347,12 @@ export const Post: FC<PostProps> = ({
           </Pressable>
           <PostFooter
             post={post}
-            postPerformerId={
-              taggedPerformance?.performerId ?? taggedPerformerId
-            }
+            postPerformer={postPerformer}
             handleLinkToPerformancePress={() =>
               navigation.navigate('PostLinkToPerformance', { postId: post.id })
             }
           ></PostFooter>
+
           <View
             style={{
               ...styles.sidePadding,

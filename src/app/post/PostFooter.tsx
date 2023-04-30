@@ -1,6 +1,7 @@
 import { AppText } from 'components/app-text';
-import { SVGIcon } from 'components/icon';
+import { IconColor, SVGIcon } from 'components/icon';
 import {
+  CheckCircleSVG,
   LinkSVG,
   PictureCheckMarkSVG,
   PicturePlusSVG,
@@ -19,18 +20,19 @@ import {
   FeaturedEntityType,
   FeaturerType,
 } from 'store/features/features.types';
+import { Performer } from 'store/performers';
 import { Post } from 'store/posts';
 import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PostFooterProps {
   post: Post;
-  postPerformerId?: number;
+  postPerformer: Performer;
   handleLinkToPerformancePress?: () => void;
 }
 
 const PostFooter: FC<PostFooterProps> = ({
   post,
-  postPerformerId,
+  postPerformer,
   handleLinkToPerformancePress,
 }) => {
   const { profileState } = useContext(ProfileContext);
@@ -59,8 +61,27 @@ const PostFooter: FC<PostFooterProps> = ({
 
   const feature = features ? features[0] : undefined;
 
-  const loading = featuresGetLoading;
-  const error = !feature && featuresGetError;
+  const {
+    data: artistFeatures,
+    isLoading: artistFeatureGetLoading,
+    isError: artistFeatureGetError,
+  } = useFeaturesGetQuery({
+    queryParams: {
+      featuredEntityId: post.id,
+      featuredEntityType: FeaturedEntityType.POST,
+      featurerType: FeaturerType.PERFORMER,
+      featurerId: postPerformer.id,
+    },
+  });
+
+  const artistFeature = artistFeatures ? artistFeatures[0] : undefined;
+
+  const loading =
+    (!features && featuresGetLoading) ||
+    (!artistFeatures && artistFeatureGetLoading);
+  const error =
+    (!features && featuresGetError) ||
+    (!artistFeatures && artistFeatureGetError);
 
   const {
     mutateAsync: createFeature,
@@ -91,8 +112,8 @@ const PostFooter: FC<PostFooterProps> = ({
 
   return (
     <>
-      <View>
-        {!loading && !error && (
+      {!loading && !error && (
+        <View style={{ ...styles.container }}>
           <View
             style={{
               ...styles.sidePadding,
@@ -116,7 +137,7 @@ const PostFooter: FC<PostFooterProps> = ({
             ></PostFooterAction>
 
             {viewingUserProfileType === ProfileType.PERFORMER &&
-              viewingUserProfileId === postPerformerId && (
+              viewingUserProfileId === postPerformer.id && (
                 <Pressable
                   onPress={handleLinkToPerformancePress}
                   style={{
@@ -131,10 +152,28 @@ const PostFooter: FC<PostFooterProps> = ({
                 </Pressable>
               )}
           </View>
-        )}
-        {!feature && loading && <AppText>Loading...</AppText>}
-        {!feature && error && <AppText>Error...</AppText>}
-      </View>
+
+          {artistFeature && (
+            <View
+              style={{
+                ...styles.sidePadding,
+                ...styles.flexRowContainer,
+                marginBottom: SPACING_SMALL,
+              }}
+            >
+              <SVGIcon
+                color={IconColor.PRIMARY}
+                styles={{ marginRight: SPACING_XXSMALL }}
+              >
+                <CheckCircleSVG></CheckCircleSVG>
+              </SVGIcon>
+              <AppText>Featured by {postPerformer.name}</AppText>
+            </View>
+          )}
+        </View>
+      )}
+      {!feature && loading && <AppText>Loading...</AppText>}
+      {!feature && error && <AppText>Error...</AppText>}
     </>
   );
 };
