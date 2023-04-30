@@ -4,6 +4,7 @@ import React, { FC, ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
+import { isDefined } from 'utils/utils';
 import GalleryItem from '../gallery-item/GalleryItem';
 
 interface GalleryLayoutProps {
@@ -18,6 +19,7 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
   posts,
   galleryItemFooter,
 }) => {
+  console.log(galleryItemFooter);
   return (
     <Grid gridPadding={styles.gridPadding}>
       {posts.map(post => (
@@ -29,7 +31,7 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
             galleryItemStyles={{ ...styles.item, position: 'relative' }}
             post={post}
           ></GalleryItem>
-          {galleryItemFooter && (
+          {isDefined(galleryItemFooter) && galleryItemFooter && (
             <View
               style={{
                 position: 'absolute',
