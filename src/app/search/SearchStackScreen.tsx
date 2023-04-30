@@ -45,12 +45,12 @@ export const SearchInternalStackScreen = () => {
     <SearchStack.Navigator>
       <SearchStack.Screen
         component={Search}
-        name="search"
+        name="Search"
       ></SearchStack.Screen>
       <SearchStack.Screen
         // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
-        name="searchProfile"
+        name="SearchProfile"
         options={{ headerTitle: 'Profile' }}
       ></SearchStack.Screen>
     </SearchStack.Navigator>

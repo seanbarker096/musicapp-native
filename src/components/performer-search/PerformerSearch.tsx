@@ -39,7 +39,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     isLoading: performersSearchLoading,
     error: performersSearchError,
   } = usePerformersSearchQuery({
-    searchQuery: searchTerm,
+    searchQuery: debouncedSearchTerm,
     enabled: !!debouncedSearchTerm,
   });
 

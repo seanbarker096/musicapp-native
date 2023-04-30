@@ -12,7 +12,7 @@ import { InternalSearchStackScreenParamList } from './search-types';
 
 type SearchProps = NativeStackScreenProps<
   InternalSearchStackScreenParamList,
-  'search'
+  'Search'
 >;
 
 type SearchFilterGroup = {
@@ -37,13 +37,13 @@ const Search: FC<SearchProps> = ({ navigation }) => {
     | 'User';
 
   const navigateToPerformerProfile = (performer: Performer) =>
-    navigation.navigate('searchProfile', {
+    navigation.navigate('SearchProfile', {
       profileType: ProfileType.PERFORMER,
       profileId: performer.id,
     });
 
   const navigateToUserProfile = (user: User) =>
-    navigation.navigate('searchProfile', {
+    navigation.navigate('SearchProfile', {
       profileType: ProfileType.USER,
       profileId: user.id,
     });

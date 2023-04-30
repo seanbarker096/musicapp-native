@@ -39,8 +39,6 @@ export const UserSearch: FC<UserSearchProps> = ({
 
   const users = !!debouncedSearchTerm ? data : [];
 
-  console.log(users);
-
   const userSearchResults = users
     ? users.map(user => (
         <UserSearchCard
