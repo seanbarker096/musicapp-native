@@ -1,50 +1,23 @@
 import { List, ListItem } from 'components/list';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 type Props = {
   searchTermChanged: (searchTerm: string) => void;
+  searchTerm?: string;
   searchResults: readonly React.ReactNode[];
   scrollable?: boolean;
   height?: number; // if scrollable container used, this defines height of it
 };
 
-const SEARCH_DEBOUNCE_TIME = 500;
-
 // TODO: Add loading state for when an performer is selected and we nav to their performer profile
 export const SearchBar: FC<Props> = ({
   scrollable = false,
   searchTermChanged,
+  searchTerm,
   searchResults,
   height,
 }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
-  let searchDebounceTimer: number | undefined = undefined;
-
-  useEffect(() => {
-    if (searchDebounceTimer) {
-      clearTimeout(searchDebounceTimer);
-    }
-
-    // Once debounce timer is done, call parent callback so something
-    // can be done with the search term
-    searchDebounceTimer = setTimeout(
-      () => searchTermChanged(searchTerm),
-      SEARCH_DEBOUNCE_TIME,
-    );
-
-    return () => {
-      if (searchDebounceTimer) {
-        clearTimeout(searchDebounceTimer);
-      }
-    };
-  }, [searchTerm]);
-
-  function handleSearchTermChange(term: string) {
-    setSearchTerm(term);
-  }
-
   return (
     <View
       style={{
@@ -53,9 +26,9 @@ export const SearchBar: FC<Props> = ({
     >
       <TextInput
         style={styles.text}
-        onChangeText={val => handleSearchTermChange(val)}
+        onChangeText={val => searchTermChanged(val)}
         value={searchTerm}
-        placeholder="e.g. Eminem"
+        placeholder="Search"
       />
 
       <>

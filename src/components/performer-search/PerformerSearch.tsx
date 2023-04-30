@@ -1,119 +1,79 @@
-import { List, ListItem } from 'components/list';
+import { AppText } from 'components/app-text';
 import { PerformerSearchCard } from 'components/performer-search-card';
-import React, { FC, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SearchBar } from 'components/search';
+import React, { FC, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Performer, PerformerSearchPerformer } from 'store/performers';
 import {
   usePerformerGetOrCreateQuery,
   usePerformersSearchQuery,
 } from 'store/performers/performers.queries';
+import { useDebounceEffect } from 'utils/custom-hooks';
 
-type Props = {
-  onPerformerSelect?: (performer: Performer) => void;
-  scrollable?: boolean;
-  height?: number; // if scrollable container used, this defines height of it
+type PerformerSearchProps = {
+  searchTermChanged: (searchTerm: string) => void;
+  searchTerm?: string;
+  // Fucntion to be executed once a performer is selected AND they are created or fetched succesfully from the backend
+  onPerformerSelected: (performer: Performer) => void;
 };
 
-const SEARCH_DEBOUNCE_TIME = 500;
-
 // TODO: Add loading state for when an performer is selected and we nav to their performer profile
-export const PerformerSearch: FC<Props> = ({
-  scrollable = false,
-  onPerformerSelect = () => {},
-  height,
+export const PerformerSearch: FC<PerformerSearchProps> = ({
+  searchTermChanged,
+  searchTerm,
+  onPerformerSelected,
 }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
-  let searchDebounceTimer: number | undefined = undefined;
-
   const [selectedSearchPerformer, setSelectedSearchPerformer] = useState<
     PerformerSearchPerformer | undefined
   >(undefined);
 
-  // TODO: consider adding logic to cancel queries on the fly whenever
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<
+    string | undefined
+  >(undefined);
+
+  useDebounceEffect<string | undefined>(searchTerm, setDebouncedSearchTerm);
+
   // user types a new character
   const {
     data: searchPerformers,
     isLoading: performersSearchLoading,
-    isError: isPerformersSearchError,
-  } = usePerformersSearchQuery({ searchQuery: debouncedSearchTerm });
+    error: performersSearchError,
+  } = usePerformersSearchQuery({
+    searchQuery: searchTerm,
+    enabled: !!debouncedSearchTerm,
+  });
+
+  const performers = !!debouncedSearchTerm ? searchPerformers : [];
 
   const {
     data: performer,
     isLoading: performersGetOrCreateLoading,
-    isError: isPerformersGetOrCreateError,
+    error: performersGetOrCreateError,
   } = usePerformerGetOrCreateQuery({
     performerUUID: selectedSearchPerformer?.uuid,
     enabled: !!selectedSearchPerformer,
-    onSuccess: onPerformerSelect,
+    onSuccess: onPerformerSelected,
   });
 
-  useEffect(() => {
-    if (searchDebounceTimer) {
-      clearTimeout(searchDebounceTimer);
-    }
+  const performerSearchResults = performers
+    ? performers.map(performer => (
+        <PerformerSearchCard
+          performer={performer}
+          onPress={() => setSelectedSearchPerformer(performer)}
+        ></PerformerSearchCard>
+      ))
+    : [];
 
-    searchDebounceTimer = setTimeout(
-      () => setDebouncedSearchTerm(searchTerm),
-      SEARCH_DEBOUNCE_TIME,
-    );
-
-    return () => {
-      if (searchDebounceTimer) {
-        clearTimeout(searchDebounceTimer);
-      }
-    };
-  }, [searchTerm]);
-
-  function handleSearchTermChange(term: string) {
-    setSearchTerm(term);
-  }
-
-  function handlePerformerSelection(performer: PerformerSearchPerformer) {
-    setSelectedSearchPerformer(performer);
-  }
+  const error = performersSearchError || performersGetOrCreateError;
 
   return (
-    <View
-      style={{
-        ...styles.container,
-      }}
-    >
-      <TextInput
-        style={styles.text}
-        onChangeText={val => handleSearchTermChange(val)}
-        value={searchTerm}
-        placeholder="e.g. Eminem"
-      />
-
-      <>
-        {searchPerformers &&
-          searchPerformers.length > 0 &&
-          !isPerformersSearchError && (
-            <List
-              sidePadding="xxxsmall"
-              verticalPadding="none"
-              scrollable={scrollable}
-              maxHeight={height}
-            >
-              {searchPerformers.map(performer => (
-                <Pressable key={performer.uuid}>
-                  <ListItem>
-                    <PerformerSearchCard
-                      performer={performer}
-                      onPress={() => handlePerformerSelection(performer)}
-                    ></PerformerSearchCard>
-                  </ListItem>
-                </Pressable>
-              ))}
-            </List>
-          )}
-        {searchPerformers &&
-          searchPerformers.length === 0 &&
-          !isPerformersSearchError && <Text>NO results</Text>}
-        {performersSearchLoading && <Text>Loading...</Text>}
-        {isPerformersSearchError && <Text>Error</Text>}
-      </>
+    <View style={styles.container}>
+      <SearchBar
+        searchTermChanged={searchTermChanged}
+        searchResults={performerSearchResults}
+        searchTerm={searchTerm}
+      ></SearchBar>
+      {performersSearchLoading && <AppText>Loading...</AppText>}
     </View>
   );
 };

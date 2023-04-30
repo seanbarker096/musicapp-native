@@ -28,6 +28,7 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
     error: filesGetError,
   } = useFilesGetQuery({
     queryParams: { uuid: user.avatarFileUuid },
+    enabled: !!user.avatarFileUuid,
   });
 
   const fileLoading = !files && filesGetLoading;
@@ -35,9 +36,12 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
 
   const file = files ? files[0] : undefined;
 
+  console.log(file);
+  console.log(filesGetLoading);
+
   return (
     <>
-      {!!fileLoading && (
+      {!fileLoading && (
         <Pressable
           onPress={onPress}
           style={styles.container}
@@ -54,7 +58,7 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
           </View>
         </Pressable>
       )}
-      {fileLoading && <AppText>Loading...</AppText>}
+      {fileLoading && <AppText>File Loading...</AppText>}
     </>
   );
 };

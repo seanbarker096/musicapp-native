@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   FeaturedPostsGetQueryFields,
   useFeaturedPostsGetQuery,
@@ -252,5 +253,22 @@ function createPostsWithAttachmentsAndFiles(
     : undefined;
 }
 
+export function useDebounceEffect<T>(value: T, callback: (value: T) => void) {
+  let searchDebounceTimer: number | undefined = undefined;
 
+  useEffect(() => {
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+    }
 
+    // Once debounce timer is done, call parent callback so something
+    // can be done with the search term
+    searchDebounceTimer = setTimeout(() => callback(value), 500);
+
+    return () => {
+      if (searchDebounceTimer) {
+        clearTimeout(searchDebounceTimer);
+      }
+    };
+  }, [value]);
+}

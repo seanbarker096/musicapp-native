@@ -20,6 +20,7 @@ export const PillFilters: FC<PillFiltersProps> = ({
       {controls.map((control, index) => {
         return (
           <PillFilterItem
+            key={index}
             control={control}
             valueChanged={valueChanged}
           ></PillFilterItem>

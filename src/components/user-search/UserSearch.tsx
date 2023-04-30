@@ -1,52 +1,64 @@
 import { AppText } from 'components/app-text';
 import { SearchBar } from 'components/search';
+import { UserSearchCard } from 'components/user-search-card';
 import React, { FC, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { useUserGetQuery } from 'store/users';
+import { StyleSheet, View } from 'react-native';
+import { userUsersSearchQuery } from 'store/users';
+import { User } from 'store/users/users.types';
+import { useDebounceEffect } from 'utils/custom-hooks';
 
-type Props = {};
+type UserSearchProps = {
+  searchTermChanged: (searchTerm: string) => void;
+  searchTerm?: string;
+  // Fucntion to be executed once a performer is selected AND they are created or fetched succesfully from the backend
+  onUserSelected: (performer: User) => void;
+};
 
 // TODO: Add loading state for when an performer is selected and we nav to their performer profile
-export const PerformerSearch: FC<Props> = ({}) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedUser, setSelectedUser] = useState(undefined);
+export const UserSearch: FC<UserSearchProps> = ({
+  searchTermChanged,
+  searchTerm,
+  onUserSelected,
+}) => {
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<
+    string | undefined
+  >(undefined);
+
+  useDebounceEffect<string | undefined>(searchTerm, setDebouncedSearchTerm);
 
   const {
-    data: users,
-    isLoading: userLoading,
+    data,
+    isLoading: usersLoading,
     error: usersGetError,
-  } = useUserGetQuery({
+  } = userUsersSearchQuery({
     queryParams: {
-      searchQuery: searchTerm,
+      searchQuery: debouncedSearchTerm,
     },
+    enabled: !!debouncedSearchTerm,
   });
 
-  const loading = !users && userLoading;
-  const error = !users && usersGetError;
+  const users = !!debouncedSearchTerm ? data : [];
 
-  function handleSearchTermChange(term: string) {
-    setSearchTerm(term);
-  }
+  console.log(users);
 
-  function handlePerformerSelection(user: any) {
-    setSelectedUser(user);
-  }
-
-  function handleUserSelected() {
-    console.log('user selected');
-  }
-
-  const searchResults = users ? users.map(user => (
-    
-  )) : [<AppText>No users found.</AppText>];
+  const userSearchResults = users
+    ? users.map(user => (
+        <UserSearchCard
+          user={user}
+          onPress={() => onUserSelected(user)}
+        ></UserSearchCard>
+      ))
+    : [];
 
   return (
-    <>
+    <View style={styles.container}>
       <SearchBar
-        searchTermChanged={handleSearchTermChange}
-        searchResults={searchResults}
+        searchTermChanged={searchTermChanged}
+        searchResults={userSearchResults}
+        searchTerm={searchTerm}
       ></SearchBar>
-    </>
+      {usersLoading && <AppText>Loading...</AppText>}
+    </View>
   );
 };
 
@@ -64,3 +76,5 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
+

@@ -15,7 +15,8 @@ import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
-import React, { FC } from 'react';
+import { ProfileContext } from 'contexts/profile.context';
+import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { SPACING_MID } from 'styles';
 import Profile from './Profile';
@@ -34,6 +35,9 @@ const ProfileStackScreen: FC<Props> = () => {
     main: ProfileInternalStackScreenParams;
   }>();
 
+  const { profileState } = useContext(ProfileContext);
+  const { profileId, profileType } = profileState;
+
   return (
     <ProfileTab.Navigator
       tabBar={props => (
@@ -45,6 +49,7 @@ const ProfileStackScreen: FC<Props> = () => {
     >
       <ProfileTab.Screen
         options={{ headerShown: false }}
+        initialParams={{ profileId, profileType }}
         // @ts-ignore See ProfileInternalStackScreen for reason for this
         component={ProfileInternalStackScreen}
         name="main"

@@ -67,6 +67,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     undefined,
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [performerSearchTerm, setPerformerSearchTerm] = useState<
+    string | undefined
+  >(undefined);
 
   const { authState } = useContext(AuthStateContext);
 
@@ -391,9 +394,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
                 <Text style={{ width: '100%' }}>Performer</Text>
                 {!performer && (
                   <PerformerSearch
-                    scrollable={true}
-                    height={200}
-                    onPerformerSelect={handlePerformerSelection}
+                    searchTermChanged={setPerformerSearchTerm}
+                    searchTerm={performerSearchTerm}
+                    onPerformerSelected={handlePerformerSelection}
                   ></PerformerSearch>
                 )}
                 {performer && (

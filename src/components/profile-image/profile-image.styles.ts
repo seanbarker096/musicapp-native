@@ -6,9 +6,9 @@ export function profileImageSizeGenerator(size: ProfileImageSize): number {
       return 60;
     case 'medium':
       return 48;
-    default: // default is 'small'
-      return 30;
     case 'xsmall':
       return 20;
+    default: // default is 'small'
+      return 30;
   }
 }

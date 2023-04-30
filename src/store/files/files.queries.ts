@@ -11,7 +11,6 @@ import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
 import {
   File,
-  FileApi,
   FileCreateRequest,
   FileCreateResult,
   FilesStoreSlice,
@@ -33,7 +32,7 @@ const filesGet = async function (
     params,
   });
 
-  return response.data.files;
+  return response.data.files.map(transformFileApi);
 };
 
 export function useFilesGetQuery({
@@ -73,17 +72,20 @@ export function useFilesGetQuery({
       apiQueryParams['ids'] = processedId;
       queryKey = filesKeys.filesByIds(processedId);
     }
+
+    console.log(enabled);
   }
 
-  return useQuery<readonly FileApi[], unknown, readonly File[]>(
+  return useQuery<readonly File[], unknown, readonly File[]>(
     queryKey,
     () =>
       apiQueryParams
         ? filesGet(apiQueryParams)
         : // TODO: Make it clear this could be just because of waiting for external variables to be defined (e.g in chanined requests)
-          failedQuery('Invalid uuids and ids. At least one must be defined'),
+        enabled
+        ? failedQuery('Invalid uuids and ids. At least one must be defined')
+        : Promise.resolve([]),
     {
-      select: files => files.map(file => transformFileApi(file)),
       enabled,
     },
   );
