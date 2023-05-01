@@ -65,6 +65,11 @@ const App = function () {
               <LoggedInAppShell
                 {...props}
                 authState={authState}
+                setAuthState={
+                  setAuthState as React.Dispatch<
+                    React.SetStateAction<AuthState>
+                  > // we know authState is defined here, so can safely cast
+                }
               ></LoggedInAppShell>
             )}
           </Stack.Screen>

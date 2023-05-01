@@ -18,8 +18,12 @@ import { AppShellStackNavigatorParamList } from './appShell.types';
 
 interface LoggedInAppShellProps {
   authState: AuthState;
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
 }
-const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
+const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
+  authState,
+  setAuthState,
+}) => {
   const [profileState, setProfileState] = useState<ProfileState>({
     profileType: ProfileType.USER,
     profileId: authState.authUser.userId,
@@ -34,7 +38,7 @@ const LoggedInAppShell: FC<LoggedInAppShellProps> = ({ authState }) => {
   return (
     <>
       {authState && (
-        <AuthStateContext.Provider value={{ authState }}>
+        <AuthStateContext.Provider value={{ authState, setAuthState }}>
           <ProfileContext.Provider value={{ profileState, setProfileState }}>
             <LoggedInScreens></LoggedInScreens>
           </ProfileContext.Provider>

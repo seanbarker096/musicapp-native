@@ -1,12 +1,16 @@
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
 import { useMutation } from 'react-query';
+import { postRequest } from 'store/request-builder';
 import axios from '../../axios-instance';
+import { AuthStateContext } from './auth.contexts';
 import {
   loginResultToAuthState,
   signUpResultToAuthState,
 } from './auth.transformations';
 import {
+  AuthStatus,
   LoginFormState,
   LoginMutationResult,
   LoginResultApi,
@@ -80,13 +84,24 @@ export const useLoginMutation = () => {
 
 // TODO: Do we need to invalidate any othert instances of this query??
 const authTokenCreate = async (refreshToken: string): Promise<string> => {
-  const response = await axios.post(
-    'http://192.168.1.217:5000/api/auth/0.1/token/',
-    { token_type: 'access' },
-    {
-      headers: { 'Refresh-Token': refreshToken },
-    },
-  );
+  const { authState, setAuthState } = useContext(AuthStateContext);
+
+  const response = await postRequest({
+    url: 'http://192.168.1.217:5000/api/auth/0.1/token/',
+    body: { token_type: 'access' },
+    headers: { 'Refresh-Token': refreshToken },
+  }).catch(error => {
+    if (
+      error.response &&
+      error.reponse.data.error_code === 'INVALID_REFRESH_TOKEN'
+    ) {
+      setAuthState({
+        authUser: authState.authUser,
+        status: AuthStatus.UNAUTHENTICATED,
+      });
+    }
+    throw error;
+  });
 
   if (!response.data['token']) {
     throw Error('Invalid response from api');

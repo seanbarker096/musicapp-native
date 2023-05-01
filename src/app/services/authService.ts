@@ -23,10 +23,12 @@ export async function authenticateUserOnAppStartup(
       }
       const refreshToken = await SecureStore.getItemAsync('refresh_token');
 
+      // If no refresh token is found, return early. The user will need to log in to get one
       if (!refreshToken) {
         return;
       }
 
+      // We are going to use refresh token to get a new access token, so delete the old one
       try {
         await SecureStore.deleteItemAsync('access_token');
       } catch (e) {}
@@ -49,64 +51,49 @@ export async function authenticateUserOnAppStartup(
 
 /**
  * Authenticates the user ASSUMING that a refresh token is already available. This is used to create a new acess token. If no refresh token is available please use authenticateUser.
- *
- * @param param0
  */
-export const reAuthenticateUser = (
-  authState: AuthState | undefined,
-  dependecy: any[],
-) => {
-  const { setAuthState } = useContext(AuthStateContext);
+export function useReAuthenticateUserEffect(dependecy: any[]) {
+  useEffect(() => {
+    reAuthenticateUser();
+  }, dependecy);
+}
+
+export async function reAuthenticateUser() {
+  const { setAuthState, authState } = useContext(AuthStateContext);
   const mutation = useAuthTokenCreateMutation();
 
-  useEffect(() => {
-    const _reAuthenticateUser = async () => {
-      if (authState && authState.status === AuthStatus.AUTHENTICATED) {
-        return;
-      }
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
 
-      const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  if (!refreshToken) {
+    setAuthState({
+      authUser: authState.authUser,
+      status: AuthStatus.UNAUTHENTICATED,
+    });
+    return;
+  }
 
-      if (!refreshToken) {
-        throw Error(
-          'Failed to find refresh token on users device. Cannot reauthenticate without a refresh token',
-        );
-      }
+  try {
+    await SecureStore.deleteItemAsync('access_token');
+  } catch (e) {}
 
-      try {
-        await SecureStore.deleteItemAsync('access_token');
-      } catch (e) {}
+  const accessToken = await mutation.mutateAsync(refreshToken);
 
-      const accessToken = await mutation.mutateAsync(refreshToken);
+  await SecureStore.setItemAsync('access_token', accessToken);
 
-      await SecureStore.setItemAsync('access_token', accessToken);
+  const newAuthUser = buildAuthUserFromAuthToken(accessToken);
 
-      const newAuthUser = buildAuthUserFromAuthToken(accessToken);
+  setAuthState({
+    authUser: newAuthUser,
+    status: AuthStatus.AUTHENTICATED,
+  });
 
-      if (authState?.status === AuthStatus.AUTHENTICATED) {
-        console.warn(
-          'call made to authenticateUser despite user being authenticated already',
-        );
-      }
+  SecureStore.setItemAsync('access_token', accessToken);
 
-      setAuthState({
-        authUser: newAuthUser,
-        status: AuthStatus.AUTHENTICATED,
-      });
-
-      SecureStore.setItemAsync('access_token', accessToken);
-
-      return authState;
-    };
-
-    _reAuthenticateUser();
-  }, dependecy);
-};
+  return authState;
+}
 
 const buildAuthUserFromAuthToken = (token: string): AuthUser => {
   const { role, user_id: userId } = jwt_decode<AuthUserApi>(token);
-
-  console.log(jwt_decode(token));
 
   if (!role || !userId) {
     throw Error('Invalid token provided');
@@ -114,3 +101,5 @@ const buildAuthUserFromAuthToken = (token: string): AuthUser => {
 
   return { role, userId };
 };
+
+
