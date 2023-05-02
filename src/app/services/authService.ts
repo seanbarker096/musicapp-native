@@ -1,103 +1,134 @@
+import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
-import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Platform } from 'react-native';
+import { useMutation } from 'react-query';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { useAuthTokenCreateMutation } from 'store/auth/auth.queries';
 import {
   AuthState,
   AuthStatus,
   AuthUser,
   AuthUserApi,
 } from 'store/auth/auth.types';
+import { useIntervalEffect } from 'utils/custom-hooks';
+import axios from '../../axios-instance';
+
+export const ACCESS_TOKEN_EXPIRY_TIME = 60 * 60 * 1000;
+
+// TODO: Do we need to invalidate any othert instances of this query??
+const authTokenCreate = async (): Promise<string> => {
+  if (Platform.OS === 'web') {
+    Promise.reject('Unsupported platform');
+  }
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+
+  // If no refresh token is found, return early. The user will need to log in to get one
+  if (!refreshToken) {
+    Promise.reject('No refresh token found');
+  }
+
+  // We are going to use refresh token to get a new access token, so delete the old one
+  try {
+    await SecureStore.deleteItemAsync('access_token');
+  } catch (e) {}
+
+  const response = await axios.post<
+    { token: string },
+    AxiosResponse<{ token: string }>,
+    { token_type: string }
+  >(
+    'http://192.168.1.217:5000/api/auth/0.1/token/',
+    { token_type: 'access' },
+    { headers: { 'Refresh-Token': refreshToken } },
+  );
+
+  console.log('new acess token retrieved:', response.data.token);
+  return response.data.token;
+};
+
+/**
+ * @param Optional onError callback which for setting the user as unauthenticated
+ */
+const useAuthTokenCreateMutation = ({
+  onAuthTokenCreateError,
+  onAuthTokenCreateSuccess,
+}: {
+  onAuthTokenCreateError?: (authContext: AuthStateContext) => void;
+  onAuthTokenCreateSuccess?: (accessToken: string) => void;
+} = {}) => {
+  let options = {};
+
+  if (onAuthTokenCreateError) {
+    options = { onError: onAuthTokenCreateError };
+  }
+
+  if (onAuthTokenCreateSuccess) {
+    options = { ...options, onSucess: onAuthTokenCreateSuccess };
+  }
+
+  return useMutation<string, any, void>(authTokenCreate, options);
+};
 
 export async function authenticateUserOnAppStartup(
   setAuthState: Dispatch<SetStateAction<AuthState | undefined>>,
 ) {
-  const { mutateAsync } = useAuthTokenCreateMutation();
+  const onAuthenticateSuccess = (accessToken: string) => {
+    SecureStore.setItemAsync('access_token', accessToken);
+
+    const authUser = buildAuthUserFromAuthToken(accessToken);
+
+    setAuthState({ status: AuthStatus.AUTHENTICATED, authUser });
+  };
+
+  const { mutate } = useAuthTokenCreateMutation({
+    onAuthTokenCreateSuccess: onAuthenticateSuccess,
+  });
 
   useEffect(() => {
     const _authenticateUser = async () => {
-      if (Platform.OS === 'web') {
-        return;
-      }
-      const refreshToken = await SecureStore.getItemAsync('refresh_token');
-
-      // If no refresh token is found, return early. The user will need to log in to get one
-      if (!refreshToken) {
-        return;
-      }
-
       // We are going to use refresh token to get a new access token, so delete the old one
       try {
         await SecureStore.deleteItemAsync('access_token');
       } catch (e) {}
 
-      try {
-        const accessToken = await mutateAsync(refreshToken);
-
-        await SecureStore.setItemAsync('access_token', accessToken);
-
-        const authUser = buildAuthUserFromAuthToken(accessToken);
-
-        SecureStore.setItemAsync('access_token', accessToken);
-
-        setAuthState({ status: AuthStatus.AUTHENTICATED, authUser });
-      } catch (e) {}
+      mutate();
     };
     _authenticateUser();
   }, []);
 }
 
-/**
- * Authenticates the user ASSUMING that a refresh token is already available. This is used to create a new acess token. If no refresh token is available please use authenticateUser.
- */
-export function useReAuthenticateUserEffect(dependecy: any[]) {
-  useEffect(() => {
-    reAuthenticateUser();
-  }, dependecy);
-}
-
-export async function reAuthenticateUser() {
-  const { setAuthState, authState } = useContext(AuthStateContext);
-  const {
-    mutateAsync: createToken,
-    isLoading: tokenCreateLoading,
-    isError: tokenCreateError,
-  } = useAuthTokenCreateMutation();
-
-  const refreshToken = await SecureStore.getItemAsync('refresh_token');
-
-  // If the user has no refresh token, we wont be able to get another access token to keep their session authenticated. They will need to log in again to get a new refresh token
-  if (!refreshToken) {
+export function useReauthenticateUserEffect({
+  authState,
+  setAuthState,
+}: {
+  authState: AuthState;
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
+}) {
+  const unAuthenticateOnError = () =>
     setAuthState({
       authUser: authState.authUser,
       status: AuthStatus.UNAUTHENTICATED,
     });
-    return;
-  }
 
-  try {
-    await SecureStore.deleteItemAsync('access_token');
-  } catch (e) {}
+  const onCreateAccessTokenSuccess = (accessToken: string) => {
+    SecureStore.setItemAsync('access_token', accessToken);
 
-  const accessToken = await createToken(refreshToken);
+    const newAuthUser = buildAuthUserFromAuthToken(accessToken);
 
-  // If error, useAuthTOkenCreateMutation will have already set the auth state to unauthenticated, so just return
-  if (tokenCreateError) {
-    return;
-  }
+    setAuthState({
+      authUser: newAuthUser,
+      status: AuthStatus.AUTHENTICATED,
+    });
+  };
 
-  await SecureStore.setItemAsync('access_token', accessToken);
+  const { mutate, isLoading, isError, isSuccess, error } =
+    useAuthTokenCreateMutation({
+      onAuthTokenCreateError: unAuthenticateOnError,
+      onAuthTokenCreateSuccess: onCreateAccessTokenSuccess,
+    });
 
-  const newAuthUser = buildAuthUserFromAuthToken(accessToken);
-
-  setAuthState({
-    authUser: newAuthUser,
-    status: AuthStatus.AUTHENTICATED,
-  });
-
-  return authState;
+  useIntervalEffect<never>(mutate, ACCESS_TOKEN_EXPIRY_TIME);
 }
 
 const buildAuthUserFromAuthToken = (token: string): AuthUser => {
@@ -109,5 +140,3 @@ const buildAuthUserFromAuthToken = (token: string): AuthUser => {
 
   return { role, userId };
 };
-
-

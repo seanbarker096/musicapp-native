@@ -5,6 +5,7 @@ import ManageStackScreen from 'app/manage/ManageStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import ProfileStackScreen from 'app/profile/ProfileStackScreen';
 import { SearchStackScreen } from 'app/search/SearchStackScreen';
+import { useReauthenticateUserEffect } from 'app/services/authService';
 import {
   ProfileContext,
   ProfileState,
@@ -28,6 +29,8 @@ const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
     profileType: ProfileType.USER,
     profileId: authState.authUser.userId,
   });
+
+  useReauthenticateUserEffect({ authState, setAuthState });
 
   if (!authState) {
     console.warn('Logged in app shell initialised without an authState');

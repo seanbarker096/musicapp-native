@@ -272,3 +272,17 @@ export function useDebounceEffect<T>(value: T, callback: (value: T) => void) {
     };
   }, [value]);
 }
+
+
+export function useIntervalEffect<T extends any[]>(
+  handler: (...args: T) => void,
+  interval: number,
+  ...args: T
+): void {
+  let intervalReference: number | undefined = undefined;
+
+  useEffect(() => {
+    intervalReference = setInterval<T>(handler, interval, ...args);
+    return () => clearInterval(interval);
+  }, []);
+}
