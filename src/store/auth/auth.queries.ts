@@ -107,11 +107,12 @@ const authTokenCreate = async (refreshToken: string): Promise<string> => {
     throw Error('Invalid response from api');
   }
 
+  // Return the access token, which we needed the refresh token in order to create
   return response.data['token'];
 };
 
 export const useAuthTokenCreateMutation = () => {
-  return useMutation<any, any, string>(refreshToken =>
+  return useMutation<string, any, string>(refreshToken =>
     authTokenCreate(refreshToken),
   );
 };

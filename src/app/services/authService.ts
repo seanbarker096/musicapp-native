@@ -60,10 +60,15 @@ export function useReAuthenticateUserEffect(dependecy: any[]) {
 
 export async function reAuthenticateUser() {
   const { setAuthState, authState } = useContext(AuthStateContext);
-  const mutation = useAuthTokenCreateMutation();
+  const {
+    mutateAsync: createToken,
+    isLoading: tokenCreateLoading,
+    isError: tokenCreateError,
+  } = useAuthTokenCreateMutation();
 
   const refreshToken = await SecureStore.getItemAsync('refresh_token');
 
+  // If the user has no refresh token, we wont be able to get another access token to keep their session authenticated. They will need to log in again to get a new refresh token
   if (!refreshToken) {
     setAuthState({
       authUser: authState.authUser,
@@ -76,7 +81,12 @@ export async function reAuthenticateUser() {
     await SecureStore.deleteItemAsync('access_token');
   } catch (e) {}
 
-  const accessToken = await mutation.mutateAsync(refreshToken);
+  const accessToken = await createToken(refreshToken);
+
+  // If error, useAuthTOkenCreateMutation will have already set the auth state to unauthenticated, so just return
+  if (tokenCreateError) {
+    return;
+  }
 
   await SecureStore.setItemAsync('access_token', accessToken);
 
@@ -86,8 +96,6 @@ export async function reAuthenticateUser() {
     authUser: newAuthUser,
     status: AuthStatus.AUTHENTICATED,
   });
-
-  SecureStore.setItemAsync('access_token', accessToken);
 
   return authState;
 }
