@@ -13,6 +13,6 @@ export function toNumber(
   return typeof value === 'number' || value ? Number(value) : undefined;
 }
 
-export function isDefined(value: any): value is NonNullable<typeof value> {
-  return !(typeof value === 'undefined' || value === null);
+export function isDefined<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
 }

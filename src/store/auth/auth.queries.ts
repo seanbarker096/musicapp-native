@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { useMutation } from 'react-query';
+import { isDefined } from 'utils/utils';
 import axios from '../../axios-instance';
 import {
   loginResultToAuthState,
@@ -56,6 +57,12 @@ const login = async ({
 
   const authState = loginResultToAuthState(response.data);
 
+  const apiKey = response.headers['x-appifr'];
+
+  if (isDefined(apiKey)) {
+    await SecureStore.setItemAsync('appifr', apiKey);
+  }
+
   return {
     authState,
     refreshToken: response.data['refresh_token'] ?? undefined,
@@ -78,8 +85,6 @@ export const useLoginMutation = () => {
   );
 };
 
-
-
 const signUp = async ({
   email,
   firstName,
@@ -100,6 +105,12 @@ const signUp = async ({
   });
 
   const authState = signUpResultToAuthState(response.data);
+
+  const apiKey = response.headers['x-appifr'];
+
+  if (isDefined(apiKey)) {
+    await SecureStore.setItemAsync('appifr', apiKey);
+  }
 
   return {
     authState,
