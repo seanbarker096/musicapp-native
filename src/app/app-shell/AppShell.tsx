@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LoggedOutPage } from 'app/App';
 import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
@@ -20,17 +21,23 @@ import { AppShellStackNavigatorParamList } from './appShell.types';
 interface LoggedInAppShellProps {
   authState: AuthState;
   setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
+  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
 }
 const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
   authState,
   setAuthState,
+  setLoggedOutPage,
 }) => {
   const [profileState, setProfileState] = useState<ProfileState>({
     profileType: ProfileType.USER,
     profileId: authState.authUser.userId,
   });
 
-  useReauthenticateUserEffect({ authState, setAuthState });
+  useReauthenticateUserEffect({
+    authState,
+    setAuthState,
+    setLoggedOutPage,
+  });
 
   if (!authState) {
     console.warn('Logged in app shell initialised without an authState');

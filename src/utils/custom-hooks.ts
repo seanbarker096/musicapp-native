@@ -283,6 +283,12 @@ export function useIntervalEffect<T extends any[]>(
 
   useEffect(() => {
     intervalReference = setInterval<T>(handler, interval, ...args);
-    return () => clearInterval(interval);
+
+    return () => {
+      if (intervalReference) {
+        clearInterval(intervalReference);
+      }
+      intervalReference = undefined;
+    };
   }, []);
 }

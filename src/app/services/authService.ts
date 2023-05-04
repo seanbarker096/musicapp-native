@@ -1,3 +1,4 @@
+import { LoggedOutPage } from 'app/App';
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
@@ -10,13 +11,12 @@ import {
   AuthStatus,
   AuthUser,
   AuthUserApi,
-  LoginResultApi,
 } from 'store/auth/auth.types';
 import { useIntervalEffect } from 'utils/custom-hooks';
 import { isDefined } from 'utils/utils';
 import axios from '../../axios-instance';
 
-export const ACCESS_TOKEN_EXPIRY_TIME = 4 * 1000;
+export const ACCESS_TOKEN_EXPIRY_TIME = 20 * 1000;
 
 export interface RefreshTokenPayload {
   user_id: number;
@@ -25,12 +25,9 @@ export interface RefreshTokenPayload {
   session_id: string;
   exp: number;
 }
-interface TokensGetResult {
-  accessToken: string;
-  refreshToken?: string;
-}
+
 // TODO: Do we need to invalidate any othert instances of this query??
-async function authTokenCreate(): Promise<TokensGetResult> {
+async function authTokenCreate(): Promise<string> {
   if (Platform.OS === 'web') {
     Promise.reject('Unsupported platform');
   }
@@ -38,7 +35,7 @@ async function authTokenCreate(): Promise<TokensGetResult> {
 
   // If no refresh token is found, return early. The user will need to log in to get one
   if (!isDefined(refreshToken)) {
-    return Promise.reject('No refresh token found');
+    return Promise.reject(new Error('No refresh token found'));
   }
 
   // Decode the refresh. Check its expiry time. If the token will expire before the next ACCESS_TOKEN_EXPIRY_TIME, then
@@ -48,31 +45,13 @@ async function authTokenCreate(): Promise<TokensGetResult> {
 
   const timeUntilExpiry = exp * 1000 - Date.now();
 
-  let tokens: TokensGetResult | undefined = undefined;
-
   if (timeUntilExpiry <= ACCESS_TOKEN_EXPIRY_TIME) {
-    const appifr = await SecureStore.getItemAsync('appifr');
-
-    if (!isDefined(appifr)) {
-      return Promise.reject('No appifr found');
-    }
-
-    const response = await getRefreshAndAccessToken(userId, appifr);
-
-    tokens = {
-      refreshToken: response.data.refresh_token,
-      accessToken: response.data.access_token,
-    };
+    return Promise.reject(new Error('Refresh token expired'));
   } else {
     const response = await getAccessToken(refreshToken);
 
-    tokens = {
-      refreshToken: undefined,
-      accessToken: response.data.token,
-    };
+    return response.data.token;
   }
-
-  return tokens;
 }
 
 function getAccessToken(refreshToken: string) {
@@ -87,17 +66,17 @@ function getAccessToken(refreshToken: string) {
   );
 }
 
-function getRefreshAndAccessToken(userId: number, appifr: string) {
-  return axios.post<
-    LoginResultApi,
-    AxiosResponse<LoginResultApi>,
-    { user_id: number }
-  >(
-    'http://192.168.1.217:5000/api/auth/0.1/refresh-token/',
-    { user_id: userId },
-    { headers: { 'x-appifr': appifr } },
-  );
-}
+// function getRefreshAndAccessToken(userId: number, appifr: string) {
+//   return axios.post<
+//     LoginResultApi,
+//     AxiosResponse<LoginResultApi>,
+//     { user_id: number }
+//   >(
+//     'http://192.168.1.217:5000/api/auth/0.1/refresh-token/',
+//     { user_id: userId },
+//     { headers: { 'x-appifr': appifr } },
+//   );
+// }
 
 /**
  * @param Optional onError callback which for setting the user as unauthenticated
@@ -107,9 +86,9 @@ const useAuthTokenCreateMutation = ({
   onAuthTokenCreateSuccess,
 }: {
   onAuthTokenCreateError?: (authContext: AuthStateContext) => void;
-  onAuthTokenCreateSuccess?: (tokens: TokensGetResult) => void;
+  onAuthTokenCreateSuccess?: (token: string) => void;
 }) => {
-  let options: UseMutationOptions<TokensGetResult, any, void> = {};
+  let options: UseMutationOptions<string, any, void> = {};
 
   if (onAuthTokenCreateError) {
     options = { onError: onAuthTokenCreateError };
@@ -119,21 +98,14 @@ const useAuthTokenCreateMutation = ({
     options = { ...options, onSuccess: onAuthTokenCreateSuccess };
   }
 
-  return useMutation<TokensGetResult, unknown, void>(authTokenCreate, options);
+  return useMutation<string, unknown, void>(authTokenCreate, options);
 };
 
 export async function authenticateUserOnAppStartup(
   setAuthState: Dispatch<SetStateAction<AuthState | undefined>>,
 ) {
-  const onAuthenticateSuccess = ({
-    accessToken,
-    refreshToken,
-  }: TokensGetResult) => {
+  const onAuthenticateSuccess = (accessToken: string) => {
     SecureStore.setItemAsync('access_token', accessToken);
-
-    if (refreshToken) {
-      SecureStore.setItemAsync('refresh_token', refreshToken);
-    }
 
     const newAuthUser = buildAuthUserFromAuthToken(accessToken);
 
@@ -163,38 +135,37 @@ export async function authenticateUserOnAppStartup(
 export function useReauthenticateUserEffect({
   authState,
   setAuthState,
+  setLoggedOutPage,
 }: {
   authState: AuthState;
   setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
+  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
 }) {
-  const unAuthenticateOnError = () =>
-    setAuthState({
-      authUser: authState.authUser,
-      status: AuthStatus.UNAUTHENTICATED,
-    });
-
   // TODO: Optimize to only setAuth state if its changed, otherwise app refreshes entirely every 10 mins
-  const onCreateAccessTokenSuccess = ({
-    accessToken,
-    refreshToken,
-  }: TokensGetResult) => {
+  const onCreateAccessTokenSuccess = (accessToken: string) => {
     SecureStore.setItemAsync('access_token', accessToken);
-
-    if (refreshToken) {
-      SecureStore.setItemAsync('refresh_token', refreshToken);
-    }
 
     const newAuthUser = buildAuthUserFromAuthToken(accessToken);
 
+    if (authState.status === AuthStatus.UNAUTHENTICATED) {
+      setAuthState({
+        authUser: newAuthUser,
+        status: AuthStatus.AUTHENTICATED,
+      });
+    }
+  };
+
+  const onAuthTokenCreateError = () => {
+    setLoggedOutPage(LoggedOutPage.SESSION_EXPIRED);
     setAuthState({
-      authUser: newAuthUser,
-      status: AuthStatus.AUTHENTICATED,
+      authUser: authState.authUser,
+      status: AuthStatus.UNAUTHENTICATED,
     });
   };
 
   const { mutate, isLoading, isError, isSuccess, error } =
     useAuthTokenCreateMutation({
-      onAuthTokenCreateError: unAuthenticateOnError,
+      onAuthTokenCreateError: onAuthTokenCreateError,
       onAuthTokenCreateSuccess: onCreateAccessTokenSuccess,
     });
 

@@ -1,15 +1,17 @@
 import { Link } from '@react-navigation/native';
+import { LoggedOutPage } from 'app/App';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSignUpMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 
-interface SignUpProps {
-  handleSignUpSuccess: (authState: AuthState) => void;
-}
+type SignUpProps = {
+  setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
+  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
+};
 
-const SignUp: FC<SignUpProps> = ({ handleSignUpSuccess }) => {
+const SignUp: FC<SignUpProps> = ({ setAuthState, setLoggedOutPage }) => {
   const mutatation = useSignUpMutation();
 
   const handleFormSubmit = async ({
@@ -27,7 +29,9 @@ const SignUp: FC<SignUpProps> = ({ handleSignUpSuccess }) => {
       password,
     });
 
-    handleSignUpSuccess(authState);
+    setAuthState(authState);
+    // Set to session expired for next time authState.status beomes AuthStatus.UNAUTHENTICATED
+    setLoggedOutPage(LoggedOutPage.SESSION_EXPIRED);
   };
 
   return (
