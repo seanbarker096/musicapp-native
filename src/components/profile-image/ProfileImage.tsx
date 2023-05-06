@@ -18,9 +18,6 @@ export const ProfileImage: FC<ProfileImageProps> = ({
 }) => {
   const height = profileImageSizeGenerator(size);
 
-  console.log(height);
-  console.log(imageUrl);
-
   return (
     <View style={{ ...styles, height: height, width: height }}>
       <Image

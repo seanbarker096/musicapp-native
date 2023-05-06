@@ -33,11 +33,10 @@ interface ProfileImage {
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'UploadProfileImage'>;
 
-const avatarImage = require('./../../assets/avatar.png');
 
 export const UploadProfileImage: FC<Props> = ({
   route: {
-    params: { userId = 1 },
+    params: { userId },
   },
 }) => {
   const { setAuthState, setLoggedOutPage } = React.useContext(

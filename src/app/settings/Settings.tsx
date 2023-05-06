@@ -1,11 +1,15 @@
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
-import { UserAvatarBorderedSVG } from 'components/icon/svg-components';
+import {
+  LogoutSVG,
+  UserAvatarBorderedSVG,
+} from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { useContext } from 'react';
 import { Pressable, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
+import { AuthStatus } from 'store/auth/auth.types';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { SPACING_MID, SPACING_SMALL } from 'styles';
 
@@ -13,7 +17,7 @@ const Settings = () => {
   const { profileState, setProfileState } = useContext(ProfileContext);
   const { profileType } = profileState;
 
-  const { authState } = useContext(AuthStateContext);
+  const { authState, setAuthState } = useContext(AuthStateContext);
   const { authUser } = authState;
 
   const settingItems = [];
@@ -53,17 +57,27 @@ const Settings = () => {
               profileId: performer.id,
             }),
     });
+
+    settingItems.push({
+      text: 'Logout',
+      icon: LogoutSVG,
+      action: () =>
+        setAuthState({
+          authUser: authState.authUser,
+          status: AuthStatus.UNAUTHENTICATED,
+        }),
+    });
   }
 
   return (
     <>
-      {performer && settingItems.length && (
+      {settingItems.length && (
         <View style={{ paddingLeft: SPACING_MID, paddingRight: SPACING_MID }}>
           <List>
             {settingItems.map(item => (
               <ListItem key={item.text}>
                 <Pressable
-                  style={{ flexDirection: 'row' }}
+                  style={{ flexDirection: 'row', marginBottom: SPACING_SMALL }}
                   onPress={item.action}
                 >
                   <SVGIcon styles={{ marginRight: SPACING_SMALL }}>

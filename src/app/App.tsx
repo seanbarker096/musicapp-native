@@ -1,7 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
-import * as SecureStore from 'expo-secure-store';
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AuthState, AuthStatus } from '../store/auth/auth.types';
@@ -30,11 +29,11 @@ const App = function () {
     LoggedOutPage.LOGIN,
   );
 
-  try {
-    console.log('CLEARING SECURE STORAGE FOR DEV PURPOSES');
-    SecureStore.deleteItemAsync('refresh_token');
-    SecureStore.deleteItemAsync('access_token');
-  } catch (e) {}
+  // try {
+  //   console.log('CLEARING SECURE STORAGE FOR DEV PURPOSES');
+  //   SecureStore.deleteItemAsync('refresh_token');
+  //   SecureStore.deleteItemAsync('access_token');
+  // } catch (e) {}
 
   authenticateUserOnAppStartup(setAuthState);
 
