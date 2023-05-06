@@ -1,3 +1,4 @@
+import { SignUpFormValues } from 'app/signup/SignUpForm';
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { useMutation } from 'react-query';
@@ -120,14 +121,21 @@ const signUp = async ({
 };
 
 // TODO: Pass in reuqest valuse to signup
-export const useSignUpMutation = () => {
-  const onSuccessCallback = async ({
-    refreshToken,
-    accessToken,
-  }: SignUpMutationResult) => {
+export const useSignUpMutation = ({
+  onSuccess,
+}: {
+  onSuccess: (result: SignUpMutationResult) => void;
+}) => {
+  const onSuccessCallback = async (result: SignUpMutationResult) => {
+    onSuccess(result);
+
+    const { refreshToken, accessToken } = result;
+
     await SecureStore.setItemAsync('refresh_token', refreshToken);
     await SecureStore.setItemAsync('access_token', accessToken);
   };
 
-  return useMutation(signUp, { onSuccess: onSuccessCallback });
+  return useMutation<SignUpMutationResult, unknown, SignUpFormValues>(signUp, {
+    onSuccess: onSuccessCallback,
+  });
 };

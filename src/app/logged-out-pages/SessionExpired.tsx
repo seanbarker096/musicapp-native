@@ -1,11 +1,11 @@
-import { LoggedOutPage } from 'app/App';
+import { LoggedOutPage, SetLoggedOutPage } from 'app/App';
 import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import { BUTTON_COLOR_PRIMARY, SPACING_SMALL } from 'styles';
 
 type SessionExpiredProps = {
-  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
+  setLoggedOutPage: SetLoggedOutPage;
 };
 
 const SessionExpired: FC<SessionExpiredProps> = ({ setLoggedOutPage }) => {

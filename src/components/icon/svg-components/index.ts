@@ -1,6 +1,7 @@
 export * from './BorderedPlusSVG';
 export * from './BurgerMenuSVG';
 export * from './CalendarSVG';
+export * from './CameraSVG';
 export * from './CheckCircleSVG';
 export * from './CheckMarkSVG';
 export * from './FilledLikeHeartSVG';

@@ -142,7 +142,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
           setPostFile({
             imageInfo: result,
             mimeType: blob.type,
-            fileName: `${userId}-${Date.now()}`,
+            fileName: `${userId}-post-${Date.now()}`,
             blob,
           });
         }

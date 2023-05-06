@@ -111,3 +111,30 @@ export async function deleteRequest<S extends StoreSlice>({
     S['Delete']['RequestParametersType']
   >(`http://192.168.1.217:5000/api/${url}`, getRequestConfig);
 }
+
+export async function patchRequest<S extends StoreSlice>({
+  url,
+  body,
+  headers = {},
+}: {
+  url: string;
+  body: S['Patch']['RequestBodyType'];
+  headers?: RawAxiosRequestHeaders;
+}): Promise<AxiosResponse<S['Patch']['ResultType']>> {
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  const accessToken = await SecureStore.getItemAsync('access_token');
+
+  const patchRequestConfig = {
+    headers: {
+      ...headers,
+      'Refresh-Token': refreshToken,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  return await axios.patch<
+    S['Patch']['ResultType'],
+    AxiosResponse<S['Patch']['ResultType']>,
+    S['Patch']['RequestBodyType']
+  >(`http://192.168.1.217:5000/api/${url}`, body, patchRequestConfig);
+}

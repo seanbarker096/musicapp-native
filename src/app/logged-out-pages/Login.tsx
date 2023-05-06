@@ -1,14 +1,23 @@
-import { Link } from '@react-navigation/native';
 import { LoggedOutPage } from 'app/App';
+import { AppText } from 'components/app-text';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 
 type LoginProps = {
   setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
-  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
+  setLoggedOutPage: React.Dispatch<
+    React.SetStateAction<LoggedOutPage | undefined>
+  >;
 };
 
 interface LoginFormValues {
@@ -24,7 +33,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
     setAuthState(result.authState);
     // Set to session expired for next time authState.status beomes AuthStatus.UNAUTHENTICATED
-    setLoggedOutPage(LoggedOutPage.SESSION_EXPIRED);
+    setLoggedOutPage(undefined);
   };
 
   return (
@@ -57,7 +66,9 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
         )}
       </Formik>
       <Text>Don't have an account?</Text>
-      <Link to={{ screen: 'SignUp' }}>Sign up.</Link>
+      <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}>
+        <AppText>Sign Up</AppText>
+      </Pressable>
     </>
   );
 };

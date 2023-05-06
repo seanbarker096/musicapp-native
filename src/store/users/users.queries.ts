@@ -1,10 +1,10 @@
-import { QueryKey, useQuery } from 'react-query';
-import { getRequest } from 'store/request-builder';
+import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { getRequest, patchRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
 import { transformUserApi } from './user.transformations';
 import { usersKeys } from './users.query-keys';
-import { User, UsersStoreSlice } from './users.types';
+import { User, UserUpdateRequest, UsersStoreSlice } from './users.types';
 
 type UserObjectFields = keyof UsersStoreSlice['ObjectType'];
 
@@ -122,3 +122,44 @@ export function userUsersSearchQuery({
     },
   );
 }
+
+// ------------------------------ Users Update ------------------------------ //
+
+async function userUpdate(
+  { avatarFileUuid }: UserUpdateRequest,
+  userId: number,
+) {
+  const response = await patchRequest<UsersStoreSlice>({
+    url: `users/0.1/users/${userId}`,
+    body: {
+      avatar_file_uuid: avatarFileUuid,
+    },
+  });
+
+  return transformUserApi(response.data.user);
+}
+
+export const useUsersUpdateMutation = ({
+  userId,
+  onSuccess,
+}: {
+  userId: number;
+  onSuccess: (user: User) => void;
+}) => {
+  const queryClient = useQueryClient();
+
+  const onSuccessCallback = async (user: User) => {
+    // Call the onSuccess callback defined in the compoent using the mutation first
+    onSuccess(user);
+
+    // Be specific with invalidation if we can, otherwise invalidate all tags
+    return queryClient.invalidateQueries(usersKeys.usersById([userId]));
+  };
+
+  return useMutation<User, any, UserUpdateRequest>(
+    (request: UserUpdateRequest) => userUpdate(request, userId),
+    {
+      onSuccess: onSuccessCallback,
+    },
+  );
+};

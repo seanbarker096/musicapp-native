@@ -7,7 +7,7 @@ import { AuthState, AuthStatus } from '../store/auth/auth.types';
 import LoggedInAppShell from './app-shell/AppShell';
 import Login from './logged-out-pages/Login';
 import SessionExpired from './logged-out-pages/SessionExpired';
-import SignUp from './logged-out-pages/SignUp';
+import { SignUp } from './logged-out-pages/SignUp';
 import { authenticateUserOnAppStartup } from './services/authService';
 
 const queryClient = new QueryClient();
@@ -18,10 +18,14 @@ export enum LoggedOutPage {
   SESSION_EXPIRED = 'SESSION_EXPIRED',
 }
 
+export type SetLoggedOutPage = React.Dispatch<
+  React.SetStateAction<LoggedOutPage | undefined>
+>;
+
 const App = function () {
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
   // const [sessionExpired, setSessionExpired] = useState<boolean>(sessionExpired);
-  const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage>(
+  const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage | undefined>(
     LoggedOutPage.LOGIN,
   );
 
@@ -45,7 +49,7 @@ const App = function () {
         ></LoggedInAppShell>
       ) : (
         <>
-          {loggedOutPage === LoggedOutPage.LOGIN && (
+          {(!!loggedOutPage || loggedOutPage === LoggedOutPage.LOGIN) && (
             <Login
               setAuthState={setAuthState}
               setLoggedOutPage={setLoggedOutPage}

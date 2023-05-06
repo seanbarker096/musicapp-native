@@ -18,6 +18,11 @@ export interface UsersStoreSlice extends StoreSlice {
     ResultType: UsersGetResultApi;
     ErrorType: {};
   };
+  Patch: {
+    RequestBodyType: UserUpdateRequestApi;
+    ResultType: UserUpdateResultApi;
+    ErrorType: {};
+  };
 }
 
 /**
@@ -67,4 +72,15 @@ export interface UsersGetResultApi {
 export interface UsersSearchRequestApi {
   search_query: string;
   include_profile_image?: boolean;
+}
+
+export interface UserUpdateRequest {
+  avatarFileUuid: string;
+}
+
+export interface UserUpdateRequestApi {
+  avatar_file_uuid: string;
+}
+export interface UserUpdateResultApi {
+  user: UserApi;
 }

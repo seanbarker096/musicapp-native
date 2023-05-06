@@ -27,6 +27,13 @@ export interface StoreSlice {
     ResultType: any;
     ErrorType: any;
   };
+  Patch: {
+    RequestBodyType: {
+      [fieldName: string]: any;
+    };
+    ResultType: any;
+    ErrorType: any;
+  };
 }
 
 export interface GetRequestConfig<S extends StoreSlice> {

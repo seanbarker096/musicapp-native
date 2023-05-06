@@ -1,4 +1,4 @@
-import { LoggedOutPage } from 'app/App';
+import { LoggedOutPage, SetLoggedOutPage } from 'app/App';
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
@@ -139,7 +139,7 @@ export function useReauthenticateUserEffect({
 }: {
   authState: AuthState;
   setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
-  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
+  setLoggedOutPage: SetLoggedOutPage;
 }) {
   // TODO: Optimize to only setAuth state if its changed, otherwise app refreshes entirely every 10 mins
   const onCreateAccessTokenSuccess = (accessToken: string) => {

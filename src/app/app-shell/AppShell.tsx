@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoggedOutPage } from 'app/App';
+import { SetLoggedOutPage } from 'app/App';
 import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
@@ -21,7 +21,7 @@ import { AppShellStackNavigatorParamList } from './appShell.types';
 interface LoggedInAppShellProps {
   authState: AuthState;
   setAuthState: React.Dispatch<React.SetStateAction<AuthState>>;
-  setLoggedOutPage: React.Dispatch<React.SetStateAction<LoggedOutPage>>;
+  setLoggedOutPage: SetLoggedOutPage;
 }
 const LoggedInAppShell: FC<LoggedInAppShellProps> = ({
   authState,
@@ -79,16 +79,16 @@ const LoggedInScreens = () => {
       }}
     >
       <Stack.Screen
+        component={ProfileStackScreen}
+        name={PrimaryScreens.PROFILE}
+      ></Stack.Screen>
+      <Stack.Screen
         name={PrimaryScreens.HOME}
         component={HomeStackScreen}
       ></Stack.Screen>
       <Stack.Screen
         component={SearchStackScreen}
         name={PrimaryScreens.SEARCH}
-      ></Stack.Screen>
-      <Stack.Screen
-        component={ProfileStackScreen}
-        name={PrimaryScreens.PROFILE}
       ></Stack.Screen>
       <Stack.Screen
         component={ManageStackScreen}
