@@ -2,11 +2,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
 import { AppText } from 'components/app-text';
-import { SVGIcon } from 'components/icon';
-import { CameraSVG } from 'components/icon/svg-components';
+import { IconColor, SVGIcon } from 'components/icon';
+import {
+  CameraSVG,
+  UserAvatarBorderedSVG,
+} from 'components/icon/svg-components';
 import * as ImagePicker from 'expo-image-picker';
 import React, { FC, useState } from 'react';
-import { Button, Image } from 'react-native';
+import { Button, Image, StyleSheet, View } from 'react-native';
 import { AuthStatus, AuthUserRole } from 'store/auth/auth.types';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { useUsersUpdateMutation } from 'store/users';
@@ -14,6 +17,9 @@ import { User } from 'store/users/users.types';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_LIGHT,
+  COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_SMALL,
   SPACING_XXSMALL,
 } from 'styles';
 import { SignUpStackParamList } from './SignUpStackScreen';
@@ -27,11 +33,11 @@ interface ProfileImage {
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'UploadProfileImage'>;
 
-const avatarImage = require('./../assets/avatar.png');
+const avatarImage = require('./../../assets/avatar.png');
 
 export const UploadProfileImage: FC<Props> = ({
   route: {
-    params: { userId },
+    params: { userId = 1 },
   },
 }) => {
   const { setAuthState, setLoggedOutPage } = React.useContext(
@@ -129,41 +135,110 @@ export const UploadProfileImage: FC<Props> = ({
   }
 
   return (
-    <>
+    <View style={{ ...styles.flexColumnContainer, height: '100%' }}>
       <AppText>Upload Profile Picture</AppText>
-      <Image
-        style={{ position: 'relative' }}
-        source={
-          selectedImage
-            ? {
-                uri: selectedImage?.imageInfo.uri,
-                height: 150,
-                width: 150,
-              }
-            : avatarImage
-        }
-      ></Image>
-      <SVGIcon
-        styles={{
-          position: 'absolute',
-          right: -SPACING_XXSMALL,
-          bottom: -SPACING_XXSMALL,
+      <View
+        style={{
+          position: 'relative',
         }}
-        handlePress={handleUploadPress}
       >
-        <CameraSVG></CameraSVG>
-      </SVGIcon>
-      <Button
-        color={BUTTON_COLOR_PRIMARY}
-        disabled={!!selectedImage}
-        onPress={() => handleSubmit(selectedImage as ProfileImage)}
-        title="Submit"
-      ></Button>
-      <Button
-        color={BUTTON_COLOR_DISABLED}
-        onPress={handleSkip}
-        title="Skip"
-      ></Button>
-    </>
+        <View
+          style={{
+            backgroundColor: COLOR_NEUTRAL_LIGHT,
+            borderRadius: 50,
+            overflow: 'hidden',
+          }}
+        >
+          {selectedImage ? (
+            <Image
+              source={{
+                uri: selectedImage?.imageInfo.uri,
+                height: 100,
+                width: 100,
+              }}
+            ></Image>
+          ) : (
+            <SVGIcon
+              height={100}
+              width={100}
+            >
+              <UserAvatarBorderedSVG></UserAvatarBorderedSVG>
+            </SVGIcon>
+          )}
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 40 / 2,
+            width: 40,
+            height: 40,
+            backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
+            position: 'absolute',
+            bottom: -SPACING_XXSMALL,
+            right: -SPACING_XXSMALL,
+          }}
+        >
+          <SVGIcon
+            color={IconColor.SECONDARY}
+            handlePress={handleUploadPress}
+          >
+            <CameraSVG></CameraSVG>
+          </SVGIcon>
+        </View>
+      </View>
+      <View
+        style={{
+          ...styles.flexRowContainer,
+          marginTop: 'auto',
+        }}
+      >
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 0,
+            marginRight: SPACING_SMALL,
+          }}
+        >
+          <Button
+            color={BUTTON_COLOR_DISABLED}
+            onPress={handleSkip}
+            title="Skip"
+          ></Button>
+        </View>
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 0,
+          }}
+        >
+          <Button
+            color={BUTTON_COLOR_PRIMARY}
+            disabled={!selectedImage}
+            onPress={() => handleSubmit(selectedImage as ProfileImage)}
+            title="Submit"
+          ></Button>
+        </View>
+      </View>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  flexColumnContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  flexRowContainer: {
+    alignItems: 'flex-start',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  textInput: {},
+});
+  

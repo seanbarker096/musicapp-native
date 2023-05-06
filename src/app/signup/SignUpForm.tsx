@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
-import { AppText } from 'components';
+import { AppText } from 'components/app-text';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import {
@@ -111,8 +111,8 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         )}
       </Formik>
       <Text>Already have an account?</Text>
-      <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}>
-        <AppText>Sign Up</AppText>
+      <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.LOGIN)}>
+        <AppText>Login</AppText>
       </Pressable>
     </>
   );

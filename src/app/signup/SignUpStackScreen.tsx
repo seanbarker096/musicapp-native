@@ -14,14 +14,15 @@ const SignUpStack = createNativeStackNavigator<SignUpStackParamList>();
 
 export const SignUpStackScreen = () => {
   return (
-    <SignUpStack.Navigator>
-      <SignUpStack.Screen
-        name="SignUpForm"
-        component={SignUpForm}
-      ></SignUpStack.Screen>
+    <SignUpStack.Navigator screenOptions={{ headerShown: false }}>
       <SignUpStack.Screen
         name="UploadProfileImage"
         component={UploadProfileImage}
+        initialParams={{ userId: 1 }}
+      ></SignUpStack.Screen>
+      <SignUpStack.Screen
+        name="SignUpForm"
+        component={SignUpForm}
       ></SignUpStack.Screen>
     </SignUpStack.Navigator>
   );
