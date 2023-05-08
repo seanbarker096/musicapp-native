@@ -1,14 +1,17 @@
 import { SignUpFormValues } from 'app/signup/SignUpForm';
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { useContext } from 'react';
 import { useMutation } from 'react-query';
 import { isDefined } from 'utils/utils';
 import axios from '../../axios-instance';
+import { AuthStateContext } from './auth.contexts';
 import {
   loginResultToAuthState,
   signUpResultToAuthState,
 } from './auth.transformations';
 import {
+  AuthStatus,
   LoginFormState,
   LoginMutationResult,
   LoginResultApi,
@@ -132,6 +135,52 @@ export const useSignUpMutation = ({
   };
 
   return useMutation<SignUpMutationResult, unknown, SignUpFormValues>(signUp, {
+    onSuccess: onSuccessCallback,
+  });
+};
+
+// ----------------------------- Logout ----------------------------- //
+
+async function logout() {
+  const refreshToken = await SecureStore.getItemAsync('refresh_token');
+  const accessToken = await SecureStore.getItemAsync('access_token');
+
+  // Shouldn't happen, but if for some reason there is not refresh token when signing out, dont make api call as they are technically already unauthenticated. Our onsucess callback will mark the user as unautenticated
+  if (!isDefined(refreshToken)) {
+    return Promise.resolve();
+  }
+
+  await axios.post<void, AxiosResponse<void>, void>(
+    'http://192.168.1.217:5000/api/auth/0.1/logout/',
+    undefined,
+    {
+      headers: {
+        'Refresh-Token': refreshToken,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  return Promise.resolve();
+}
+
+export const useLogoutMutation = () => {
+  const { authState, setAuthState } = useContext(AuthStateContext);
+
+  const onSuccessCallback = async () => {
+    setAuthState({
+      authUser: authState.authUser,
+      status: AuthStatus.UNAUTHENTICATED,
+    });
+
+    // All tokens are invalidated on backend on logout, so delete them from users device
+    try {
+      await SecureStore.deleteItemAsync('refresh_token');
+      await SecureStore.deleteItemAsync('access_token');
+    } catch (error) {}
+  };
+
+  return useMutation<void, unknown, void>(logout, {
     onSuccess: onSuccessCallback,
   });
 };

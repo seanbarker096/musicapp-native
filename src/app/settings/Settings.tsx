@@ -9,7 +9,7 @@ import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { useContext } from 'react';
 import { Pressable, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { AuthStatus } from 'store/auth/auth.types';
+import { useLogoutMutation } from 'store/auth/auth.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { SPACING_MID, SPACING_SMALL } from 'styles';
 
@@ -19,6 +19,8 @@ const Settings = () => {
 
   const { authState, setAuthState } = useContext(AuthStateContext);
   const { authUser } = authState;
+
+  const { mutate: logout } = useLogoutMutation();
 
   const settingItems = [];
 
@@ -57,17 +59,13 @@ const Settings = () => {
               profileId: performer.id,
             }),
     });
-
-    settingItems.push({
-      text: 'Logout',
-      icon: LogoutSVG,
-      action: () =>
-        setAuthState({
-          authUser: authState.authUser,
-          status: AuthStatus.UNAUTHENTICATED,
-        }),
-    });
   }
+
+  settingItems.push({
+    text: 'Logout',
+    icon: LogoutSVG,
+    action: logout,
+  });
 
   return (
     <>

@@ -27,13 +27,14 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
 
   const profileReady = user;
 
+  console.log('user', user);
   return (
     <>
       {profileReady && (
         <View
           style={{
             ...styles.colContainer,
-            height: '30%',
+            height: '40%',
             width: '100%',
           }}
         >
