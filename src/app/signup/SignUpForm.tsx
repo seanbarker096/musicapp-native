@@ -19,8 +19,6 @@ import { SignUpStackParamList } from './SignUpStackScreen';
 export interface SignUpFormValues {
   email: string;
   username: string;
-  firstName: string;
-  secondName: string;
   password: string;
 }
 
@@ -41,15 +39,11 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
   const handleFormSubmit = async ({
     email,
     username,
-    firstName,
-    secondName,
     password,
   }: SignUpFormValues) => {
     mutatation.mutate({
       email,
       username,
-      firstName,
-      secondName,
       password,
     });
   };
@@ -60,8 +54,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         initialValues={{
           email: '',
           username: '',
-          firstName: '',
-          secondName: '',
           password: '',
         }}
         onSubmit={handleFormSubmit}
@@ -81,20 +73,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
               onBlur={handleBlur('username')}
               value={values.username}
               placeholder="username"
-            />
-            <TextInput
-              style={styles.text}
-              onChangeText={handleChange('firstName')}
-              onBlur={handleBlur('firstName')}
-              value={values.firstName}
-              placeholder="firstName"
-            />
-            <TextInput
-              style={styles.text}
-              onChangeText={handleChange('secondName')}
-              onBlur={handleBlur('secondName')}
-              value={values.secondName}
-              placeholder="secondName"
             />
             <TextInput
               style={styles.text}

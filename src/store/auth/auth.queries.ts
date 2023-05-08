@@ -88,8 +88,6 @@ export const useLoginMutation = () => {
 
 const signUp = async ({
   email,
-  firstName,
-  secondName,
   password,
   username,
 }: SignUpFormValues): Promise<SignUpMutationResult> => {
@@ -99,8 +97,6 @@ const signUp = async ({
     UserCreateRequestApi
   >('http://192.168.1.217:5000/api/auth/0.1/signup/', {
     email,
-    first_name: firstName,
-    second_name: secondName,
     username,
     password,
   });

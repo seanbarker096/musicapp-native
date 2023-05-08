@@ -1,11 +1,15 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { CreateBio } from './CreateBio';
 import { SignUpForm } from './SignUpForm';
 import { UploadProfileImage } from './UploadProfileImage';
 
 export type SignUpStackParamList = {
   SignUpForm: undefined;
   UploadProfileImage: {
+    userId: number;
+  };
+  CreateBio: {
     userId: number;
   };
 };
@@ -22,6 +26,10 @@ export const SignUpStackScreen = () => {
       <SignUpStack.Screen
         name="UploadProfileImage"
         component={UploadProfileImage}
+      ></SignUpStack.Screen>
+      <SignUpStack.Screen
+        name="CreateBio"
+        component={CreateBio}
       ></SignUpStack.Screen>
     </SignUpStack.Navigator>
   );

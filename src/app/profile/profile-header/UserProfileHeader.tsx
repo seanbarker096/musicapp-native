@@ -1,9 +1,8 @@
 import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useUserGetQuery } from 'store/users';
-import { FONT_WEIGHT_BOLD, SPACING_LARGE, SPACING_SMALL } from 'styles';
 
 interface UserProfileHeaderProps {
   userId: number;
@@ -33,7 +32,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
       {profileReady && (
         <View
           style={{
-            ...styles.rowContainer,
+            ...styles.colContainer,
             height: '30%',
             width: '100%',
           }}
@@ -47,22 +46,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
               {user.firstName} {user.secondName}
             </AppText>
             <AppText>@{user.username}</AppText>
-          </View>
-          <View
-            style={{
-              ...styles.rowContainer,
-              flexGrow: 1,
-              justifyContent: 'space-between',
-              marginTop: SPACING_SMALL,
-              paddingLeft: SPACING_LARGE,
-              paddingRight: SPACING_LARGE,
-            }}
-          >
-            <AppText weight={FONT_WEIGHT_BOLD}>20 Posts</AppText>
-            <AppText weight={FONT_WEIGHT_BOLD}>5 Features</AppText>
-            <Pressable>
-              <AppText weight={FONT_WEIGHT_BOLD}>12 Tags</AppText>
-            </Pressable>
+            <AppText>{user.bio}</AppText>
           </View>
         </View>
       )}

@@ -115,9 +115,6 @@ const fileCreate = async function ({
   form.append('file', { uri, name: fileName, type: mimeType });
   form.append('uuid', uuid);
 
-  console.log('file blob', file);
-  console.log('form', form);
-
   const response = await postRequest<FilesStoreSlice>({
     url: 'fileservice/0.1/files/upload_file/',
     body: form,

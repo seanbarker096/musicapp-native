@@ -34,6 +34,7 @@ export interface User {
   firstName: string;
   secondName: string;
   fullName: string;
+  bio?: string;
   createTime: number;
   isDeleted: boolean;
   email: string;
@@ -50,6 +51,7 @@ export interface UserApi {
   first_name: string;
   second_name: string;
   full_name: string;
+  bio?: string;
   create_time: number;
   is_deleted: boolean;
   email: string;
@@ -75,11 +77,17 @@ export interface UsersSearchRequestApi {
 }
 
 export interface UserUpdateRequest {
-  avatarFileUuid: string;
+  avatarFileUuid?: string;
+  bio?: string;
+  firstName?: string;
+  secondName?: string;
 }
 
 export interface UserUpdateRequestApi {
-  avatar_file_uuid: string;
+  avatar_file_uuid?: string;
+  bio?: string;
+  first_name?: string;
+  second_name?: string;
 }
 export interface UserUpdateResultApi {
   user: UserApi;

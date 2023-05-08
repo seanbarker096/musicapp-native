@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    width: '100%',
   },
   headerContainer: {
     alignItems: 'center',

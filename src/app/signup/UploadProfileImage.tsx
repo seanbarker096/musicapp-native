@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
@@ -8,12 +7,12 @@ import {
   UserAvatarBorderedSVG,
 } from 'components/icon/svg-components';
 import * as ImagePicker from 'expo-image-picker';
+import { Formik } from 'formik';
 import React, { FC, useState } from 'react';
-import { Button, Image, StyleSheet, View } from 'react-native';
-import { AuthStatus, AuthUserRole } from 'store/auth/auth.types';
+import { Button, Image, StyleSheet, TextInput, View } from 'react-native';
 import { useFileCreateMutation } from 'store/files/files.queries';
+import { File } from 'store/files/files.types';
 import { useUsersUpdateMutation } from 'store/users';
-import { User } from 'store/users/users.types';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
@@ -33,11 +32,11 @@ interface ProfileImage {
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'UploadProfileImage'>;
 
-
 export const UploadProfileImage: FC<Props> = ({
   route: {
     params: { userId },
   },
+  navigation: { navigate },
 }) => {
   const { setAuthState, setLoggedOutPage } = React.useContext(
     SignUpPageStateSettersContext,
@@ -53,22 +52,17 @@ export const UploadProfileImage: FC<Props> = ({
     isError: createFileError,
   } = useFileCreateMutation();
 
+  const navigateToCreateBio = (userId: number) => {
+    navigate('CreateBio', { userId: userId });
+  };
+
   const {
     mutate,
     isLoading: updateUserLoading,
     error: updateUserError,
   } = useUsersUpdateMutation({
     userId,
-    onSuccess: (user: User) => {
-      // Set auth state to logged in once we set the users profile picture
-      setAuthState({
-        status: AuthStatus.AUTHENTICATED,
-        authUser: {
-          userId: user.id,
-          role: AuthUserRole.USER,
-        },
-      });
-    },
+    onSuccess: () => navigateToCreateBio(userId),
   });
 
   async function handleUploadPress() {
@@ -100,37 +94,40 @@ export const UploadProfileImage: FC<Props> = ({
     }
   }
 
-  async function handleSubmit(selectedImage: ProfileImage) {
+  async function handleSubmit({
+    firstName,
+    secondName,
+  }: {
+    firstName: string;
+    secondName: string;
+  }) {
     // Upload file to file service
-    const fileResult = await createFile({
-      fileName: selectedImage.fileName,
-      file: selectedImage.blob,
-      mimeType: selectedImage.mimeType,
-      uri: selectedImage.imageInfo.uri,
-    });
+    let avatarImageFile: File | undefined = undefined;
 
-    if (!fileResult) {
-      throw Error('create file request failed');
+    if (selectedImage) {
+      const fileResult = await createFile({
+        fileName: selectedImage.fileName,
+        file: selectedImage.blob,
+        mimeType: selectedImage.mimeType,
+        uri: selectedImage.imageInfo.uri,
+      });
+
+      if (!fileResult) {
+        throw Error('create file request failed');
+      }
+      // Get file uuid and update the users avatar_file_uuid property
+      avatarImageFile = fileResult.file;
     }
-    // Get file uuid and update the users avatar_file_uuid property
-    const avatarImageFile = fileResult.file;
 
     mutate({
-      avatarFileUuid: avatarImageFile.uuid,
+      avatarFileUuid: avatarImageFile?.uuid,
+      firstName,
+      secondName,
     });
   }
 
   function handleSkip() {
-    // Set auth state to logged in provided user was created successfully in main sign up screen
-    setAuthState({
-      status: AuthStatus.AUTHENTICATED,
-      authUser: {
-        userId,
-        role: AuthUserRole.USER,
-      },
-    });
-
-    setLoggedOutPage(LoggedOutPage.LOGIN);
+    navigateToCreateBio(userId);
   }
 
   return (
@@ -188,39 +185,67 @@ export const UploadProfileImage: FC<Props> = ({
           </SVGIcon>
         </View>
       </View>
-      <View
-        style={{
-          ...styles.flexRowContainer,
-          marginTop: 'auto',
+      <Formik
+        initialValues={{
+          firstName: '',
+          secondName: '',
         }}
+        onSubmit={handleSubmit}
       >
-        <View
-          style={{
-            flexGrow: 1,
-            flexShrink: 0,
-            marginRight: SPACING_SMALL,
-          }}
-        >
-          <Button
-            color={BUTTON_COLOR_DISABLED}
-            onPress={handleSkip}
-            title="Skip"
-          ></Button>
-        </View>
-        <View
-          style={{
-            flexGrow: 1,
-            flexShrink: 0,
-          }}
-        >
-          <Button
-            color={BUTTON_COLOR_PRIMARY}
-            disabled={!selectedImage}
-            onPress={() => handleSubmit(selectedImage as ProfileImage)}
-            title="Submit"
-          ></Button>
-        </View>
-      </View>
+        {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <>
+            <View>
+              <TextInput
+                style={styles.text}
+                onChangeText={handleChange('firstName')}
+                onBlur={handleBlur('firstName')}
+                value={values.firstName}
+                placeholder="firstName"
+              />
+              <TextInput
+                style={styles.text}
+                onChangeText={handleChange('secondName')}
+                onBlur={handleBlur('secondName')}
+                value={values.secondName}
+                placeholder="secondName"
+              />
+            </View>
+            <View
+              style={{
+                ...styles.flexRowContainer,
+                marginTop: 'auto',
+              }}
+            >
+              <View
+                style={{
+                  flexGrow: 1,
+                  flexShrink: 0,
+                  marginRight: SPACING_SMALL,
+                }}
+              >
+                <Button
+                  color={BUTTON_COLOR_DISABLED}
+                  onPress={handleSkip}
+                  title="Skip"
+                ></Button>
+              </View>
+              <View
+                style={{
+                  flexGrow: 1,
+                  flexShrink: 0,
+                }}
+              >
+                <Button
+                  color={BUTTON_COLOR_PRIMARY}
+                  disabled={!selectedImage}
+                  onPress={handleSubmit}
+                  title="Submit"
+                ></Button>
+              </View>
+            </View>
+          </>
+        )}
+      </Formik>
     </View>
   );
 };
@@ -239,5 +264,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   textInput: {},
+  text: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
 });
-  

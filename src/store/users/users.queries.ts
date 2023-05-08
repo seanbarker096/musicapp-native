@@ -126,13 +126,16 @@ export function userUsersSearchQuery({
 // ------------------------------ Users Update ------------------------------ //
 
 async function userUpdate(
-  { avatarFileUuid }: UserUpdateRequest,
+  { avatarFileUuid, firstName, secondName, bio }: UserUpdateRequest,
   userId: number,
 ) {
   const response = await patchRequest<UsersStoreSlice>({
     url: `users/0.1/users/${userId}`,
     body: {
       avatar_file_uuid: avatarFileUuid,
+      first_name: firstName,
+      second_name: secondName,
+      bio,
     },
   });
 

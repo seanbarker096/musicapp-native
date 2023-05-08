@@ -59,8 +59,6 @@ export interface SignUpResultApi {
 export interface UserCreateRequestApi {
   username: string;
   password: string;
-  first_name: string;
-  second_name: string;
   email: string;
 }
 
