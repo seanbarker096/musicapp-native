@@ -3,8 +3,9 @@ import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import { useMutation } from 'react-query';
+import { ApiError } from 'store/backend-errors.types';
 import { isDefined } from 'utils/utils';
-import axios from '../../axios-instance';
+import axios, { transformAxiosError } from '../../axios-instance';
 import { AuthStateContext } from './auth.contexts';
 import {
   loginResultToAuthState,
@@ -12,8 +13,8 @@ import {
 } from './auth.transformations';
 import {
   AuthStatus,
-  LoginFormState,
   LoginMutationResult,
+  LoginRequest,
   LoginResultApi,
   SignUpMutationResult,
   SignUpResultApi,
@@ -50,40 +51,50 @@ import {
 const login = async ({
   username,
   password,
-}: LoginFormState): Promise<LoginMutationResult> => {
-  const response = await axios.post<LoginResultApi>(
-    'http://192.168.1.217:5000/api/auth/0.1/login/',
-    {
-      username,
-      password,
-    },
-  );
+  email,
+}: LoginRequest): Promise<LoginMutationResult> => {
+  try {
+    const response = await axios.post<LoginResultApi>(
+      'http://192.168.1.217:5000/api/auth/0.1/login/',
+      {
+        username,
+        password,
+        email,
+      },
+    );
+    const authState = loginResultToAuthState(response.data);
 
-  const authState = loginResultToAuthState(response.data);
+    const apiKey = response.headers['x-appifr'];
 
-  const apiKey = response.headers['x-appifr'];
+    if (isDefined(apiKey)) {
+      await SecureStore.setItemAsync('appifr', apiKey);
+    }
 
-  if (isDefined(apiKey)) {
-    await SecureStore.setItemAsync('appifr', apiKey);
+    return {
+      authState,
+      refreshToken: response.data['refresh_token'] ?? undefined,
+      accessToken: response.data['access_token'] ?? undefined,
+    };
+  } catch (e: any) {
+    return Promise.reject(transformAxiosError<'login'>(e));
   }
-
-  return {
-    authState,
-    refreshToken: response.data['refresh_token'] ?? undefined,
-    accessToken: response.data['access_token'] ?? undefined,
-  };
 };
 
-export const useLoginMutation = () => {
-  const onSuccessCallback = async ({
-    refreshToken,
-    accessToken,
-  }: LoginMutationResult) => {
+export const useLoginMutation = ({
+  onSuccess,
+}: {
+  onSuccess: (result: LoginMutationResult) => void;
+}) => {
+  const onSuccessCallback = async (result: LoginMutationResult) => {
+    const { refreshToken, accessToken } = result;
+
     await SecureStore.setItemAsync('refresh_token', refreshToken);
     await SecureStore.setItemAsync('access_token', accessToken);
+
+    return onSuccess(result);
   };
 
-  return useMutation<LoginMutationResult, any, LoginFormState>(
+  return useMutation<LoginMutationResult, ApiError<'login'>, LoginRequest>(
     request => login(request),
     { onSuccess: onSuccessCallback },
   );

@@ -24,16 +24,9 @@ export type SetLoggedOutPage = React.Dispatch<
 
 const App = function () {
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
-  // const [sessionExpired, setSessionExpired] = useState<boolean>(sessionExpired);
   const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage | undefined>(
     LoggedOutPage.LOGIN,
   );
-
-  // try {
-  //   console.log('CLEARING SECURE STORAGE FOR DEV PURPOSES');
-  //   SecureStore.deleteItemAsync('refresh_token');
-  //   SecureStore.deleteItemAsync('access_token');
-  // } catch (e) {}
 
   authenticateUserOnAppStartup(setAuthState);
 

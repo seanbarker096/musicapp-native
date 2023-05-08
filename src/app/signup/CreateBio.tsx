@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
@@ -49,7 +48,7 @@ export const CreateBio: FC<Props> = ({
       },
     });
 
-    setLoggedOutPage(LoggedOutPage.LOGIN);
+    setLoggedOutPage(undefined);
   }
 
   return (
@@ -66,7 +65,8 @@ export const CreateBio: FC<Props> = ({
             onChangeText={handleChange('bio')}
             onBlur={handleBlur('bio')}
             value={values.bio}
-            placeholder="bio"
+            // TODO: Make multiline and include emojis
+            placeholder="e.g. London, United Kingdom."
           />
 
           <View

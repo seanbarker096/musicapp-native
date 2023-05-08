@@ -2,18 +2,23 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
 import { AppText } from 'components/app-text';
-import { Formik } from 'formik';
-import React, { FC } from 'react';
 import {
-  Button,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+  AppTextInput,
+  emailValidator,
+  passwordValidator,
+  usernameValidator,
+} from 'components/form-components';
+import { useFormik } from 'formik';
+import React, { FC } from 'react';
+import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSignUpMutation } from 'store/auth/auth.queries';
 import { SignUpMutationResult } from 'store/auth/auth.types';
+import {
+  BUTTON_COLOR_DISABLED,
+  BUTTON_COLOR_PRIMARY,
+  SPACING_XSMALL,
+} from 'styles';
+import * as Yup from 'yup';
 import { SignUpStackParamList } from './SignUpStackScreen';
 
 export interface SignUpFormValues {
@@ -23,6 +28,12 @@ export interface SignUpFormValues {
 }
 
 type SignUpProps = NativeStackScreenProps<SignUpStackParamList, 'SignUpForm'>;
+
+const signupFormSchema = Yup.object({
+  email: emailValidator,
+  username: usernameValidator,
+  password: passwordValidator,
+});
 
 export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
   const { setLoggedOutPage } = React.useContext(SignUpPageStateSettersContext);
@@ -48,46 +59,63 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     });
   };
 
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    dirty,
+  } = useFormik({
+    validationSchema: signupFormSchema,
+    initialValues: { username: '', password: '', email: '' },
+    onSubmit: handleFormSubmit,
+  });
+
+  const buttonDisabled = isSubmitting || !isValid || !dirty;
+
   return (
     <>
-      <Formik
-        initialValues={{
-          email: '',
-          username: '',
-          password: '',
-        }}
-        onSubmit={handleFormSubmit}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
-            <TextInput
-              style={styles.text}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              placeholder="email"
-            />
-            <TextInput
-              style={styles.text}
-              onChangeText={handleChange('username')}
-              onBlur={handleBlur('username')}
-              value={values.username}
-              placeholder="username"
-            />
-            <TextInput
-              style={styles.text}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-              placeholder="password"
-            />
-            <Button
-              onPress={handleSubmit}
-              title="Sign Up"
-            />
-          </View>
-        )}
-      </Formik>
+      <View style={{ margin: 10 }}>
+        <AppTextInput
+          handleChange={handleChange('email')}
+          handleBlur={handleBlur('email')}
+          value={values.email}
+          placeholder="Email address"
+          error={errors.email}
+          touched={touched.email}
+          marginBottom={SPACING_XSMALL}
+        />
+        <AppTextInput
+          handleChange={handleChange('username')}
+          handleBlur={handleBlur('username')}
+          value={values.username}
+          placeholder="Username"
+          error={errors.username}
+          touched={touched.username}
+          marginBottom={SPACING_XSMALL}
+        />
+        <AppTextInput
+          handleChange={handleChange('password')}
+          handleBlur={handleBlur('password')}
+          value={values.password}
+          placeholder="Password"
+          error={errors.password}
+          touched={touched.password}
+          secureTextEntry={true}
+          marginBottom={SPACING_XSMALL}
+        />
+        <Button
+          color={!buttonDisabled ? BUTTON_COLOR_PRIMARY : BUTTON_COLOR_DISABLED}
+          disabled={isSubmitting || !isValid}
+          onPress={handleSubmit}
+          title="Sign Up"
+        />
+      </View>
+
       <Text>Already have an account?</Text>
       <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.LOGIN)}>
         <AppText>Login</AppText>

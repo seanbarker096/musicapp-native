@@ -1,5 +1,8 @@
 import { RawAxiosRequestHeaders } from 'axios';
 
+
+export type RequestTypes = 'Get' | 'Post' | 'Search' | 'Delete' | 'Patch';
+
 export interface StoreSlice {
   Name: string;
   ObjectType: { [property: string]: any };

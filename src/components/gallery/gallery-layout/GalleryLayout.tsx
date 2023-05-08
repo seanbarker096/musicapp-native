@@ -19,7 +19,6 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
   posts,
   galleryItemFooter,
 }) => {
-  console.log(galleryItemFooter);
   return (
     <Grid gridPadding={styles.gridPadding}>
       {posts.map(post => (

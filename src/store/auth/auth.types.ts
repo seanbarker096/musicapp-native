@@ -77,3 +77,9 @@ export interface SignUpMutationResult {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface LoginRequest {
+  username?: string;
+  password: string;
+  email?: string;
+}
