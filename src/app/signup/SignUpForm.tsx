@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import {
   AppTextInput,
@@ -10,14 +11,10 @@ import {
 } from 'components/form-components';
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSignUpMutation } from 'store/auth/auth.queries';
 import { SignUpMutationResult } from 'store/auth/auth.types';
-import {
-  BUTTON_COLOR_DISABLED,
-  BUTTON_COLOR_PRIMARY,
-  SPACING_XSMALL,
-} from 'styles';
+import { BUTTON_COLOR_PRIMARY, SPACING_XSMALL } from 'styles';
 import * as Yup from 'yup';
 import { SignUpStackParamList } from './SignUpStackScreen';
 
@@ -108,18 +105,24 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           secureTextEntry={true}
           marginBottom={SPACING_XSMALL}
         />
-        <Button
-          color={!buttonDisabled ? BUTTON_COLOR_PRIMARY : BUTTON_COLOR_DISABLED}
-          disabled={isSubmitting || !isValid}
+        <AppButton
+          color={BUTTON_COLOR_PRIMARY}
+          disabled={buttonDisabled}
+          text={'Sign Up'}
           onPress={handleSubmit}
-          title="Sign Up"
-        />
-      </View>
+          marginBottom={SPACING_XSMALL}
+        ></AppButton>
+        <View style={{ flexDirection: 'row' }}>
+          <Text>Already have an account? </Text>
 
-      <Text>Already have an account?</Text>
-      <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.LOGIN)}>
-        <AppText>Login</AppText>
-      </Pressable>
+          <AppText
+            isLink={true}
+            handlePress={() => setLoggedOutPage(LoggedOutPage.LOGIN)}
+          >
+            Login
+          </AppText>
+        </View>
+      </View>
     </>
   );
 };

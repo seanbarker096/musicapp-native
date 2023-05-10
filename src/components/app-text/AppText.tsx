@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { COLOR_XXXXDARK } from 'styles';
+import { COLOR_LINK, COLOR_XXXXDARK } from 'styles';
 import { textSizeMap, textWeightMap } from './AppText.styles';
 import { TextSize, TextWeight } from './AppText.types';
 
@@ -13,6 +13,8 @@ interface AppTextProps {
   marginTop?: string | number;
   marginBottom?: string | number;
   textColor?: string;
+  isLink?: boolean;
+  handlePress?: () => void;
 }
 
 export const AppText: FC<AppTextProps> = ({
@@ -20,6 +22,8 @@ export const AppText: FC<AppTextProps> = ({
   weight = 'normal',
   textColor = COLOR_XXXXDARK,
   children,
+  isLink = false,
+  handlePress = () => {},
   ...margins
 }) => {
   const styles = StyleSheet.create({
@@ -31,7 +35,22 @@ export const AppText: FC<AppTextProps> = ({
 
   return (
     <View style={{ ...margins }}>
-      <Text style={{ ...styles.text, color: textColor }}>{children}</Text>
+      <Text
+        onPress={isLink ? handlePress : () => {}}
+        style={{
+          ...styles.text,
+          color: textColor,
+          ...(isLink ? baseStyles.link : {}),
+        }}
+      >
+        {children}
+      </Text>
     </View>
   );
 };
+
+const baseStyles = StyleSheet.create({
+  link: {
+    color: COLOR_LINK,
+  },
+});

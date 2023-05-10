@@ -1,3 +1,6 @@
+export const COLOR_PRIMARY_XXLIGHT = '#FFF8E1';
+export const COLOR_PRIMARY_XLIGHT = '#FFECB3';
+export const COLOR_PRIMARY_LIGHT = '#FFE082';
 export const COLOR_PRIMARY = '#FFDA6D';
 export const COLOR_PRIMARY_DARK = '#D9A303';
 

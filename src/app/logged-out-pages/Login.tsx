@@ -1,10 +1,11 @@
 import { LoggedOutPage } from 'app/App';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 import { BUTTON_COLOR_PRIMARY, SPACING_XSMALL } from 'styles';
@@ -17,6 +18,8 @@ type LoginProps = {
   >;
 };
 
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
 const loginFormSchema = Yup.object({
   usernameOrEmail: Yup.string()
     .required('Required')
@@ -27,7 +30,7 @@ const loginFormSchema = Yup.object({
         if (!value) {
           return false;
         }
-        const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
         const usernameRegex = /^[a-zA-Z0-9._-]{6,30}$/;
 
         return emailRegex.test(value) || usernameRegex.test(value);
@@ -53,9 +56,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     usernameOrEmail,
     password,
   }: LoginFormValues) => {
-    const emailEntered = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-      usernameOrEmail,
-    );
+    const emailEntered = emailRegex.test(usernameOrEmail);
 
     const email = emailEntered ? usernameOrEmail : undefined;
     const username = emailEntered ? undefined : usernameOrEmail;
@@ -102,17 +103,24 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           touched={touched.password}
           marginBottom={SPACING_XSMALL}
         />
-        <Button
+        <AppButton
           color={BUTTON_COLOR_PRIMARY}
           disabled={buttonDisabled}
-          title="Login"
-        ></Button>
-      </View>
+          text={'Login'}
+          onPress={handleSubmit}
+          marginBottom={SPACING_XSMALL}
+        ></AppButton>
+        <View style={{ flexDirection: 'row' }}>
+          <Text>Don't have an account? </Text>
 
-      <Text>Don't have an account?</Text>
-      <Pressable onPress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}>
-        <AppText>Sign Up</AppText>
-      </Pressable>
+          <AppText
+            isLink={true}
+            handlePress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}
+          >
+            Sign Up
+          </AppText>
+        </View>
+      </View>
     </>
   );
 };
