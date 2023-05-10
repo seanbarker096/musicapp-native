@@ -1,5 +1,6 @@
 import { LoggedOutPage } from 'app/App';
 import { AppButton } from 'components/app-button';
+import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 
@@ -8,7 +9,7 @@ import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
-import { BUTTON_COLOR_PRIMARY, SPACING_XSMALL } from 'styles';
+import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
 import * as Yup from 'yup';
 
 type LoginProps = {
@@ -52,10 +53,29 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     },
   });
 
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+
+  let errorMessage;
+
+  switch (error?.error_code) {
+    case 'USER_NOT_FOUND':
+      errorMessage = "We couldn't find your account!";
+      break;
+    case 'UNAUTHORIZED':
+      errorMessage = 'Incorrect password!';
+      break;
+    case 'UNKNOWN_ERROR':
+      errorMessage = 'Unknown error';
+    default:
+      errorMessage = undefined;
+  }
+
   const handleFormSubmit = async ({
     usernameOrEmail,
     password,
   }: LoginFormValues) => {
+    setShowErrorMessage(true);
+
     const emailEntered = emailRegex.test(usernameOrEmail);
 
     const email = emailEntered ? usernameOrEmail : undefined;
@@ -80,14 +100,33 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     onSubmit: handleFormSubmit,
   });
 
+  const handlePasswordChange = handleChange('password');
+  const handlePasswordBlur = handleBlur('password');
+
+  const handleUsernameOrEmailChange = handleChange('usernameOrEmail');
+  const handleUsernameOrEmailBlur = handleBlur('usernameOrEmail');
+
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
   return (
     <>
-      <View style={{ margin: 10 }}>
+      <View
+        style={{
+          margin: 10,
+          paddingTop: '35%',
+          paddingBottom: SPACING_LARGE,
+          height: '100%',
+        }}
+      >
         <AppTextInput
-          handleChange={handleChange('usernameOrEmail')}
-          handleBlur={handleBlur('usernameOrEmail')}
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            setShowErrorMessage(false);
+            handleUsernameOrEmailChange(e);
+          }}
+          handleBlur={(e: any) => {
+            setShowErrorMessage(false);
+            handleUsernameOrEmailBlur(e);
+          }}
           value={values.usernameOrEmail}
           placeholder="Username or email address"
           error={errors.usernameOrEmail}
@@ -95,19 +134,31 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           marginBottom={SPACING_XSMALL}
         />
         <AppTextInput
-          handleChange={handleChange('password')}
-          handleBlur={handleBlur('password')}
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            setShowErrorMessage(false);
+            handlePasswordChange(e);
+          }}
+          handleBlur={(e: any) => {
+            setShowErrorMessage(false);
+            handlePasswordBlur(e);
+          }}
           value={values.password}
           placeholder="Password"
           error={errors.password}
           touched={touched.password}
-          marginBottom={SPACING_XSMALL}
+          marginBottom={errorMessage ? SPACING_XSMALL : 'auto'}
         />
+        {showErrorMessage && errorMessage && (
+          <AppError
+            message={errorMessage}
+            marginBottom={SPACING_XSMALL}
+          ></AppError>
+        )}
         <AppButton
           color={BUTTON_COLOR_PRIMARY}
           disabled={buttonDisabled}
-          text={'Login'}
-          onPress={handleSubmit}
+          text="Login"
+          handlePress={handleSubmit}
           marginBottom={SPACING_XSMALL}
         ></AppButton>
         <View style={{ flexDirection: 'row' }}>
