@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/App';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
 import { AppButton } from 'components/app-button';
+import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import {
   AppTextInput,
@@ -14,7 +15,7 @@ import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSignUpMutation } from 'store/auth/auth.queries';
 import { SignUpMutationResult } from 'store/auth/auth.types';
-import { BUTTON_COLOR_PRIMARY, SPACING_XSMALL } from 'styles';
+import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
 import * as Yup from 'yup';
 import { SignUpStackParamList } from './SignUpStackScreen';
 
@@ -39,22 +40,41 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     navigate('UploadProfileImage', { userId: userId });
   };
 
-  const mutatation = useSignUpMutation({
+  const { mutate, error } = useSignUpMutation({
     onSuccess: ({ authState }: SignUpMutationResult) =>
       navigateToUploadProfileImage(authState.authUser.userId),
   });
+
+  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+
+  let errorMessage;
+
+  switch (error?.error_code) {
+    case 'USER_ALREADY_EXISTS':
+      errorMessage = 'An account with this email or username already exists';
+      break;
+    case 'UNKNOWN_ERROR':
+      errorMessage = 'Unknown error';
+      break;
+    default:
+      errorMessage = undefined;
+  }
 
   const handleFormSubmit = async ({
     email,
     username,
     password,
   }: SignUpFormValues) => {
-    mutatation.mutate({
+    console.log('handleFormSubmit');
+    setShowErrorMessage(true);
+    mutate({
       email,
       username,
       password,
     });
   };
+
+  console.log(errorMessage);
 
   const {
     handleChange,
@@ -72,14 +92,41 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     onSubmit: handleFormSubmit,
   });
 
+  const handleUsernameBlur = handleBlur('username');
+  const handlePasswordBlur = handleBlur('password');
+  const handleEmailBlur = handleBlur('email');
+
+  const handleUsernameChange = handleChange('username');
+  const handlePasswordChange = handleChange('password');
+  const handleEmailChange = handleChange('email');
+
   const buttonDisabled = isSubmitting || !isValid || !dirty;
+
+  function setShowError(show: boolean) {
+    if (showErrorMessage !== show) {
+      setShowErrorMessage(show);
+    }
+  }
 
   return (
     <>
-      <View style={{ margin: 10 }}>
+      <View
+        style={{
+          margin: 10,
+          paddingTop: '35%',
+          paddingBottom: SPACING_LARGE,
+          height: '100%',
+        }}
+      >
         <AppTextInput
-          handleChange={handleChange('email')}
-          handleBlur={handleBlur('email')}
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            setShowError(false);
+            handleEmailChange(e);
+          }}
+          handleBlur={(e: any) => {
+            setShowError(false);
+            handleEmailBlur(e);
+          }}
           value={values.email}
           placeholder="Email address"
           error={errors.email}
@@ -87,8 +134,14 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           marginBottom={SPACING_XSMALL}
         />
         <AppTextInput
-          handleChange={handleChange('username')}
-          handleBlur={handleBlur('username')}
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            setShowError(false);
+            handleUsernameChange(e);
+          }}
+          handleBlur={(e: any) => {
+            setShowError(false);
+            handleUsernameBlur(e);
+          }}
           value={values.username}
           placeholder="Username"
           error={errors.username}
@@ -96,8 +149,14 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           marginBottom={SPACING_XSMALL}
         />
         <AppTextInput
-          handleChange={handleChange('password')}
-          handleBlur={handleBlur('password')}
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            setShowError(false);
+            handlePasswordChange(e);
+          }}
+          handleBlur={(e: any) => {
+            setShowError(false);
+            handlePasswordBlur(e);
+          }}
           value={values.password}
           placeholder="Password"
           error={errors.password}
@@ -105,13 +164,20 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           secureTextEntry={true}
           marginBottom={SPACING_XSMALL}
         />
+        {showErrorMessage && errorMessage && (
+          <AppError
+            message={errorMessage}
+            marginBottom={SPACING_XSMALL}
+          ></AppError>
+        )}
         <AppButton
           color={BUTTON_COLOR_PRIMARY}
           disabled={buttonDisabled}
           text={'Sign Up'}
-          onPress={handleSubmit}
+          handlePress={handleSubmit}
           marginBottom={SPACING_XSMALL}
         ></AppButton>
+
         <View style={{ flexDirection: 'row' }}>
           <Text>Already have an account? </Text>
 

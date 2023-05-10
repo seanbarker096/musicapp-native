@@ -1,5 +1,6 @@
 export interface ErrorCodes {
   login: 'USER_NOT_FOUND' | 'UNAUTHORIZED';
+  signup: 'USER_ALREADY_EXISTS';
 }
 
 export interface ApiError<T extends keyof ErrorCodes = any> {

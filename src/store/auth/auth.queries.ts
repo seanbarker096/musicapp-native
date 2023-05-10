@@ -105,29 +105,33 @@ const signUp = async ({
   password,
   username,
 }: SignUpFormValues): Promise<SignUpMutationResult> => {
-  const response = await axios.post<
-    SignUpResultApi,
-    AxiosResponse<SignUpResultApi>,
-    UserCreateRequestApi
-  >('http://192.168.1.217:5000/api/auth/0.1/signup/', {
-    email,
-    username,
-    password,
-  });
+  try {
+    const response = await axios.post<
+      SignUpResultApi,
+      AxiosResponse<SignUpResultApi>,
+      UserCreateRequestApi
+    >('http://192.168.1.217:5000/api/auth/0.1/signup/', {
+      email,
+      username,
+      password,
+    });
 
-  const authState = signUpResultToAuthState(response.data);
+    const authState = signUpResultToAuthState(response.data);
 
-  const apiKey = response.headers['x-appifr'];
+    const apiKey = response.headers['x-appifr'];
 
-  if (isDefined(apiKey)) {
-    await SecureStore.setItemAsync('appifr', apiKey);
+    if (isDefined(apiKey)) {
+      await SecureStore.setItemAsync('appifr', apiKey);
+    }
+
+    return {
+      authState,
+      refreshToken: response.data['refresh_token'] ?? undefined,
+      accessToken: response.data['access_token'] ?? undefined,
+    };
+  } catch (e: any) {
+    return Promise.reject(transformAxiosError<'signup'>(e));
   }
-
-  return {
-    authState,
-    refreshToken: response.data['refresh_token'] ?? undefined,
-    accessToken: response.data['access_token'] ?? undefined,
-  };
 };
 
 // TODO: Pass in reuqest valuse to signup
@@ -145,7 +149,11 @@ export const useSignUpMutation = ({
     await SecureStore.setItemAsync('access_token', accessToken);
   };
 
-  return useMutation<SignUpMutationResult, unknown, SignUpFormValues>(signUp, {
+  return useMutation<
+    SignUpMutationResult,
+    ApiError<'signup'>,
+    SignUpFormValues
+  >(signUp, {
     onSuccess: onSuccessCallback,
   });
 };

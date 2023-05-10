@@ -12,7 +12,7 @@ export const passwordValidator = Yup.string()
   .required('Required')
   .min(8, 'Must be at least 8 characters')
   .matches(
-    /^(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.[a-zA-Z]).*$/,
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
     'Password must contain at least one uppercase letter, one lowercase letter, and one number',
   );
 
