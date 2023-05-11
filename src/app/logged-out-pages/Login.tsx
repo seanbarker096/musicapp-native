@@ -1,4 +1,4 @@
-import { LoggedOutPage } from 'app/App';
+import { LoggedOutPage } from 'app/app-types';
 import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
@@ -32,7 +32,7 @@ const loginFormSchema = Yup.object({
           return false;
         }
 
-        const usernameRegex = /^[a-zA-Z0-9._-]{6,30}$/;
+        const usernameRegex = /^[a-zA-Z0-9._-]{2,30}$/;
 
         return emailRegex.test(value) || usernameRegex.test(value);
       },
@@ -188,4 +188,3 @@ const styles = StyleSheet.create({
   },
 });
 export default Login;
-

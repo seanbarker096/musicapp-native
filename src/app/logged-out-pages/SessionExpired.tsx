@@ -1,4 +1,4 @@
-import { LoggedOutPage, SetLoggedOutPage } from 'app/App';
+import { LoggedOutPage, SetLoggedOutPage } from 'app/app-types';
 import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { Button, StyleSheet, View } from 'react-native';

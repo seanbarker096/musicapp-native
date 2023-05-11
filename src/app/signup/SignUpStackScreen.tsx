@@ -3,16 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CreateBio } from './CreateBio';
 import { SignUpForm } from './SignUpForm';
 import { UploadProfileImage } from './UploadProfileImage';
+import { SignUpStackParamList } from './sign-up.types';
 
-export type SignUpStackParamList = {
-  SignUpForm: undefined;
-  UploadProfileImage: {
-    userId: number;
-  };
-  CreateBio: {
-    userId: number;
-  };
-};
+
 
 const SignUpStack = createNativeStackNavigator<SignUpStackParamList>();
 

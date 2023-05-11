@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { SetLoggedOutPage } from 'app/App';
+import { SetLoggedOutPage } from 'app/app-types';
 import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';

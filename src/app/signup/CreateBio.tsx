@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
+import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
@@ -10,7 +10,7 @@ import {
   BUTTON_COLOR_PRIMARY,
   SPACING_SMALL,
 } from 'styles';
-import { SignUpStackParamList } from './SignUpStackScreen';
+import { SignUpStackParamList } from './sign-up.types';
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'CreateBio'>;
 

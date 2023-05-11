@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { LoggedOutPage } from 'app/App';
-import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
+import { LoggedOutPage } from 'app/app-types';
+import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
@@ -17,7 +17,7 @@ import { useSignUpMutation } from 'store/auth/auth.queries';
 import { SignUpMutationResult } from 'store/auth/auth.types';
 import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
 import * as Yup from 'yup';
-import { SignUpStackParamList } from './SignUpStackScreen';
+import { SignUpStackParamList } from './sign-up.types';
 
 export interface SignUpFormValues {
   email: string;
@@ -65,7 +65,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     username,
     password,
   }: SignUpFormValues) => {
-    console.log('handleFormSubmit');
     setShowErrorMessage(true);
     mutate({
       email,

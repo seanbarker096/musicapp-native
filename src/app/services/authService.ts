@@ -1,4 +1,4 @@
-import { LoggedOutPage, SetLoggedOutPage } from 'app/App';
+import { LoggedOutPage, SetLoggedOutPage } from 'app/app-types';
 import { AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';

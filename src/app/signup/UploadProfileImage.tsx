@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SignUpPageStateSettersContext } from 'app/logged-out-pages/SignUp';
+import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
@@ -21,7 +21,7 @@ import {
   SPACING_SMALL,
   SPACING_XXSMALL,
 } from 'styles';
-import { SignUpStackParamList } from './SignUpStackScreen';
+import { SignUpStackParamList } from './sign-up.types';
 
 interface ProfileImage {
   imageInfo: ImagePicker.ImageInfo;
