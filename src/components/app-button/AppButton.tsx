@@ -1,6 +1,7 @@
+import { AppText } from 'components/app-text';
 import { FC } from 'react';
-import { Button, View } from 'react-native';
-import { BUTTON_COLOR_PRIMARY } from 'styles';
+import { TouchableOpacity } from 'react-native';
+import { BUTTON_COLOR_PRIMARY, COLOR_NEUTRAL_XXXXLIGHT } from 'styles';
 
 interface AppButtonProps {
   disabled?: boolean;
@@ -17,7 +18,7 @@ export const AppButton: FC<AppButtonProps> = ({
   marginBottom = 0,
 }) => {
   return (
-    <View
+    <TouchableOpacity
       style={{
         backgroundColor: color,
         opacity: disabled ? 0.5 : 1,
@@ -27,12 +28,10 @@ export const AppButton: FC<AppButtonProps> = ({
         justifyContent: 'center',
         marginBottom,
       }}
+      disabled={disabled}
+      onPress={handlePress}
     >
-      <Button
-        disabled={disabled}
-        onPress={handlePress}
-        title={text}
-      ></Button>
-    </View>
+      <AppText textColor={COLOR_NEUTRAL_XXXXLIGHT}>{text}</AppText>
+    </TouchableOpacity>
   );
 };

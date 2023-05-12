@@ -76,7 +76,7 @@ const Settings = () => {
               <ListItem key={item.text}>
                 <Pressable
                   style={{ flexDirection: 'row', marginBottom: SPACING_SMALL }}
-                  onPress={item.action}
+                  onPress={() => item.action()}
                 >
                   <SVGIcon styles={{ marginRight: SPACING_SMALL }}>
                     {item.icon()}

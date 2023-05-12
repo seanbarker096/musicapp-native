@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import { COLOR_LINK, COLOR_XXXXDARK } from 'styles';
 import { textSizeMap, textWeightMap } from './AppText.styles';
 import { TextSize, TextWeight } from './AppText.types';
@@ -23,7 +23,7 @@ export const AppText: FC<AppTextProps> = ({
   textColor = COLOR_XXXXDARK,
   children,
   isLink = false,
-  handlePress = () => {},
+  handlePress = undefined,
   ...margins
 }) => {
   const styles = StyleSheet.create({
@@ -34,9 +34,12 @@ export const AppText: FC<AppTextProps> = ({
   });
 
   return (
-    <View style={{ ...margins }}>
+    <Pressable
+      onPress={handlePress}
+      style={{ ...margins }}
+      disabled={!handlePress}
+    >
       <Text
-        onPress={isLink ? handlePress : () => {}}
         style={{
           ...styles.text,
           color: textColor,
@@ -45,7 +48,7 @@ export const AppText: FC<AppTextProps> = ({
       >
         {children}
       </Text>
-    </View>
+    </Pressable>
   );
 };
 

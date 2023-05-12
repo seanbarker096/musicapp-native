@@ -17,7 +17,7 @@ import { isDefined } from 'utils/utils';
 import axios from '../../axios-instance';
 
 // Access tokens are valid for 60 minutes, so we refresh them every 55 minutes
-export const ACCESS_TOKEN_EXPIRY_TIME = 20 * 1000;
+export const ACCESS_TOKEN_EXPIRY_TIME = 55 * 60 * 1000;
 
 export interface RefreshTokenPayload {
   user_id: number;
