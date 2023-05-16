@@ -1,4 +1,6 @@
+import { ProfileType } from 'contexts/profile.context';
 import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { profilePostsKeys } from 'store/profile-posts/profile-posts.query-keys';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
@@ -11,6 +13,7 @@ import {
   Post,
   PostCreateRequest,
   PostCreateResult,
+  PostOwnerType,
   PostsStoreSlice,
 } from './posts.types';
 
@@ -124,15 +127,26 @@ const postCreate = async function ({
 };
 
 export const usePostCreateMutation = ({
-  ownerId: userId,
+  ownerId,
+  ownerType,
 }: {
   ownerId: number;
+  ownerType: PostOwnerType;
 }) => {
   const queryClient = useQueryClient();
   const onSuccessCallback = async () => {
     // invalidate relevant query keys
     // return the promise to mutation is still loading until queries invalidated
-    return queryClient.invalidateQueries(postsKeys.postsByOwnerIds([userId]));
+    await queryClient.invalidateQueries(postsKeys.postsByOwnerIds([ownerId]));
+
+    const profileType =
+      ownerType === PostOwnerType.PERFORMER
+        ? ProfileType.PERFORMER
+        : ProfileType.USER;
+
+    return queryClient.invalidateQueries(
+      profilePostsKeys.profilePostsByProfile(ownerId, profileType),
+    );
   };
 
   return useMutation<PostCreateResult, any, PostCreateRequest>(

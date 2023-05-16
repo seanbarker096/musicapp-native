@@ -1,25 +1,18 @@
-import DateTimePicker, {
-  DateTimePickerAndroid,
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
 import { useFocusEffect } from '@react-navigation/native';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
+import { AppTextInput } from 'components/form-components';
+import { List } from 'components/list';
+import { PerformanceListItem } from 'components/performance-list/PerformanceListItem';
 import { PerformerSearch } from 'components/performer-search';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { ProfileImage } from 'components/profile-image';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import * as ImagePicker from 'expo-image-picker';
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
-import {
-  Button,
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import {
   Placeholder,
   PlaceholderLine,
@@ -29,6 +22,7 @@ import {
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
@@ -41,7 +35,7 @@ import {
   SPACING_XSMALL,
   SPACING_XXSMALL,
 } from 'styles';
-import { toNumber } from 'utils/utils';
+import * as Yup from 'yup';
 import { CreatePostStackScreenProps } from './create-post.types';
 
 interface PostFile {
@@ -55,25 +49,36 @@ interface PostCreateFormValues {
   caption: string | undefined;
 }
 
+const createPostFormSchema = Yup.object({
+  caption: Yup.string()
+    .required('Required')
+    .max(1000, 'Caption must be 1000 characters or less'),
+});
+
 export const CreatePost: FC<CreatePostStackScreenProps> = ({
   navigation,
 }: CreatePostStackScreenProps) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
   const [performer, setPerformer] = useState<Performer | undefined>(undefined);
-  const [performanceDate, setPerformanceDate] = useState<Date | undefined>(
-    undefined,
-  );
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [performerSearchTerm, setPerformerSearchTerm] = useState<
     string | undefined
   >(undefined);
+  const [selectedPerformance, setSelectedPerformance] = useState<
+    PerformanceWithEvent | undefined
+  >(undefined);
 
   const { authState } = useContext(AuthStateContext);
+  const { profileState } = useContext(ProfileContext);
 
   const userId = authState.authUser.userId;
+  const postOwnerType =
+    profileState.profileType === ProfileType.PERFORMER
+      ? PostOwnerType.PERFORMER
+      : PostOwnerType.USER;
 
   const { mutateAsync: createPost } = usePostCreateMutation({
     ownerId: userId,
+    ownerType: postOwnerType,
   });
 
   const today = new Date();
@@ -107,16 +112,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   } = usePerformancesGetQuery({
     queryParams: {
       performerId: performer?.id,
-      performanceDate: toNumber(
-        performanceDate
-          ? Math.ceil(performanceDate.getTime() / 1000)
-          : undefined,
-      ),
     },
-    enabled: !!performer && !!performanceDate,
+    enabled: !!performer,
   });
-
-  const performance = performances && performances[0];
 
   useFocusEffect(
     React.useCallback(() => {
@@ -173,7 +171,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('mime type not defined');
     }
 
-    if (!performer || !form.caption || !performanceDate) {
+    if (!performer || !form.caption) {
       throw Error('Form incomplete. At least one required field is undefined');
     }
 
@@ -190,7 +188,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
 
     const postResult = await createPost({
       ownerId: userId,
-      ownerType: PostOwnerType.USER, // todo: update this
+      ownerType: postOwnerType,
       content: form.caption,
       attachmentFileIds: [fileResult.file.id],
     });
@@ -201,9 +199,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       throw Error('failed to create post');
     }
 
-    // if no performance found for the artist and show dates, tag the artist in the post so they cna view it later
+    // if no performance found for the artist, tag the artist in the post so they cna view it later
     let tagResult;
-    if (!performance) {
+    if (!selectedPerformance) {
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMER,
         taggedEntityId: performer.id,
@@ -214,7 +212,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       // Otherwise tag the post with the performance
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMANCE,
-        taggedEntityId: performance.id,
+        taggedEntityId: selectedPerformance.id,
         taggedInEntityType: TaggedInEntityType.POST,
         taggedInEntityId: createdPost.id,
       });
@@ -227,9 +225,10 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     navigation.navigate(PrimaryScreens.PROFILE);
   };
 
-  const handleCancelClick = function () {
-    console.log('cancelled');
-  };
+  function handleCancelClick() {
+    console.log('cancel click');
+    navigation.goBack();
+  }
 
   function handlePerformerSelection(performer: Performer) {
     setPerformer(performer);
@@ -239,32 +238,33 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
     setPerformer(undefined);
   }
 
-  // TODO: Create a date input component because i am reusing this logic in CreatePerformance
-  function handleDateInputPress() {
-    console.log('date input pressed');
-    console.log(Platform.OS);
-    if (Platform.OS === 'android') {
-      DateTimePickerAndroid.open({
-        value: performanceDate ?? today,
-        onChange: handlePerformanceDateChange,
-        mode: 'date',
-        is24Hour: true,
-      });
-    } else {
-      setShowDatePicker(true);
-    }
-  }
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    dirty,
+  } = useFormik({
+    validationSchema: createPostFormSchema,
+    initialValues: { caption: '' },
+    onSubmit: handleFormSubmit,
+  });
 
-  function handlePerformanceDateChange(
-    event: DateTimePickerEvent,
-    date?: Date,
-  ) {
-    if (event.type === 'set') {
-      setPerformanceDate(date);
-    }
+  const handleCaptionBlur = handleBlur('caption');
 
-    setShowDatePicker(false);
-  }
+  const handleCaptionChange = handleChange('caption');
+
+  const buttonDisabled =
+    isSubmitting ||
+    !postFile ||
+    !performer ||
+    !isValid ||
+    !dirty ||
+    performancesLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
 
   // Todo: make a resuable component as also used in Post. Make it fetch the user and the file
   // after taking in a userId
@@ -304,128 +304,119 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   return (
     <>
       {postFile && (
-        <Formik
-          initialValues={{
-            performerId: undefined,
-            caption: '',
+        <View
+          style={{
+            ...styles.flexColumnContainer,
+            width: '100%',
+            height: '100%',
+            paddingBottom: SPACING_SMALL,
           }}
-          onSubmit={handleFormSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <View
-              style={{
-                ...styles.flexColumnContainer,
-                width: '100%',
-                height: '100%',
-                paddingBottom: SPACING_SMALL,
+          <View style={{ ...styles.flexRowContainer }}>
+            <Image
+              source={{
+                uri: postFile?.imageInfo.uri,
+                width: 150,
+                height: 150,
               }}
-            >
-              <View style={{ ...styles.flexRowContainer }}>
-                <Image
-                  source={{
-                    uri: postFile?.imageInfo.uri,
-                    width: 150,
-                    height: 150,
-                  }}
-                ></Image>
-                <View
-                  style={{
-                    ...styles.flexColumnContainer,
-                    padding: SPACING_XSMALL,
-                  }}
-                >
+            ></Image>
+          </View>
+          <AppTextInput
+            handleChange={(e: string | React.ChangeEvent<any>) => {
+              handleCaptionChange(e);
+            }}
+            handleBlur={(e: any) => {
+              handleCaptionBlur(e);
+            }}
+            value={values.caption}
+            placeholder="Write a caption"
+            error={errors.caption}
+            touched={touched.caption}
+            marginBottom={SPACING_XSMALL}
+          />
+          <View style={{ ...styles.flexColumnContainer, height: 200 }}>
+            <Text style={{ width: '100%' }}>Performer</Text>
+            {!performer && (
+              <PerformerSearch
+                searchTermChanged={setPerformerSearchTerm}
+                searchTerm={performerSearchTerm}
+                onPerformerSelected={handlePerformerSelection}
+              ></PerformerSearch>
+            )}
+            {performer && (
+              <PerformerSearchCard
+                performer={performer}
+                onPress={handleTaggedPerformerPress}
+              ></PerformerSearchCard>
+            )}
+          </View>
+          {performances && (
+            <>
+              {selectedPerformance && (
+                <PerformanceListItem
+                  performances={selectedPerformance}
+                  onListItemPress={() => setSelectedPerformance(undefined)}
+                ></PerformanceListItem>
+              )}
+              {!selectedPerformance && (
+                <View style={{ width: '70%' }}>
                   <View
                     style={{
-                      ...styles.flexRowContainer,
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      borderRadius: 3,
                     }}
                   >
-                    {UserHeader}
+                    <AppText>Select the artist's performance</AppText>
                   </View>
-                  <Text>Event date</Text>
-                  <TextInput
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      ...styles.textInput,
-                    }}
-                    onPressIn={handleDateInputPress}
-                    value={
-                      performanceDate
-                        ? performanceDate.toLocaleDateString()
-                        : undefined
-                    }
-                    placeholder="DD/MM/YYYY"
-                  />
-                  {showDatePicker && (
-                    <DateTimePicker
-                      value={performanceDate ?? today}
-                      mode="date"
-                      is24Hour={true}
-                      display="default"
-                      onChange={handlePerformanceDateChange}
-                    />
-                  )}
+                  <List>
+                    {performances.map(performance => (
+                      <PerformanceListItem
+                        key={performance.id}
+                        performances={performance}
+                        onListItemPress={setSelectedPerformance}
+                      ></PerformanceListItem>
+                    ))}
+                  </List>
                 </View>
-              </View>
-              <TextInput
-                style={{ width: '100%', ...styles.textInput }}
-                onChangeText={handleChange('caption')}
-                onBlur={handleBlur('caption')}
-                value={values.caption}
-                placeholder="Write a caption..."
-              />
-              <View style={{ ...styles.flexColumnContainer, height: 200 }}>
-                <Text style={{ width: '100%' }}>Performer</Text>
-                {!performer && (
-                  <PerformerSearch
-                    searchTermChanged={setPerformerSearchTerm}
-                    searchTerm={performerSearchTerm}
-                    onPerformerSelected={handlePerformerSelection}
-                  ></PerformerSearch>
-                )}
-                {performer && (
-                  <PerformerSearchCard
-                    performer={performer}
-                    onPress={handleTaggedPerformerPress}
-                  ></PerformerSearchCard>
-                )}
-              </View>
-              <View
-                style={{
-                  ...styles.flexRowContainer,
-                  marginTop: 'auto',
-                }}
-              >
-                <View
-                  style={{
-                    flexGrow: 1,
-                    flexShrink: 0,
-                    marginRight: SPACING_SMALL,
-                  }}
-                >
-                  <Button
-                    color={BUTTON_COLOR_DISABLED}
-                    onPress={handleCancelClick}
-                    title="Cancel"
-                  ></Button>
-                </View>
-                <View
-                  style={{
-                    flexGrow: 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  <Button
-                    color={BUTTON_COLOR_PRIMARY}
-                    disabled={performancesLoading} // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post
-                    onPress={handleSubmit}
-                    title="Share"
-                  />
-                </View>
-              </View>
-            </View>
+              )}
+            </>
           )}
-        </Formik>
+          <View
+            style={{
+              ...styles.flexRowContainer,
+              marginTop: 'auto',
+              zIndex: -1, // ensures it apperars behind the list of artists and performance search results
+            }}
+          >
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+                marginRight: SPACING_SMALL,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_DISABLED}
+                text="Cancel"
+                handlePress={handleCancelClick}
+              ></AppButton>
+            </View>
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_PRIMARY}
+                disabled={buttonDisabled}
+                text="Share"
+                handlePress={handleSubmit}
+              ></AppButton>
+            </View>
+          </View>
+        </View>
       )}
     </>
   );

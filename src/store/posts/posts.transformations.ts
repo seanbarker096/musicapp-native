@@ -14,7 +14,9 @@ export function transformPostApi(post: PostApi): Post {
     isDeleted: post.is_deleted,
     updateTime: post.update_time,
     attachments: [],
-    featuringPerformer: transformPerformerApi(post.featuring_performer),
+    featuringPerformer: post.featuring_performer
+      ? transformPerformerApi(post.featuring_performer)
+      : undefined,
     featureCount: post.feature_count,
   };
 }
@@ -38,7 +40,9 @@ export function transformPostAndAttachmentsApi(
       updateTime: post.update_time,
       isDeleted: post.is_deleted,
       attachments: transformedAttachments,
-      featuringPerformer: transformPerformerApi(post.featuring_performer),
+      featuringPerformer: post.featuring_performer
+        ? transformPerformerApi(post.featuring_performer)
+        : undefined,
       featureCount: post.feature_count,
     },
     attachments: transformedAttachments,

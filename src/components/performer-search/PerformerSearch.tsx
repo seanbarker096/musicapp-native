@@ -72,6 +72,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
         searchTermChanged={searchTermChanged}
         searchResults={performerSearchResults}
         searchTerm={searchTerm}
+        scrollable={true}
       ></SearchBar>
       {performersSearchLoading && <AppText>Loading...</AppText>}
     </View>
