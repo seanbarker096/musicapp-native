@@ -8,12 +8,14 @@ interface PostHeaderProps {
   avatarImageUrl?: string;
   username: string;
   performanceText?: string;
+  onPerformerPress?: () => void;
 }
 
 const UserPostHeader: FC<PostHeaderProps> = ({
   avatarImageUrl,
   username,
   performanceText,
+  onPerformerPress,
 }) => {
   return (
     <>
@@ -24,7 +26,12 @@ const UserPostHeader: FC<PostHeaderProps> = ({
       ></ProfileImage>
       <View style={{ flexDirection: 'column' }}>
         <AppText size="large">{username}</AppText>
-        <AppText size="small">{performanceText}</AppText>
+        <AppText
+          handlePress={onPerformerPress}
+          size="small"
+        >
+          {performanceText}
+        </AppText>
       </View>
     </>
   );

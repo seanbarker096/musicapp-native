@@ -335,7 +335,9 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
             marginBottom={SPACING_XSMALL}
           />
           <View style={{ ...styles.flexColumnContainer, height: 200 }}>
-            <Text style={{ width: '100%' }}>Performer</Text>
+            <Text style={{ width: '100%' }}>
+              Tag the artist so they see your video
+            </Text>
             {!performer && (
               <PerformerSearch
                 searchTermChanged={setPerformerSearchTerm}

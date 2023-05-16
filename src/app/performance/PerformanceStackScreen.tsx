@@ -2,6 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
+import { PostStackParamList } from 'app/post/post.types';
 import { PostStackScreen } from 'app/post/PostStackScreen';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { TimelineStackParamList } from 'app/timeline/timeline-types';
@@ -11,7 +12,8 @@ import { PerformanceStackParamList } from './performance-types';
 
 type PerformanceStackScreenProps =
   | NativeStackScreenProps<TimelineStackParamList, 'PerformanceStack'>
-  | NativeStackScreenProps<ProfileStackParamList, 'PerformanceStack'>;
+  | NativeStackScreenProps<ProfileStackParamList, 'PerformanceStack'>
+  | NativeStackScreenProps<PostStackParamList, 'PerformanceStack'>;
 
 export const PerformanceStackScreen: FC<PerformanceStackScreenProps> = ({
   route: {

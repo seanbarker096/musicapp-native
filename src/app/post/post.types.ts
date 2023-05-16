@@ -1,3 +1,5 @@
+import { ProfileType } from 'contexts/profile.context';
+
 export type PostStackParamList = {
   Post: {
     postId: number;
@@ -6,4 +8,12 @@ export type PostStackParamList = {
     postId: number;
   };
   PostCreatePerformance: undefined;
+  PerformanceStack: {
+    performanceId: number;
+    performerId: number;
+  };
+  ProfileStack: {
+    profileId: number;
+    profileType: ProfileType;
+  };
 };

@@ -20,6 +20,8 @@ import {
   Shine,
 } from 'rn-placeholder';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { Performance } from 'store/performances/performances.types';
+import { Performer } from 'store/performers';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { PostOwnerType } from 'store/posts';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
@@ -249,7 +251,24 @@ export const Post: FC<PostProps> = ({
     }
   };
 
-  console.log(postPerformer);
+  function navigateToPerformerProfile(
+    performer: Performer,
+    performance?: Performance,
+  ) {
+    console.log(performer, performance);
+    if (performance) {
+      navigation.navigate('PerformanceStack', {
+        performanceId: performance.id,
+        performerId: performer.id,
+      });
+    } else {
+      navigation.navigate('ProfileStack', {
+        profileId: performer.id,
+        profileType: ProfileType.PERFORMER,
+      });
+    }
+  }
+
   const PostHeader = () =>
     ownerReady ? (
       <View
@@ -268,6 +287,9 @@ export const Post: FC<PostProps> = ({
               performanceText={`${postPerformer.name}${
                 taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
               }`}
+              onPerformerPress={() =>
+                navigateToPerformerProfile(postPerformer, taggedPerformance)
+              }
             ></PerformerPostHeader>
           )}
         {post?.ownerType === PostOwnerType.USER && user && postPerformer && (
@@ -277,6 +299,9 @@ export const Post: FC<PostProps> = ({
             performanceText={`${postPerformer.name}${
               taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
             }`}
+            onPerformerPress={() =>
+              navigateToPerformerProfile(postPerformer, taggedPerformance)
+            }
           ></UserPostHeader>
         )}
       </View>
