@@ -9,7 +9,12 @@ import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
-import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_LARGE,
+  SPACING_XSMALL,
+} from 'styles';
 import * as Yup from 'yup';
 
 type LoginProps = {
@@ -59,7 +64,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
   switch (error?.error_code) {
     case 'USER_NOT_FOUND':
-      errorMessage = "We couldn't find your account!";
+      errorMessage = 'Username or email does not exist';
       break;
     case 'UNAUTHORIZED':
       errorMessage = 'Incorrect password!';
@@ -112,6 +117,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     <>
       <View
         style={{
+          backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
           margin: 10,
           paddingTop: '35%',
           paddingBottom: SPACING_LARGE,
@@ -161,7 +167,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           handlePress={handleSubmit}
           marginBottom={SPACING_XSMALL}
         ></AppButton>
-        <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'row', marginBottom: SPACING_XSMALL }}>
           <Text>Don't have an account? </Text>
 
           <AppText
@@ -169,6 +175,16 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
             handlePress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}
           >
             Sign Up
+          </AppText>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <Text>Forgotten your password? </Text>
+
+          <AppText
+            isLink={true}
+            handlePress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}
+          >
+            Get help signing in
           </AppText>
         </View>
       </View>

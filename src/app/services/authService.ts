@@ -39,14 +39,7 @@ async function authTokenCreate(): Promise<string> {
     return Promise.reject(new Error('No refresh token found'));
   }
 
-  // Decode the refresh. Check its expiry time. If the token will expire before the next ACCESS_TOKEN_EXPIRY_TIME, then
-  // return early
-  const { exp, user_id: userId } =
-    jwt_decode<RefreshTokenPayload>(refreshToken);
-
-  const timeUntilExpiry = exp * 1000 - Date.now();
-
-  if (timeUntilExpiry <= ACCESS_TOKEN_EXPIRY_TIME) {
+  if (refreshTokenWillExpireBeforeAuthTokenFetched(refreshToken)) {
     return Promise.reject(new Error('Refresh token expired'));
   } else {
     const response = await getAccessToken(refreshToken);
@@ -182,3 +175,14 @@ const buildAuthUserFromAuthToken = (token: string): AuthUser => {
 
   return { role, userId };
 };
+
+function refreshTokenWillExpireBeforeAuthTokenFetched(refreshToken: string) {
+  // Decode the refresh. Check its expiry time. If the token will expire before the next ACCESS_TOKEN_EXPIRY_TIME, then
+  // return early
+  const { exp, user_id: userId } =
+    jwt_decode<RefreshTokenPayload>(refreshToken);
+
+  const timeUntilExpiry = exp * 1000 - Date.now();
+
+  return timeUntilExpiry <= ACCESS_TOKEN_EXPIRY_TIME;
+}

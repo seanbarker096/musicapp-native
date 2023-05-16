@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
@@ -9,16 +10,15 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { Formik } from 'formik';
 import React, { FC, useState } from 'react';
-import { Button, Image, StyleSheet, TextInput, View } from 'react-native';
+import { Image, StyleSheet, TextInput, View } from 'react-native';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { File } from 'store/files/files.types';
 import { useUsersUpdateMutation } from 'store/users';
 import {
-  BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
   COLOR_NEUTRAL_LIGHT,
   COLOR_NEUTRAL_XXXXLIGHT,
-  SPACING_SMALL,
+  SPACING_NONE,
   SPACING_XXSMALL,
 } from 'styles';
 import { SignUpStackParamList } from './sign-up.types';
@@ -220,27 +220,15 @@ export const UploadProfileImage: FC<Props> = ({
                 style={{
                   flexGrow: 1,
                   flexShrink: 0,
-                  marginRight: SPACING_SMALL,
                 }}
               >
-                <Button
-                  color={BUTTON_COLOR_DISABLED}
-                  onPress={handleSkip}
-                  title="Skip"
-                ></Button>
-              </View>
-              <View
-                style={{
-                  flexGrow: 1,
-                  flexShrink: 0,
-                }}
-              >
-                <Button
+                <AppButton
                   color={BUTTON_COLOR_PRIMARY}
-                  disabled={!selectedImage}
-                  onPress={handleSubmit}
-                  title="Submit"
-                ></Button>
+                  disabled={!values.firstName || !values.secondName}
+                  text="Next"
+                  handlePress={handleSubmit}
+                  marginBottom={SPACING_NONE}
+                ></AppButton>
               </View>
             </View>
           </>

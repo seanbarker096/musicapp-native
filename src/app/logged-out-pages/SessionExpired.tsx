@@ -2,7 +2,11 @@ import { LoggedOutPage, SetLoggedOutPage } from 'app/app-types';
 import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
-import { BUTTON_COLOR_PRIMARY, SPACING_SMALL } from 'styles';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_SMALL,
+} from 'styles';
 
 type SessionExpiredProps = {
   setLoggedOutPage: SetLoggedOutPage;
@@ -17,7 +21,7 @@ const SessionExpired: FC<SessionExpiredProps> = ({ setLoggedOutPage }) => {
     setLoggedOutPage(LoggedOutPage.SIGN_UP);
   }
   return (
-    <>
+    <View style={{ backgroundColor: COLOR_NEUTRAL_XXXXLIGHT }}>
       <AppText>
         Your session has expired. Please login to continue using the application
       </AppText>
@@ -53,7 +57,7 @@ const SessionExpired: FC<SessionExpiredProps> = ({ setLoggedOutPage }) => {
           />
         </View>
       </View>
-    </>
+    </View>
   );
 };
 
