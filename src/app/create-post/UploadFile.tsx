@@ -2,13 +2,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { FC, useContext } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
+import { PostFile } from './create-post.types';
 
-interface PostFile {
-  imageInfo: ImagePicker.ImageInfo;
-  mimeType: string | undefined;
-  fileName: string | undefined;
-  blob: Blob;
-}
 
 interface UploadFileProps {
   onFileSelected: (file: PostFile) => void;

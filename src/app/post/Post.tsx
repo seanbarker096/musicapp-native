@@ -336,14 +336,18 @@ export const Post: FC<PostProps> = ({
           <PostHeader />
           <Pressable
             onPress={handlePlayPress}
-            style={{ ...styles.videoContainer, marginBottom: SPACING_XSMALL }}
+            style={{
+              ...styles.videoContainer,
+              marginBottom: SPACING_XSMALL,
+              backgroundColor: 'black',
+            }}
           >
             <Video
               ref={video}
               style={{
                 width: componentState.videoWidth,
                 height: componentState.videoHeight,
-                maxWidth: DEVICE_WIDTH,
+                minWidth: DEVICE_WIDTH,
               }}
               source={{
                 uri:

@@ -7,7 +7,6 @@ import { PerformanceListItem } from 'components/performance-list/PerformanceList
 import { PerformerSearch } from 'components/performer-search';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import * as ImagePicker from 'expo-image-picker';
 import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -29,13 +28,7 @@ import {
   SPACING_XSMALL,
 } from 'styles';
 import * as Yup from 'yup';
-
-interface PostFile {
-  imageInfo: ImagePicker.ImageInfo;
-  mimeType: string | undefined;
-  fileName: string | undefined;
-  blob: Blob;
-}
+import { PostFile } from './create-post.types';
 
 interface PostCreateFormValues {
   caption: string | undefined;
@@ -51,7 +44,7 @@ interface CreatePostFormProps {
   onCancel: () => void;
   onSuccess: () => void;
   removePostFile: () => void;
-  postFile: PostFile | undefined;
+  postFile: PostFile;
 }
 
 export const CreatePostForm: FC<CreatePostFormProps> = ({
@@ -110,7 +103,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         'File is too large. Please try again by uploading a shorter video.';
       break;
     case 'UNKNOWN_ERROR':
-      errorMessage = 'Unknown error';
+      errorMessage = 'An unknown error occured';
     default:
       errorMessage = undefined;
   }
@@ -143,25 +136,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
   const handleFormSubmit = async function (form: PostCreateFormValues) {
     setShowErrorMessage(true);
-    // TODO DISABLE BUTTON if file not defined
-    if (!userId) {
-      throw Error('userId undefined when trying to create a post');
-    }
-    if (!postFile) {
-      throw Error('Post file not correctly defined when submit pressed');
-    }
-
-    if (!postFile.fileName) {
-      throw Error('filename not defined');
-    }
-
-    if (!postFile.mimeType || postFile.mimeType === '') {
-      throw Error('mime type not defined');
-    }
-
-    if (!performer || !form.caption) {
-      throw Error('Form incomplete. At least one required field is undefined');
-    }
 
     const fileResult = await createFile({
       fileName: postFile.fileName,
@@ -177,7 +151,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     const postResult = await createPost({
       ownerId: userId,
       ownerType: postOwnerType,
-      content: form.caption,
+      content: form.caption as string, // submit button only active if caption is defined
       attachmentFileIds: [fileResult.file.id],
     });
 
@@ -192,7 +166,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     if (!selectedPerformance) {
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMER,
-        taggedEntityId: performer.id,
+        taggedEntityId: performer?.id as number, // submit button only active if performer is defined
         taggedInEntityType: TaggedInEntityType.POST,
         taggedInEntityId: createdPost.id,
       });
