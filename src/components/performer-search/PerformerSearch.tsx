@@ -62,7 +62,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
           onPress={() => setSelectedSearchPerformer(performer)}
         ></PerformerSearchCard>
       ))
-    : [];
+    : [];    
 
   const error = performersSearchError || performersGetOrCreateError;
 

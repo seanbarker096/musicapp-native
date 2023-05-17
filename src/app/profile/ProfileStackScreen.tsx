@@ -11,6 +11,7 @@ import { PostStackScreen } from 'app/post/PostStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import SettingsStackScreen from 'app/settings/SettingsStackScreen';
+import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
@@ -111,11 +112,11 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
         component={PostStackScreen}
         options={{ headerShown: false }}
       ></ProfileStack.Screen>
-      {/* <ProfileStack.Screen
+      <ProfileStack.Screen
         name="TimelineStack"
         component={TimelineStackScreen}
         options={{ headerShown: false }}
-      ></ProfileStack.Screen> */}
+      ></ProfileStack.Screen>
       <ProfileStack.Screen
         name="PerformanceStack"
         component={PerformanceStackScreen}

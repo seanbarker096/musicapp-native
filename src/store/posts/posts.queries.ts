@@ -1,5 +1,6 @@
 import { ProfileType } from 'contexts/profile.context';
 import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { attendeePerformerKeys } from 'store/attendee-performers/attendee-performers.query-keys';
 import { profilePostsKeys } from 'store/profile-posts/profile-posts.query-keys';
 import { getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
@@ -129,16 +130,37 @@ const postCreate = async function ({
 export const usePostCreateMutation = ({
   ownerId,
   ownerType,
+  queryKeysToInvalidate,
 }: {
   ownerId: number;
   ownerType: PostOwnerType;
+  queryKeysToInvalidate?: QueryKey[];
 }) => {
   const queryClient = useQueryClient();
   const onSuccessCallback = async () => {
     // invalidate relevant query keys
     // return the promise to mutation is still loading until queries invalidated
+
+    // Invalidate requests that fetch posts by the new post's owner (e.g. when showing their gallery)
     await queryClient.invalidateQueries(postsKeys.postsByOwnerIds([ownerId]));
 
+    // Invalidate requests that list the artists the post owner has seen, in case they create a post about a new artist
+    await queryClient.invalidateQueries(
+      attendeePerformerKeys.attendeePerformersByAttendeeId(ownerId),
+    );
+
+    // Invalidate any query keys which required data we didn't have when calling usePostCreateMutation
+    if (queryKeysToInvalidate) {
+      const promises = queryKeysToInvalidate?.map(key =>
+        queryClient.invalidateQueries(key),
+      );
+
+      await Promise.all(promises);
+    }
+
+    // TODO: Might also need to invalidate all profile post queries for the performer tagged in the post
+
+    // Invalidate queries used to fetch profile posts, so the new post appears in their gallery when navigating back to it
     const profileType =
       ownerType === PostOwnerType.PERFORMER
         ? ProfileType.PERFORMER

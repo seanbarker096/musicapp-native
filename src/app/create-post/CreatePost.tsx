@@ -22,6 +22,7 @@ import {
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
+import { performancesKeys } from 'store/performances/performances.query-keys';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
@@ -79,6 +80,17 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   const { mutateAsync: createPost } = usePostCreateMutation({
     ownerId: userId,
     ownerType: postOwnerType,
+    queryKeysToInvalidate: [
+      performer
+        ? performancesKeys.performancesByPerformerIds([performer.id])
+        : [],
+      performer
+        ? performancesKeys.attendeePerformancesByPerformerIds(
+            [performer.id],
+            [userId],
+          )
+        : [],
+    ],
   });
 
   const today = new Date();
