@@ -1,5 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
-
 import 'react-native-get-random-values';
 import { QueryKey, useMutation, useQuery } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
@@ -98,11 +96,6 @@ const fileCreate = async function ({
   file,
   uri,
 }: FileCreateRequest): Promise<FileCreateResult> {
-  const refreshToken = await SecureStore.getItemAsync('refresh_token');
-  const accessToken = await SecureStore.getItemAsync('access_token');
-
-  console.log(refreshToken, accessToken);
-
   const uuid = uuidv4();
 
   // TODO: Update to let axios build the form https://www.npmjs.com/package/axios#example
@@ -127,7 +120,9 @@ const fileCreate = async function ({
 };
 
 export const useFileCreateMutation = function () {
-  return useMutation<FileCreateResult, any, FileCreateRequest>(
-    (fileCreateRequest: FileCreateRequest) => fileCreate(fileCreateRequest),
-  );
+  return useMutation<
+    FileCreateResult,
+    FilesStoreSlice['Post']['ErrorType'],
+    FileCreateRequest
+  >((fileCreateRequest: FileCreateRequest) => fileCreate(fileCreateRequest));
 };

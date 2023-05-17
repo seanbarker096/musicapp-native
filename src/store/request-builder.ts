@@ -1,6 +1,6 @@
 import { AxiosResponse, RawAxiosRequestHeaders } from 'axios';
 import * as SecureStore from 'expo-secure-store';
-import axios from '../axios-instance';
+import axios, { transformAxiosError } from '../axios-instance';
 import { GetRequestConfig, StoreSlice } from './store.types';
 
 export async function getRequest<S extends StoreSlice>({
@@ -39,22 +39,26 @@ export async function postRequest<S extends StoreSlice>({
   body: S['Post']['RequestBodyType'];
   headers?: RawAxiosRequestHeaders;
 }): Promise<AxiosResponse<S['Post']['ResultType']>> {
-  const refreshToken = await SecureStore.getItemAsync('refresh_token');
-  const accessToken = await SecureStore.getItemAsync('access_token');
+  try {
+    const refreshToken = await SecureStore.getItemAsync('refresh_token');
+    const accessToken = await SecureStore.getItemAsync('access_token');
 
-  const postRequestConfig = {
-    headers: {
-      ...headers,
-      'Refresh-Token': refreshToken,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
+    const postRequestConfig = {
+      headers: {
+        ...headers,
+        'Refresh-Token': refreshToken,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
 
-  return await axios.post<
-    S['Post']['ResultType'],
-    AxiosResponse<S['Post']['ResultType']>,
-    S['Post']['RequestBodyType']
-  >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
+    return await axios.post<
+      S['Post']['ResultType'],
+      AxiosResponse<S['Post']['ResultType']>,
+      S['Post']['RequestBodyType']
+    >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
+  } catch (e: any) {
+    return Promise.reject(transformAxiosError<S, 'Post'>(e));
+  }
 }
 
 export async function searchRequest<S extends StoreSlice>({

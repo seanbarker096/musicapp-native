@@ -1,3 +1,4 @@
+import { ApiError } from 'store/backend-errors.types';
 import { StoreSlice } from 'store/store.types';
 
 export interface FilesStoreSlice extends StoreSlice {
@@ -11,7 +12,7 @@ export interface FilesStoreSlice extends StoreSlice {
   Post: {
     RequestBodyType: FormData;
     ResultType: FileCreateResultApi;
-    ErrorType: {};
+    ErrorType: ApiError<'file_create'>;
   };
 }
 
