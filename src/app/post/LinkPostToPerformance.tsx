@@ -12,7 +12,7 @@ type Props = NativeStackScreenProps<
 export const LinkPostToPerformance: FC<Props> = ({
   navigation,
   route: {
-    params: { postId },
+    params: { postId, performerId },
   },
 }) => {
   function handleCreatePerformancePress() {
@@ -22,6 +22,7 @@ export const LinkPostToPerformance: FC<Props> = ({
     <LinkPostToPerformanceList
       handleCreatePerformancePress={handleCreatePerformancePress}
       postId={postId}
+      performerId={performerId}
     ></LinkPostToPerformanceList>
   );
 };

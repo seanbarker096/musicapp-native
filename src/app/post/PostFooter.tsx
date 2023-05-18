@@ -46,6 +46,13 @@ const PostFooter: FC<PostFooterProps> = ({
       ? FeaturerType.PERFORMER
       : FeaturerType.USER;
 
+  const viewingUserIsPostOwner = viewingUserProfileId === post.ownerId;
+
+  const canLinkToPerformance =
+    (viewingUserProfileType === ProfileType.PERFORMER &&
+      viewingUserProfileId === postPerformer.id) ||
+    viewingUserIsPostOwner;
+
   const {
     data: features,
     isLoading: featuresGetLoading,
@@ -121,36 +128,36 @@ const PostFooter: FC<PostFooterProps> = ({
               marginBottom: SPACING_SMALL,
             }}
           >
-            <PostFooterAction
-              actionCompleted={!!feature}
-              actionCompletedState={{
-                icon: PictureCheckMarkSVG,
-                text: 'Featured',
-                onIconPress: () =>
-                  !!feature ? unFeaturePost(feature) : () => {},
-              }}
-              actionUncompletedState={{
-                icon: PicturePlusSVG,
-                text: 'Feature on your profile',
-                onIconPress: featurePost,
-              }}
-            ></PostFooterAction>
-
-            {viewingUserProfileType === ProfileType.PERFORMER &&
-              viewingUserProfileId === postPerformer.id && (
-                <Pressable
-                  onPress={handleLinkToPerformancePress}
-                  style={{
-                    ...styles.flexRowContainer,
-                    marginRight: SPACING_XSMALL,
-                  }}
-                >
-                  <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-                    <LinkSVG></LinkSVG>
-                  </SVGIcon>
-                  <AppText>Link to your performances</AppText>
-                </Pressable>
-              )}
+            {!viewingUserIsPostOwner && (
+              <PostFooterAction
+                actionCompleted={!!feature}
+                actionCompletedState={{
+                  icon: PictureCheckMarkSVG,
+                  text: 'Featured',
+                  onIconPress: () =>
+                    !!feature ? unFeaturePost(feature) : () => {},
+                }}
+                actionUncompletedState={{
+                  icon: PicturePlusSVG,
+                  text: 'Feature on your profile',
+                  onIconPress: featurePost,
+                }}
+              ></PostFooterAction>
+            )}
+            {canLinkToPerformance && (
+              <Pressable
+                onPress={handleLinkToPerformancePress}
+                style={{
+                  ...styles.flexRowContainer,
+                  marginRight: SPACING_XSMALL,
+                }}
+              >
+                <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+                  <LinkSVG></LinkSVG>
+                </SVGIcon>
+                <AppText>Link to a performance</AppText>
+              </Pressable>
+            )}
           </View>
 
           {artistFeature && (

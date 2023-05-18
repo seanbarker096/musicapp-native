@@ -378,7 +378,10 @@ export const Post: FC<PostProps> = ({
             post={post}
             postPerformer={postPerformer}
             handleLinkToPerformancePress={() =>
-              navigation.navigate('PostLinkToPerformance', { postId: post.id })
+              navigation.navigate('PostLinkToPerformance', {
+                postId: post.id,
+                performerId: postPerformer.id,
+              })
             }
           ></PostFooter>
 

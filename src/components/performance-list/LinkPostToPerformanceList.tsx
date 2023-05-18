@@ -3,7 +3,7 @@ import { CreatePerformanceButton } from 'components/create-performance-button';
 import { SVGIcon } from 'components/icon';
 import { CheckMarkSVG, PlusSVG } from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
-import { ProfileContext } from 'contexts/profile.context';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
@@ -23,6 +23,7 @@ import { SPACING_XSMALL } from 'styles';
 type LinkToPerformancListProps = {
   handleCreatePerformancePress: () => void;
   postId: number;
+  performerId: number;
 };
 
 /**
@@ -34,9 +35,10 @@ type LinkToPerformancListProps = {
 export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   handleCreatePerformancePress,
   postId,
+  performerId,
 }) => {
   const { profileState } = useContext(ProfileContext);
-  const { profileId: loggedInUserProfileId } = profileState;
+  const { profileId: viewingUserId, profileType } = profileState;
 
   const {
     mutateAsync: createTag,
@@ -62,7 +64,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
     error: performancesGetError,
   } = usePerformancesGetQuery({
     queryParams: {
-      performerId: loggedInUserProfileId,
+      performerId: viewingUserId,
     },
   });
 
@@ -73,6 +75,9 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
       taggedEntityType: TaggedEntityType.PERFORMANCE,
     },
   });
+
+  const canCreatePerformance =
+    profileType === ProfileType.PERFORMER && viewingUserId === performerId;
 
   const performanceTag = performanceTags?.[0];
 
@@ -136,9 +141,11 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 
   return (
     <>
-      <CreatePerformanceButton
-        onPress={handleCreatePerformancePress}
-      ></CreatePerformanceButton>
+      {canCreatePerformance && (
+        <CreatePerformanceButton
+          onPress={handleCreatePerformancePress}
+        ></CreatePerformanceButton>
+      )}
       {performances && performanceTags && performances.length && (
         <>
           <List

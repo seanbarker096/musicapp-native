@@ -6,6 +6,7 @@ export type PostStackParamList = {
   };
   PostLinkToPerformance: {
     postId: number;
+    performerId: number;
   };
   PostCreatePerformance: undefined;
   PerformanceStack: {
