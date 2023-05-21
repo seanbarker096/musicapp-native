@@ -3,6 +3,7 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
+import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import { CreatePostStackParamList } from './create-post.types';
@@ -22,6 +23,10 @@ const CreatePostStackScreen: FC<Props> = () => {
       <CreateStackTabNavigator.Screen
         component={CreatePost}
         name="CreatePost"
+      ></CreateStackTabNavigator.Screen>
+      <CreateStackTabNavigator.Screen
+        component={CreatePerformanceStackScreen}
+        name="CreatePerformanceStack"
       ></CreateStackTabNavigator.Screen>
     </CreateStackTabNavigator.Navigator>
   );

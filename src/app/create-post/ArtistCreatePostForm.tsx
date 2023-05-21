@@ -1,25 +1,19 @@
 import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
+import { CreatePerformanceButton } from 'components/create-performance-button';
 import { AppTextInput } from 'components/form-components';
 import { List } from 'components/list';
 import { PerformanceListItem } from 'components/performance-list/PerformanceListItem';
-import { PerformerSearch } from 'components/performer-search';
-import { PerformerSearchCard } from 'components/performer-search-card';
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { ProfileContext } from 'contexts/profile.context';
 import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { AuthStateContext } from 'store/auth/auth.contexts';
+import { Image, StyleSheet, View } from 'react-native';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { performancesKeys } from 'store/performances/performances.query-keys';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
-import { Performer } from 'store/performers';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
-import { useTagCreateMutation } from 'store/tags/tags.queries';
-import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
-import { useUserGetQuery } from 'store/users';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
@@ -40,54 +34,36 @@ const createPostFormSchema = Yup.object({
     .max(1000, 'Caption must be 1000 characters or less'),
 });
 
-interface CreatePostFormProps {
+interface ArtistCreatePostFormProps {
   onCancel: () => void;
   onSuccess: () => void;
   removePostFile: () => void;
+  handleCreatePerformancePress: () => void;
   postFile: PostFile;
 }
 
-// todo: rename to UserCreatePostForm and simplify logic accordingly
-export const CreatePostForm: FC<CreatePostFormProps> = ({
+export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
   onCancel,
   onSuccess,
   removePostFile,
+  handleCreatePerformancePress,
   postFile,
 }) => {
-  const [performer, setPerformer] = useState<Performer | undefined>(undefined);
-  const [performerSearchTerm, setPerformerSearchTerm] = useState<
-    string | undefined
-  >(undefined);
   const [selectedPerformance, setSelectedPerformance] = useState<
     PerformanceWithEvent | undefined
   >(undefined);
 
   const [showError, setShowError] = React.useState(false);
 
-  const { authState } = useContext(AuthStateContext);
   const { profileState } = useContext(ProfileContext);
 
   let errorComponent: React.ReactNode | undefined = undefined;
 
-  const userId = authState.authUser.userId;
-  const postOwnerType =
-    profileState.profileType === ProfileType.PERFORMER
-      ? PostOwnerType.PERFORMER
-      : PostOwnerType.USER;
-
   const { mutateAsync: createPost } = usePostCreateMutation({
-    ownerId: userId,
-    ownerType: postOwnerType,
+    ownerId: profileState.profileId,
+    ownerType: PostOwnerType.PERFORMER,
     queryKeysToInvalidate: [
-      performer
-        ? performancesKeys.performancesByPerformerIds([performer.id])
-        : [],
-      performer
-        ? performancesKeys.attendeePerformancesByPerformerIds(
-            [performer.id],
-            [userId],
-          )
-        : [],
+      performancesKeys.performancesByPerformerIds([profileState.profileId]),
     ],
   });
 
@@ -99,29 +75,14 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   } = useFileCreateMutation();
 
   const {
-    mutateAsync: createTag,
-    isLoading: createTagLoading,
-    isError: createTagError,
-  } = useTagCreateMutation();
-
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    isError: isUserGetError,
-  } = useUserGetQuery({ queryParams: { id: userId } });
-
-  const postCreator = user && user[0];
-
-  const {
     isLoading: performancesLoading,
     isError: performancesError,
     data: performances,
     error: performancesGetError,
   } = usePerformancesGetQuery({
     queryParams: {
-      performerId: performer?.id,
+      performerId: profileState.profileId,
     },
-    enabled: !!performer,
   });
 
   const handleFormSubmit = async function (form: PostCreateFormValues) {
@@ -143,8 +104,8 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     }
 
     const postResult = await createPost({
-      ownerId: userId,
-      ownerType: postOwnerType,
+      ownerId: profileState.profileId,
+      ownerType: PostOwnerType.PERFORMER,
       content: form.caption as string, // submit button only active if caption is defined
       attachmentFileIds: [fileResult.file.id],
     });
@@ -155,40 +116,8 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       throw Error('failed to create post');
     }
 
-    // if no performance found for the artist, tag the artist in the post so they cna view it later
-    let tagResult;
-    if (!selectedPerformance) {
-      tagResult = await createTag({
-        taggedEntityType: TaggedEntityType.PERFORMER,
-        taggedEntityId: performer?.id as number, // submit button only active if performer is defined
-        taggedInEntityType: TaggedInEntityType.POST,
-        taggedInEntityId: createdPost.id,
-      });
-    } else {
-      // Otherwise tag the post with the performance
-      tagResult = await createTag({
-        taggedEntityType: TaggedEntityType.PERFORMANCE,
-        taggedEntityId: selectedPerformance.id,
-        taggedInEntityType: TaggedInEntityType.POST,
-        taggedInEntityId: createdPost.id,
-      });
-    }
-
-    if (!tagResult) {
-      throw Error('Failed to create tag');
-    }
-
     onSuccess();
   };
-
-  function handlePerformerSelection(performer: Performer) {
-    setShowError(false);
-    setPerformer(performer);
-  }
-
-  function handleTaggedPerformerPress() {
-    setPerformer(undefined);
-  }
 
   function handleErrorActionPress() {
     setShowError(false);
@@ -243,18 +172,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
   let formErrorComponent: React.ReactNode | undefined;
   let createFileErrorComponent: React.ReactNode | undefined;
-
-  // Validate the performer selection. TODO: Create some sort of selection form field which validates the selected input/value using a useEffect hook
-  if (!performer) {
-    formErrorComponent = (
-      <AppError
-        message={'You must select an artist to create a post'}
-        marginBottom={SPACING_SMALL}
-      ></AppError>
-    );
-  } else {
-    formErrorComponent = undefined;
-  }
 
   if (createFileError) {
     let msg = undefined;
@@ -324,42 +241,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         touched={touched.caption}
         marginBottom={SPACING_XSMALL}
       />
-      <View
-        style={{
-          ...styles.flexColumnContainer,
-          height: !performer ? 200 : 'auto',
-          marginBottom: SPACING_XSMALL,
-        }}
-      >
-        <Text style={{ width: '100%' }}>
-          Tag the artist so they see your video
-        </Text>
-        {!performer && (
-          <PerformerSearch
-            searchTermChanged={term => {
-              setPerformerSearchTerm(term);
-
-              if (showError) {
-                setShowError(false);
-              }
-            }}
-            searchTerm={performerSearchTerm}
-            onPerformerSelected={handlePerformerSelection}
-            onTextInputBlur={() => {
-              if (showError) {
-                setShowError(false);
-              }
-            }}
-            emptyStateMessage="No artists found. Try adjusting your search term"
-          ></PerformerSearch>
-        )}
-        {performer && (
-          <PerformerSearchCard
-            performer={performer}
-            onPress={handleTaggedPerformerPress}
-          ></PerformerSearchCard>
-        )}
-      </View>
       {!!performances?.length && (
         <>
           {selectedPerformance && (
@@ -377,17 +258,24 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
                   borderRadius: 3,
                 }}
               >
-                <AppText>Select the artist's performance</AppText>
+                <AppText>
+                  Select or create a performance to link to your post
+                </AppText>
               </View>
-              <List>
-                {performances.map(performance => (
-                  <PerformanceListItem
-                    key={performance.id}
-                    performances={performance}
-                    onListItemPress={setSelectedPerformance}
-                  ></PerformanceListItem>
-                ))}
-              </List>
+              <CreatePerformanceButton
+                onPress={handleCreatePerformancePress}
+              ></CreatePerformanceButton>
+              {performances.length && (
+                <List>
+                  {performances.map(performance => (
+                    <PerformanceListItem
+                      key={performance.id}
+                      performances={performance}
+                      onListItemPress={setSelectedPerformance}
+                    ></PerformanceListItem>
+                  ))}
+                </List>
+              )}
             </View>
           )}
         </>

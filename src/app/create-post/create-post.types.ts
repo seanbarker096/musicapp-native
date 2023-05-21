@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export type CreatePostStackParamList = {
   CreatePost: undefined;
+  CreatePerformanceStack: undefined;
 };
 
 // TODO: Should probably seperate these screens given completely unrelated navigators
