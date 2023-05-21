@@ -15,6 +15,8 @@ type PerformerSearchProps = {
   searchTerm?: string;
   // Fucntion to be executed once a performer is selected AND they are created or fetched succesfully from the backend
   onPerformerSelected: (performer: Performer) => void;
+  onTextInputBlur?: (e: any) => void;
+  emptyStateMessage?: string;
 };
 
 // TODO: Add loading state for when an performer is selected and we nav to their performer profile
@@ -22,6 +24,8 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
   searchTermChanged,
   searchTerm,
   onPerformerSelected,
+  onTextInputBlur,
+  emptyStateMessage = 'No results found',
 }) => {
   const [selectedSearchPerformer, setSelectedSearchPerformer] = useState<
     PerformerSearchPerformer | undefined
@@ -31,19 +35,16 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     string | undefined
   >(undefined);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useDebounceEffect<string | undefined>(searchTerm, setDebouncedSearchTerm);
 
   // user types a new character
-  const {
-    data: searchPerformers,
-    isLoading: performersSearchLoading,
-    error: performersSearchError,
-  } = usePerformersSearchQuery({
-    searchQuery: debouncedSearchTerm,
-    enabled: !!debouncedSearchTerm,
-  });
-
-  const performers = !!debouncedSearchTerm ? searchPerformers : [];
+  const { data: searchPerformers, error: performersSearchError } =
+    usePerformersSearchQuery({
+      searchQuery: debouncedSearchTerm,
+      onSettled: () => setIsLoading(false),
+    });
 
   const {
     data: performer,
@@ -55,26 +56,35 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     onSuccess: onPerformerSelected,
   });
 
-  const performerSearchResults = performers
-    ? performers.map(performer => (
+  const performerSearchResults = searchPerformers?.length
+    ? searchPerformers.map(performer => (
         <PerformerSearchCard
           performer={performer}
           onPress={() => setSelectedSearchPerformer(performer)}
         ></PerformerSearchCard>
       ))
-    : [];    
+    : [];
 
   const error = performersSearchError || performersGetOrCreateError;
+
+  const searchReady = !isLoading && !performersSearchError;
 
   return (
     <View style={styles.container}>
       <SearchBar
-        searchTermChanged={searchTermChanged}
+        searchTermChanged={searchTerm => {
+          setIsLoading(true);
+          searchTermChanged(searchTerm);
+        }}
         searchResults={performerSearchResults}
         searchTerm={searchTerm}
+        handleBlur={onTextInputBlur}
         scrollable={true}
       ></SearchBar>
-      {performersSearchLoading && <AppText>Loading...</AppText>}
+      {isLoading && <AppText>Loading...</AppText>}
+      {searchReady && searchTerm && performerSearchResults.length === 0 && (
+        <AppText>{emptyStateMessage}</AppText>
+      )}
     </View>
   );
 };

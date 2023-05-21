@@ -1,11 +1,12 @@
 import { List, ListItem } from 'components/list';
 import React, { FC } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 type Props = {
   searchTermChanged: (searchTerm: string) => void;
   searchTerm?: string;
   searchResults: readonly React.ReactNode[];
+  handleBlur?: (e: any) => void;
   scrollable?: boolean;
   height?: number; // if scrollable container used, this defines height of it
 };
@@ -16,6 +17,7 @@ export const SearchBar: FC<Props> = ({
   searchTermChanged,
   searchTerm,
   searchResults,
+  handleBlur,
   height,
 }) => {
   return (
@@ -27,28 +29,22 @@ export const SearchBar: FC<Props> = ({
       <TextInput
         style={styles.text}
         onChangeText={val => searchTermChanged(val)}
+        onBlur={handleBlur}
         value={searchTerm}
         placeholder="Search"
       />
-
-      <>
-        {searchResults && searchResults.length > 0 && (
-          <List
-            sidePadding="xxxsmall"
-            verticalPadding="none"
-            scrollable={scrollable}
-            maxHeight={height}
-          >
-            {searchResults.map((searchResult, index) => (
-              <ListItem key={index}>{searchResult}</ListItem>
-            ))}
-          </List>
-        )}
-        {searchResults && searchResults.length === 0 && (
-          //   !isPerformersSearchError &&
-          <Text>NO results</Text>
-        )}
-      </>
+      {searchResults && searchResults.length > 0 && (
+        <List
+          sidePadding="xxxsmall"
+          verticalPadding="none"
+          scrollable={scrollable}
+          maxHeight={height}
+        >
+          {searchResults.map((searchResult, index) => (
+            <ListItem key={index}>{searchResult}</ListItem>
+          ))}
+        </List>
+      )}
     </View>
   );
 };

@@ -263,7 +263,7 @@ export function useDebounceEffect<T>(value: T, callback: (value: T) => void) {
 
     // Once debounce timer is done, call parent callback so something
     // can be done with the search term
-    searchDebounceTimer = setTimeout(() => callback(value), 500);
+    searchDebounceTimer = setTimeout(() => callback(value), 250);
 
     return () => {
       if (searchDebounceTimer) {

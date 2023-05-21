@@ -61,10 +61,12 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     PerformanceWithEvent | undefined
   >(undefined);
 
-  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+  const [showError, setShowError] = React.useState(false);
 
   const { authState } = useContext(AuthStateContext);
   const { profileState } = useContext(ProfileContext);
+
+  let errorComponent: React.ReactNode | undefined = undefined;
 
   const userId = authState.authUser.userId;
   const postOwnerType =
@@ -95,19 +97,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     error: createFileError,
   } = useFileCreateMutation();
 
-  let errorMessage;
-
-  switch (createFileError?.error_code) {
-    case 'FILE_TOO_LARGE':
-      errorMessage =
-        'File is too large. Please try again by uploading a shorter video.';
-      break;
-    case 'UNKNOWN_ERROR':
-      errorMessage = 'An unknown error occured';
-    default:
-      errorMessage = undefined;
-  }
-
   const {
     mutateAsync: createTag,
     isLoading: createTagLoading,
@@ -135,7 +124,11 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   });
 
   const handleFormSubmit = async function (form: PostCreateFormValues) {
-    setShowErrorMessage(true);
+    setShowError(true);
+
+    if (!!errorComponent) {
+      return Promise.reject();
+    }
 
     const fileResult = await createFile({
       fileName: postFile.fileName,
@@ -188,6 +181,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   };
 
   function handlePerformerSelection(performer: Performer) {
+    setShowError(false);
     setPerformer(performer);
   }
 
@@ -196,7 +190,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   }
 
   function handleErrorActionPress() {
-    setShowErrorMessage(false);
+    setShowError(false);
     removePostFile();
   }
 
@@ -220,13 +214,9 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
   const handleCaptionChange = handleChange('caption');
 
+  // Note we show the button even if the reuqired performer field hasn't been filled, so we display a clear error message to the user if they try to submit without selecting a performer
   const buttonDisabled =
-    isSubmitting ||
-    !postFile ||
-    !performer ||
-    !isValid ||
-    !dirty ||
-    performancesLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
+    isSubmitting || !postFile || !isValid || !dirty || performancesLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
 
   // <Placeholder
   //   Animation={props => (
@@ -250,6 +240,51 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   //   </View>
   // </Placeholder>
 
+  let formErrorComponent: React.ReactNode | undefined;
+  let createFileErrorComponent: React.ReactNode | undefined;
+
+  // Validate the performer selection. TODO: Create some sort of selection form field which validates the selected input/value using a useEffect hook
+  if (!performer) {
+    formErrorComponent = (
+      <AppError
+        message={'You must select an artist to create a post'}
+        marginBottom={SPACING_SMALL}
+      ></AppError>
+    );
+  } else {
+    formErrorComponent = undefined;
+  }
+
+  if (createFileError) {
+    let msg = undefined;
+    switch (createFileError.error_code) {
+      case 'FILE_TOO_LARGE':
+        msg =
+          'File is too large. Please try again by uploading a shorter video.';
+        break;
+      case 'UNKNOWN_ERROR':
+        msg = 'An unknown error occured';
+    }
+
+    createFileErrorComponent = msg ? (
+      <AppError
+        message={msg}
+        onAction={handleErrorActionPress}
+        marginBottom={SPACING_SMALL}
+      ></AppError>
+    ) : undefined;
+  } else {
+    createFileErrorComponent = undefined;
+  }
+
+  if (createFileErrorComponent) {
+    errorComponent = createFileErrorComponent;
+  } else if (formErrorComponent) {
+    errorComponent = formErrorComponent;
+  } else {
+    errorComponent = undefined;
+  }
+
   return (
     <View
       style={{
@@ -270,9 +305,16 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       </View>
       <AppTextInput
         handleChange={(e: string | React.ChangeEvent<any>) => {
+          if (showError) {
+            setShowError(false);
+          }
           handleCaptionChange(e);
         }}
         handleBlur={(e: any) => {
+          if (showError) {
+            setShowError(false);
+          }
+          setShowError(false);
           handleCaptionBlur(e);
         }}
         value={values.caption}
@@ -293,9 +335,21 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         </Text>
         {!performer && (
           <PerformerSearch
-            searchTermChanged={setPerformerSearchTerm}
+            searchTermChanged={term => {
+              setPerformerSearchTerm(term);
+
+              if (showError) {
+                setShowError(false);
+              }
+            }}
             searchTerm={performerSearchTerm}
             onPerformerSelected={handlePerformerSelection}
+            onTextInputBlur={() => {
+              if (showError) {
+                setShowError(false);
+              }
+            }}
+            emptyStateMessage="No artists found. Try adjusting your search term"
           ></PerformerSearch>
         )}
         {performer && (
@@ -305,7 +359,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           ></PerformerSearchCard>
         )}
       </View>
-      {performances && (
+      {!!performances?.length && (
         <>
           {selectedPerformance && (
             <PerformanceListItem
@@ -344,13 +398,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           width: '100%',
         }}
       >
-        {showErrorMessage && errorMessage && (
-          <AppError
-            message={errorMessage}
-            onAction={createFileError ? handleErrorActionPress : undefined}
-            marginBottom={SPACING_SMALL}
-          ></AppError>
-        )}
+        {showError && !!errorComponent && errorComponent}
         <View
           style={{
             ...styles.flexRowContainer,

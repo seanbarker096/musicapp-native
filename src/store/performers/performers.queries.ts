@@ -34,13 +34,18 @@ const performersSearch = async (searchQuery: string) => {
 export function usePerformersSearchQuery({
   searchQuery,
   enabled = true,
+  onSettled,
 }: {
   searchQuery?: string;
   enabled?: boolean;
+  onSettled?: (
+    data: readonly PerformerSearchPerformer[] | undefined,
+    error: unknown,
+  ) => void;
 }) {
   let query: string | undefined = undefined;
 
-  let queryKey: QueryKey = performersKeys.null;
+  let queryKey: QueryKey = performersKeys.null('usePerformersSearchQuery');
 
   if (searchQuery) {
     query = searchQuery;
@@ -51,18 +56,11 @@ export function usePerformersSearchQuery({
     readonly PerformerSearchPerformer[],
     unknown,
     readonly PerformerSearchPerformer[]
-  >(
-    queryKey,
-    () =>
-      query
-        ? performersSearch(query)
-        : failedQuery(
-            'Invalid search query. Search query must be defined to search performers',
-          ),
-    {
-      enabled,
-    },
-  );
+    // to ensure loading states work correctly, if a search term i sundefined (e.g. by backspacing) we still resolve the promise, but with an empty array
+  >(queryKey, () => (query ? performersSearch(query) : Promise.resolve([])), {
+    enabled,
+    onSettled,
+  });
 }
 
 /** ------------------ PERFORMER_GET_OR_CREATE --------------------------- */
@@ -84,14 +82,14 @@ async function performerGetOrCreate(performerUUID: string) {
 
 export function usePerformerGetOrCreateQuery({
   performerUUID,
-  enabled,
+  enabled = true,
   onSuccess,
 }: {
   performerUUID: string | undefined;
   enabled: boolean;
   onSuccess?: (performer: Performer) => void;
 }) {
-  let queryKey: QueryKey = performersKeys.null;
+  let queryKey: QueryKey = performersKeys.null('usePerformerGetOrCreateQuery');
 
   if (performerUUID) {
     queryKey = performersKeys.performerByUUID(performerUUID);
@@ -143,7 +141,7 @@ export function usePerformersGetQuery({
     | PerformersStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = performersKeys.null;
+  let queryKey: QueryKey = performersKeys.null('usePerformersGetQuery');
 
   if (id) {
     const processedId = isArray(id) ? id : [id];
