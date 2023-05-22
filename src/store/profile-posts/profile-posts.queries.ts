@@ -1,6 +1,6 @@
 /** -------------------- PROFILE POSTS GET ---------------------- */
 
-import { useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 import { Post } from 'store/posts';
 import { transformPostApi } from 'store/posts/posts.transformations';
 import { getRequest } from 'store/request-builder';
@@ -16,6 +16,7 @@ async function profilePostsGet({
   include_featured,
   include_owned,
   include_tagged,
+  offset,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
   const response = await getRequest<ProfilePostsStoreSlice>({
     url: `posts/0.1/profiles/${profile_id}/posts`,
@@ -25,6 +26,7 @@ async function profilePostsGet({
       include_featured,
       include_owned,
       include_tagged,
+      offset: offset,
     },
   });
 
@@ -50,8 +52,11 @@ export const useProfilePostsGetQuery = ({
     include_tagged: includeTagged,
   };
 
-  return useQuery<readonly Post[], unknown, readonly Post[]>(
+  return useInfiniteQuery<readonly Post[], unknown, readonly Post[]>(
     profilePostsKeys.profilePostsByProfile(profileId, profileType),
-    () => profilePostsGet(apiQueryParams),
+    ({ pageParam }) => profilePostsGet({ ...apiQueryParams, pageParam }),
+    {
+      getNextPageParam: (lastPage, pages) => lastPage.offset + 10, // need to ensure that response from profilePostsgET HAS AN OFFSET field present
+    },
   );
 };
