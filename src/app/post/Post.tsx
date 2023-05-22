@@ -89,9 +89,6 @@ export const Post: FC<PostProps> = ({
 
   const postOwner =
     (userData && userData[0]) || (performerData && performerData[0]);
-  const performer = performerData && performerData[0];
-
-  const ownerReady = performer || postOwner;
 
   // Fetch any performances tagged in this post
   const {
@@ -249,7 +246,6 @@ export const Post: FC<PostProps> = ({
     performer: Performer,
     performance?: Performance,
   ) {
-    console.log(performer, performance);
     if (performance) {
       navigation.navigate('PerformanceStack', {
         performanceId: performance.id,
@@ -264,7 +260,7 @@ export const Post: FC<PostProps> = ({
   }
 
   const PostHeader = () =>
-    ownerReady ? (
+    postOwner ? (
       <View
         style={{
           padding: SPACING_XSMALL,
@@ -272,19 +268,19 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {postOwner && isPerformer(postOwner) && (
+        {isPerformer(postOwner) && (
           <PerformerPostHeader
             profileImageUrl={postOwner.imageUrl}
             displayName={postOwner.name}
-            performanceText={`${postOwner.name}${
-              taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
+            performanceText={`${
+              taggedPerformance ? taggedPerformance?.venueName : ''
             }`}
             onPerformerPress={() =>
               navigateToPerformerProfile(postOwner, taggedPerformance)
             }
           ></PerformerPostHeader>
         )}
-        {postOwner && !isPerformer(postOwner) && (
+        {!isPerformer(postOwner) && (
           <UserPostHeader
             avatarImageUrl={postOwner.avatarFile?.url}
             username={postOwner.username}
@@ -409,7 +405,9 @@ export const Post: FC<PostProps> = ({
               weight="bold"
               marginRight={SPACING_XXSMALL}
             >
-              dan13
+              {postOwner && isPerformer(postOwner)
+                ? postOwner.name
+                : postOwner?.username}
             </AppText>
             <AppText>{post.content}</AppText>
           </View>
