@@ -14,6 +14,8 @@ import { usePerformancesGetQuery } from 'store/performances/performances.queries
 import { performancesKeys } from 'store/performances/performances.query-keys';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
+import { useTagCreateMutation } from 'store/tags/tags.queries';
+import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
@@ -30,7 +32,7 @@ interface PostCreateFormValues {
 
 const createPostFormSchema = Yup.object({
   caption: Yup.string()
-    .required('Required')
+    .required('You must enter a caption.')
     .max(1000, 'Caption must be 1000 characters or less'),
 });
 
@@ -75,6 +77,12 @@ export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
   } = useFileCreateMutation();
 
   const {
+    mutateAsync: createTag,
+    isLoading: createTagLoading,
+    isError: createTagError,
+  } = useTagCreateMutation();
+
+  const {
     isLoading: performancesLoading,
     isError: performancesError,
     data: performances,
@@ -114,6 +122,20 @@ export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
 
     if (!createdPost) {
       throw Error('failed to create post');
+    }
+
+    // If performance has been selected, then create a tag for the performance
+    if (selectedPerformance) {
+      const tagResult = await createTag({
+        taggedEntityType: TaggedEntityType.PERFORMANCE,
+        taggedEntityId: selectedPerformance.id,
+        taggedInEntityType: TaggedInEntityType.POST,
+        taggedInEntityId: createdPost.id,
+      });
+
+      if (!tagResult) {
+        throw Error('Failed to create tag');
+      }
     }
 
     onSuccess();
@@ -250,18 +272,11 @@ export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
             ></PerformanceListItem>
           )}
           {!selectedPerformance && (
-            <View style={{ width: '70%' }}>
-              <View
-                style={{
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                  borderRadius: 3,
-                }}
-              >
-                <AppText>
-                  Select or create a performance to link to your post
-                </AppText>
-              </View>
+            <View style={{ width: '100%' }}>
+              <AppText>
+                Select or create a performance to link to your post
+              </AppText>
+
               <CreatePerformanceButton
                 onPress={handleCreatePerformancePress}
               ></CreatePerformanceButton>

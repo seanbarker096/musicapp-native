@@ -25,6 +25,7 @@ const CreatePostStackScreen: FC<Props> = () => {
         name="CreatePost"
       ></CreateStackTabNavigator.Screen>
       <CreateStackTabNavigator.Screen
+        options={{ headerShown: false }}
         component={CreatePerformanceStackScreen}
         name="CreatePerformanceStack"
       ></CreateStackTabNavigator.Screen>

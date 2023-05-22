@@ -3,7 +3,7 @@ import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { ProfileType } from 'contexts/profile.context';
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
@@ -11,7 +11,7 @@ import {
   Video,
   VideoReadyForDisplayEvent,
 } from 'expo-av';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import {
   Placeholder,
@@ -27,6 +27,7 @@ import { PostOwnerType } from 'store/posts';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
+import { User } from 'store/users/users.types';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 import PerformerPostHeader from './PerformerPostHeader';
@@ -55,25 +56,17 @@ export const Post: FC<PostProps> = ({
   },
   navigation,
 }) => {
-  const { profileState } = useContext(ProfileContext);
-  const { profileId, profileType } = profileState;
-
-  const postOwnerType =
-    profileType === ProfileType.PERFORMER
-      ? PostOwnerType.PERFORMER
-      : PostOwnerType.USER;
-
   const { isLoading: postLoading, postsWithAttachmentsAndFiles: posts } =
     useGetPostsWithAttachmentsAndFilesQuery({
       queryParams: {
         id: postId,
-        ownerType: postOwnerType,
-        ownerId: profileId,
       },
       enabled: true,
     });
 
   const post = posts && posts[0];
+
+  const postOwnerIsArtist = post?.ownerType === PostOwnerType.PERFORMER;
 
   const {
     data: userData,
@@ -94,10 +87,11 @@ export const Post: FC<PostProps> = ({
     enabled: !!(post?.ownerType === PostOwnerType.PERFORMER),
   });
 
-  const user = userData && userData[0];
+  const postOwner =
+    (userData && userData[0]) || (performerData && performerData[0]);
   const performer = performerData && performerData[0];
 
-  const ownerReady = performer || user;
+  const ownerReady = performer || postOwner;
 
   // Fetch any performances tagged in this post
   const {
@@ -278,29 +272,36 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {post?.ownerType === PostOwnerType.PERFORMER &&
-          performer &&
-          postPerformer && (
-            <PerformerPostHeader
-              profileImageUrl={performer.imageUrl}
-              displayName={performer.name}
-              performanceText={`${postPerformer.name}${
-                taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
-              }`}
-              onPerformerPress={() =>
-                navigateToPerformerProfile(postPerformer, taggedPerformance)
-              }
-            ></PerformerPostHeader>
-          )}
-        {post?.ownerType === PostOwnerType.USER && user && postPerformer && (
-          <UserPostHeader
-            avatarImageUrl={user.avatarFile?.url}
-            username={user.username}
-            performanceText={`${postPerformer.name}${
+        {postOwner && isPerformer(postOwner) && (
+          <PerformerPostHeader
+            profileImageUrl={postOwner.imageUrl}
+            displayName={postOwner.name}
+            performanceText={`${postOwner.name}${
               taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
             }`}
             onPerformerPress={() =>
-              navigateToPerformerProfile(postPerformer, taggedPerformance)
+              navigateToPerformerProfile(postOwner, taggedPerformance)
+            }
+          ></PerformerPostHeader>
+        )}
+        {postOwner && !isPerformer(postOwner) && (
+          <UserPostHeader
+            avatarImageUrl={postOwner.avatarFile?.url}
+            username={postOwner.username}
+            performanceText={
+              postPerformer
+                ? `${postPerformer.name}${
+                    taggedPerformance
+                      ? ' @ ' + taggedPerformance?.venueName
+                      : ''
+                  }`
+                : ''
+            }
+            onPerformerPress={
+              postPerformer
+                ? () =>
+                    navigateToPerformerProfile(postPerformer, taggedPerformance)
+                : undefined
             }
           ></UserPostHeader>
         )}
@@ -331,7 +332,7 @@ export const Post: FC<PostProps> = ({
 
   return (
     <>
-      {post && postPerformer && (
+      {post && (
         <View style={styles.container}>
           <PostHeader />
           <Pressable
@@ -374,17 +375,30 @@ export const Post: FC<PostProps> = ({
               </SVGIcon>
             )}
           </Pressable>
-          <PostFooter
-            post={post}
-            postPerformer={postPerformer}
-            handleLinkToPerformancePress={() =>
-              navigation.navigate('PostLinkToPerformance', {
-                postId: post.id,
-                performerId: postPerformer.id,
-              })
-            }
-          ></PostFooter>
-
+          {postOwner && isPerformer(postOwner) && (
+            <PostFooter
+              post={post}
+              postPerformer={postOwner}
+              handleLinkToPerformancePress={() =>
+                navigation.navigate('PostLinkToPerformance', {
+                  postId: post.id,
+                  performerId: postOwner.id,
+                })
+              }
+            ></PostFooter>
+          )}
+          {postOwner && !isPerformer(postOwner) && postPerformer && (
+            <PostFooter
+              post={post}
+              postPerformer={postPerformer}
+              handleLinkToPerformancePress={() =>
+                navigation.navigate('PostLinkToPerformance', {
+                  postId: post.id,
+                  performerId: postPerformer.id,
+                })
+              }
+            ></PostFooter>
+          )}
           <View
             style={{
               ...styles.sidePadding,
@@ -431,3 +445,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -25 }, { translateY: -25 }],
   },
 });
+
+function isPerformer(person: User | Performer): person is Performer {
+  return 'uuid' in person;
+}
