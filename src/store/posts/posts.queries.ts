@@ -30,7 +30,6 @@ export type PostsGetQueryField = Partial<{
 const postsGet = async (
   params: PostsStoreSlice['Get']['RequestParametersType'],
 ) => {
-  console.log(params);
   const response = await getRequest<PostsStoreSlice>({
     url: 'posts/0.1/posts',
     params: {

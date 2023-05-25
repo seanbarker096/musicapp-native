@@ -1,4 +1,5 @@
 import { ProfileType } from 'contexts/profile.context';
+import { PostAttachmentApi } from 'store/post-attachments/post-attachments.types';
 import { Post, PostApi } from 'store/posts';
 import { StoreSlice } from 'store/store.types';
 
@@ -18,7 +19,7 @@ export interface ProfilePostsGetFilterApi {
   include_tagged: boolean;
   include_featured: boolean;
   include_owned: boolean;
-  offset?: number;
+  offset: number;
 }
 
 export interface ProfilePostsGetFilter {
@@ -27,9 +28,10 @@ export interface ProfilePostsGetFilter {
   includeTagged: boolean;
   includeFeatured: boolean;
   includeOwned: boolean;
-  offset?: number;
+  offset: number;
 }
 
 export interface ProfilePostsGetResultApi {
   posts: readonly PostApi[];
+  attachments?: readonly PostAttachmentApi[];
 }

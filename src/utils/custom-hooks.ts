@@ -93,7 +93,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
   const {
-    data: posts,
+    data: infiniteQueryData,
     isLoading: postsLoading,
     isError: postsError,
   } = useProfilePostsGetQuery({
@@ -104,7 +104,15 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     includeTagged,
   });
 
+  const posts = infiniteQueryData?.pages.reduce<readonly Post[]>(
+    (prev, curr) => {
+      return [...prev, ...curr.data];
+    },
+    [],
+  );
+
   const postsReady = !!posts && !postsLoading;
+
 
   const postIds = posts?.map(post => post.id);
 

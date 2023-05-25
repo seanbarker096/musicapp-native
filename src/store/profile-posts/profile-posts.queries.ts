@@ -16,8 +16,9 @@ async function profilePostsGet({
   include_featured,
   include_owned,
   include_tagged,
-  offset,
+  offset = 0,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
+  console.log('offset', offset);
   const response = await getRequest<ProfilePostsStoreSlice>({
     url: `posts/0.1/profiles/${profile_id}/posts`,
     params: {
@@ -30,7 +31,10 @@ async function profilePostsGet({
     },
   });
 
-  return response.data.posts.map(post => transformPostApi(post));
+  return {
+    data: response.data.posts.map(post => transformPostApi(post)),
+    offset: offset,
+  };
 }
 
 export const useProfilePostsGetQuery = ({
@@ -52,11 +56,16 @@ export const useProfilePostsGetQuery = ({
     include_tagged: includeTagged,
   };
 
-  return useInfiniteQuery<readonly Post[], unknown, readonly Post[]>(
+  return useInfiniteQuery<
+    { data: readonly Post[]; offset: number },
+    unknown,
+    { data: readonly Post[]; offset: number }
+  >(
     profilePostsKeys.profilePostsByProfile(profileId, profileType),
-    ({ pageParam }) => profilePostsGet({ ...apiQueryParams, pageParam }),
+    ({ pageParam }) =>
+      profilePostsGet({ ...apiQueryParams, offset: pageParam }),
     {
-      getNextPageParam: (lastPage, pages) => lastPage.offset + 10, // need to ensure that response from profilePostsgET HAS AN OFFSET field present
+      getNextPageParam: (lastPage, pages) => lastPage.offset + 10,
     },
   );
 };

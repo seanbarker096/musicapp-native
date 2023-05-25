@@ -1,4 +1,4 @@
-import { Gallery } from 'components/gallery';
+import { ScrollableGallery } from 'components/gallery';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
@@ -21,10 +21,10 @@ const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
   return (
     <>
       {postsWithAttachmentsAndFiles && (
-        <Gallery
+        <ScrollableGallery
           postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
           isLoading={postsLoading}
-        ></Gallery>
+        ></ScrollableGallery>
       )}
     </>
   );
