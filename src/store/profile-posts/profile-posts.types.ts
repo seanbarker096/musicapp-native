@@ -19,7 +19,6 @@ export interface ProfilePostsGetFilterApi {
   include_tagged: boolean;
   include_featured: boolean;
   include_owned: boolean;
-  offset: number;
   limit: number;
 }
 

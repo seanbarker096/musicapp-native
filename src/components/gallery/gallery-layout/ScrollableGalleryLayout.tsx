@@ -52,7 +52,7 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
         maxItems={3}
       >
         {item.map(post => (
-          <>
+          <View key={post.id}>
             <GalleryItem
               galleryItemStyles={{ ...styles.item, position: 'relative' }}
               post={post}
@@ -69,7 +69,7 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
                 {galleryItemFooter(post)}
               </View>
             )}
-          </>
+          </View>
         ))}
       </Row>
     );
@@ -94,8 +94,16 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     <FlatList
       data={arrangedPosts}
       renderItem={listItem}
+      keyExtractor={(item, index) => index.toString()}
       ListFooterComponent={renderFooter}
-      onEndReached={onEndReached ? () => onEndReached() : undefined}
+      onEndReached={
+        onEndReached
+          ? () => {
+              console.log('asdsadas');
+              onEndReached();
+            }
+          : undefined
+      }
       onEndReachedThreshold={0.5}
       initialNumToRender={9}
       windowSize={9}

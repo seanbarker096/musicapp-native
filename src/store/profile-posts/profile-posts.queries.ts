@@ -1,6 +1,5 @@
 /** -------------------- PROFILE POSTS GET ---------------------- */
-
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { Post } from 'store/posts';
 import { transformPostApi } from 'store/posts/posts.transformations';
 import { getRequest } from 'store/request-builder';
@@ -9,7 +8,6 @@ import {
   ProfilePostsGetFilter,
   ProfilePostsStoreSlice,
 } from './profile-posts.types';
-
 async function profilePostsGet({
   profile_id,
   profile_type,
@@ -17,9 +15,8 @@ async function profilePostsGet({
   include_owned,
   include_tagged,
   limit,
-  offset = 0,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
-  console.log('offset', offset);
+  console.log('LIMIT', limit);
   const response = await getRequest<ProfilePostsStoreSlice>({
     url: `posts/0.1/profiles/${profile_id}/posts`,
     params: {
@@ -29,28 +26,22 @@ async function profilePostsGet({
       include_owned,
       include_tagged,
       limit,
-      offset: offset,
     },
   });
-
-  return {
-    data: response.data.posts.map(post => transformPostApi(post)),
-    offset: offset,
-  };
+  return response.data.posts.map(post => transformPostApi(post));
 }
-
 export const useProfilePostsGetQuery = ({
   profileType,
   profileId,
   includeFeatured,
   includeOwned,
   includeTagged,
-  limit = 9,
+  limit,
 }: ProfilePostsGetFilter) => {
+  console.log('LIMIT**********', limit);
   if (!profileId) {
     throw new Error('Profile ID is required for a profilePostsGetQuery');
   }
-
   const apiQueryParams = {
     profile_id: profileId,
     profile_type: profileType,
@@ -59,22 +50,8 @@ export const useProfilePostsGetQuery = ({
     include_tagged: includeTagged,
     limit,
   };
-
-  return useInfiniteQuery<
-    { data: readonly Post[]; offset: number },
-    unknown,
-    { data: readonly Post[]; offset: number }
-  >(
-    profilePostsKeys.profilePostsByProfile(profileId, profileType),
-    ({ pageParam }) =>
-      profilePostsGet({ ...apiQueryParams, offset: pageParam }),
-    {
-      getNextPageParam: (lastPage, pages) => {
-        console.log('lastPage', lastPage);
-        console.log(limit);
-        // if last page length was less than limit, we dont have another page to fetch, so return undefined
-        return lastPage.data.length >= limit ? lastPage.offset + 9 : undefined;
-      },
-    },
+  return useQuery<readonly Post[], unknown, readonly Post[]>(
+    profilePostsKeys.profilePostsByProfile(profileId, profileType, limit),
+    () => profilePostsGet(apiQueryParams),
   );
 };

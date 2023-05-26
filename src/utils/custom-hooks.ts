@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query';
 import {
   FeaturedPostsGetQueryFields,
   useFeaturedPostsGetQuery,
@@ -93,21 +92,10 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
 }: ProfilePostsGetFilter): {
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
-  hasNextPage: boolean;
-  fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<
-    InfiniteQueryObserverResult<
-      {
-        data: readonly Post[];
-        offset: number;
-      },
-      unknown
-    >
-  >;
 } {
+  console.log('LIMITSADASDAS', limit);
   const {
-    data: infiniteQueryData,
-    hasNextPage,
-    fetchNextPage,
+    data: posts,
     isLoading: postsLoading,
     isError: postsError,
   } = useProfilePostsGetQuery({
@@ -118,14 +106,6 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     includeTagged,
     limit,
   });
-
-  const posts = infiniteQueryData?.pages.reduce<readonly Post[]>(
-    (prev, curr) => {
-      return [...prev, ...curr.data];
-    },
-    [],
-  );
-
   const postsReady = !!posts && !postsLoading;
 
   const postIds = posts?.map(post => post.id);
@@ -167,11 +147,8 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   return {
     isLoading,
     postsWithAttachmentsAndFiles,
-    hasNextPage: !!hasNextPage,
-    fetchNextPage,
   };
 }
-
 
 // TODO: Make infinite query copy and use this instead
 export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
@@ -298,7 +275,6 @@ export function useDebounceEffect<T>(value: T, callback: (value: T) => void) {
     };
   }, [value]);
 }
-
 
 export function useIntervalEffect<T extends any[]>(
   handler: (...args: T) => void,

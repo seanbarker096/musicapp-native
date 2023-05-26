@@ -1,6 +1,6 @@
 import { ScrollableGallery } from 'components/gallery';
 import { ProfileType } from 'contexts/profile.context';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface ProfileShowsProps {
@@ -9,21 +9,26 @@ interface ProfileShowsProps {
 }
 
 const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
-  const {
-    isLoading: postsLoading,
-    postsWithAttachmentsAndFiles,
-    hasNextPage,
-    fetchNextPage,
-  } = useGetProfilePostsWithAttachmentsAndFilesQuery({
-    profileId,
-    profileType,
-    includeFeatured: true,
-    includeOwned: true,
-    includeTagged: false,
-    limit: 9,
-  });
+  const [limit, setLimit] = useState(9);
 
-  console.log(hasNextPage);
+  let queryLimit = 9;
+  useEffect(() => {
+    queryLimit = limit;
+  }, [limit]);
+
+  const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
+    useGetProfilePostsWithAttachmentsAndFilesQuery({
+      profileId,
+      profileType,
+      includeFeatured: true,
+      includeOwned: true,
+      includeTagged: false,
+      limit: queryLimit,
+    });
+
+  const hasNextPage = postsWithAttachmentsAndFiles
+    ? postsWithAttachmentsAndFiles.length >= limit
+    : false;
 
   return (
     <>
@@ -32,7 +37,10 @@ const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
           postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
           isLoading={postsLoading}
           hasMoreData={hasNextPage}
-          onEndReached={fetchNextPage}
+          onEndReached={() => {
+            setLimit(limit + 9);
+            console.log('ended reached', limit);
+          }}
         ></ScrollableGallery>
       )}
     </>
