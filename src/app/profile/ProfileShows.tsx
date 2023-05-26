@@ -9,14 +9,21 @@ interface ProfileShowsProps {
 }
 
 const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
-  const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
-    useGetProfilePostsWithAttachmentsAndFilesQuery({
-      profileId,
-      profileType,
-      includeFeatured: true,
-      includeOwned: true,
-      includeTagged: false,
-    });
+  const {
+    isLoading: postsLoading,
+    postsWithAttachmentsAndFiles,
+    hasNextPage,
+    fetchNextPage,
+  } = useGetProfilePostsWithAttachmentsAndFilesQuery({
+    profileId,
+    profileType,
+    includeFeatured: true,
+    includeOwned: true,
+    includeTagged: false,
+    limit: 9,
+  });
+
+  console.log(hasNextPage);
 
   return (
     <>
@@ -24,6 +31,8 @@ const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
         <ScrollableGallery
           postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
           isLoading={postsLoading}
+          hasMoreData={hasNextPage}
+          onEndReached={fetchNextPage}
         ></ScrollableGallery>
       )}
     </>

@@ -20,6 +20,7 @@ export interface ProfilePostsGetFilterApi {
   include_featured: boolean;
   include_owned: boolean;
   offset: number;
+  limit: number;
 }
 
 export interface ProfilePostsGetFilter {
@@ -28,7 +29,7 @@ export interface ProfilePostsGetFilter {
   includeTagged: boolean;
   includeFeatured: boolean;
   includeOwned: boolean;
-  offset: number;
+  limit?: number;
 }
 
 export interface ProfilePostsGetResultApi {

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { FetchNextPageOptions, InfiniteQueryObserverResult } from 'react-query';
 import {
   FeaturedPostsGetQueryFields,
   useFeaturedPostsGetQuery,
@@ -13,7 +14,7 @@ import {
   useProfilePostsGetQuery,
 } from 'store/profile-posts';
 
-// TODO: Add error handling/return error if it occurs for client to handle
+// TODO: Make infinite query copy and use this instead
 export function useGetPostsWithAttachmentsAndFilesQuery({
   queryParams: { ownerId, ownerType, id },
   enabled = true,
@@ -88,12 +89,25 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   includeFeatured,
   includeOwned,
   includeTagged,
+  limit,
 }: ProfilePostsGetFilter): {
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
+  hasNextPage: boolean;
+  fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<
+    InfiniteQueryObserverResult<
+      {
+        data: readonly Post[];
+        offset: number;
+      },
+      unknown
+    >
+  >;
 } {
   const {
     data: infiniteQueryData,
+    hasNextPage,
+    fetchNextPage,
     isLoading: postsLoading,
     isError: postsError,
   } = useProfilePostsGetQuery({
@@ -102,6 +116,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     includeFeatured,
     includeOwned,
     includeTagged,
+    limit,
   });
 
   const posts = infiniteQueryData?.pages.reduce<readonly Post[]>(
@@ -112,7 +127,6 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   );
 
   const postsReady = !!posts && !postsLoading;
-
 
   const postIds = posts?.map(post => post.id);
 
@@ -153,9 +167,13 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   return {
     isLoading,
     postsWithAttachmentsAndFiles,
+    hasNextPage: !!hasNextPage,
+    fetchNextPage,
   };
 }
 
+
+// TODO: Make infinite query copy and use this instead
 export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
   queryParams: {
     ownerId,

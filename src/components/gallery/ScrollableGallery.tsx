@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Post } from 'store/posts';
 import ScrollableGalleryLayout from './gallery-layout/ScrollableGalleryLayout';
@@ -11,7 +11,7 @@ interface ScrollableGalleryProps {
    */
   galleryItemFooter?: (post: Post) => ReactElement;
   isLoading?: boolean;
-  onEndReached?: (info: { distanceFromEnd: number }) => void;
+  onEndReached?: () => void;
   hasMoreData?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const ScrollableGallery: FC<ScrollableGalleryProps> = ({
   hasMoreData,
 }) => {
   return (
-    <View style={{ width: '100%' }}>
+    <>
       {postsWithAttachmentsAndFiles && (
         <>
           <ScrollableGalleryLayout
@@ -34,7 +34,7 @@ export const ScrollableGallery: FC<ScrollableGalleryProps> = ({
           ></ScrollableGalleryLayout>
         </>
       )}
-    </View>
+    </>
   );
 };
 

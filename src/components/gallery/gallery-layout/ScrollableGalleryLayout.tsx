@@ -18,7 +18,7 @@ interface GalleryLayoutProps {
    * A function that returns a ReactElement to be rendered as the footer of each gallery item.
    */
   galleryItemFooter?: (post: Post) => ReactElement;
-  onEndReached?: (info: { distanceFromEnd: number }) => void;
+  onEndReached?: () => void;
   hasMoreData?: boolean;
 }
 
@@ -43,9 +43,14 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     arrangedPosts[i].push(post);
   });
 
-  const listItem = ({ item }: ListRenderItemInfo<Post[]>) => {
+  console.log('arrangedPosts', arrangedPosts);
+
+  const listItem = ({ item, index }: ListRenderItemInfo<Post[]>) => {
     return (
-      <Row>
+      <Row
+        key={index}
+        maxItems={3}
+      >
         {item.map(post => (
           <>
             <GalleryItem
@@ -86,20 +91,15 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   };
 
   return (
-    <View>
-      <FlatList
-        data={arrangedPosts}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={listItem}
-        ListFooterComponent={renderFooter}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-        initialNumToRender={10}
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-      />
-    </View>
+    <FlatList
+      data={arrangedPosts}
+      renderItem={listItem}
+      ListFooterComponent={renderFooter}
+      onEndReached={onEndReached ? () => onEndReached() : undefined}
+      onEndReachedThreshold={0.5}
+      initialNumToRender={9}
+      windowSize={9}
+    />
   );
 };
 

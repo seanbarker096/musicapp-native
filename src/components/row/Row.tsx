@@ -4,14 +4,14 @@ import { View } from 'react-native';
 
 interface Row {
   children: React.ReactNode[];
+  maxItems: number;
 }
 
-export const Row: FC<Row> = ({ children }) => {
-  const rowItemCount = children.length;
-  const columnWidth = (12 / rowItemCount) as ColumnWidth;
+export const Row: FC<Row> = ({ children, maxItems }) => {
+  const columnWidth = (12 / maxItems) as ColumnWidth;
 
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
       {children.map((child, index) => {
         return <Column columnWidth={columnWidth}>{child}</Column>;
       })}

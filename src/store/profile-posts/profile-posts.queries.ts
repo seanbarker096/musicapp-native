@@ -16,6 +16,7 @@ async function profilePostsGet({
   include_featured,
   include_owned,
   include_tagged,
+  limit,
   offset = 0,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
   console.log('offset', offset);
@@ -27,6 +28,7 @@ async function profilePostsGet({
       include_featured,
       include_owned,
       include_tagged,
+      limit,
       offset: offset,
     },
   });
@@ -43,6 +45,7 @@ export const useProfilePostsGetQuery = ({
   includeFeatured,
   includeOwned,
   includeTagged,
+  limit = 9,
 }: ProfilePostsGetFilter) => {
   if (!profileId) {
     throw new Error('Profile ID is required for a profilePostsGetQuery');
@@ -54,6 +57,7 @@ export const useProfilePostsGetQuery = ({
     include_featured: includeFeatured,
     include_owned: includeOwned,
     include_tagged: includeTagged,
+    limit,
   };
 
   return useInfiniteQuery<
@@ -65,7 +69,12 @@ export const useProfilePostsGetQuery = ({
     ({ pageParam }) =>
       profilePostsGet({ ...apiQueryParams, offset: pageParam }),
     {
-      getNextPageParam: (lastPage, pages) => lastPage.offset + 10,
+      getNextPageParam: (lastPage, pages) => {
+        console.log('lastPage', lastPage);
+        console.log(limit);
+        // if last page length was less than limit, we dont have another page to fetch, so return undefined
+        return lastPage.data.length >= limit ? lastPage.offset + 9 : undefined;
+      },
     },
   );
 };
