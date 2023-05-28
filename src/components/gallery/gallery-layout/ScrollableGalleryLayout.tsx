@@ -1,7 +1,7 @@
 import { GalleryItem, MemoizedGalleryItemFooter } from 'components/gallery';
 
 import { Row } from 'components/row';
-import React, { FC, ReactElement, useState } from 'react';
+import React, { FC, ReactElement, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -32,17 +32,21 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 }) => {
   const [scrollOffset, setScrollOffset] = useState(0);
 
-  const arrangedPosts: Post[][] = [];
-  // map over posts and put them into a lis of nested arrays, with with post per array
-  posts.forEach((post, index) => {
-    const i = Math.floor(index / 3);
+  const processedPosts: Post[][] = useMemo(() => {
+    const arrangedPosts: Post[][] = [];
+    // map over posts and put them into a lis of nested arrays, with with post per array
+    posts.forEach((post, index) => {
+      const i = Math.floor(index / 3);
 
-    if (!arrangedPosts[i]) {
-      arrangedPosts[i] = [];
-    }
+      if (!arrangedPosts[i]) {
+        arrangedPosts[i] = [];
+      }
 
-    arrangedPosts[i].push(post);
-  });
+      arrangedPosts[i].push(post);
+    });
+
+    return arrangedPosts;
+  }, [posts]);
 
   console.log(
     'arrangedPosts',
@@ -101,7 +105,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   return (
     <View style={{ flexGrow: 1, height: 150, width: '100%' }}>
       <FlatList
-        data={arrangedPosts}
+        data={processedPosts}
         renderItem={listItem}
         keyExtractor={(item, index) => index.toString()}
         ListFooterComponent={renderFooter}

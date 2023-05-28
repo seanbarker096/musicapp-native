@@ -2,21 +2,17 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { GALLERY_ITEM_HEIGHT } from '../gallery.types';
 
-import { ResizeMode, Video } from 'expo-av';
+import { IconColor, SVGIcon } from 'components/icon';
+import { PlayButtonSVG } from 'components/icon/svg-components';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 import React, { FC, memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 
 interface GalleryItemProps {
   postId: number;
   fileUrl: string;
   galleryItemStyles: { [style: string]: any };
-  hidePlayButton?: boolean;
 }
-
-const LOADING_STRING = '... loading ...';
-const BUFFERING_STRING = '...buffering...';
-const LOOPING_TYPE_ALL = 0;
-const LOOPING_TYPE_ONE = 1;
 
 /**
  * A gallery item that displays a video.
@@ -24,19 +20,22 @@ const LOOPING_TYPE_ONE = 1;
  * This component is memoized to prevent unnecessary re-renders whenever useQuerys retruning posts and post attachments re-run, or cause re-renders, which can be quite often.
  */
 export const GalleryItem: FC<GalleryItemProps> = memo(
-  ({ postId, fileUrl, galleryItemStyles, hidePlayButton = false }) => {
+  ({ postId, fileUrl, galleryItemStyles }) => {
     const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
-    const video = React.useRef<Video>(null);
 
-    const [thumbnailUri, setThumbnailUri] = useState(null);
+    const [thumbnailUri, setThumbnailUri] = useState<string | undefined>(
+      undefined,
+    );
 
     // Function to extract the thumbnail from the video
     const extractThumbnail = async () => {
       try {
-        const { uri } = await video?.current?.getThumbnailAsync();
+        const { uri } = await VideoThumbnails.getThumbnailAsync(fileUrl, {
+          time: 0,
+        });
         setThumbnailUri(uri);
-      } catch (error) {
-        console.log('Error extracting thumbnail:', error);
+      } catch (e) {
+        console.warn(e);
       }
     };
 
@@ -51,23 +50,26 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
 
     // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)
     return (
-      <View style={{ ...galleryItemStyles, height: 100 }}>
-        <Pressable
-          style={styles.videoOverlay}
-          onPress={handleItemPress}
-        >
-          <Video
-            ref={video}
-            style={styles.video}
-            source={{
-              uri: fileUrl,
-            }}
-            resizeMode={ResizeMode.COVER}
-            shouldPlay={false}
-            onLoad={extractThumbnail} // Extract thumbnail when the video is loaded
+      <Pressable
+        style={{ ...galleryItemStyles, height: 100 }}
+        onPress={handleItemPress}
+      >
+        {thumbnailUri ? (
+          <Image
+            source={{ uri: thumbnailUri }}
+            resizeMode="cover"
           />
-        </Pressable>
-      </View>
+        ) : (
+          <SVGIcon
+            height={60}
+            width={60}
+            styles={styles.playIcon}
+            color={IconColor.LIGHT}
+          >
+            <PlayButtonSVG></PlayButtonSVG>
+          </SVGIcon>
+        )}
+      </Pressable>
     );
   },
 );

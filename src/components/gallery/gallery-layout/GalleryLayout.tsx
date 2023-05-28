@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
 import { isPostWithFile } from 'utils/utils';
-import GalleryItem from '../gallery-item/GalleryItem';
+import { GalleryItem } from '../gallery-item/GalleryItem';
 import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
 
 interface GalleryLayoutProps {
