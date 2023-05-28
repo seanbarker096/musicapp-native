@@ -17,6 +17,7 @@ export type FeaturedPostsGetFilter = {
   ownerType: PostOwnerType;
   isFeaturedByUsers: boolean;
   isFeaturedByPerformers: boolean;
+  limit?: number;
 };
 
 export type FeaturedPostsGetFilterApi = {
@@ -24,6 +25,7 @@ export type FeaturedPostsGetFilterApi = {
   owner_type: PostOwnerType;
   is_featured_by_users: boolean;
   is_featured_by_performers: boolean;
+  limit?: number;
 };
 
 export interface FeaturedPostsGetResultApi {

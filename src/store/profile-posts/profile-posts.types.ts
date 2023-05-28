@@ -19,7 +19,7 @@ export interface ProfilePostsGetFilterApi {
   include_tagged: boolean;
   include_featured: boolean;
   include_owned: boolean;
-  limit: number;
+  limit?: number;
 }
 
 export interface ProfilePostsGetFilter {

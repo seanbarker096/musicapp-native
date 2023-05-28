@@ -41,6 +41,7 @@ const Profile: FC<ProfileProps> = memo(
       setSelectedTab(SelectedTab.TAGGED);
     }
 
+    // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
     return (
       <View style={styles.colContainer}>
         <ProfileHeader

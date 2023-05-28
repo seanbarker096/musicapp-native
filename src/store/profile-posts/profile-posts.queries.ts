@@ -35,7 +35,7 @@ export const useProfilePostsGetQuery = ({
   includeFeatured,
   includeOwned,
   includeTagged,
-  limit = 9,
+  limit,
 }: ProfilePostsGetFilter) => {
   if (!profileId) {
     throw new Error('Profile ID is required for a profilePostsGetQuery');

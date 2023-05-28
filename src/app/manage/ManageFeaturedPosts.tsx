@@ -5,7 +5,7 @@ import { SVGIcon } from 'components/icon';
 import { PictureCheckMarkSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
@@ -38,6 +38,10 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
     SelectedTab.PERFORMER_FEATURES,
   );
 
+  const [featuredByUsersQueryLimit, setfeaturedByUsersQueryLimit] = useState(9);
+  const [featuredByPerformersQueryLimit, setfeaturedByPerformersQueryLimit] =
+    useState(9);
+
   const postOwnerType =
     profileType === ProfileType.PERFORMER
       ? PostOwnerType.PERFORMER
@@ -52,9 +56,14 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
       ownerType: postOwnerType,
       isFeaturedByUsers: true,
       isFeaturedByPerformers: false,
+      limit: featuredByUsersQueryLimit,
     },
     enabled: selectedTab === SelectedTab.USER_FEATURES,
   });
+
+  const isFeaturedByUsersHasNextPage = userFeaturedPosts
+    ? userFeaturedPosts.length >= featuredByUsersQueryLimit
+    : false;
 
   const {
     isLoading: artistFeaturedPostsLoading,
@@ -65,9 +74,14 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
       ownerType: postOwnerType,
       isFeaturedByUsers: false,
       isFeaturedByPerformers: true,
+      limit: featuredByPerformersQueryLimit,
     },
     enabled: selectedTab === SelectedTab.PERFORMER_FEATURES,
   });
+
+  const isFeaturedByPerformersHasNextPage = artistFeaturedPosts
+    ? artistFeaturedPosts.length >= featuredByPerformersQueryLimit
+    : false;
 
   const UserFeaturedPostFooter = ({ featureCount }: Post) => {
     return (
@@ -157,6 +171,12 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
             <ScrollableGalleryLayout
               posts={userFeaturedPosts}
               galleryItemFooter={UserFeaturedPostFooter}
+              onEndReached={() => {
+                if (isFeaturedByUsersHasNextPage) {
+                  setfeaturedByUsersQueryLimit(featuredByUsersQueryLimit + 9);
+                }
+              }}
+              hasMoreData={isFeaturedByUsersHasNextPage}
             ></ScrollableGalleryLayout>
           )}
           {!userFeaturedPosts.length && (
@@ -171,6 +191,14 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
               <ScrollableGalleryLayout
                 posts={artistFeaturedPosts}
                 galleryItemFooter={PerformerFeaturedPostFooter}
+                onEndReached={() => {
+                  if (isFeaturedByPerformersHasNextPage) {
+                    setfeaturedByPerformersQueryLimit(
+                      featuredByPerformersQueryLimit + 9,
+                    );
+                  }
+                }}
+                hasMoreData={isFeaturedByPerformersHasNextPage}
               ></ScrollableGalleryLayout>
             )}
             {!artistFeaturedPosts.length && (

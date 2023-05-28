@@ -5,16 +5,10 @@ import { getRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isDefined } from 'utils/utils';
 import { featuredPostKeys } from './featured-posts.query-keys';
-import { FeaturedPostsStoreSlice } from './featured-posts.types';
-
-type FeaturedPostObjectFields = keyof FeaturedPostsStoreSlice['ObjectType'];
-
-export type FeaturedPostsGetQueryFields = Partial<{
-  [key in FeaturedPostObjectFields]: FeaturedPostsStoreSlice['ObjectType'][key];
-}> & {
-  isFeaturedByUsers: boolean;
-  isFeaturedByPerformers: boolean;
-};
+import {
+  FeaturedPostsGetFilter,
+  FeaturedPostsStoreSlice,
+} from './featured-posts.types';
 
 async function featuredPostsGet(
   params: FeaturedPostsStoreSlice['Get']['RequestParametersType'],
@@ -26,6 +20,7 @@ async function featuredPostsGet(
       owner_type: params.owner_type,
       is_featured_by_users: params.is_featured_by_users,
       is_featured_by_performers: params.is_featured_by_performers,
+      limit: params.limit,
     },
   });
 
@@ -38,11 +33,16 @@ export function useFeaturedPostsGetQuery({
   queryParams,
   enabled = true,
 }: {
-  queryParams: FeaturedPostsGetQueryFields;
+  queryParams: FeaturedPostsGetFilter;
   enabled?: boolean;
 }) {
-  const { ownerId, ownerType, isFeaturedByUsers, isFeaturedByPerformers } =
-    queryParams;
+  const {
+    ownerId,
+    ownerType,
+    isFeaturedByUsers,
+    isFeaturedByPerformers,
+    limit,
+  } = queryParams;
 
   console.log(queryParams);
   let apiQueryParams:
@@ -62,9 +62,10 @@ export function useFeaturedPostsGetQuery({
       owner_type: ownerType,
       is_featured_by_performers: isFeaturedByPerformers,
       is_featured_by_users: isFeaturedByUsers,
+      limit,
     };
 
-    queryKey = featuredPostKeys.featuredPostsByOwner(ownerId, ownerType);
+    queryKey = featuredPostKeys.featuredPostsByOwner(ownerId, ownerType, limit);
   }
 
   return useQuery<readonly Post[], unknown, readonly Post[]>(

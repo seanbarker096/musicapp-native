@@ -25,17 +25,21 @@ export type PostsGetQueryField = Partial<{
   [key in PostObjectFields]:
     | PostsStoreSlice['ObjectType'][key]
     | readonly PostsStoreSlice['ObjectType'][key][];
-}>;
+}> & { limit?: number };
 
-const postsGet = async (
-  params: PostsStoreSlice['Get']['RequestParametersType'],
-) => {
+const postsGet = async ({
+  owner_ids,
+  owner_types,
+  ids,
+  limit = 9,
+}: PostsStoreSlice['Get']['RequestParametersType']) => {
   const response = await getRequest<PostsStoreSlice>({
     url: 'posts/0.1/posts',
     params: {
-      owner_ids: params.owner_ids,
-      owner_types: params.owner_types,
-      ids: params.ids,
+      owner_ids,
+      owner_types,
+      ids,
+      limit,
     },
   });
 
@@ -45,7 +49,7 @@ const postsGet = async (
 };
 
 export const usePostsGetQuery = ({
-  queryParams: { ownerId, id, ownerType },
+  queryParams: { ownerId, id, ownerType, limit = 9 },
   enabled = true,
 }: {
   queryParams: PostsGetQueryField;
@@ -64,12 +68,13 @@ export const usePostsGetQuery = ({
     apiQueryParams = {
       owner_ids: processedOwnerId,
       owner_types: processedOwnerType,
+      limit,
     };
 
     queryKey =
       !isArray(ownerId) && !isArray(ownerType)
-        ? postsKeys.postsByOwner(ownerId, ownerType)
-        : postsKeys.postsByOwnerIds(processedOwnerId);
+        ? postsKeys.postsByOwner(ownerId, ownerType, limit)
+        : postsKeys.postsByOwnerIds(processedOwnerId, limit);
   }
 
   if (id) {

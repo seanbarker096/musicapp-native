@@ -1,4 +1,4 @@
-import ScrollableGalleryLayout from 'components/gallery/gallery-layout/ScrollableGalleryLayout';
+import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useState } from 'react';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';

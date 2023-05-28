@@ -15,10 +15,13 @@ import {
 
 // TODO: Make infinite query copy and use this instead
 export function useGetPostsWithAttachmentsAndFilesQuery({
-  queryParams: { ownerId, ownerType, id },
+  queryParams: { ownerId, ownerType, id, limit },
   enabled = true,
 }: {
-  queryParams: Pick<PostsGetQueryField, 'ownerId' | 'ownerType' | 'id'>;
+  queryParams: Pick<
+    PostsGetQueryField,
+    'ownerId' | 'ownerType' | 'id' | 'limit'
+  >;
   enabled?: boolean;
 }): {
   isLoading: boolean;
@@ -33,6 +36,7 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
       ownerId,
       id,
       ownerType,
+      limit,
     },
     enabled,
   });

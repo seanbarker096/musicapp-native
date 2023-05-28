@@ -72,6 +72,7 @@ export interface PostsGetFilterApi {
   is_deleted?: boolean;
   owner_ids?: readonly number[];
   owner_types?: readonly PostOwnerType[];
+  limit?: number;
 }
 
 export type Test = {

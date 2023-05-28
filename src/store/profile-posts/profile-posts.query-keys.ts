@@ -8,7 +8,7 @@ export const profilePostsKeys = {
     includeFeatured: boolean,
     includeOwned: boolean,
     includeTagged: boolean,
-    limit: number,
+    limit?: number,
   ) =>
     [
       ...profilePostsKeys.all,
@@ -22,7 +22,7 @@ export const profilePostsKeys = {
       includeOwned,
       'includeTagged',
       includeTagged,
-      'limit',
-      limit,
+      // limit is optional because when we invalidate queries, we dont want to have to provide a limit
+      ...(limit ? ['limit', limit] : []),
     ] as const,
 };
