@@ -5,6 +5,9 @@ export const profilePostsKeys = {
   profilePostsByProfile: (
     profileId: number,
     profileType: ProfileType,
+    includeFeatured: boolean,
+    includeOwned: boolean,
+    includeTagged: boolean,
     limit: number,
   ) =>
     [
@@ -13,6 +16,12 @@ export const profilePostsKeys = {
       profileId,
       'profileType',
       profileType,
+      'includeFeatured',
+      includeFeatured,
+      'includeOwned',
+      includeOwned,
+      'includeTagged',
+      includeTagged,
       'limit',
       limit,
     ] as const,

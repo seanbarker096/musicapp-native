@@ -16,7 +16,6 @@ async function profilePostsGet({
   include_tagged,
   limit,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
-  console.log('LIMIT', limit);
   const response = await getRequest<ProfilePostsStoreSlice>({
     url: `posts/0.1/profiles/${profile_id}/posts`,
     params: {
@@ -36,9 +35,8 @@ export const useProfilePostsGetQuery = ({
   includeFeatured,
   includeOwned,
   includeTagged,
-  limit,
+  limit = 9,
 }: ProfilePostsGetFilter) => {
-  console.log('LIMIT**********', limit);
   if (!profileId) {
     throw new Error('Profile ID is required for a profilePostsGetQuery');
   }
@@ -50,8 +48,16 @@ export const useProfilePostsGetQuery = ({
     include_tagged: includeTagged,
     limit,
   };
+
   return useQuery<readonly Post[], unknown, readonly Post[]>(
-    profilePostsKeys.profilePostsByProfile(profileId, profileType, limit),
+    profilePostsKeys.profilePostsByProfile(
+      profileId,
+      profileType,
+      includeFeatured,
+      includeOwned,
+      includeTagged,
+      limit,
+    ),
     () => profilePostsGet(apiQueryParams),
   );
 };

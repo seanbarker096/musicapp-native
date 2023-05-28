@@ -36,7 +36,7 @@ export interface Post {
   /**
    * Added on frontend for convienent access. Not received in API response.
    */
-  attachments: readonly PostAttachment[];
+  attachments?: readonly PostAttachment[];
   /**
    * The performer who this post is about, and how has featured it on their profile. If the have not featured this post on their profile, this will be undefined.
    */

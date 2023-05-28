@@ -78,18 +78,14 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
   const { profileId: contextProfileId, profileType: contextProfileType } =
     profileState;
 
-  let profileScreenProps = {
-    profileId,
-    profileType,
-  };
+  let profileScreenPropsProfileId = profileId;
+  let profileScreenPropsProfileType = profileType;
 
   // The logged in user can switch between viewing the app from their artist profile (if they have one) and their usre profile. Therefore, if the profile being viewed is the logged in users profile, we should use the up to date profile context. This is because initialParams passed in by ProfileStackScreen will be stale once the user has switched between the two
 
   if (isLoggedInUsersProfile) {
-    profileScreenProps = {
-      profileId: contextProfileId,
-      profileType: contextProfileType,
-    };
+    profileScreenPropsProfileId = contextProfileId;
+    profileScreenPropsProfileType = contextProfileType;
   }
 
   return (
@@ -102,8 +98,8 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
         {props => (
           <Profile
             {...props}
-            profileId={profileScreenProps.profileId}
-            profileType={profileScreenProps.profileType}
+            profileId={profileScreenPropsProfileId}
+            profileType={profileScreenPropsProfileType}
           />
         )}
       </ProfileStack.Screen>

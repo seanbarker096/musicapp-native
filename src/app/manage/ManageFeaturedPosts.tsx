@@ -5,7 +5,7 @@ import { SVGIcon } from 'components/icon';
 import { PictureCheckMarkSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import React, { FC, useContext } from 'react';
+import React, { FC, memo, useContext } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
@@ -69,7 +69,7 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
     enabled: selectedTab === SelectedTab.PERFORMER_FEATURES,
   });
 
-  const UserFeaturedPostFooter = ({ featureCount }: Post) => {
+  const UserFeaturedPostFooter = memo(({ featureCount }: Post) => {
     return (
       <View
         style={{
@@ -97,9 +97,9 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         </AppText>
       </View>
     );
-  };
+  });
 
-  const PerformerFeaturedPostFooter = ({ featuringPerformer }: Post) => {
+  const PerformerFeaturedPostFooter = memo(({ featuringPerformer }: Post) => {
     return (
       <View
         style={{
@@ -125,7 +125,7 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         </AppText>
       </View>
     );
-  };
+  });
 
   return (
     <>

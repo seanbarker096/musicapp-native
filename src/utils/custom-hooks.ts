@@ -93,7 +93,6 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
-  console.log('LIMITSADASDAS', limit);
   const {
     data: posts,
     isLoading: postsLoading,
@@ -116,10 +115,14 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postsReady && posts.length > 0,
+    enabled: postIds && postIds.length > 0,
   });
 
   const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
+
+  const postAttachmentIds = postsAttachments
+    ? postsAttachments.map(attachment => attachment.fileId)
+    : undefined;
 
   const {
     data: files,
@@ -127,11 +130,9 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     isError: filesError,
   } = useFilesGetQuery({
     queryParams: {
-      id: postsAttachments
-        ? postsAttachments.map(attachment => attachment.fileId)
-        : undefined,
+      id: postAttachmentIds,
     },
-    enabled: postsAttachmentsReady && postsAttachments.length > 0,
+    enabled: postAttachmentIds && postAttachmentIds.length > 0,
   });
 
   const filesReady = !!files && !filesLoading;
@@ -142,10 +143,11 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     posts,
   );
 
-  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
+  // We use ready instead of the isLoading states, because isLoading will flick between true and false after each dependant query finishes, which could result in lots of re-renders of componens which accept the isLoading value as a prop. This way, we only re-render once when all the data is returned
+  const ready = postsReady || postsAttachmentsReady || filesReady;
 
   return {
-    isLoading,
+    isLoading: !ready,
     postsWithAttachmentsAndFiles,
   };
 }
@@ -237,22 +239,21 @@ function createPostsWithAttachmentsAndFiles(
   } = {};
 
   attachments?.forEach(attachment => {
-    const attachmentWithFile = { ...attachment };
-    attachmentWithFile.file = filesByIdMap[attachment.fileId];
+    // We dont want to create a new attachment object here. We want to keep the original object received from the backend, so ensure our UI doesn't re-render unnecessarily due to the attachment object changing, even though the attachment data itself has not changed. If the attachment data changes, our api query will re-run and we will get a new attachment object anyway due to our transformation of the api response
+    attachment.file = filesByIdMap[attachment.fileId];
 
     postAttachmentsByPostIdMap[attachment.postId] = [
       ...(postAttachmentsByPostIdMap[attachment.postId] ?? []),
-      attachmentWithFile,
+      attachment,
     ];
   });
 
   return posts
     ? posts.map(post => {
-        const postWithAttachments = { ...post };
-
-        postWithAttachments.attachments = postAttachmentsByPostIdMap[post.id];
-        return postWithAttachments;
-      })
+      // We dont want to create a new post object here. We want to keep the original object received from the backend, so ensure our UI doesn't re-render unnecessarily due to the post object changing, even though the post data itself has not changed. If the post data changes, our api query will re-run and we will get a new post object anyway due to our transformation of the api response
+      post.attachments = postAttachmentsByPostIdMap[post.id];
+      return post;
+    })
     : undefined;
 }
 

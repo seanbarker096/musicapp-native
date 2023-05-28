@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
-import { isDefined } from 'utils/utils';
+import { isDefined, isPostWithFile } from 'utils/utils';
 import GalleryItem from '../gallery-item/GalleryItem';
 
 interface GalleryLayoutProps {
@@ -32,8 +32,6 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   // map over posts and put them into a lis of nested arrays, with with post per array
 
   posts.forEach((post, index) => {
-    const arrangedPostsLength = arrangedPosts.length;
-
     const i = Math.floor(index / 3);
 
     if (!arrangedPosts[i]) {
@@ -43,21 +41,24 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     arrangedPosts[i].push(post);
   });
 
-  console.log('arrangedPosts', arrangedPosts);
-
   const listItem = ({ item, index }: ListRenderItemInfo<Post[]>) => {
     return (
       <Row
         key={index}
         maxItems={3}
       >
-        {item.map(post => (
+        {item.filter(isPostWithFile).map(post => (
           <View key={post.id}>
             <GalleryItem
               galleryItemStyles={{ ...styles.item, position: 'relative' }}
-              post={post}
+              fileUrl={
+                (post.attachments &&
+                  post.attachments[0] &&
+                  post.attachments[0].file?.url) as string
+              } // We know that is defined due to isPostWithFile check above
+              postId={post.id}
             ></GalleryItem>
-            {isDefined(galleryItemFooter) && galleryItemFooter && (
+            {isDefined(galleryItemFooter) && (
               <View
                 style={{
                   position: 'absolute',
@@ -96,14 +97,7 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
       renderItem={listItem}
       keyExtractor={(item, index) => index.toString()}
       ListFooterComponent={renderFooter}
-      onEndReached={
-        onEndReached
-          ? () => {
-              console.log('asdsadas');
-              onEndReached();
-            }
-          : undefined
-      }
+      onEndReached={onEndReached ? () => onEndReached() : undefined}
       onEndReachedThreshold={0.5}
       initialNumToRender={9}
       windowSize={9}
@@ -112,6 +106,7 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 };
 
 export default ScrollableGalleryLayout;
+
 
 const styles = StyleSheet.create({
   item: {

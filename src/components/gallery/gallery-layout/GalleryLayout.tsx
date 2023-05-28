@@ -4,7 +4,7 @@ import React, { FC, ReactElement } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
-import { isDefined } from 'utils/utils';
+import { isDefined, isPostWithFile } from 'utils/utils';
 import GalleryItem from '../gallery-item/GalleryItem';
 
 interface GalleryLayoutProps {
@@ -21,14 +21,19 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
 }) => {
   return (
     <Grid gridPadding={styles.gridPadding}>
-      {posts.map(post => (
+      {posts.filter(isPostWithFile).map(post => (
         <Column
           key={post.id}
           columnWidth={4}
         >
           <GalleryItem
             galleryItemStyles={{ ...styles.item, position: 'relative' }}
-            post={post}
+            postId={post.id}
+            fileUrl={
+              (post.attachments &&
+                post.attachments[0] &&
+                post.attachments[0].file?.url) as string
+            } // We know that is defined due to isPostWithFile check above
           ></GalleryItem>
           {isDefined(galleryItemFooter) && galleryItemFooter && (
             <View

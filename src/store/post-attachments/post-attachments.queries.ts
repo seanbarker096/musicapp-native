@@ -36,7 +36,7 @@ export const usePostAttachmentsGetQuery = ({
   enabled = true,
 }: {
   queryParams: PostAttachmentGetQueryField;
-  enabled: boolean;
+  enabled?: boolean;
 }) => {
   const { postId } = queryParams;
 

@@ -13,7 +13,14 @@ export const Row: FC<Row> = ({ children, maxItems }) => {
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
       {children.map((child, index) => {
-        return <Column columnWidth={columnWidth}>{child}</Column>;
+        return (
+          <Column
+            key={index}
+            columnWidth={columnWidth}
+          >
+            {child}
+          </Column>
+        );
       })}
     </View>
   );

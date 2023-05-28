@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { ProfileType } from 'contexts/profile.context';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { COLOR_PRIMARY, FONT_WEIGHT_BOLD, SPACING_XXSMALL } from 'styles';
 import ProfileShows from './ProfileShows';
@@ -22,65 +22,68 @@ type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'> & {
 
 // TODO: Might be better to just have a sigle performer profile and user profile component, rather than creating things like ProfileHeader which internally branches either to performer or proifle
 // Benefit of current approach is Profile now doesn't ened to know how to deal with different profile types
-const Profile: FC<ProfileProps> = ({ profileId, profileType, navigation }) => {
-  const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
-    SelectedTab.SHOWS,
-  );
+// Use react memo due to need for render callback in ProfileStackScreen
+const Profile: FC<ProfileProps> = memo(
+  ({ profileId, profileType, navigation }) => {
+    const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
+      SelectedTab.SHOWS,
+    );
 
-  function handleTabSelected(selectedTab: SelectedTab) {
-    setSelectedTab(selectedTab);
-  }
+    function handleTabSelected(selectedTab: SelectedTab) {
+      setSelectedTab(selectedTab);
+    }
 
-  function handleCreatePerformancePress() {
-    navigation.navigate('ProfileCreatePerformance', {});
-  }
+    function handleCreatePerformancePress() {
+      navigation.navigate('ProfileCreatePerformance', {});
+    }
 
-  function handleViewProfilePress() {
-    setSelectedTab(SelectedTab.TAGGED);
-  }
+    function handleViewProfilePress() {
+      setSelectedTab(SelectedTab.TAGGED);
+    }
 
-  return (
-    <View style={styles.colContainer}>
-      <ProfileHeader
-        profileId={profileId}
-        profileType={profileType}
-      ></ProfileHeader>
-      <View style={styles.headerContainer}>
-        <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
-          <AppText weight={FONT_WEIGHT_BOLD}>Gallery</AppText>
-        </Pressable>
-        <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
-          <AppText weight={FONT_WEIGHT_BOLD}>
-            {profileType === ProfileType.PERFORMER ? 'Performances' : 'Shows'}
-          </AppText>
-        </Pressable>
-        <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
-          <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
-        </Pressable>
+    return (
+      <View style={styles.colContainer}>
+        <ProfileHeader
+          profileId={profileId}
+          profileType={profileType}
+        ></ProfileHeader>
+        <View style={styles.headerContainer}>
+          <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+            <AppText weight={FONT_WEIGHT_BOLD}>Gallery</AppText>
+          </Pressable>
+          <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
+            <AppText weight={FONT_WEIGHT_BOLD}>
+              {profileType === ProfileType.PERFORMER ? 'Performances' : 'Shows'}
+            </AppText>
+          </Pressable>
+          <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+            <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
+          </Pressable>
+        </View>
+        {selectedTab === SelectedTab.SHOWS && (
+          <ProfileShows
+            profileId={profileId}
+            profileType={profileType} // TODO: Update this to be dynamic
+          ></ProfileShows>
+        )}
+        {selectedTab === SelectedTab.TIMELINE && (
+          <ProfileTimeline
+            profileId={profileId}
+            profileType={profileType}
+            handleCreatePerformancePress={handleCreatePerformancePress}
+            handleViewProfilePress={handleViewProfilePress}
+          ></ProfileTimeline>
+        )}
+        {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
+          <ProfileTaggedPosts
+            profileId={profileId}
+            profileType={profileType}
+          ></ProfileTaggedPosts>
+        )}
       </View>
-      {selectedTab === SelectedTab.SHOWS && (
-        <ProfileShows
-          profileId={profileId}
-          profileType={profileType} // TODO: Update this to be dynamic
-        ></ProfileShows>
-      )}
-      {selectedTab === SelectedTab.TIMELINE && (
-        <ProfileTimeline
-          profileId={profileId}
-          profileType={profileType}
-          handleCreatePerformancePress={handleCreatePerformancePress}
-          handleViewProfilePress={handleViewProfilePress}
-        ></ProfileTimeline>
-      )}
-      {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
-        <ProfileTaggedPosts
-          profileId={profileId}
-          profileType={profileType}
-        ></ProfileTaggedPosts>
-      )}
-    </View>
-  );
-};
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   text: {
