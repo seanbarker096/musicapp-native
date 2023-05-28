@@ -87,6 +87,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 
   return (
     <FlatList
+      style={{ width: '100%' }}
       data={arrangedPosts}
       renderItem={listItem}
       keyExtractor={(item, index) => index.toString()}
@@ -95,6 +96,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
       onEndReachedThreshold={0.5}
       initialNumToRender={9}
       windowSize={9}
+      showsVerticalScrollIndicator={false}
     />
   );
 };

@@ -2,6 +2,7 @@
  * Spacings
  */
 export const SPACING_NONE = 0;
+export const SPACING_XLARGE = 64;
 export const SPACING_LARGE = 32;
 export const SPACING_MID = 20;
 export const SPACING_SMALL = 14;

@@ -21,7 +21,7 @@ export const ProfileImage: FC<ProfileImageProps> = ({
   return (
     <View style={{ ...styles, height: height, width: height }}>
       <Image
-        style={{ ...style.image, borderRadius: height / 2 }}
+        style={{ borderRadius: height / 2 }}
         source={
           imageUrl
             ? {

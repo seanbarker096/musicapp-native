@@ -3,6 +3,7 @@ import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
+import { SPACING_MID } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
@@ -30,12 +31,15 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({ performerId }) => {
         <View
           style={{
             ...styles.colContainer,
-            height: '30%',
+            height: '25%',
             width: '100%',
           }}
         >
-          <View style={{ ...styles.colContainer }}>
-            <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
+          <View style={{ ...styles.colContainer, marginTop: SPACING_MID }}>
+            <ProfileImage
+              size="large"
+              imageUrl={performer.imageUrl}
+            ></ProfileImage>
             <AppText
               size="large"
               weight="bold"
