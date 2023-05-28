@@ -1,5 +1,7 @@
+import { GalleryItem, MemoizedGalleryItemFooter } from 'components/gallery';
+
 import { Row } from 'components/row';
-import React, { FC, ReactElement } from 'react';
+import React, { FC, ReactElement, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -10,8 +12,7 @@ import {
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
 import { isPostWithFile } from 'utils/utils';
-import GalleryItem from '../gallery-item/GalleryItem';
-import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
+import { GALLERY_ITEM_HEIGHT } from '../gallery.types';
 
 interface GalleryLayoutProps {
   posts: readonly Post[];
@@ -29,6 +30,8 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   onEndReached,
   hasMoreData,
 }) => {
+  const [scrollOffset, setScrollOffset] = useState(0);
+
   const arrangedPosts: Post[][] = [];
   // map over posts and put them into a lis of nested arrays, with with post per array
   posts.forEach((post, index) => {
@@ -41,6 +44,11 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     arrangedPosts[i].push(post);
   });
 
+  console.log(
+    'arrangedPosts',
+    posts.map(post => post.id),
+  );
+
   const listItem = ({ item, index }: ListRenderItemInfo<Post[]>) => {
     return (
       <Row
@@ -48,7 +56,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
         maxItems={3}
       >
         {item.filter(isPostWithFile).map(post => (
-          <View key={post.id}>
+          <>
             <GalleryItem
               galleryItemStyles={{ ...styles.item, position: 'relative' }}
               fileUrl={
@@ -64,7 +72,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
                 galleryItemFooter={galleryItemFooter}
               />
             )}
-          </View>
+          </>
         ))}
       </Row>
     );
@@ -85,19 +93,35 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     );
   };
 
+  const handleScroll = event => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    setScrollOffset(offsetY);
+  };
+
   return (
-    <FlatList
-      style={{ width: '100%' }}
-      data={arrangedPosts}
-      renderItem={listItem}
-      keyExtractor={(item, index) => index.toString()}
-      ListFooterComponent={renderFooter}
-      onEndReached={onEndReached ? () => onEndReached() : undefined}
-      onEndReachedThreshold={0.5}
-      initialNumToRender={9}
-      windowSize={9}
-      showsVerticalScrollIndicator={false}
-    />
+    <View style={{ flexGrow: 1, height: 150, width: '100%' }}>
+      <FlatList
+        data={arrangedPosts}
+        renderItem={listItem}
+        keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={renderFooter}
+        onEndReached={({ distanceFromEnd }) => {
+          if (distanceFromEnd < 0) return;
+          console.log('onEndReached', distanceFromEnd);
+          onEndReached();
+        }}
+        onEndReachedThreshold={0.5}
+        showsVerticalScrollIndicator={false}
+        getItemLayout={(data, index) => ({
+          length: GALLERY_ITEM_HEIGHT,
+          offset: GALLERY_ITEM_HEIGHT * index,
+          index,
+        })}
+        onScroll={handleScroll} // Track the scroll offset
+        initialNumToRender={Math.ceil(150 / GALLERY_ITEM_HEIGHT)} // Render initial items based on window height
+        initialScrollIndex={Math.floor(scrollOffset / GALLERY_ITEM_HEIGHT)} // Set initial scroll index based on scroll offset
+      />
+    </View>
   );
 };
 

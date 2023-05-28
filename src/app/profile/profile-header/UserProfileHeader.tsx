@@ -35,7 +35,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
         <View
           style={{
             ...styles.colContainer,
-            height: '30%',
+            height: 200,
             width: '100%',
           }}
         >

@@ -1,10 +1,9 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
+import { GALLERY_ITEM_HEIGHT } from '../gallery.types';
 
-import { IconColor, SVGIcon } from 'components/icon/index';
-import { PlayButtonSVG } from 'components/icon/svg-components';
 import { ResizeMode, Video } from 'expo-av';
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 interface GalleryItemProps {
@@ -24,11 +23,28 @@ const LOOPING_TYPE_ONE = 1;
  *
  * This component is memoized to prevent unnecessary re-renders whenever useQuerys retruning posts and post attachments re-run, or cause re-renders, which can be quite often.
  */
-const GalleryItem: FC<GalleryItemProps> = memo(
+export const GalleryItem: FC<GalleryItemProps> = memo(
   ({ postId, fileUrl, galleryItemStyles, hidePlayButton = false }) => {
     const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
-
     const video = React.useRef<Video>(null);
+
+    const [thumbnailUri, setThumbnailUri] = useState(null);
+
+    // Function to extract the thumbnail from the video
+    const extractThumbnail = async () => {
+      try {
+        const { uri } = await video?.current?.getThumbnailAsync();
+        setThumbnailUri(uri);
+      } catch (error) {
+        console.log('Error extracting thumbnail:', error);
+      }
+    };
+
+    // Call the extractThumbnail function when the component mounts
+    useEffect(() => {
+      extractThumbnail();
+    }, []);
+
     function handleItemPress() {
       navigation.navigate('ViewPost', { postId });
     }
@@ -48,23 +64,13 @@ const GalleryItem: FC<GalleryItemProps> = memo(
             }}
             resizeMode={ResizeMode.COVER}
             shouldPlay={false}
+            onLoad={extractThumbnail} // Extract thumbnail when the video is loaded
           />
-          {hidePlayButton && (
-            <SVGIcon
-              styles={styles.playIcon}
-              color={IconColor.LIGHT}
-              position={'absolute'}
-            >
-              <PlayButtonSVG></PlayButtonSVG>
-            </SVGIcon>
-          )}
         </Pressable>
       </View>
     );
   },
 );
-
-export default GalleryItem;
 
 const styles = StyleSheet.create({
   container: {},
@@ -72,11 +78,11 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     width: '100%',
-    height: 100,
+    height: GALLERY_ITEM_HEIGHT,
   },
   videoOverlay: {
     position: 'relative',
-    height: 100,
+    height: GALLERY_ITEM_HEIGHT,
     width: '100%',
   },
   playIcon: {

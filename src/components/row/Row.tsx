@@ -1,5 +1,5 @@
 import { Column, ColumnWidth } from 'components/column';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { View } from 'react-native';
 
 interface Row {
@@ -7,7 +7,7 @@ interface Row {
   maxItems: number;
 }
 
-export const Row: FC<Row> = ({ children, maxItems }) => {
+export const Row: FC<Row> = memo(({ children, maxItems }) => {
   const columnWidth = (12 / maxItems) as ColumnWidth;
 
   return (
@@ -24,4 +24,4 @@ export const Row: FC<Row> = ({ children, maxItems }) => {
       })}
     </View>
   );
-};
+});

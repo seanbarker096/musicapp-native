@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ColumnWidth, columnWidths } from './column.types';
 
@@ -7,7 +7,7 @@ interface ColumnProps {
   children: React.ReactNode;
 }
 
-export const Column: FC<ColumnProps> = ({ columnWidth, children }) => {
+export const Column: FC<ColumnProps> = memo(({ columnWidth, children }) => {
   return (
     <View
       style={{ ...colWidthStyles[`colWidth${columnWidth}`], ...mainStyles }}
@@ -15,7 +15,7 @@ export const Column: FC<ColumnProps> = ({ columnWidth, children }) => {
       {children}
     </View>
   );
-};
+});
 
 const colWidthStyles = StyleSheet.create({
   colWidth1: {

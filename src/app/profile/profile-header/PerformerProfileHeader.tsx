@@ -31,7 +31,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({ performerId }) => {
         <View
           style={{
             ...styles.colContainer,
-            height: '25%',
+            height: 200,
             width: '100%',
           }}
         >
