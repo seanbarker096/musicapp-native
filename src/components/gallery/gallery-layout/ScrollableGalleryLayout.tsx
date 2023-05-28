@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
-import { isDefined, isPostWithFile } from 'utils/utils';
+import { isPostWithFile } from 'utils/utils';
 import GalleryItem from '../gallery-item/GalleryItem';
+import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
 
 interface GalleryLayoutProps {
   posts: readonly Post[];
@@ -22,7 +23,7 @@ interface GalleryLayoutProps {
   hasMoreData?: boolean;
 }
 
-const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
+export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   posts,
   galleryItemFooter,
   onEndReached,
@@ -30,7 +31,6 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 }) => {
   const arrangedPosts: Post[][] = [];
   // map over posts and put them into a lis of nested arrays, with with post per array
-
   posts.forEach((post, index) => {
     const i = Math.floor(index / 3);
 
@@ -58,17 +58,11 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
               } // We know that is defined due to isPostWithFile check above
               postId={post.id}
             ></GalleryItem>
-            {isDefined(galleryItemFooter) && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
-                  right: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
-                  width: '100%',
-                }}
-              >
-                {galleryItemFooter(post)}
-              </View>
+            {galleryItemFooter && (
+              <MemoizedGalleryItemFooter
+                post={post}
+                galleryItemFooter={galleryItemFooter}
+              />
             )}
           </View>
         ))}
@@ -104,9 +98,6 @@ const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     />
   );
 };
-
-export default ScrollableGalleryLayout;
-
 
 const styles = StyleSheet.create({
   item: {

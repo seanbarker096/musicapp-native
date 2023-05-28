@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
-import { Gallery } from 'components/gallery';
+import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
@@ -93,10 +93,9 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
               title="Create a Performance"
             ></Button>
           </View>
-          <Gallery
-            postsWithAttachmentsAndFiles={postsWithAttachmentsAndFiles}
-            isLoading={false}
-          ></Gallery>
+          <ScrollableGalleryLayout
+            posts={postsWithAttachmentsAndFiles}
+          ></ScrollableGalleryLayout>
         </View>
       )}
       {postTags && postTags.length === 0 && (

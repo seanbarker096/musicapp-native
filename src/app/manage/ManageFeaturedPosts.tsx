@@ -1,11 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
-import { Gallery } from 'components/gallery';
+import { ScrollableGalleryLayout } from 'components/gallery';
 import { SVGIcon } from 'components/icon';
 import { PictureCheckMarkSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import React, { FC, memo, useContext } from 'react';
+import React, { FC, useContext } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
@@ -69,7 +69,7 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
     enabled: selectedTab === SelectedTab.PERFORMER_FEATURES,
   });
 
-  const UserFeaturedPostFooter = memo(({ featureCount }: Post) => {
+  const UserFeaturedPostFooter = ({ featureCount }: Post) => {
     return (
       <View
         style={{
@@ -97,9 +97,9 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         </AppText>
       </View>
     );
-  });
+  };
 
-  const PerformerFeaturedPostFooter = memo(({ featuringPerformer }: Post) => {
+  const PerformerFeaturedPostFooter = ({ featuringPerformer }: Post) => {
     return (
       <View
         style={{
@@ -125,7 +125,7 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         </AppText>
       </View>
     );
-  });
+  };
 
   return (
     <>
@@ -154,11 +154,10 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
       {selectedTab === SelectedTab.USER_FEATURES && userFeaturedPosts && (
         <>
           {userFeaturedPosts.length && (
-            <Gallery
-              isLoading={userFeatuedPostsLoading}
-              postsWithAttachmentsAndFiles={userFeaturedPosts}
+            <ScrollableGalleryLayout
+              posts={userFeaturedPosts}
               galleryItemFooter={UserFeaturedPostFooter}
-            ></Gallery>
+            ></ScrollableGalleryLayout>
           )}
           {!userFeaturedPosts.length && (
             <AppText>No users have featured your posts yet</AppText>
@@ -169,11 +168,10 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
         artistFeaturedPosts && (
           <>
             {artistFeaturedPosts.length && (
-              <Gallery
-                isLoading={artistFeaturedPostsLoading}
-                postsWithAttachmentsAndFiles={artistFeaturedPosts}
+              <ScrollableGalleryLayout
+                posts={artistFeaturedPosts}
                 galleryItemFooter={PerformerFeaturedPostFooter}
-              ></Gallery>
+              ></ScrollableGalleryLayout>
             )}
             {!artistFeaturedPosts.length && (
               <AppText>No artists have featured your posts yet</AppText>

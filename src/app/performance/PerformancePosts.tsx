@@ -1,5 +1,5 @@
 import { AppText } from 'components/app-text';
-import { Gallery } from 'components/gallery';
+import { ScrollableGalleryLayout } from 'components/gallery';
 import { SVGIcon } from 'components/icon';
 import { CalendarSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
@@ -132,10 +132,9 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               ></Button>
             </View>
           )}
-          <Gallery
-            postsWithAttachmentsAndFiles={taggedPosts}
-            isLoading={taggedPostsLoading}
-          ></Gallery>
+          <ScrollableGalleryLayout
+            posts={taggedPosts}
+          ></ScrollableGalleryLayout>
         </View>
       )}
       {loading && <AppText>Loading...</AppText>}

@@ -1,11 +1,12 @@
 import { Column } from 'components/column';
 import { Grid } from 'components/grid';
 import React, { FC, ReactElement } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
-import { isDefined, isPostWithFile } from 'utils/utils';
+import { isPostWithFile } from 'utils/utils';
 import GalleryItem from '../gallery-item/GalleryItem';
+import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
 
 interface GalleryLayoutProps {
   posts: readonly Post[];
@@ -35,17 +36,11 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
                 post.attachments[0].file?.url) as string
             } // We know that is defined due to isPostWithFile check above
           ></GalleryItem>
-          {isDefined(galleryItemFooter) && galleryItemFooter && (
-            <View
-              style={{
-                position: 'absolute',
-                bottom: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
-                right: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
-                width: '100%',
-              }}
-            >
-              {galleryItemFooter(post)}
-            </View>
+          {galleryItemFooter && (
+            <MemoizedGalleryItemFooter
+              post={post}
+              galleryItemFooter={galleryItemFooter}
+            />
           )}
         </Column>
       ))}

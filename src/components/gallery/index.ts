@@ -1,2 +1,3 @@
 export * from './Gallery';
-export * from './ScrollableGallery';
+export * from './gallery-layout/ScrollableGalleryLayout';
+
