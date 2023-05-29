@@ -4,6 +4,7 @@ import { SVGIcon } from 'components/icon';
 import {
   PictureCheckMarkSVG,
   RightChevronSVG,
+  StarOutlineSVG,
   TaggedUserSVG,
 } from 'components/icon/svg-components';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -31,8 +32,16 @@ const Manage: FC<ManageProps> = ({ navigation }) => {
 
   if (profileType === ProfileType.USER) {
     manageListItems.push({
+      heading: 'Artist Picks',
+      text: 'View posts you created which your favourite artists have picked to appear on their profile.',
+      icon: StarOutlineSVG,
+      // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
+      action: () => navigation.navigate('ManageArtistPicks'),
+    });
+
+    manageListItems.push({
       heading: 'Features',
-      text: 'View posts you have created, which artists and other users have featured on their profile',
+      text: 'View posts you have created, which other users have featured on their profile',
       icon: PictureCheckMarkSVG,
       // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
       action: () => navigation.navigate('ManageFeaturedPosts'),

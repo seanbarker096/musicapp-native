@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
-import { SVGIcon } from 'components/icon';
-import { PictureCheckMarkSVG } from 'components/icon/svg-components';
+import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -20,7 +19,12 @@ type ManageFeaturedPostsProps = NativeStackScreenProps<
   'ManageFeaturedPosts'
 >;
 
-export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
+enum SelectedTab {
+  USER_FEATURES = 'userFeatures',
+  PERFORMER_FEATURES = 'performerFeatures',
+}
+
+export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
   navigation,
 }) => {
   const { profileState } = useContext(ProfileContext);
@@ -33,23 +37,23 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
       : PostOwnerType.USER;
 
   const {
-    isLoading: userFeatuedPostsLoading,
-    postsWithAttachmentsAndFiles: userFeaturedPosts,
+    isLoading: artistFeaturedPostsLoading,
+    postsWithAttachmentsAndFiles: artistFeaturedPosts,
   } = useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     queryParams: {
       ownerId: profileId,
       ownerType: postOwnerType,
-      isFeaturedByUsers: true,
-      isFeaturedByPerformers: false,
+      isFeaturedByUsers: false,
+      isFeaturedByPerformers: true,
       limit: queryLimit,
     },
   });
 
-  const hasNextPage = userFeaturedPosts
-    ? userFeaturedPosts.length >= queryLimit
+  const isFeaturedByPerformersHasNextPage = artistFeaturedPosts
+    ? artistFeaturedPosts.length >= queryLimit
     : false;
 
-  const UserFeaturedPostFooter = ({ featureCount }: Post) => {
+  const PerformerFeaturedPostFooter = ({ featuringPerformer }: Post) => {
     return (
       <View
         style={{
@@ -62,18 +66,16 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
           paddingBottom: SPACING_XXXSMALL,
         }}
       >
-        <SVGIcon
-          width={18}
-          height={18}
+        <ProfileImage
+          imageUrl={featuringPerformer.imageUrl}
           styles={{ marginRight: SPACING_XXSMALL }}
-        >
-          <PictureCheckMarkSVG></PictureCheckMarkSVG>
-        </SVGIcon>
+          size="xsmall"
+        ></ProfileImage>
         <AppText
           size="small"
           weight="bold"
         >
-          {featureCount} features
+          {featuringPerformer.name}
         </AppText>
       </View>
     );
@@ -81,21 +83,22 @@ export const ManageFeaturedPosts: FC<ManageFeaturedPostsProps> = ({
 
   return (
     <>
-      {userFeaturedPosts && userFeaturedPosts.length && (
+      {artistFeaturedPosts && artistFeaturedPosts.length && (
         <ScrollableGalleryLayout
-          posts={userFeaturedPosts}
-          galleryItemFooter={UserFeaturedPostFooter}
+          posts={artistFeaturedPosts}
+          galleryItemFooter={PerformerFeaturedPostFooter}
           onEndReached={() => {
-            if (hasNextPage) {
+            if (isFeaturedByPerformersHasNextPage) {
               setqueryLimit(queryLimit + 9);
             }
           }}
-          hasMoreData={hasNextPage}
+          hasMoreData={isFeaturedByPerformersHasNextPage}
         ></ScrollableGalleryLayout>
       )}
-      {userFeaturedPosts && !userFeaturedPosts.length && (
+      {artistFeaturedPosts && !artistFeaturedPosts.length && (
         <AppText>
-          No users have featured your posts yet. Check back later!
+          No artists have picked your posts yet to appear in their Gallery yet.
+          Check back later!
         </AppText>
       )}
     </>

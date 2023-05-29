@@ -17,6 +17,8 @@ export * from './PlayButtonSVG';
 export * from './PlusSVG';
 export * from './RightChevronSVG';
 export * from './SearchOutlineSVG';
+export * from './StarFilledSVG';
+export * from './StarOutlineSVG';
 export * from './TaggedUserSVG';
 export * from './UserAvatarBorderedSVG';
 export * from './UserAvatarSVG';

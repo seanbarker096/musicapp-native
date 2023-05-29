@@ -5,6 +5,8 @@ import {
   LinkSVG,
   PictureCheckMarkSVG,
   PicturePlusSVG,
+  StarFilledSVG,
+  StarOutlineSVG,
 } from 'components/icon/svg-components';
 import { PostFooterAction } from 'components/post-footer-action';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -132,14 +134,26 @@ const PostFooter: FC<PostFooterProps> = ({
               <PostFooterAction
                 actionCompleted={!!feature}
                 actionCompletedState={{
-                  icon: PictureCheckMarkSVG,
-                  text: 'Added to your gallery',
+                  icon:
+                    viewingUserProfileType === ProfileType.PERFORMER
+                      ? StarOutlineSVG
+                      : PictureCheckMarkSVG,
+                  text:
+                    viewingUserProfileType === ProfileType.PERFORMER
+                      ? 'Artist pick'
+                      : 'Added to your gallery',
                   onIconPress: () =>
                     !!feature ? unFeaturePost(feature) : () => {},
                 }}
                 actionUncompletedState={{
-                  icon: PicturePlusSVG,
-                  text: 'Add to your gallery',
+                  icon:
+                    viewingUserProfileType === ProfileType.PERFORMER
+                      ? StarFilledSVG
+                      : PicturePlusSVG,
+                  text:
+                    viewingUserProfileType === ProfileType.PERFORMER
+                      ? 'Artist pick'
+                      : 'Add to your gallery',
                   onIconPress: featurePost,
                 }}
               ></PostFooterAction>
