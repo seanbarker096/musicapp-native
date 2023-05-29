@@ -42,10 +42,9 @@ export enum FeaturedEntityType {
   POST = 'post',
 }
 
+// Our api supports more featurer types, but we only use performer for now
 export enum FeaturerType {
-  USER = 'user',
   PERFORMER = 'performer',
-  PERFORMANCE = 'performance',
 }
 
 export interface FeaturesGetFilterApi {

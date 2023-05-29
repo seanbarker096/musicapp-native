@@ -60,8 +60,6 @@ const PostFooter: FC<PostFooterProps> = ({
     },
   });
 
-  console.log('artistFeatures', artistFeatures);
-
   const artistFeature = artistFeatures ? artistFeatures[0] : undefined;
 
   const loading = !artistFeatures && artistFeatureGetLoading;

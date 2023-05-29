@@ -20,8 +20,8 @@ const ProfileShows: FC<ProfileShowsProps> = ({
     useGetProfilePostsWithAttachmentsAndFilesQuery({
       profileId,
       profileType,
-      includeFeatured: true,
-      includeOwned: true,
+      includeFeatured: true, // This should only return results for a performers profile, as they ar ethe only one that can feature posts (also known as 'Artist Picks')
+      includeOwned: true, // Artists should not be able to create posts, so this filter should not return any additional results for a performers profile
       includeTagged: false,
       limit,
     });
