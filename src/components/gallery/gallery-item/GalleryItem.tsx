@@ -6,7 +6,13 @@ import { IconColor, SVGIcon } from 'components/icon';
 import { PlayButtonSVG } from 'components/icon/svg-components';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import React, { FC, memo, useEffect, useState } from 'react';
-import { Image, Pressable, StyleSheet } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 interface GalleryItemProps {
   postId: number;
@@ -27,9 +33,12 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
       undefined,
     );
 
+    const [loading, setLoading] = useState(false);
+
     // Function to extract the thumbnail from the video
     const extractThumbnail = async () => {
       try {
+        setLoading(true);
         const result = await VideoThumbnails.getThumbnailAsync(fileUrl, {
           time: 0,
         });
@@ -37,16 +46,33 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
       } catch (e) {
         console.warn(e);
       }
+      setLoading(false);
     };
 
-    // Call the extractThumbnail function when the component mounts
     useEffect(() => {
       extractThumbnail();
-    }, []);
+    }, [fileUrl]);
 
     function handleItemPress() {
       navigation.navigate('ViewPost', { postId });
     }
+
+    const thumnailLoading = () => (
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+        }}
+      >
+        <ActivityIndicator
+          size="small"
+          color="#000000"
+        />
+      </View>
+    );
 
     // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)
     return (
@@ -54,20 +80,31 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
         style={{ ...galleryItemStyles, height: 100 }}
         onPress={handleItemPress}
       >
-        {thumbnailUri ? (
+        {loading ? (
+          thumnailLoading()
+        ) : thumbnailUri ? (
           <Image
             source={{ uri: thumbnailUri, height: 100 }}
             resizeMode="cover"
           />
         ) : (
-          <SVGIcon
-            height={60}
-            width={60}
-            styles={styles.playIcon}
-            color={IconColor.LIGHT}
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+            }}
           >
-            <PlayButtonSVG></PlayButtonSVG>
-          </SVGIcon>
+            <SVGIcon
+              height={30}
+              width={30}
+              color={IconColor.LIGHT}
+            >
+              <PlayButtonSVG></PlayButtonSVG>
+            </SVGIcon>
+          </View>
         )}
       </Pressable>
     );
@@ -86,10 +123,5 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: GALLERY_ITEM_HEIGHT,
     width: '100%',
-  },
-  playIcon: {
-    left: '85%',
-    top: '85%',
-    transform: [{ translateY: -11 }, { translateX: -11 }],
   },
 });
