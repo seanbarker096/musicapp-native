@@ -133,13 +133,13 @@ const PostFooter: FC<PostFooterProps> = ({
                 actionCompleted={!!feature}
                 actionCompletedState={{
                   icon: PictureCheckMarkSVG,
-                  text: 'Featured',
+                  text: 'Added to your gallery',
                   onIconPress: () =>
                     !!feature ? unFeaturePost(feature) : () => {},
                 }}
                 actionUncompletedState={{
                   icon: PicturePlusSVG,
-                  text: 'Feature on your profile',
+                  text: 'Add to your gallery',
                   onIconPress: featurePost,
                 }}
               ></PostFooterAction>

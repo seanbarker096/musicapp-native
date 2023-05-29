@@ -48,11 +48,11 @@ const Profile: FC<ProfileProps> = memo(
           profileId={profileId}
           profileType={profileType}
         ></ProfileHeader>
-        <View style={{ width: '100%' }}>
+        <View
+          // We want the header container and content of the tab to appear at the bottom of the screen
+          style={{ width: '100%', flexGrow: 1, justifyContent: 'flex-end' }}
+        >
           <View style={styles.headerContainer}>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>Gallery</AppText>
-            </Pressable>
             <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
               <AppText weight={FONT_WEIGHT_BOLD}>
                 {profileType === ProfileType.PERFORMER
@@ -60,31 +60,40 @@ const Profile: FC<ProfileProps> = memo(
                   : 'Shows'}
               </AppText>
             </Pressable>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>
+                {profileType === ProfileType.PERFORMER
+                  ? 'Artist Picks'
+                  : 'Gallery'}
+              </AppText>
+            </Pressable>
+
             <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
               <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
             </Pressable>
           </View>
-
-          {selectedTab === SelectedTab.SHOWS && (
-            <ProfileShows
-              profileId={profileId}
-              profileType={profileType} // TODO: Update this to be dynamic
-            ></ProfileShows>
-          )}
-          {selectedTab === SelectedTab.TIMELINE && (
-            <ProfileTimeline
-              profileId={profileId}
-              profileType={profileType}
-              handleCreatePerformancePress={handleCreatePerformancePress}
-              handleViewProfilePress={handleViewProfilePress}
-            ></ProfileTimeline>
-          )}
-          {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
-            <ProfileTaggedPosts
-              profileId={profileId}
-              profileType={profileType}
-            ></ProfileTaggedPosts>
-          )}
+          <View style={{ height: 350 }}>
+            {selectedTab === SelectedTab.SHOWS && (
+              <ProfileShows
+                profileId={profileId}
+                profileType={profileType} // TODO: Update this to be dynamic
+              ></ProfileShows>
+            )}
+            {selectedTab === SelectedTab.TIMELINE && (
+              <ProfileTimeline
+                profileId={profileId}
+                profileType={profileType}
+                handleCreatePerformancePress={handleCreatePerformancePress}
+                handleViewProfilePress={handleViewProfilePress}
+              ></ProfileTimeline>
+            )}
+            {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
+              <ProfileTaggedPosts
+                profileId={profileId}
+                profileType={profileType}
+              ></ProfileTaggedPosts>
+            )}
+          </View>
         </View>
       </View>
     );
