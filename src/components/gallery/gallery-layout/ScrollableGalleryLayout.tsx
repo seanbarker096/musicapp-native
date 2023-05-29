@@ -22,6 +22,7 @@ interface GalleryLayoutProps {
   galleryItemFooter?: (post: Post) => ReactElement;
   onEndReached?: () => void;
   hasMoreData?: boolean;
+  handleGalleryItemPress?: (postId: number) => void;
 }
 
 export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
@@ -29,6 +30,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   galleryItemFooter,
   onEndReached,
   hasMoreData,
+  handleGalleryItemPress,
 }) => {
   const [scrollOffset, setScrollOffset] = useState(0);
 
@@ -69,6 +71,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
                   post.attachments[0].file?.url) as string
               } // We know that is defined due to isPostWithFile check above
               postId={post.id}
+              handleGalleryItemPress={handleGalleryItemPress}
             ></GalleryItem>
             {galleryItemFooter && (
               <MemoizedGalleryItemFooter

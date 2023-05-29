@@ -139,7 +139,6 @@ export const Post: FC<PostProps> = ({
 
   const taggedPerformerId = performerTag && performerTag.taggedEntityId;
 
-  console.log(taggedPerformance, taggedPerformerId);
   const {
     data: performers,
     isLoading: taggedPerformerLoading,

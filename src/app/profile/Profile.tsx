@@ -3,7 +3,12 @@ import { AppText } from 'components/app-text';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { COLOR_PRIMARY, FONT_WEIGHT_BOLD, SPACING_XXSMALL } from 'styles';
+import {
+  COLOR_PRIMARY,
+  COLOR_PRIMARY_DARK,
+  FONT_WEIGHT_BOLD,
+  SPACING_XXSMALL,
+} from 'styles';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
 import { ProfileTimeline } from './ProfileTimeline';
@@ -26,7 +31,7 @@ type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'> & {
 const Profile: FC<ProfileProps> = memo(
   ({ profileId, profileType, navigation }) => {
     const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
-      SelectedTab.SHOWS,
+      SelectedTab.TIMELINE,
     );
 
     function handleTabSelected(selectedTab: SelectedTab) {
@@ -53,10 +58,24 @@ const Profile: FC<ProfileProps> = memo(
           style={{ width: '100%', flexGrow: 1, justifyContent: 'flex-end' }}
         >
           <View style={styles.headerContainer}>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
+            <Pressable
+              style={
+                selectedTab === SelectedTab.TIMELINE
+                  ? styles.selectedTab
+                  : styles.tabItem
+              }
+              onPress={() => handleTabSelected(SelectedTab.TIMELINE)}
+            >
               <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
             </Pressable>
-            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+            <Pressable
+              style={
+                selectedTab === SelectedTab.SHOWS
+                  ? styles.selectedTab
+                  : styles.tabItem
+              }
+              onPress={() => handleTabSelected(SelectedTab.SHOWS)}
+            >
               <AppText weight={FONT_WEIGHT_BOLD}>
                 {profileType === ProfileType.PERFORMER
                   ? 'Artist Picks'
@@ -64,7 +83,14 @@ const Profile: FC<ProfileProps> = memo(
               </AppText>
             </Pressable>
             {profileType === ProfileType.PERFORMER && (
-              <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+              <Pressable
+                style={
+                  selectedTab === SelectedTab.TAGGED
+                    ? styles.selectedTab
+                    : styles.tabItem
+                }
+                onPress={() => handleTabSelected(SelectedTab.TAGGED)}
+              >
                 <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
               </Pressable>
             )}
@@ -74,6 +100,9 @@ const Profile: FC<ProfileProps> = memo(
               <ProfileShows
                 profileId={profileId}
                 profileType={profileType} // TODO: Update this to be dynamic
+                handlePostPress={(postId: number) =>
+                  navigation.navigate('ViewPost', { postId })
+                }
               ></ProfileShows>
             )}
             {selectedTab === SelectedTab.TIMELINE && (
@@ -126,6 +155,17 @@ const styles = StyleSheet.create({
     paddingTop: SPACING_XXSMALL,
     paddingBottom: SPACING_XXSMALL,
     width: '100%',
+  },
+  selectedTab: {
+    borderWidth: 0,
+    borderBottomWidth: 5,
+    borderBottomColor: COLOR_PRIMARY_DARK,
+    padding: SPACING_XXSMALL,
+    paddingBottom: 0,
+  },
+  tabItem: {
+    padding: SPACING_XXSMALL,
+    paddingBottom: 0,
   },
 });
 

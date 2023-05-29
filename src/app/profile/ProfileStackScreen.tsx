@@ -90,9 +90,13 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
 
   return (
     <ProfileStack.Navigator
-      screenOptions={{
-        header: ProfileStackScreenHeader,
-      }}
+      screenOptions={
+        isLoggedInUsersProfile
+          ? {
+              header: ProfileStackScreenHeader,
+            }
+          : {}
+      }
     >
       <ProfileStack.Screen name="Profile">
         {props => (
@@ -126,7 +130,7 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
       <ProfileStack.Screen
         name="ProfileSettings"
         component={SettingsStackScreen}
-        options={{ animation: 'none' }}
+        options={{ animation: 'none', headerShown: false }}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );

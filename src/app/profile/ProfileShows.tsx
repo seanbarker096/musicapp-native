@@ -6,9 +6,14 @@ import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hoo
 interface ProfileShowsProps {
   profileId: number; // Can be performer or user
   profileType: ProfileType;
+  handlePostPress?: (postId: number) => void;
 }
 
-const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
+const ProfileShows: FC<ProfileShowsProps> = ({
+  profileId,
+  profileType,
+  handlePostPress,
+}) => {
   const [limit, setLimit] = useState(9);
 
   const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
@@ -36,6 +41,7 @@ const ProfileShows: FC<ProfileShowsProps> = ({ profileId, profileType }) => {
             }
           }}
           hasMoreData={hasNextPage}
+          handleGalleryItemPress={handlePostPress}
         ></ScrollableGalleryLayout>
       )}
     </>

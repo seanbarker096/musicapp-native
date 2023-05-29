@@ -1,7 +1,6 @@
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
-  CheckCircleSVG,
   LinkSVG,
   PictureCheckMarkSVG,
   PicturePlusSVG,
@@ -186,9 +185,9 @@ const PostFooter: FC<PostFooterProps> = ({
                 color={IconColor.PRIMARY}
                 styles={{ marginRight: SPACING_XXSMALL }}
               >
-                <CheckCircleSVG></CheckCircleSVG>
+                <StarFilledSVG></StarFilledSVG>
               </SVGIcon>
-              <AppText>Featured by {postPerformer.name}</AppText>
+              <AppText>Aritst pick</AppText>
             </View>
           )}
         </View>

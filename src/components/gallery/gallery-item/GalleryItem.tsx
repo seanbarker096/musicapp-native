@@ -18,6 +18,7 @@ interface GalleryItemProps {
   postId: number;
   fileUrl: string;
   galleryItemStyles: { [style: string]: any };
+  handleGalleryItemPress(postId: number): void;
 }
 
 /**
@@ -26,7 +27,7 @@ interface GalleryItemProps {
  * This component is memoized to prevent unnecessary re-renders whenever useQuerys retruning posts and post attachments re-run, or cause re-renders, which can be quite often.
  */
 export const GalleryItem: FC<GalleryItemProps> = memo(
-  ({ postId, fileUrl, galleryItemStyles }) => {
+  ({ postId, fileUrl, galleryItemStyles, handleGalleryItemPress }) => {
     const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 
     const [thumbnailUri, setThumbnailUri] = useState<string | undefined>(
@@ -43,19 +44,16 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
           time: 0,
         });
         setThumbnailUri(result.uri);
+        setLoading(false);
       } catch (e) {
         console.warn(e);
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     useEffect(() => {
       extractThumbnail();
     }, [fileUrl]);
-
-    function handleItemPress() {
-      navigation.navigate('ViewPost', { postId });
-    }
 
     const thumnailLoading = () => (
       <View
@@ -78,7 +76,7 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
     return (
       <Pressable
         style={{ ...galleryItemStyles, height: 100 }}
-        onPress={handleItemPress}
+        onPress={() => handleGalleryItemPress(postId)}
       >
         {loading ? (
           thumnailLoading()
