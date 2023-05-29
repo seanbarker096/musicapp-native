@@ -30,10 +30,10 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
     // Function to extract the thumbnail from the video
     const extractThumbnail = async () => {
       try {
-        const { uri } = await VideoThumbnails.getThumbnailAsync(fileUrl, {
+        const result = await VideoThumbnails.getThumbnailAsync(fileUrl, {
           time: 0,
         });
-        setThumbnailUri(uri);
+        setThumbnailUri(result.uri);
       } catch (e) {
         console.warn(e);
       }
@@ -56,7 +56,7 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
       >
         {thumbnailUri ? (
           <Image
-            source={{ uri: thumbnailUri }}
+            source={{ uri: thumbnailUri, height: 100 }}
             resizeMode="cover"
           />
         ) : (

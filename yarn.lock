@@ -5140,10 +5140,10 @@ expo-updates-interface@~0.7.0:
   resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-0.7.0.tgz#f4f03b61dbdd949cac9fb44e250e1162ba177650"
   integrity sha512-saThnbrYDSjKxfMFFguAvh5o5KGabvAOHItkJRwq2L3c0T/3q26Q0kM83880h/+TTtAVsl1+Vhny9d+ImD3yvQ==
 
-expo-video-thumbnails@^7.2.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/expo-video-thumbnails/-/expo-video-thumbnails-7.2.1.tgz#aa95cef4c1944720ddc75a86f30c6f0f401177ec"
-  integrity sha512-KJCuSpKl/INhZ4QPy3pKFffUFVwWuu/TnSE8riIMB2Xx1q8a2QlOGiCgqUEL8UouQqmEeddOMkRJav9UXXG4jQ==
+expo-video-thumbnails@~6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/expo-video-thumbnails/-/expo-video-thumbnails-6.4.0.tgz#59603af06c1d2122c2f7db854562236bbd8319ec"
+  integrity sha512-KsO84yjWkemJTdNdArC/qVhx1YGLQJojRBC7/BtwohNiJXVV1sxX1L4Yioh/grnpnfLXDPcBxYxv+pLN6k4x/Q==
 
 expo@~46.0.7:
   version "46.0.17"
