@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import {
-  PictureCheckMarkSVG,
   RightChevronSVG,
   StarOutlineSVG,
   TaggedUserSVG,
@@ -37,14 +36,6 @@ const Manage: FC<ManageProps> = ({ navigation }) => {
       icon: StarOutlineSVG,
       // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
       action: () => navigation.navigate('ManageArtistPicks'),
-    });
-
-    manageListItems.push({
-      heading: 'Features',
-      text: 'View posts you have created, which other users have featured on their profile',
-      icon: PictureCheckMarkSVG,
-      // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
-      action: () => navigation.navigate('ManageFeaturedPosts'),
     });
   }
 

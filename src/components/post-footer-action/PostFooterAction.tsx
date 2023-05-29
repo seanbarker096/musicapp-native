@@ -1,7 +1,7 @@
 import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon, SVGProps } from 'components/icon';
 import { FC } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PostFooterActionProps {
@@ -33,8 +33,7 @@ export const PostFooterAction: FC<PostFooterActionProps> = ({
   }
 
   return (
-    <Pressable
-      onPress={handleIconPress}
+    <View
       style={{
         ...styles.flexRowContainer,
         marginRight: SPACING_XSMALL,
@@ -43,6 +42,7 @@ export const PostFooterAction: FC<PostFooterActionProps> = ({
       {actionCompleted ? (
         <>
           <SVGIcon
+            handlePress={handleIconPress}
             color={actionCompletedState.iconColor}
             styles={{ marginRight: SPACING_XXSMALL }}
           >
@@ -55,6 +55,7 @@ export const PostFooterAction: FC<PostFooterActionProps> = ({
       ) : (
         <>
           <SVGIcon
+            handlePress={handleIconPress}
             color={actionUncompletedState.iconColor}
             styles={{ marginRight: SPACING_XXSMALL }}
           >
@@ -65,7 +66,7 @@ export const PostFooterAction: FC<PostFooterActionProps> = ({
           )}
         </>
       )}
-    </Pressable>
+    </View>
   );
 };
 

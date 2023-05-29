@@ -19,11 +19,6 @@ type ManageFeaturedPostsProps = NativeStackScreenProps<
   'ManageFeaturedPosts'
 >;
 
-enum SelectedTab {
-  USER_FEATURES = 'userFeatures',
-  PERFORMER_FEATURES = 'performerFeatures',
-}
-
 export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
   navigation,
 }) => {

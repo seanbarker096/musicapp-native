@@ -2,8 +2,6 @@ import { AppText } from 'components/app-text';
 import { IconColor, SVGIcon } from 'components/icon';
 import {
   LinkSVG,
-  PictureCheckMarkSVG,
-  PicturePlusSVG,
   StarFilledSVG,
   StarOutlineSVG,
 } from 'components/icon/svg-components';
@@ -42,32 +40,12 @@ const PostFooter: FC<PostFooterProps> = ({
     profileType: viewingUserProfileType,
   } = profileState;
 
-  const featurerType =
-    viewingUserProfileType === ProfileType.PERFORMER
-      ? FeaturerType.PERFORMER
-      : FeaturerType.USER;
-
   const viewingUserIsPostOwner = viewingUserProfileId === post.ownerId;
 
   const canLinkToPerformance =
     (viewingUserProfileType === ProfileType.PERFORMER &&
       viewingUserProfileId === postPerformer.id) ||
     viewingUserIsPostOwner;
-
-  const {
-    data: features,
-    isLoading: featuresGetLoading,
-    isError: featuresGetError,
-  } = useFeaturesGetQuery({
-    queryParams: {
-      featuredEntityId: post.id,
-      featuredEntityType: FeaturedEntityType.POST,
-      featurerType: featurerType,
-      featurerId: viewingUserProfileId,
-    },
-  });
-
-  const feature = features ? features[0] : undefined;
 
   const {
     data: artistFeatures,
@@ -82,14 +60,12 @@ const PostFooter: FC<PostFooterProps> = ({
     },
   });
 
+  console.log('artistFeatures', artistFeatures);
+
   const artistFeature = artistFeatures ? artistFeatures[0] : undefined;
 
-  const loading =
-    (!features && featuresGetLoading) ||
-    (!artistFeatures && artistFeatureGetLoading);
-  const error =
-    (!features && featuresGetError) ||
-    (!artistFeatures && artistFeatureGetError);
+  const loading = !artistFeatures && artistFeatureGetLoading;
+  const error = !artistFeatures && artistFeatureGetError;
 
   const {
     mutateAsync: createFeature,
@@ -108,7 +84,7 @@ const PostFooter: FC<PostFooterProps> = ({
       featuredEntityId: post.id,
       featuredEntityType: FeaturedEntityType.POST,
       featurerId: viewingUserProfileId,
-      featurerType: featurerType,
+      featurerType: FeaturerType.PERFORMER,
     });
   }
 
@@ -121,79 +97,68 @@ const PostFooter: FC<PostFooterProps> = ({
   return (
     <>
       {!loading && !error && (
-        <View style={{ ...styles.container }}>
-          <View
-            style={{
-              ...styles.sidePadding,
-              ...styles.flexRowContainer,
-              marginBottom: SPACING_SMALL,
-            }}
-          >
-            {!viewingUserIsPostOwner && (
+        <View
+          style={{
+            ...styles.sidePadding,
+            ...styles.flexRowContainer,
+            marginBottom: SPACING_SMALL,
+          }}
+        >
+          {/* If viewing user is the performer in the post, then give them the option to artist pick*/}
+          {viewingUserProfileId === postPerformer.id &&
+            viewingUserProfileType === ProfileType.PERFORMER && (
               <PostFooterAction
-                actionCompleted={!!feature}
+                actionCompleted={!!artistFeature}
                 actionCompletedState={{
-                  icon:
-                    viewingUserProfileType === ProfileType.PERFORMER
-                      ? StarOutlineSVG
-                      : PictureCheckMarkSVG,
-                  text:
-                    viewingUserProfileType === ProfileType.PERFORMER
-                      ? 'Artist pick'
-                      : 'Added to your gallery',
+                  icon: StarFilledSVG,
+                  text: 'Artist pick',
                   onIconPress: () =>
-                    !!feature ? unFeaturePost(feature) : () => {},
+                    !!artistFeature ? unFeaturePost(artistFeature) : () => {},
                 }}
                 actionUncompletedState={{
-                  icon:
-                    viewingUserProfileType === ProfileType.PERFORMER
-                      ? StarFilledSVG
-                      : PicturePlusSVG,
-                  text:
-                    viewingUserProfileType === ProfileType.PERFORMER
-                      ? 'Artist pick'
-                      : 'Add to your gallery',
+                  icon: StarOutlineSVG,
+                  text: 'Artist pick',
                   onIconPress: featurePost,
                 }}
               ></PostFooterAction>
             )}
-            {canLinkToPerformance && (
-              <Pressable
-                onPress={handleLinkToPerformancePress}
+          {artistFeature &&
+            (viewingUserProfileId !== postPerformer.id ||
+              viewingUserProfileType !== ProfileType.PERFORMER) && (
+              <View
                 style={{
+                  ...styles.sidePadding,
                   ...styles.flexRowContainer,
-                  marginRight: SPACING_XSMALL,
+                  marginBottom: SPACING_SMALL,
                 }}
               >
-                <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
-                  <LinkSVG></LinkSVG>
+                <SVGIcon
+                  color={IconColor.PRIMARY}
+                  styles={{ marginRight: SPACING_XXSMALL }}
+                >
+                  <StarFilledSVG></StarFilledSVG>
                 </SVGIcon>
-                <AppText>Link to a performance</AppText>
-              </Pressable>
+                <AppText>Picked by {postPerformer.name}</AppText>
+              </View>
             )}
-          </View>
-
-          {artistFeature && (
-            <View
+          {canLinkToPerformance && (
+            <Pressable
+              onPress={handleLinkToPerformancePress}
               style={{
-                ...styles.sidePadding,
                 ...styles.flexRowContainer,
-                marginBottom: SPACING_SMALL,
+                marginRight: SPACING_XSMALL,
               }}
             >
-              <SVGIcon
-                color={IconColor.PRIMARY}
-                styles={{ marginRight: SPACING_XXSMALL }}
-              >
-                <StarFilledSVG></StarFilledSVG>
+              <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+                <LinkSVG></LinkSVG>
               </SVGIcon>
-              <AppText>Aritst pick</AppText>
-            </View>
+              <AppText>Link to a performance</AppText>
+            </Pressable>
           )}
         </View>
       )}
-      {!feature && loading && <AppText>Loading...</AppText>}
-      {!feature && error && <AppText>Error...</AppText>}
+      {!artistFeature && loading && <AppText>Loading...</AppText>}
+      {!artistFeature && error && <AppText>Error...</AppText>}
     </>
   );
 };

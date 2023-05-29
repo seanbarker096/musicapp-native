@@ -130,7 +130,7 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
       <ProfileStack.Screen
         name="ProfileSettings"
         component={SettingsStackScreen}
-        options={{ animation: 'none', headerShown: false }}
+        options={{ animation: 'none' }}
       ></ProfileStack.Screen>
     </ProfileStack.Navigator>
   );

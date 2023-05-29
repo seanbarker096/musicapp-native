@@ -11,7 +11,6 @@ import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import Manage from './Manage';
 import { ManageArtistPicks } from './ManageArtistPicks';
-import { ManageFeaturedPosts } from './ManageFeaturedPosts';
 import { ManageTaggedPosts } from './ManageTaggedPosts';
 import { ManageStackParamList } from './manage-types';
 
@@ -54,14 +53,9 @@ const InternalManageStackScreen = () => {
         name="Manage"
       ></InternalManageStack.Screen>
       <InternalManageStack.Screen
-        component={ManageFeaturedPosts}
-        name="ManageFeaturedPosts"
-      ></InternalManageStack.Screen>
-      <InternalManageStack.Screen
         component={ManageArtistPicks}
         name="ManageArtistPicks"
       ></InternalManageStack.Screen>
-
       <InternalManageStack.Screen
         component={ManageTaggedPosts}
         name="ManageTaggedPosts"
