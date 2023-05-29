@@ -16,6 +16,7 @@ export type ProfileStackParamList = {
   };
   ProfileCreatePerformance: undefined;
   ProfileSettings: undefined;
+  CreatePostStack: undefined;
 };
 
 /**

@@ -14,6 +14,7 @@ interface AppTextProps {
   marginBottom?: string | number;
   textColor?: string;
   isLink?: boolean;
+  textAlign?: 'left' | 'center' | 'right';
   handlePress?: () => void;
 }
 
@@ -21,6 +22,7 @@ export const AppText: FC<AppTextProps> = ({
   size = 'regular',
   weight = 'normal',
   textColor = COLOR_XXXXDARK,
+  textAlign = 'left',
   children,
   isLink = false,
   handlePress = undefined,
@@ -43,6 +45,7 @@ export const AppText: FC<AppTextProps> = ({
         style={{
           ...styles.text,
           color: textColor,
+          textAlign,
           ...(isLink ? baseStyles.link : {}),
         }}
       >

@@ -1,3 +1,4 @@
+import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useState } from 'react';
@@ -30,16 +31,20 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
 
   return (
     <>
-      {postsWithAttachmentsAndFiles && (
-        <ScrollableGalleryLayout
-          posts={postsWithAttachmentsAndFiles}
-          onEndReached={() => {
-            if (hasNextPage) {
-              setLimit(limit + 9);
-            }
-          }}
-          hasMoreData={hasNextPage}
-        ></ScrollableGalleryLayout>
+      {postsWithAttachmentsAndFiles &&
+        !!postsWithAttachmentsAndFiles.length && (
+          <ScrollableGalleryLayout
+            posts={postsWithAttachmentsAndFiles}
+            onEndReached={() => {
+              if (hasNextPage) {
+                setLimit(limit + 9);
+              }
+            }}
+            hasMoreData={hasNextPage}
+          ></ScrollableGalleryLayout>
+        )}
+      {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (
+        <AppText>No posts here</AppText>
       )}
     </>
   );

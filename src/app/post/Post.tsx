@@ -345,19 +345,7 @@ export const Post: FC<PostProps> = ({
               </SVGIcon>
             )}
           </Pressable>
-          {postOwner && isPerformer(postOwner) && (
-            <PostFooter
-              post={post}
-              postPerformer={postOwner}
-              handleLinkToPerformancePress={() =>
-                navigation.navigate('PostLinkToPerformance', {
-                  postId: post.id,
-                  performerId: postOwner.id,
-                })
-              }
-            ></PostFooter>
-          )}
-          {postOwner && !isPerformer(postOwner) && postPerformer && (
+          {postPerformer && (
             <PostFooter
               post={post}
               postPerformer={postPerformer}

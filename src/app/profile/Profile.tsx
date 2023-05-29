@@ -103,6 +103,9 @@ const Profile: FC<ProfileProps> = memo(
                 handlePostPress={(postId: number) =>
                   navigation.navigate('ViewPost', { postId })
                 }
+                handleCreatePostPress={() =>
+                  navigation.navigate('CreatePostStack', {})
+                }
               ></ProfileShows>
             )}
             {selectedTab === SelectedTab.TIMELINE && (

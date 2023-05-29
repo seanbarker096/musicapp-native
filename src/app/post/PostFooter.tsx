@@ -60,6 +60,8 @@ const PostFooter: FC<PostFooterProps> = ({
     },
   });
 
+  console.log('artistFeatures', artistFeatures);
+
   const artistFeature = artistFeatures ? artistFeatures[0] : undefined;
 
   const loading = !artistFeatures && artistFeatureGetLoading;
@@ -147,7 +149,10 @@ const PostFooter: FC<PostFooterProps> = ({
                 marginRight: SPACING_XSMALL,
               }}
             >
-              <SVGIcon styles={{ marginRight: SPACING_XXSMALL }}>
+              <SVGIcon
+                handlePress={handleLinkToPerformancePress}
+                styles={{ marginRight: SPACING_XXSMALL }}
+              >
                 <LinkSVG></LinkSVG>
               </SVGIcon>
               <AppText>Link to a performance</AppText>

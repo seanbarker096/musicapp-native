@@ -59,7 +59,7 @@ export const PerformanceList: FC<Props> = ({
   }
   return (
     <>
-      {performances && performances.length && (
+      {performances && !!performances.length && (
         <>
           {loggedInUserIsThePerformer && (
             <CreatePerformanceButton
@@ -100,7 +100,11 @@ export const PerformanceList: FC<Props> = ({
           )}
           {loggedInUserIsThePerformer && (
             <>
-              <AppText>You haven't created any performances yet</AppText>
+              <AppText>
+                You haven't created any performances yet. Create performances so
+                that your fans can link their videos to them, making it easy for
+                you to see them all
+              </AppText>
               <Button
                 color={BUTTON_COLOR_PRIMARY}
                 onPress={handleCreatePerformancePress}

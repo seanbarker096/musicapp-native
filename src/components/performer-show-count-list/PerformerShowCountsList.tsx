@@ -2,7 +2,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
-import { FC } from 'react';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { FC, useContext } from 'react';
 import {
   AttendeePerformer,
   useAttendeePerformersGetQuery,
@@ -14,6 +15,12 @@ interface Props {
 }
 
 export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
+  const { profileState } = useContext(ProfileContext);
+
+  const isViewingUser =
+    profileState.profileType === ProfileType.USER &&
+    profileState.profileId === userId;
+
   const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 
   const {
@@ -35,7 +42,7 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
 
   return (
     <>
-      {performers && (
+      {performers && !!performers.length && (
         <List
           sidePadding="xsmall"
           verticalPadding="xxxsmall"
@@ -51,6 +58,13 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
             </ListItem>
           ))}
         </List>
+      )}
+      {performers && !performers.length && <AppText>No shows attended</AppText>}
+      {performers && !performers.length && isViewingUser && (
+        <AppText>
+          Performances appear here once you create posts and tag them in the
+          artists performances
+        </AppText>
       )}
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error...</AppText>}
