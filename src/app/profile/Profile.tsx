@@ -48,39 +48,44 @@ const Profile: FC<ProfileProps> = memo(
           profileId={profileId}
           profileType={profileType}
         ></ProfileHeader>
-        <View style={styles.headerContainer}>
-          <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
-            <AppText weight={FONT_WEIGHT_BOLD}>Gallery</AppText>
-          </Pressable>
-          <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
-            <AppText weight={FONT_WEIGHT_BOLD}>
-              {profileType === ProfileType.PERFORMER ? 'Performances' : 'Shows'}
-            </AppText>
-          </Pressable>
-          <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
-            <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
-          </Pressable>
+        <View style={{ width: '100%' }}>
+          <View style={styles.headerContainer}>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>Gallery</AppText>
+            </Pressable>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>
+                {profileType === ProfileType.PERFORMER
+                  ? 'Performances'
+                  : 'Shows'}
+              </AppText>
+            </Pressable>
+            <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+              <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
+            </Pressable>
+          </View>
+
+          {selectedTab === SelectedTab.SHOWS && (
+            <ProfileShows
+              profileId={profileId}
+              profileType={profileType} // TODO: Update this to be dynamic
+            ></ProfileShows>
+          )}
+          {selectedTab === SelectedTab.TIMELINE && (
+            <ProfileTimeline
+              profileId={profileId}
+              profileType={profileType}
+              handleCreatePerformancePress={handleCreatePerformancePress}
+              handleViewProfilePress={handleViewProfilePress}
+            ></ProfileTimeline>
+          )}
+          {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
+            <ProfileTaggedPosts
+              profileId={profileId}
+              profileType={profileType}
+            ></ProfileTaggedPosts>
+          )}
         </View>
-        {selectedTab === SelectedTab.SHOWS && (
-          <ProfileShows
-            profileId={profileId}
-            profileType={profileType} // TODO: Update this to be dynamic
-          ></ProfileShows>
-        )}
-        {selectedTab === SelectedTab.TIMELINE && (
-          <ProfileTimeline
-            profileId={profileId}
-            profileType={profileType}
-            handleCreatePerformancePress={handleCreatePerformancePress}
-            handleViewProfilePress={handleViewProfilePress}
-          ></ProfileTimeline>
-        )}
-        {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
-          <ProfileTaggedPosts
-            profileId={profileId}
-            profileType={profileType}
-          ></ProfileTaggedPosts>
-        )}
       </View>
     );
   },
@@ -102,8 +107,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     width: '100%',
+    height: '100%',
   },
   headerContainer: {
     alignItems: 'center',

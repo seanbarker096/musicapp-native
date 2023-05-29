@@ -103,7 +103,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   };
 
   return (
-    <View style={{ flexGrow: 1, height: 150, width: '100%' }}>
+    <View style={{ height: 350, width: '100%' }}>
       <FlatList
         data={processedPosts}
         renderItem={listItem}
