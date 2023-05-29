@@ -57,8 +57,8 @@ export interface PostApi {
   featuring_performer?: PerformerApi;
 }
 
+// API supports more owner types, but we only use user for now
 export enum PostOwnerType {
-  PERFORMER = 'performer',
   USER = 'user',
 }
 

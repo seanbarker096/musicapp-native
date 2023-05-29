@@ -32,7 +32,7 @@ export const PerformanceList: FC<Props> = ({
     profileId: loggedInUserProfileId,
   } = profileState;
 
-  const loggedInUserIsPerformer =
+  const loggedInUserIsThePerformer =
     performerId === loggedInUserProfileId &&
     loggedInUserProfileType === ProfileType.PERFORMER;
 
@@ -61,7 +61,7 @@ export const PerformanceList: FC<Props> = ({
     <>
       {performances && performances.length && (
         <>
-          {loggedInUserIsPerformer && (
+          {loggedInUserIsThePerformer && (
             <CreatePerformanceButton
               onPress={handleCreatePerformancePress}
             ></CreatePerformanceButton>
@@ -85,7 +85,7 @@ export const PerformanceList: FC<Props> = ({
       )}
       {performances && !performances.length && (
         <>
-          {!loggedInUserIsPerformer && (
+          {!loggedInUserIsThePerformer && (
             <>
               <AppText>
                 This artist hasn't created any performances yet. But you can
@@ -98,7 +98,7 @@ export const PerformanceList: FC<Props> = ({
               />
             </>
           )}
-          {loggedInUserIsPerformer && (
+          {loggedInUserIsThePerformer && (
             <>
               <AppText>You haven't created any performances yet</AppText>
               <Button

@@ -5,27 +5,35 @@ import { View } from 'react-native';
 import { SPACING_XXSMALL } from 'styles';
 
 interface PostHeaderProps {
-  avatarImageUrl?: string;
-  username: string;
+  imgUrl?: string;
+  name: string;
   performanceText?: string;
   onPerformerPress?: () => void;
+  onPostCreatorPress?: () => void;
 }
 
-const UserPostHeader: FC<PostHeaderProps> = ({
-  avatarImageUrl,
-  username,
+const PostHeader: FC<PostHeaderProps> = ({
+  imgUrl,
+  name,
   performanceText,
   onPerformerPress,
+  onPostCreatorPress,
 }) => {
   return (
     <>
       <ProfileImage
         size="small"
         styles={{ marginRight: SPACING_XXSMALL }}
-        imageUrl={avatarImageUrl}
+        imageUrl={imgUrl}
+        handlePress={onPostCreatorPress}
       ></ProfileImage>
       <View style={{ flexDirection: 'column' }}>
-        <AppText size="large">{username}</AppText>
+        <AppText
+          handlePress={onPostCreatorPress}
+          size="large"
+        >
+          {name}
+        </AppText>
         <AppText
           handlePress={onPerformerPress}
           size="small"
@@ -37,4 +45,4 @@ const UserPostHeader: FC<PostHeaderProps> = ({
   );
 };
 
-export default UserPostHeader;
+export default PostHeader;

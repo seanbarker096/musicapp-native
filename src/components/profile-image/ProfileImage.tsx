@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import { Image, StyleSheet, View, ViewStyle } from 'react-native';
+import { Image, ImageStyle, Pressable, StyleSheet } from 'react-native';
 import { profileImageSizeGenerator } from './profile-image.styles';
 import { ProfileImageSize } from './profile-image.types';
 
 interface ProfileImageProps {
   imageUrl?: string;
   size?: ProfileImageSize;
-  styles?: ViewStyle;
+  styles?: ImageStyle;
+  handlePress?: () => void;
 }
 
 const avatarImage = require('./../../assets/avatar.png');
@@ -15,13 +16,14 @@ export const ProfileImage: FC<ProfileImageProps> = ({
   imageUrl,
   styles = {},
   size = 'small',
+  handlePress,
 }) => {
   const height = profileImageSizeGenerator(size);
 
   return (
-    <View style={{ ...styles, height: height, width: height }}>
+    <Pressable onPress={handlePress}>
       <Image
-        style={{ borderRadius: height / 2 }}
+        style={{ borderRadius: height / 2, height, width: height, ...styles }}
         source={
           imageUrl
             ? {
@@ -32,13 +34,8 @@ export const ProfileImage: FC<ProfileImageProps> = ({
             : avatarImage
         }
       ></Image>
-    </View>
+    </Pressable>
   );
 };
 
-const style = StyleSheet.create({
-  image: {
-    height: '100%',
-    width: '100%',
-  },
-});
+const style = StyleSheet.create({});

@@ -3,7 +3,8 @@ import { ScrollableGalleryLayout } from 'components/gallery';
 import { SVGIcon } from 'components/icon';
 import { CalendarSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
-import React, { FC } from 'react';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import React, { FC, useContext } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
@@ -16,13 +17,25 @@ type PerformancePostsProps = {
   performanceId: number;
   performerId: number;
   handleCreatePostPress: () => void;
+  handlePostPress: (postId: number) => void;
 };
 
 export const PerformancePosts: FC<PerformancePostsProps> = ({
   performanceId,
   performerId,
   handleCreatePostPress,
+  handlePostPress,
 }) => {
+  const { profileState } = useContext(ProfileContext);
+  const {
+    profileType: loggedInUserProfileType,
+    profileId: loggedInUserProfileId,
+  } = profileState;
+
+  const loggedInUserIsPerformer =
+    performerId === loggedInUserProfileId &&
+    loggedInUserProfileType === ProfileType.PERFORMER;
+
   const {
     data: performerList,
     isLoading: performerLoading,
@@ -125,15 +138,18 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
                 No fans have shared videos for this performance yet. Be the
                 first!
               </AppText>
-              <Button
-                onPress={handleCreatePostPress}
-                title="Create a Post"
-                color={BUTTON_COLOR_PRIMARY}
-              ></Button>
+              {!loggedInUserIsPerformer && (
+                <Button
+                  onPress={handleCreatePostPress}
+                  title="Create a Post"
+                  color={BUTTON_COLOR_PRIMARY}
+                ></Button>
+              )}
             </View>
           )}
           <ScrollableGalleryLayout
             posts={taggedPosts}
+            handleGalleryItemPress={handlePostPress}
           ></ScrollableGalleryLayout>
         </View>
       )}

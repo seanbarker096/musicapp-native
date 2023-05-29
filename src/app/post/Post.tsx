@@ -23,16 +23,14 @@ import { usePerformancesGetQuery } from 'store/performances/performances.queries
 import { Performance } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { PostOwnerType } from 'store/posts';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import { useUserGetQuery } from 'store/users';
 import { User } from 'store/users/users.types';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
-import PerformerPostHeader from './PerformerPostHeader';
 import PostFooter from './PostFooter';
-import UserPostHeader from './UserPostHeader';
+import PostHeader from './PostHeader';
 import { PostStackParamList } from './post.types';
 
 type PostProps = NativeStackScreenProps<PostStackParamList, 'Post'>;
@@ -66,29 +64,15 @@ export const Post: FC<PostProps> = ({
 
   const post = posts && posts[0];
 
-  const postOwnerIsArtist = post?.ownerType === PostOwnerType.PERFORMER;
-
   const {
     data: userData,
     isLoading: isPostOwnerLoading,
     isError: isPostOwnerGetError,
   } = useUserGetQuery({
     queryParams: { id: post?.ownerId },
-    enabled: !!(post?.ownerType === PostOwnerType.USER),
   });
 
-  // TODO: Move to a post header component
-  const {
-    data: performerData,
-    isLoading: isPerformerLoading,
-    isError: isPerformerGetError,
-  } = usePerformersGetQuery({
-    queryParams: { id: post?.ownerId },
-    enabled: !!(post?.ownerType === PostOwnerType.PERFORMER),
-  });
-
-  const postOwner =
-    (userData && userData[0]) || (performerData && performerData[0]);
+  const postOwner = userData && userData[0];
 
   // Fetch any performances tagged in this post
   const {
@@ -258,7 +242,14 @@ export const Post: FC<PostProps> = ({
     }
   }
 
-  const PostHeader = () =>
+  function navigateToPostCreatorProfile(user: User) {
+    navigation.navigate('ProfileStack', {
+      profileId: user.id,
+      profileType: ProfileType.USER,
+    });
+  }
+
+  const Header = () =>
     postOwner ? (
       <View
         style={{
@@ -267,39 +258,23 @@ export const Post: FC<PostProps> = ({
           ...styles.flexRowContainer,
         }}
       >
-        {isPerformer(postOwner) && (
-          <PerformerPostHeader
-            profileImageUrl={postOwner.imageUrl}
-            displayName={postOwner.name}
-            performanceText={`${
-              taggedPerformance ? taggedPerformance?.venueName : ''
-            }`}
-            onPerformerPress={() =>
-              navigateToPerformerProfile(postOwner, taggedPerformance)
-            }
-          ></PerformerPostHeader>
-        )}
-        {!isPerformer(postOwner) && (
-          <UserPostHeader
-            avatarImageUrl={postOwner.avatarFile?.url}
-            username={postOwner.username}
-            performanceText={
-              postPerformer
-                ? `${postPerformer.name}${
-                    taggedPerformance
-                      ? ' @ ' + taggedPerformance?.venueName
-                      : ''
-                  }`
-                : ''
-            }
-            onPerformerPress={
-              postPerformer
-                ? () =>
-                    navigateToPerformerProfile(postPerformer, taggedPerformance)
-                : undefined
-            }
-          ></UserPostHeader>
-        )}
+        <PostHeader
+          imgUrl={postOwner.avatarFile?.url}
+          name={postOwner.username}
+          performanceText={
+            postPerformer
+              ? `${postPerformer.name}${
+                  taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
+                }`
+              : ''
+          }
+          onPerformerPress={() =>
+            postPerformer
+              ? navigateToPerformerProfile(postPerformer, taggedPerformance)
+              : undefined
+          }
+          onPostCreatorPress={() => navigateToPostCreatorProfile(postOwner)}
+        ></PostHeader>
       </View>
     ) : (
       <Placeholder
@@ -329,7 +304,7 @@ export const Post: FC<PostProps> = ({
     <>
       {post && (
         <View style={styles.container}>
-          <PostHeader />
+          <Header />
           <Pressable
             onPress={handlePlayPress}
             style={{
@@ -443,6 +418,6 @@ const styles = StyleSheet.create({
   },
 });
 
-function isPerformer(person: User | Performer): person is Performer {
-  return 'uuid' in person;
+function isPerformer(person?: User | Performer): person is Performer {
+  return !!person && 'uuid' in person;
 }

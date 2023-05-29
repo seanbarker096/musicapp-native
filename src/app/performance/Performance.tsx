@@ -18,6 +18,8 @@ export const Performance: FC<PerformanceScreenProps> = ({
   },
   navigation,
 }) => {
+
+
   return (
     <View>
       <PerformancePosts
@@ -26,6 +28,9 @@ export const Performance: FC<PerformanceScreenProps> = ({
         handleCreatePostPress={() =>
           navigation.navigate(PrimaryScreens.CREATE_POST)
         }
+        handlePostPress={(postId: number) => {
+          navigation.navigate('ViewPost', { postId });
+        }}
       ></PerformancePosts>
     </View>
   );

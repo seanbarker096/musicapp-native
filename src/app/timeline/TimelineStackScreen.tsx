@@ -34,10 +34,12 @@ export const TimelineStackScreen: FC<TimelineStackScreenProps> = ({
       <TimelineStack.Screen
         name="PerformanceStack"
         component={PerformanceStackScreen}
+        options={{ headerShown: false }}
       ></TimelineStack.Screen>
       <TimelineStack.Screen
         name="ProfileStack"
         component={ProfileInternalStackScreen}
+        options={{ headerShown: false }}
       ></TimelineStack.Screen>
     </TimelineStack.Navigator>
   );
