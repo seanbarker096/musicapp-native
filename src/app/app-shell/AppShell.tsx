@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SetLoggedOutPage } from 'app/app-types';
+import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
@@ -97,6 +98,10 @@ const LoggedInScreens = () => {
       <Stack.Screen
         component={CreatePostStackScreen}
         name={PrimaryScreens.CREATE_POST}
+      ></Stack.Screen>
+      <Stack.Screen
+        component={CreatePerformanceStackScreen}
+        name={PrimaryScreens.CREATE_PERFORMANCE}
       ></Stack.Screen>
     </Stack.Navigator>
   );

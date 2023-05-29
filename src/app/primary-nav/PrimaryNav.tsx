@@ -9,7 +9,8 @@ import {
   MailSVG,
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
-import { FC } from 'react';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   BORDER_COLOR_XDARK,
@@ -25,6 +26,10 @@ interface PrimaryNavProps {
 }
 
 const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
+  
+  const { profileState } = useContext(ProfileContext);
+  const profileType = profileState.profileType;
+
   const handleIconPress = (selectedScreen: PrimaryScreens) => {
     navigation.navigate(selectedScreen);
   };
@@ -51,16 +56,30 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
       >
         <SearchOutlineSVG></SearchOutlineSVG>
       </SVGIcon>
-      <SVGIcon
-        color={
-          currentScreen === PrimaryScreens.CREATE_POST
-            ? IconColor.SECONDARY
-            : IconColor.DARK
-        }
-        handlePress={() => handleIconPress(PrimaryScreens.CREATE_POST)}
-      >
-        <BorderedPlusSVG></BorderedPlusSVG>
-      </SVGIcon>
+      {profileType === ProfileType.PERFORMER && (
+        <SVGIcon
+          color={
+            currentScreen === PrimaryScreens.CREATE_PERFORMANCE
+              ? IconColor.SECONDARY
+              : IconColor.DARK
+          }
+          handlePress={() => handleIconPress(PrimaryScreens.CREATE_PERFORMANCE)}
+        >
+          <BorderedPlusSVG></BorderedPlusSVG>
+        </SVGIcon>
+      )}
+      {profileType === ProfileType.USER && (
+        <SVGIcon
+          color={
+            currentScreen === PrimaryScreens.CREATE_POST
+              ? IconColor.SECONDARY
+              : IconColor.DARK
+          }
+          handlePress={() => handleIconPress(PrimaryScreens.CREATE_POST)}
+        >
+          <BorderedPlusSVG></BorderedPlusSVG>
+        </SVGIcon>
+      )}
       <SVGIcon
         color={
           currentScreen === PrimaryScreens.MANAGE

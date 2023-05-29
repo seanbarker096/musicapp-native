@@ -54,11 +54,7 @@ const Profile: FC<ProfileProps> = memo(
         >
           <View style={styles.headerContainer}>
             <Pressable onPress={() => handleTabSelected(SelectedTab.TIMELINE)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>
-                {profileType === ProfileType.PERFORMER
-                  ? 'Performances'
-                  : 'Shows'}
-              </AppText>
+              <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
             </Pressable>
             <Pressable onPress={() => handleTabSelected(SelectedTab.SHOWS)}>
               <AppText weight={FONT_WEIGHT_BOLD}>
@@ -67,10 +63,11 @@ const Profile: FC<ProfileProps> = memo(
                   : 'Gallery'}
               </AppText>
             </Pressable>
-
-            <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
-              <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
-            </Pressable>
+            {profileType === ProfileType.PERFORMER && (
+              <Pressable onPress={() => handleTabSelected(SelectedTab.TAGGED)}>
+                <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
+              </Pressable>
+            )}
           </View>
           <View style={{ height: 350 }}>
             {selectedTab === SelectedTab.SHOWS && (

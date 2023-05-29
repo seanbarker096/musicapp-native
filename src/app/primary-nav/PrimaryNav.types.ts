@@ -8,4 +8,5 @@ export enum PrimaryScreens {
   CREATE_POST = 'primaryScreenCreatePost',
   SEARCH = 'primaryScreenSearch',
   HOME = 'primaryScreenHome',
+  CREATE_PERFORMANCE = 'primaryScreenCreatePerformance',
 }

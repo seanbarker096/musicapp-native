@@ -7,6 +7,7 @@ export type AppShellStackNavigatorParamList = {
   [PrimaryScreens.MANAGE]: undefined;
   [PrimaryScreens.PROFILE]: undefined;
   [PrimaryScreens.SEARCH]: undefined;
+  [PrimaryScreens.CREATE_PERFORMANCE]: undefined;
 };
 
 export type AppShellStackScreenProps =
