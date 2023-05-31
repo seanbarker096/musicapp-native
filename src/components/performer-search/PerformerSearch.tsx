@@ -56,6 +56,8 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     onSuccess: onPerformerSelected,
   });
 
+  console.log(selectedSearchPerformer);
+  
   const performerSearchResults = searchPerformers?.length
     ? searchPerformers.map(performer => (
         <PerformerSearchCard

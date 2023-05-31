@@ -28,12 +28,7 @@ interface PerformanceCreateFormValues {
   venue: string;
 }
 
-const CreatePerformance: FC<CreatePerformanceProps> = ({
-  navigation,
-  route: {
-    params: { performerId },
-  },
-}) => {
+const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
   const { profileState } = useContext(ProfileContext);
   const { profileType, profileId } = profileState;
 
