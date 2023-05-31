@@ -39,11 +39,15 @@ const Profile: FC<ProfileProps> = memo(
     }
 
     function handleCreatePerformancePress() {
-      navigation.navigate('ProfileCreatePerformance', {});
+      navigation.navigate('ProfileCreatePerformance');
     }
 
     function handleViewProfilePress() {
       setSelectedTab(SelectedTab.TAGGED);
+    }
+
+    function handlePostPress(postId: number) {
+      navigation.navigate('ViewPost', { postId });
     }
 
     // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
@@ -100,11 +104,9 @@ const Profile: FC<ProfileProps> = memo(
               <ProfileShows
                 profileId={profileId}
                 profileType={profileType} // TODO: Update this to be dynamic
-                handlePostPress={(postId: number) =>
-                  navigation.navigate('ViewPost', { postId })
-                }
+                handlePostPress={handlePostPress}
                 handleCreatePostPress={() =>
-                  navigation.navigate('CreatePostStack', {})
+                  navigation.navigate('CreatePostStack')
                 }
               ></ProfileShows>
             )}
@@ -120,6 +122,7 @@ const Profile: FC<ProfileProps> = memo(
               <ProfileTaggedPosts
                 profileId={profileId}
                 profileType={profileType}
+                handleTaggedPostPress={handlePostPress}
               ></ProfileTaggedPosts>
             )}
           </View>

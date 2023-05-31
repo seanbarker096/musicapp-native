@@ -7,11 +7,13 @@ import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hoo
 interface ProfileTaggedPostsProps {
   profileId: number; // Can be performer or user
   profileType: ProfileType;
+  handleTaggedPostPress: (postId: number) => void;
 }
 
 const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
   profileId,
   profileType,
+  handleTaggedPostPress,
 }) => {
   const [limit, setLimit] = useState(9);
 
@@ -41,6 +43,7 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
               }
             }}
             hasMoreData={hasNextPage}
+            handleGalleryItemPress={handleTaggedPostPress}
           ></ScrollableGalleryLayout>
         )}
       {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (

@@ -71,7 +71,11 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
                   post.attachments[0].file?.url) as string
               } // We know that is defined due to isPostWithFile check above
               postId={post.id}
-              handleGalleryItemPress={handleGalleryItemPress}
+              handleGalleryItemPress={() =>
+                handleGalleryItemPress
+                  ? handleGalleryItemPress(post.id)
+                  : undefined
+              }
             ></GalleryItem>
             {galleryItemFooter && (
               <MemoizedGalleryItemFooter
