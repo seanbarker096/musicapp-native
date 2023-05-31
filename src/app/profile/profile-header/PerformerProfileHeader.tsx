@@ -1,15 +1,23 @@
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
-import React, { FC } from 'react';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import React, { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { SPACING_MID } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
+  handleUploadPostPress: () => void;
 }
 
-const PerformerHeader: FC<PerformerHeaderProps> = ({ performerId }) => {
+const PerformerHeader: FC<PerformerHeaderProps> = ({
+  performerId,
+  handleUploadPostPress,
+}) => {
+  const { profileState } = useContext(ProfileContext);
+
   const {
     isLoading: performerGetLoading,
     isError: isPerformersGetError,
@@ -46,6 +54,18 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({ performerId }) => {
             >
               {performer.name}
             </AppText>
+            {profileState.profileType === ProfileType.USER && (
+              <>
+                <AppText>
+                  {`Seen ${performer.name} live? Share your videos from the show`}
+                </AppText>
+                <AppButton
+                  text="Upload"
+                  // TODO: Send in the performer id and prefill the performer field
+                  handlePress={handleUploadPostPress}
+                ></AppButton>
+              </>
+            )}
           </View>
         </View>
       )}

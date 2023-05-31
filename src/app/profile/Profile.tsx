@@ -12,7 +12,8 @@ import {
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
 import { ProfileTimeline } from './ProfileTimeline';
-import ProfileHeader from './profile-header/ProfileHeader';
+import PerformerProfileHeader from './profile-header/PerformerProfileHeader';
+import UserProfileHeader from './profile-header/UserProfileHeader';
 import { ProfileStackParamList } from './profile.types';
 
 enum SelectedTab {
@@ -42,6 +43,10 @@ const Profile: FC<ProfileProps> = memo(
       navigation.navigate('ProfileCreatePerformance');
     }
 
+    function handleUploadPostPress() {
+      navigation.navigate('CreatePostStack');
+    }
+
     function handleViewProfilePress() {
       setSelectedTab(SelectedTab.TAGGED);
     }
@@ -53,10 +58,14 @@ const Profile: FC<ProfileProps> = memo(
     // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
     return (
       <View style={styles.colContainer}>
-        <ProfileHeader
-          profileId={profileId}
-          profileType={profileType}
-        ></ProfileHeader>
+        {profileType === ProfileType.USER ? (
+          <UserProfileHeader userId={profileId}></UserProfileHeader>
+        ) : (
+          <PerformerProfileHeader
+            performerId={profileId}
+            handleUploadPostPress={handleUploadPostPress}
+          ></PerformerProfileHeader>
+        )}
         <View
           // We want the header container and content of the tab to appear at the bottom of the screen
           style={{ width: '100%', flexGrow: 1, justifyContent: 'flex-end' }}
