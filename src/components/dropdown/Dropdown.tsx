@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type Props = {
   options: string[];
@@ -23,8 +23,11 @@ export const Dropdown: React.FC<Props> = ({ options, value, onChange }) => {
     return (
       <View>
         {options.map(option => (
-          <TouchableOpacity onPress={() => handleOptionSelect(option)}>
-            <Text>{option}</Text>
+          <TouchableOpacity
+            onPress={() => handleOptionSelect(option)}
+            style={styles.optionItem}
+          >
+            <Text style={styles.optionText}>{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -32,11 +35,70 @@ export const Dropdown: React.FC<Props> = ({ options, value, onChange }) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={toggleDropdown}>
-        <Text>{value}</Text>
+    <View style={styles.container}>
+      <TouchableOpacity
+        onPress={toggleDropdown}
+        style={styles.dropdownButton}
+      >
+        <Text style={styles.dropdownButtonText}>{value}</Text>
       </TouchableOpacity>
-      {isOpen && renderOptions()}
+      <Modal
+        visible={isOpen}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setIsOpen(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalContainer}
+          activeOpacity={1}
+          onPress={() => setIsOpen(false)}
+        >
+          <View style={styles.optionsContainer}>
+            {options.map(option => (
+              <TouchableOpacity
+                key={option}
+                onPress={() => handleOptionSelect(option)}
+                style={styles.optionItem}
+              >
+                <Text style={styles.optionText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 10,
+  },
+  dropdownButton: {},
+  dropdownButtonText: {},
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 20,
+  },
+  optionsContainer: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+  },
+  optionItem: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray',
+  },
+  optionText: {
+    fontSize: 14,
+  },
+});
+
+
+
+
+
+

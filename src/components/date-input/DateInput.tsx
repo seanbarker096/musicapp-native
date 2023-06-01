@@ -9,13 +9,16 @@ import { COLOR_ERROR } from 'styles';
 
 export type DateInputProps = {
   inputTitle: string;
-  value: Date | undefined | string; // We accept strings so we can use it with Formik
+  value: Date | undefined | string; // Typically the date emitted by handleDateSelected, as we should use this as a controlled component. We accept strings so we can use it with Formik
   handleDateSelected: (date?: Date) => void;
   handleBlur?: () => void;
   touched: boolean;
   error?: string;
 };
 
+/**
+ * A component that allows the selection of a date. The selected vlaue is emitted to parents as a Date object. Changes in the selected date are emitted to parent components as a Date object. We display the value in the locale string, which will vary depending on the users location.
+ */
 export const DateInput: FC<DateInputProps> = ({
   inputTitle,
   value,
@@ -66,7 +69,7 @@ export const DateInput: FC<DateInputProps> = ({
           ? 'DD/MM/YY'
           : isDate(value)
           ? value.toLocaleDateString()
-          : value}
+          : new Date(value).toLocaleDateString()}
       </Text>
 
       {touched && error && <AppText textColor={COLOR_ERROR}>{error}</AppText>}

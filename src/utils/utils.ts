@@ -26,3 +26,10 @@ export function isPostWithFile(
     !!post.attachments && !!post.attachments[0] && !!post.attachments[0].file
   );
 }
+
+/**
+ * Create a UTC date from a date, ignoring any time information.
+ */
+export function createUTCDate(date: Date): number {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}

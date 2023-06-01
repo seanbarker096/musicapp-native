@@ -3,7 +3,9 @@ import { FormikProps } from 'formik';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { COLOR_ERROR, COLOR_NEUTRAL_XXLIGHT, SPACING_XXSMALL } from 'styles';
 
-export const AppTextInput: React.FC<FormikProps<{ [key: string]: any }>> = ({
+export const AppTextInput: React.FC<
+  FormikProps<{ [key: string]: any }> & { borderless: boolean }
+> = ({
   handleChange,
   handleBlur,
   value,
@@ -12,18 +14,17 @@ export const AppTextInput: React.FC<FormikProps<{ [key: string]: any }>> = ({
   touched,
   secureTextEntry = false,
   marginBottom = 0,
+  borderless = false,
 }) => {
   return (
     <View style={{ minHeight: styles.input.height, marginBottom }}>
       <TextInput
         style={{
           height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          borderRadius: 3,
           backgroundColor: COLOR_NEUTRAL_XXLIGHT,
           paddingLeft: SPACING_XXSMALL,
           paddingRight: SPACING_XXSMALL,
+          ...(borderless ? {} : styles.border),
         }}
         onChangeText={handleChange}
         onBlur={handleBlur}
@@ -39,5 +40,10 @@ export const AppTextInput: React.FC<FormikProps<{ [key: string]: any }>> = ({
 const styles = StyleSheet.create({
   input: {
     height: 40 + 20, // 40 for text input, 20 for error text
+  },
+  border: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 3,
   },
 });

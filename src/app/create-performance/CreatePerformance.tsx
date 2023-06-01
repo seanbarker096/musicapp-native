@@ -1,12 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { DateInput } from 'components/date-input';
 import { Dropdown } from 'components/dropdown';
+import { AppTextInput } from 'components/form-components';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { useFormik } from 'formik';
 import React, { FC, useContext } from 'react';
-import { Button, StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { EventType } from 'store/events/events.types';
 import { usePerformanceCreateMutation } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
@@ -16,7 +18,7 @@ import {
   SPACING_SMALL,
   SPACING_XSMALL,
 } from 'styles';
-import { isDefined } from 'utils/utils';
+import { createUTCDate, isDefined } from 'utils/utils';
 import * as Yup from 'yup';
 import { CreatePerformanceStackParamList } from './create-performance.types';
 
@@ -40,13 +42,20 @@ const validationSchema = Yup.object({
   eventStartDate: Yup.string().required('Please select a event start date'),
   eventEndDate: Yup.string()
     .required('Please select an event end date')
-    .when('eventStartDate', (eventStartDate, schema) => {
+    .when(['eventStartDate'], ([eventStartDate], schema) => {
       return schema.test({
         name: 'dateComparison',
         exclusive: false,
         message: 'End date must be greater than or equal to start date',
         test: function (eventEndDate) {
-          return isDefined(eventEndDate) && eventEndDate >= eventStartDate;
+          if (!isDefined(eventEndDate)) return false;
+          const eventStartTimestamp = new Date(eventStartDate);
+          const eventStartUTC = createUTCDate(eventStartTimestamp);
+
+          const eventEndTimestamp = new Date(eventEndDate);
+          const eventEndUTC = createUTCDate(eventEndTimestamp);
+
+          return eventEndUTC >= eventStartUTC;
         },
       });
     }),
@@ -60,10 +69,20 @@ const validationSchema = Yup.object({
           exclusive: false,
           message: 'Performance date cannot fall outside event dates',
           test: function (performanceDate) {
+            if (!isDefined(performanceDate)) return false;
+
+            const eventStartTimestamp = new Date(eventStartDate);
+            const eventStartUTC = createUTCDate(eventStartTimestamp);
+
+            const eventEndTimestamp = new Date(eventEndDate);
+            const eventEndUTC = createUTCDate(eventEndTimestamp);
+
+            const performanceDateTimestamp = new Date(performanceDate);
+            const performanceDateUTC = createUTCDate(performanceDateTimestamp);
+
             return (
-              isDefined(performanceDate) &&
-              performanceDate >= eventStartDate &&
-              performanceDate <= eventEndDate
+              performanceDateUTC >= eventStartUTC &&
+              performanceDateUTC <= eventEndUTC
             );
           },
         });
@@ -122,6 +141,10 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     onSubmit: handleFormSubmit,
   });
 
+  const buttonDisabled = isSubmitting || !isValid || !dirty;
+
+  console.log(errors);
+
   function handleCancelClick() {
     navigation.goBack();
   }
@@ -133,19 +156,27 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     eventEndDate,
     performanceDate,
   }: PerformanceCreateFormValues) {
-    // create the performance so we can tag the show in it
-    const performanceCreateResult = await performanceCreate({
-      performerId: profileId,
-      eventStartDate: Math.ceil(new Date(eventStartDate).getTime() / 1000),
-      eventEndDate: Math.ceil(new Date(eventEndDate).getTime() / 1000),
-      // Convert to seconds so its a unix timestamp
-      performanceDate: Math.ceil(new Date(performanceDate).getTime() / 1000),
-      venueName: venue,
-      eventType:
-        isFestival.toLowerCase() === 'yes'
-          ? EventType.MUSIC_FESTIVAL
-          : EventType.MUSIC_CONCERT,
-    });
+    // create the performance so we can tag the show in it, converting all dates to unix timestamps
+    var timezoneOffset = new Date().getTimezoneOffset();
+
+    await performanceCreate({
+       performerId: profileId,
+       eventStartDate:
+         Math.floor(new Date(eventStartDate).getTime() / 1000) -
+         timezoneOffset * 60,
+       eventEndDate:
+         Math.floor(new Date(eventEndDate).getTime() / 1000) -
+         timezoneOffset * 60,
+       // Convert to seconds so its a unix timestamp
+       performanceDate:
+         Math.floor(new Date(performanceDate).getTime() / 1000) -
+         timezoneOffset * 60,
+       venueName: venue,
+       eventType:
+         isFestival.toLowerCase() === 'yes'
+           ? EventType.MUSIC_FESTIVAL
+           : EventType.MUSIC_CONCERT,
+     });
 
     navigation.goBack();
   }
@@ -180,22 +211,21 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
           </View>
 
           <AppText>Venue</AppText>
-          <TextInput
-            style={{
-              width: '100%',
-              display: 'flex',
-              ...styles.textInput,
-            }}
-            onChangeText={handleChange('venue')}
-            onBlur={handleBlur('venue')}
+          <AppTextInput
+            handleChange={handleChange('venue')}
+            handleBlur={handleBlur('venue')}
             value={values.venue}
+            error={errors.venue}
+            touched={touched.venue}
             placeholder="e.g. Wireless Festival, O2 Academy Brixton"
+            borderless={true}
           />
 
           <DateInput
             handleDateSelected={e => {
               if (e) {
-                handleEventStartDateChange(e?.toLocaleDateString());
+                // set to isoString to avoid any locale string effects when passing back into DateInput as the value
+                handleEventStartDateChange(e?.toISOString());
               }
             }}
             handleBlur={e => {
@@ -211,7 +241,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
           <DateInput
             handleDateSelected={e => {
               if (e) {
-                handleEventEndDateChange(e?.toLocaleDateString());
+                handleEventEndDateChange(e?.toISOString());
               }
             }}
             handleBlur={handleEventEndDateBlur}
@@ -234,7 +264,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
           <DateInput
             handleDateSelected={e => {
               if (e) {
-                handlePerformanceDateChange(e?.toLocaleDateString());
+                handlePerformanceDateChange(e?.toISOString());
               }
             }}
             handleBlur={handlePerformanceDateBlur}
@@ -257,11 +287,11 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                 marginRight: SPACING_SMALL,
               }}
             >
-              <Button
+              <AppButton
                 color={BUTTON_COLOR_DISABLED}
-                onPress={handleCancelClick}
-                title="Cancel"
-              ></Button>
+                handlePress={handleCancelClick}
+                text="Cancel"
+              ></AppButton>
             </View>
             <View
               style={{
@@ -269,10 +299,11 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                 flexShrink: 0,
               }}
             >
-              <Button
+              <AppButton
                 color={BUTTON_COLOR_PRIMARY}
-                onPress={handleSubmit}
-                title="Create"
+                handlePress={handleSubmit}
+                disabled={buttonDisabled}
+                text="Create"
               />
             </View>
           </View>
