@@ -1,10 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { DateInput } from 'components/date-input';
+import { Dropdown } from 'components/dropdown';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import { Formik } from 'formik';
-import { FC, useContext, useState } from 'react';
+import { useFormik } from 'formik';
+import React, { FC, useContext } from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
 import { EventType } from 'store/events/events.types';
 import { usePerformanceCreateMutation } from 'store/performances/performances.queries';
@@ -16,6 +17,7 @@ import {
   SPACING_XSMALL,
 } from 'styles';
 import { isDefined } from 'utils/utils';
+import * as Yup from 'yup';
 import { CreatePerformanceStackParamList } from './create-performance.types';
 
 type CreatePerformanceProps = NativeStackScreenProps<
@@ -26,19 +28,55 @@ type CreatePerformanceProps = NativeStackScreenProps<
 interface PerformanceCreateFormValues {
   isFestival: string;
   venue: string;
+  eventStartDate: string;
+  eventEndDate: string;
+  performanceDate: string;
 }
+
+const validationSchema = Yup.object({
+  venue: Yup.string()
+    .required('Required')
+    .min(2, 'Must be at least 2 characters'),
+  eventStartDate: Yup.string().required('Please select a event start date'),
+  eventEndDate: Yup.string()
+    .required('Please select an event end date')
+    .when('eventStartDate', (eventStartDate, schema) => {
+      return schema.test({
+        name: 'dateComparison',
+        exclusive: false,
+        message: 'End date must be greater than or equal to start date',
+        test: function (eventEndDate) {
+          return isDefined(eventEndDate) && eventEndDate >= eventStartDate;
+        },
+      });
+    }),
+  performanceDate: Yup.string()
+    .required('Please select a performance date')
+    .when(
+      ['eventStartDate', 'eventEndDate'],
+      ([eventStartDate, eventEndDate], schema) => {
+        return schema.test({
+          name: 'dateComparison',
+          exclusive: false,
+          message: 'Performance date cannot fall outside event dates',
+          test: function (performanceDate) {
+            return (
+              isDefined(performanceDate) &&
+              performanceDate >= eventStartDate &&
+              performanceDate <= eventEndDate
+            );
+          },
+        });
+      },
+    ),
+  isFestival: Yup.string()
+    .required('Required')
+    .oneOf(['Yes', 'No', 'yes', 'no']),
+});
 
 const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
   const { profileState } = useContext(ProfileContext);
   const { profileType, profileId } = profileState;
-
-  const [eventStartDate, setEventStartDate] = useState<Date | undefined>(
-    undefined,
-  );
-  const [eventEndDate, setEventEndDate] = useState<Date | undefined>(undefined);
-  const [performanceDate, setPerformanceDate] = useState<Date | undefined>(
-    undefined,
-  );
 
   const {
     data: performers,
@@ -62,31 +100,49 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
 
   const error = !performer && !performersGetError;
 
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    dirty,
+  } = useFormik({
+    initialValues: {
+      venue: '',
+      isFestival: 'No',
+      performanceDate: '',
+      eventStartDate: '',
+      eventEndDate: '',
+    },
+    validationSchema,
+    onSubmit: handleFormSubmit,
+  });
+
   function handleCancelClick() {
-    console.log('cancelled');
+    navigation.goBack();
   }
 
-  async function handleFormSubmit(formValues: PerformanceCreateFormValues) {
-    if (
-      !performanceDate ||
-      !eventStartDate ||
-      !eventEndDate ||
-      !formValues.venue ||
-      !isDefined(formValues.isFestival)
-    ) {
-      throw Error('Form incomplete. At least one required field is undefined');
-    }
-
+  async function handleFormSubmit({
+    isFestival,
+    venue,
+    eventStartDate,
+    eventEndDate,
+    performanceDate,
+  }: PerformanceCreateFormValues) {
     // create the performance so we can tag the show in it
     const performanceCreateResult = await performanceCreate({
       performerId: profileId,
-      eventStartDate: Math.ceil(eventStartDate.getTime() / 1000),
-      eventEndDate: Math.ceil(eventEndDate.getTime() / 1000),
+      eventStartDate: Math.ceil(new Date(eventStartDate).getTime() / 1000),
+      eventEndDate: Math.ceil(new Date(eventEndDate).getTime() / 1000),
       // Convert to seconds so its a unix timestamp
-      performanceDate: Math.ceil(performanceDate.getTime() / 1000),
-      venueName: formValues.venue,
+      performanceDate: Math.ceil(new Date(performanceDate).getTime() / 1000),
+      venueName: venue,
       eventType:
-        formValues.isFestival.toLowerCase() === 'yes'
+        isFestival.toLowerCase() === 'yes'
           ? EventType.MUSIC_FESTIVAL
           : EventType.MUSIC_CONCERT,
     });
@@ -94,109 +150,133 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     navigation.goBack();
   }
 
+  const handlePerformanceDateChange = handleChange('performanceDate');
+  const handlePerformanceDateBlur = handleBlur('performanceDate');
+
+  const handleEventStartDateChange = handleChange('eventStartDate');
+  const handleEventStartDateBlur = handleBlur('eventStartDate');
+
+  const handleEventEndDateChange = handleChange('eventEndDate');
+  const handleEventEndDateBlur = handleBlur('eventEndDate');
+
   // TODO: Add frontend validation of form fields e.g. performance date lies inbetween event start and end dates
   return (
     <>
       {profileType === ProfileType.PERFORMER && performer && (
-        <Formik
-          initialValues={{
-            venue: '',
-            isFestival: 'No',
+        <View
+          style={{
+            ...styles.flexColumnContainer,
+            width: '100%',
+            height: '100%',
+            paddingBottom: SPACING_SMALL,
           }}
-          onSubmit={handleFormSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+          <View style={{ ...styles.flexRowContainer }}>
+            <ProfileImage
+              styles={{ marginRight: SPACING_XSMALL }}
+              imageUrl={performer.imageUrl}
+            ></ProfileImage>
+            <AppText>{`New performance by ${performer.name}`}</AppText>
+          </View>
+
+          <AppText>Venue</AppText>
+          <TextInput
+            style={{
+              width: '100%',
+              display: 'flex',
+              ...styles.textInput,
+            }}
+            onChangeText={handleChange('venue')}
+            onBlur={handleBlur('venue')}
+            value={values.venue}
+            placeholder="e.g. Wireless Festival, O2 Academy Brixton"
+          />
+
+          <DateInput
+            handleDateSelected={e => {
+              if (e) {
+                handleEventStartDateChange(e?.toLocaleDateString());
+              }
+            }}
+            handleBlur={e => {
+              handleEventStartDateBlur(e);
+              console.log('asdsajda');
+            }}
+            value={values.eventStartDate}
+            inputTitle="Event start date"
+            touched={touched.eventStartDate ?? false}
+            error={errors.eventStartDate}
+          ></DateInput>
+
+          <DateInput
+            handleDateSelected={e => {
+              if (e) {
+                handleEventEndDateChange(e?.toLocaleDateString());
+              }
+            }}
+            handleBlur={handleEventEndDateBlur}
+            value={values.eventEndDate}
+            inputTitle="Event end date"
+            touched={touched.eventEndDate ?? false}
+            error={errors.eventEndDate}
+          ></DateInput>
+
+          <AppText>Was it at a festival?</AppText>
+          <Dropdown
+            options={['Yes', 'No']}
+            value={values.isFestival}
+            onChange={handleChange('isFestival')}
+          ></Dropdown>
+          {/* {touched && error && (
+                <AppText textColor={COLOR_ERROR}>{error}</AppText>
+              )} */}
+
+          <DateInput
+            handleDateSelected={e => {
+              if (e) {
+                handlePerformanceDateChange(e?.toLocaleDateString());
+              }
+            }}
+            handleBlur={handlePerformanceDateBlur}
+            value={values.performanceDate ?? values.eventStartDate}
+            inputTitle="Date you performed"
+            touched={touched.performanceDate ?? false}
+            error={errors.performanceDate}
+          ></DateInput>
+
+          <View
+            style={{
+              ...styles.flexRowContainer,
+              marginTop: 'auto',
+            }}
+          >
             <View
               style={{
-                ...styles.flexColumnContainer,
-                width: '100%',
-                height: '100%',
-                paddingBottom: SPACING_SMALL,
+                flexGrow: 1,
+                flexShrink: 0,
+                marginRight: SPACING_SMALL,
               }}
             >
-              <View style={{ ...styles.flexRowContainer }}>
-                <ProfileImage
-                  styles={{ marginRight: SPACING_XSMALL }}
-                  imageUrl={performer.imageUrl}
-                ></ProfileImage>
-                <AppText>{`New performance by ${performer.name}`}</AppText>
-              </View>
-
-              <AppText>Venue</AppText>
-              <TextInput
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  ...styles.textInput,
-                }}
-                onChangeText={handleChange('venue')}
-                onBlur={handleBlur('venue')}
-                value={values.venue}
-                placeholder="e.g. Wireless Festival, O2 Academy Brixton"
-              />
-
-              <DateInput
-                handleDateSelected={setEventStartDate}
-                value={eventStartDate}
-                inputTitle="Event start date"
-              ></DateInput>
-
-              <DateInput
-                handleDateSelected={setEventEndDate}
-                value={eventEndDate}
-                inputTitle="Event end date"
-              ></DateInput>
-
-              <AppText>Was it at a festival?</AppText>
-              <TextInput
-                style={{ width: '100%', ...styles.textInput }}
-                onChangeText={handleChange('isFestival')}
-                onBlur={handleBlur('isFestival')}
-                value={values.isFestival}
-                placeholder="Yes/No"
-              />
-
-              <DateInput
-                handleDateSelected={setPerformanceDate}
-                value={performanceDate}
-                inputTitle="Performance date"
-              ></DateInput>
-
-              <View
-                style={{
-                  ...styles.flexRowContainer,
-                  marginTop: 'auto',
-                }}
-              >
-                <View
-                  style={{
-                    flexGrow: 1,
-                    flexShrink: 0,
-                    marginRight: SPACING_SMALL,
-                  }}
-                >
-                  <Button
-                    color={BUTTON_COLOR_DISABLED}
-                    onPress={handleCancelClick}
-                    title="Cancel"
-                  ></Button>
-                </View>
-                <View
-                  style={{
-                    flexGrow: 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  <Button
-                    color={BUTTON_COLOR_PRIMARY}
-                    onPress={handleSubmit}
-                    title="Create"
-                  />
-                </View>
-              </View>
+              <Button
+                color={BUTTON_COLOR_DISABLED}
+                onPress={handleCancelClick}
+                title="Cancel"
+              ></Button>
             </View>
-          )}
-        </Formik>
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+              }}
+            >
+              <Button
+                color={BUTTON_COLOR_PRIMARY}
+                onPress={handleSubmit}
+                title="Create"
+              />
+            </View>
+          </View>
+        </View>
       )}
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error</AppText>}

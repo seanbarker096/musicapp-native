@@ -4,18 +4,25 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import { AppText } from 'components/app-text';
 import { FC, useState } from 'react';
-import { Platform, TextInput } from 'react-native';
+import { Platform, Text } from 'react-native';
+import { COLOR_ERROR } from 'styles';
 
 export type DateInputProps = {
   inputTitle: string;
-  value: Date | undefined;
+  value: Date | undefined | string; // We accept strings so we can use it with Formik
   handleDateSelected: (date?: Date) => void;
+  handleBlur?: () => void;
+  touched: boolean;
+  error?: string;
 };
 
 export const DateInput: FC<DateInputProps> = ({
   inputTitle,
   value,
   handleDateSelected,
+  handleBlur,
+  touched,
+  error,
 }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -24,7 +31,7 @@ export const DateInput: FC<DateInputProps> = ({
   function handleDateInputPress() {
     if (Platform.OS === 'android') {
       DateTimePickerAndroid.open({
-        value: value ?? today,
+        value: !value ? today : isDate(value) ? value : new Date(value),
         onChange: handleDateChange,
         mode: 'date',
         is24Hour: true,
@@ -45,18 +52,27 @@ export const DateInput: FC<DateInputProps> = ({
   return (
     <>
       <AppText>{inputTitle}</AppText>
-      <TextInput
+      <Text
+        // We cant use TextInput here sa we dont want the user to be able to edit the field other than via DatePicker, so we have to makeshift a placeholder and the corresponding text color
         style={{
           width: '100%',
           display: 'flex',
+          color: value ? 'black' : 'grey',
         }}
-        onPressIn={handleDateInputPress}
-        value={value ? value.toLocaleDateString() : undefined}
-        placeholder="DD/MM/YYYY"
-      />
+        onPress={handleDateInputPress}
+        onPressOut={handleBlur}
+      >
+        {!value
+          ? 'DD/MM/YY'
+          : isDate(value)
+          ? value.toLocaleDateString()
+          : value}
+      </Text>
+
+      {touched && error && <AppText textColor={COLOR_ERROR}>{error}</AppText>}
       {showDatePicker && (
         <DateTimePicker
-          value={value ?? today}
+          value={!value ? today : isDate(value) ? value : new Date(value)}
           mode="date"
           is24Hour={true}
           display="default"
@@ -66,3 +82,7 @@ export const DateInput: FC<DateInputProps> = ({
     </>
   );
 };
+
+function isDate(value: any): value is Date {
+  return value instanceof Date && !isNaN(value.getTime());
+}
