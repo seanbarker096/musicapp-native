@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { CreatePerformanceButton } from 'components/create-performance-button';
 import { List, ListItem } from 'components/list';
@@ -105,10 +106,10 @@ export const PerformanceList: FC<Props> = ({
                 that your fans can link their videos to them, making it easy for
                 you to see them all
               </AppText>
-              <Button
+              <AppButton
                 color={BUTTON_COLOR_PRIMARY}
-                onPress={handleCreatePerformancePress}
-                title="Create performance"
+                handlePress={handleCreatePerformancePress}
+                text="Create performance"
               />
             </>
           )}

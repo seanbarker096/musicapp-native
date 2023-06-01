@@ -38,7 +38,8 @@ interface PerformanceCreateFormValues {
 const validationSchema = Yup.object({
   venue: Yup.string()
     .required('Required')
-    .min(2, 'Must be at least 2 characters'),
+    .min(2, 'Must be at least 2 characters')
+    .max(20, 'Must be less than 50 characters'),
   eventStartDate: Yup.string().required('Please select a event start date'),
   eventEndDate: Yup.string()
     .required('Please select an event end date')

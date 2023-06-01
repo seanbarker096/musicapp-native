@@ -18,7 +18,7 @@ export const CreatePerformanceButton: FC<CreatePerformanceButtonProps> = ({
 }) => {
   return (
     <Pressable
-      onPress={() => onPress()}
+      onPress={onPress}
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -30,6 +30,7 @@ export const CreatePerformanceButton: FC<CreatePerformanceButtonProps> = ({
       }}
     >
       <SVGIcon
+        handlePress={onPress}
         color={IconColor.SECONDARY}
         styles={{ marginRight: SPACING_XSMALL }}
       >

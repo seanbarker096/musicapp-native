@@ -24,6 +24,7 @@ export const Dropdown: React.FC<Props> = ({ options, value, onChange }) => {
       <View>
         {options.map(option => (
           <TouchableOpacity
+            key={option}
             onPress={() => handleOptionSelect(option)}
             style={styles.optionItem}
           >

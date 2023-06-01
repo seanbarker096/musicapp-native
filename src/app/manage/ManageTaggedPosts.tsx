@@ -1,10 +1,9 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { ProfileContext } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
-import { PostOwnerType } from 'store/posts';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
@@ -22,16 +21,14 @@ export type ManageTaggedPostProps = NativeStackScreenProps<
   'ManageTaggedPosts'
 >;
 
+/**
+ * Should only be visible for performers
+ */
 export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
   navigation,
 }) => {
   const profileState = useContext(ProfileContext);
   const { profileId, profileType } = profileState.profileState;
-
-  const taggedEntityType =
-    profileType === ProfileType.PERFORMER
-      ? TaggedEntityType.PERFORMER
-      : TaggedEntityType.USER;
 
   const {
     data: postTags,
@@ -39,7 +36,7 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
     error: postTagsGetError,
   } = useTagsGetQuery({
     queryParams: {
-      taggedEntityType: taggedEntityType,
+      taggedEntityType: TaggedEntityType.PERFORMER,
       taggedEntityId: profileId,
       taggedInEntityType: TaggedInEntityType.POST,
       onlySingleTaggedEntityType: true,
@@ -47,11 +44,6 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
   });
 
   const postIds = postTags && postTags.map(postTag => postTag.taggedInEntityId);
-
-  const postOwnerType =
-    profileType === ProfileType.PERFORMER
-      ? PostOwnerType.PERFORMER
-      : PostOwnerType.USER;
 
   const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
     useGetPostsWithAttachmentsAndFilesQuery({
