@@ -6,7 +6,7 @@ import { CheckMarkSVG, PlusSVG } from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import {
@@ -48,6 +48,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   } = useTagCreateMutation({
     taggedEntityType: TaggedEntityType.PERFORMANCE,
     taggedInEntityId: postId,
+    taggedEntityId: performerId,
   });
 
   const {
@@ -57,6 +58,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   } = useTagDeleteMutation({
     taggedEntityType: TaggedEntityType.PERFORMANCE,
     taggedInEntityId: postId,
+    taggedEntityId: performerId,
   });
 
   const {
@@ -86,8 +88,6 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 
   const error = !performances && performancesGetError;
 
-  console.log(performanceTag);
-
   const LinkToPerformanceListItem = ({
     performance,
   }: {
@@ -97,7 +97,14 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 
     return (
       <ListItem key={performance.id}>
-        <View style={styles.container}>
+        <Pressable
+          style={styles.container}
+          onPress={() =>
+            performance.id == performanceTag?.taggedEntityId
+              ? handleUnlinkToPerformanceIconClick(performanceTag)
+              : handleLinkToPerformanceIconClick(performance)
+          }
+        >
           <AppText marginRight={SPACING_XSMALL}>{`${
             performance.venueName
           } - ${date.toLocaleDateString()}`}</AppText>
@@ -120,7 +127,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
               <CheckMarkSVG></CheckMarkSVG>
             </SVGIcon>
           )}
-        </View>
+        </Pressable>
       </ListItem>
     );
   };
@@ -167,7 +174,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
           <AppText>No performances found</AppText>
           {canCreatePerformance && (
             <AppButton
-              onPress={handleCreatePerformancePress}
+              handlePress={handleCreatePerformancePress}
               text="Create Performance"
             ></AppButton>
           )}

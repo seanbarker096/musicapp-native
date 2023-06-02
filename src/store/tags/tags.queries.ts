@@ -38,22 +38,46 @@ async function tagCreate({
 export const useTagCreateMutation = ({
   taggedInEntityId,
   taggedEntityType,
-}: { taggedInEntityId?: number; taggedEntityType?: TaggedEntityType } = {}) => {
+  taggedEntityId,
+}: {
+  taggedInEntityId?: number;
+  taggedEntityType?: TaggedEntityType;
+  taggedEntityId?: number;
+} = {}) => {
   const queryClient = useQueryClient();
 
   const onSuccessCallback = async () => {
     // Be specific with invalidation if we can, otherwise invalidate all tags
     if (taggedInEntityId && taggedEntityType) {
-      return queryClient.invalidateQueries(
+      await queryClient.invalidateQueries(
         tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
           TaggedInEntityType.POST, // Currently the only taggedInEntityType is POST
           taggedInEntityId,
           taggedEntityType,
         ),
       );
-    } else {
-      return queryClient.invalidateQueries(tagKeys.all);
     }
+
+    if (taggedEntityId && taggedEntityType) {
+      // We have queries that only return tags if the tagged entity is either a PERFORMER or a PERFORMANCE. When we delete a tag on a PERFORMER or PERFORMANCE, we therefore ned to invalidate some query keys for other tagged entity (e.g. PERFORMER if deleted tag was on PERFORMANCE) to ensure our state is up to date.
+      let otherTaggedEntityType;
+      switch (taggedEntityType) {
+        case TaggedEntityType.PERFORMER:
+          otherTaggedEntityType = TaggedEntityType.PERFORMANCE;
+          break;
+        case TaggedEntityType.PERFORMANCE:
+          otherTaggedEntityType = TaggedEntityType.PERFORMER;
+          break;
+        default:
+          return null;
+      }
+
+      await queryClient.invalidateQueries(
+        tagKeys.tagsByEntityTypesAndIds(otherTaggedEntityType, taggedEntityId),
+      );
+    }
+
+    return;
   };
 
   return useMutation<Tag, any, TagCreateRequest>(
@@ -80,22 +104,46 @@ async function tagsDelete({ ids }: TagDeleteRequest) {
 export const useTagDeleteMutation = ({
   taggedInEntityId,
   taggedEntityType,
-}: { taggedInEntityId?: number; taggedEntityType?: TaggedEntityType } = {}) => {
+  taggedEntityId,
+}: {
+  taggedInEntityId?: number;
+  taggedEntityType?: TaggedEntityType;
+  taggedEntityId?: number;
+} = {}) => {
   const queryClient = useQueryClient();
 
   const onSuccessCallback = async () => {
     // Be specific with invalidation if we can, otherwise invalidate all tags
     if (taggedInEntityId && taggedEntityType) {
-      return queryClient.invalidateQueries(
+      await queryClient.invalidateQueries(
         tagKeys.tagsByTaggedInEntityAndTaggedEntityType(
           TaggedInEntityType.POST, // Currently the only taggedInEntityType is POST
           taggedInEntityId,
           taggedEntityType,
         ),
       );
-    } else {
-      return queryClient.invalidateQueries(tagKeys.all);
     }
+
+    if (taggedEntityId && taggedEntityType) {
+      // We have queries that only return tags if the tagged entity is either a PERFORMER or a PERFORMANCE. When we delete a tag on a PERFORMER or PERFORMANCE, we therefore ned to invalidate some query keys for other tagged entity (e.g. PERFORMER if deleted tag was on PERFORMANCE) to ensure our state is up to date.
+      let otherTaggedEntityType;
+      switch (taggedEntityType) {
+        case TaggedEntityType.PERFORMER:
+          otherTaggedEntityType = TaggedEntityType.PERFORMANCE;
+          break;
+        case TaggedEntityType.PERFORMANCE:
+          otherTaggedEntityType = TaggedEntityType.PERFORMER;
+          break;
+        default:
+          return null;
+      }
+
+      await queryClient.invalidateQueries(
+        tagKeys.tagsByEntityTypesAndIds(otherTaggedEntityType, taggedEntityId),
+      );
+    }
+
+    return;
   };
 
   return useMutation<void, any, TagDeleteRequest>(

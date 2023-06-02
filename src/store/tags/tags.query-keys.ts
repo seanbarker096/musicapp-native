@@ -3,7 +3,13 @@ import { TaggedEntityType, TaggedInEntityType } from './tags.types';
 export const tagKeys = {
   all: ['tags'] as const,
   tagsByEntityTypesAndIds: (entityType: TaggedEntityType, entityId: number) =>
-    ['tags', 'entityType', entityType, 'entityId', entityId] as const,
+    [
+      'tags',
+      'taggedEntityType',
+      entityType,
+      'taggedEntityId',
+      entityId,
+    ] as const,
   null: [],
   tagsByTaggedInEntityAndTaggedEntityType: (
     taggedInEntityType: TaggedInEntityType,
@@ -12,11 +18,11 @@ export const tagKeys = {
   ) =>
     [
       'tags',
+      'taggedEntityType',
+      taggedEntityType,
       'taggedInEntityType',
       taggedInEntityType,
       'taggedInEntityId',
       taggedInEntityId,
-      'taggedEntityType',
-      taggedEntityType,
     ] as const,
 };

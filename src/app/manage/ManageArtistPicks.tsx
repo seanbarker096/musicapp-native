@@ -78,7 +78,7 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
 
   return (
     <>
-      {artistFeaturedPosts && artistFeaturedPosts.length && (
+      {artistFeaturedPosts && !!artistFeaturedPosts.length && (
         <ScrollableGalleryLayout
           posts={artistFeaturedPosts}
           galleryItemFooter={PerformerFeaturedPostFooter}
