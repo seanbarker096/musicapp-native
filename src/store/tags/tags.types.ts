@@ -86,9 +86,9 @@ export interface TagsGetResultApi {
 }
 
 export interface TagDeleteRequest {
-  ids: number[];
+  id: number;
 }
 
 export interface TagDeleteRequestApi {
-  ids: number[];
+  id: number;
 }

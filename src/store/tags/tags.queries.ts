@@ -1,6 +1,8 @@
 /* ----------- TAG CREATE ------------ */
 
 import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { attendeePerformerKeys } from 'store/attendee-performers/attendee-performers.query-keys';
+import { performancesKeys } from 'store/performances/performances.query-keys';
 import { deleteRequest, getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
@@ -77,6 +79,15 @@ export const useTagCreateMutation = ({
       );
     }
 
+    if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      await queryClient.invalidateQueries(
+        performancesKeys.performancesByPerformerIds([taggedEntityId]),
+      );
+
+      // invalidate all attendee-performers queries as well, so the list of performances the user has attended for that artist is up to date
+      await queryClient.invalidateQueries(attendeePerformerKeys.all);
+    }
+
     return;
   };
 
@@ -90,11 +101,11 @@ export const useTagCreateMutation = ({
 
 // ------------------ TAG DELETE ------------------ //
 
-async function tagsDelete({ ids }: TagDeleteRequest) {
+async function tagsDelete({ id }: TagDeleteRequest) {
   const response = await deleteRequest<TagsStoreSlice>({
     url: 'tags/0.1/tags',
     params: {
-      ids,
+      id,
     },
   });
 
@@ -124,23 +135,24 @@ export const useTagDeleteMutation = ({
       );
     }
 
-    if (taggedEntityId && taggedEntityType) {
+    if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
       // We have queries that only return tags if the tagged entity is either a PERFORMER or a PERFORMANCE. When we delete a tag on a PERFORMER or PERFORMANCE, we therefore ned to invalidate some query keys for other tagged entity (e.g. PERFORMER if deleted tag was on PERFORMANCE) to ensure our state is up to date.
-      let otherTaggedEntityType;
-      switch (taggedEntityType) {
-        case TaggedEntityType.PERFORMER:
-          otherTaggedEntityType = TaggedEntityType.PERFORMANCE;
-          break;
-        case TaggedEntityType.PERFORMANCE:
-          otherTaggedEntityType = TaggedEntityType.PERFORMER;
-          break;
-        default:
-          return null;
-      }
 
       await queryClient.invalidateQueries(
-        tagKeys.tagsByEntityTypesAndIds(otherTaggedEntityType, taggedEntityId),
+        tagKeys.tagsByEntityTypesAndIds(
+          TaggedEntityType.PERFORMER,
+          taggedEntityId,
+        ),
       );
+    }
+
+    if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      await queryClient.invalidateQueries(
+        performancesKeys.performancesByPerformerIds([taggedEntityId]),
+      );
+
+      // invalidate all attendee-performers queries as well, so the list of performances the user has attended for that artist is up to date
+      await queryClient.invalidateQueries(attendeePerformerKeys.all);
     }
 
     return;

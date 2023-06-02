@@ -84,36 +84,43 @@ export const PerformanceList: FC<Props> = ({
           </List>
         </>
       )}
-      {performances && !performances.length && (
-        <>
-          {!loggedInUserIsThePerformer && (
-            <>
-              <AppText>
-                This artist hasn't created any performances yet. But you can
-                still see lots of videos captured by fans!
-              </AppText>
-              <Button
-                color={BUTTON_COLOR_PRIMARY}
-                onPress={handleViewProfilePress}
-                title="View fan videos"
-              />
-            </>
-          )}
-          {loggedInUserIsThePerformer && (
-            <>
-              <AppText>
-                You haven't created any performances yet. Create performances so
-                that your fans can link their videos to them, making it easy for
-                you to see them all
-              </AppText>
-              <AppButton
-                color={BUTTON_COLOR_PRIMARY}
-                handlePress={handleCreatePerformancePress}
-                text="Create performance"
-              />
-            </>
-          )}
-        </>
+
+      {
+        // if results arent filtered for a specific attendee (i.e. we are just fethcing all the performers performances, show empty state if there are no performances)
+        !attendeeId && performances && !performances.length && (
+          <>
+            {!loggedInUserIsThePerformer && (
+              <>
+                <AppText>
+                  This artist hasn't created any performances yet. But you can
+                  still see lots of videos captured by fans!
+                </AppText>
+                <Button
+                  color={BUTTON_COLOR_PRIMARY}
+                  onPress={handleViewProfilePress}
+                  title="View fan videos"
+                />
+              </>
+            )}
+            {loggedInUserIsThePerformer && (
+              <>
+                <AppText>
+                  You haven't created any performances yet. Create performances
+                  so that your fans can link their videos to them, making it
+                  easy for you to see them all
+                </AppText>
+                <AppButton
+                  color={BUTTON_COLOR_PRIMARY}
+                  handlePress={handleCreatePerformancePress}
+                  text="Create performance"
+                />
+              </>
+            )}
+          </>
+        )
+      }
+      {attendeeId && performances && !performances.length && (
+        <AppText>No performances found</AppText>
       )}
 
       {loading && <AppText>Loading...</AppText>}

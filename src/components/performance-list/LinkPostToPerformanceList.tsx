@@ -27,12 +27,6 @@ type LinkToPerformancListProps = {
   performerId: number;
 };
 
-/**
- * Component which renders a list of all performances a performer can link another users post too.
- *
- * NOTE: This should only be visible to performers, and that is assumed in the component logic (i.e. we don't check
- * to see if the profileType is a performer)
- */
 export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   handleCreatePerformancePress,
   postId,
@@ -67,7 +61,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
     error: performancesGetError,
   } = usePerformancesGetQuery({
     queryParams: {
-      performerId: viewingUserId,
+      performerId,
     },
   });
 
@@ -144,7 +138,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   }
 
   async function handleUnlinkToPerformanceIconClick(performanceTag: Tag) {
-    await deleteTag({ ids: [performanceTag.id] });
+    await deleteTag({ id: performanceTag.id });
   }
 
   return (
