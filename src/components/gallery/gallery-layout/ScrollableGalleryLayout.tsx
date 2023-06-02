@@ -50,10 +50,6 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     return arrangedPosts;
   }, [posts]);
 
-  console.log(
-    'arrangedPosts',
-    posts.map(post => post.id),
-  );
 
   const listItem = ({ item, index }: ListRenderItemInfo<Post[]>) => {
     return (
@@ -118,7 +114,6 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
         ListFooterComponent={renderFooter}
         onEndReached={({ distanceFromEnd }) => {
           if (distanceFromEnd < 0) return;
-          console.log('onEndReached', distanceFromEnd);
           onEndReached();
         }}
         onEndReachedThreshold={0.5}

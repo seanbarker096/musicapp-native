@@ -87,6 +87,9 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
           </View>
           <ScrollableGalleryLayout
             posts={postsWithAttachmentsAndFiles}
+            handleGalleryItemPress={postId =>
+              navigation.navigate('ViewPost', { postId })
+            }
           ></ScrollableGalleryLayout>
         </View>
       )}

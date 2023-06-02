@@ -1,3 +1,4 @@
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { CreatePerformanceButton } from 'components/create-performance-button';
 import { SVGIcon } from 'components/icon';
@@ -141,13 +142,13 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 
   return (
     <>
-      {canCreatePerformance && (
-        <CreatePerformanceButton
-          onPress={handleCreatePerformancePress}
-        ></CreatePerformanceButton>
-      )}
-      {performances && performanceTags && performances.length && (
+      {performances && performanceTags && !!performances.length && (
         <>
+          {canCreatePerformance && (
+            <CreatePerformanceButton
+              onPress={handleCreatePerformancePress}
+            ></CreatePerformanceButton>
+          )}
           <List
             sidePadding="xxxsmall"
             verticalPadding="xxxsmall"
@@ -159,6 +160,17 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
               ></LinkToPerformanceListItem>
             ))}
           </List>
+        </>
+      )}
+      {performances && !performances.length && (
+        <>
+          <AppText>No performances found</AppText>
+          {canCreatePerformance && (
+            <AppButton
+              onPress={handleCreatePerformancePress}
+              text="Create Performance"
+            ></AppButton>
+          )}
         </>
       )}
       {loading && <AppText>Loading...</AppText>}
