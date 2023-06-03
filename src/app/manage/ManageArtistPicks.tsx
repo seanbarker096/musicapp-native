@@ -88,12 +88,16 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
             }
           }}
           hasMoreData={isFeaturedByPerformersHasNextPage}
+          handleGalleryItemPress={postId =>
+            navigation.navigate('ViewPost', { postId })
+          }
         ></ScrollableGalleryLayout>
       )}
       {artistFeaturedPosts && !artistFeaturedPosts.length && (
         <AppText>
           No artists have picked your posts yet to appear in their Gallery yet.
-          Check back later!
+          Link your posts to the artists performance to increase your chance of
+          being featured.
         </AppText>
       )}
     </>

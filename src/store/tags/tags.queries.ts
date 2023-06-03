@@ -78,6 +78,7 @@ export const useTagCreateMutation = ({
         tagKeys.tagsByEntityTypesAndIds(otherTaggedEntityType, taggedEntityId),
       );
     }
+    // TODO: Fix issue where list of performances and performance attendance aascoaited with it gets out of sync after untagging/tagging. They keep old id when need new performance attendance id
 
     if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
       await queryClient.invalidateQueries(
