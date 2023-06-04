@@ -92,9 +92,11 @@ const usersSearch = async (
 export function userUsersSearchQuery({
   queryParams: { searchQuery, includeProfileImage = true },
   enabled = true,
+  onSettled,
 }: {
   queryParams: { searchQuery: string; includeProfileImage?: boolean };
   enabled?: boolean;
+  onSettled?: () => void;
 }) {
   let apiQueryParams: UsersStoreSlice['Search']['RequestBodyType'] | undefined =
     undefined;
@@ -119,6 +121,7 @@ export function userUsersSearchQuery({
           ),
     {
       enabled,
+      onSettled,
     },
   );
 }

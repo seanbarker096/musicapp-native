@@ -35,6 +35,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     string | undefined
   >(undefined);
 
+  // We cant use the isLoading prop from the usePerformersSearchQuery hook because we are debouncing the search term, so we immediately want to render a loading state when user types, rather than waiting for debounce to finish and querys isLoading to then be set to true
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useDebounceEffect<string | undefined>(searchTerm, setDebouncedSearchTerm);
@@ -59,15 +60,14 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     },
   });
 
-  const performerSearchResults = searchPerformers?.length
-    ? searchPerformers.map(performer => (
-        <PerformerSearchCard
-          performer={performer}
-          onPress={() => setSelectedSearchPerformer(performer)}
-        ></PerformerSearchCard>
-      ))
-    : [];
+  const performerSearchResults = searchPerformers?.map(performer => (
+    <PerformerSearchCard
+      performer={performer}
+      onPress={() => setSelectedSearchPerformer(performer)}
+    ></PerformerSearchCard>
+  ));
 
+  console.log(performerSearchResults);
   const error = performersSearchError || performersGetOrCreateError;
 
   const searchReady = !isLoading && !performersSearchError;
@@ -79,13 +79,13 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
           setIsLoading(true);
           searchTermChanged(searchTerm);
         }}
-        searchResults={performerSearchResults}
+        searchResults={performerSearchResults ?? []}
         searchTerm={searchTerm}
         handleBlur={onTextInputBlur}
         scrollable={true}
       ></SearchBar>
       {isLoading && <AppText>Loading...</AppText>}
-      {searchReady && searchTerm && performerSearchResults.length === 0 && (
+      {searchReady && searchTerm && performerSearchResults?.length === 0 && (
         <AppText>{emptyStateMessage}</AppText>
       )}
     </View>

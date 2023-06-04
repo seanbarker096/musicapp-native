@@ -53,14 +53,18 @@ export function usePerformersSearchQuery({
   }
 
   return useQuery<
-    readonly PerformerSearchPerformer[],
+    readonly PerformerSearchPerformer[] | undefined,
     unknown,
     readonly PerformerSearchPerformer[]
     // to ensure loading states work correctly, if a search term i sundefined (e.g. by backspacing) we still resolve the promise, but with an empty array
-  >(queryKey, () => (query ? performersSearch(query) : Promise.resolve([])), {
-    enabled,
-    onSettled,
-  });
+  >(
+    queryKey,
+    () => (query ? performersSearch(query) : Promise.resolve(undefined)),
+    {
+      enabled,
+      onSettled,
+    },
+  );
 }
 
 /** ------------------ PERFORMER_GET_OR_CREATE --------------------------- */
