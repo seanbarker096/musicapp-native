@@ -1,5 +1,3 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { ProfileStackParamList } from 'app/profile/profile.types';
 import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { CreatePerformanceButton } from 'components/create-performance-button';
@@ -17,16 +15,16 @@ type Props = {
   performerId?: number;
   handleViewProfilePress?: () => void;
   handleCreatePerformancePress?: () => void;
+  handlePerformancePress: (performance: PerformanceWithEvent) => void;
 };
 
 export const PerformanceList: FC<Props> = ({
   performerId,
   attendeeId,
   handleCreatePerformancePress = () => {},
-  handleViewProfilePress = () => {},
+  handleViewProfilePress,
+  handlePerformancePress,
 }) => {
-  const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
-
   const { profileState } = useContext(ProfileContext);
   const {
     profileType: loggedInUserProfileType,
@@ -52,12 +50,6 @@ export const PerformanceList: FC<Props> = ({
 
   const error = !performances && performancesGetError;
 
-  function handlePerformancePress(performanceWithCounts: PerformanceWithEvent) {
-    navigation.navigate('PerformanceStack', {
-      performanceId: performanceWithCounts.id,
-      performerId: performanceWithCounts.performerId,
-    });
-  }
   return (
     <>
       {performances && !!performances.length && (
@@ -92,14 +84,18 @@ export const PerformanceList: FC<Props> = ({
             {!loggedInUserIsThePerformer && (
               <>
                 <AppText>
-                  This artist hasn't created any performances yet. But you can
-                  still see lots of videos captured by fans!
+                  {"This artist hasn't created any performances yet." +
+                  handleViewProfilePress
+                    ? 'But you can still see lots of videos captured by fans!'
+                    : ''}
                 </AppText>
-                <Button
-                  color={BUTTON_COLOR_PRIMARY}
-                  onPress={handleViewProfilePress}
-                  title="View fan videos"
-                />
+                {handleViewProfilePress && (
+                  <Button
+                    color={BUTTON_COLOR_PRIMARY}
+                    onPress={handleViewProfilePress}
+                    title="View fan videos"
+                  />
+                )}
               </>
             )}
             {loggedInUserIsThePerformer && (

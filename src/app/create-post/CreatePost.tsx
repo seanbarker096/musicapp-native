@@ -27,8 +27,17 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
           onCancel={handleCancel}
           removePostFile={() => setPostFile(undefined)}
           performer={params?.performer}
+          performance={params?.performance}
           handlSearchForPerformerPress={() =>
             navigation.navigate('CreatePostPerformerSearch')
+          }
+          handleSelectPerformancePress={
+            () =>
+              params?.performer
+                ? navigation.navigate('CreatePostPerformanceSearch', {
+                    performer: params?.performer,
+                  })
+                : undefined // Shouldn't happen, but if performer not defined then just dont navigate away from CreatePostForm
           }
         ></CreatePostForm>
       )}

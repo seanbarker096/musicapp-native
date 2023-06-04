@@ -27,7 +27,7 @@ export const PerformerSearchCard: FC<PerformerSearchCardProps> = ({
       imageUrl={performer.imageUrl}
       size={IMAGE_SIZE}
     ></ProfileImage>
-    <AppText weight="bold">{performer.name}</AppText>
+    <AppText>{performer.name}</AppText>
   </Pressable>
 );
 

@@ -14,13 +14,12 @@ export const AppTextInput: React.FC<
   touched,
   secureTextEntry = false,
   marginBottom = 0,
-  borderless = false,
+  borderless = true,
 }) => {
   return (
-    <View style={{ minHeight: styles.input.height, marginBottom }}>
+    <View style={{ marginBottom }}>
       <TextInput
         style={{
-          height: 40,
           backgroundColor: COLOR_NEUTRAL_XXLIGHT,
           paddingLeft: SPACING_XXSMALL,
           paddingRight: SPACING_XXSMALL,
@@ -32,7 +31,14 @@ export const AppTextInput: React.FC<
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
       />
-      {touched && error && <AppText textColor={COLOR_ERROR}>{error}</AppText>}
+      {touched && error && (
+        <AppText
+          padding={SPACING_XXSMALL}
+          textColor={COLOR_ERROR}
+        >
+          {error}
+        </AppText>
+      )}
     </View>
   );
 };

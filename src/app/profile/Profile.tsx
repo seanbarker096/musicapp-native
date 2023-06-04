@@ -3,6 +3,7 @@ import { AppText } from 'components/app-text';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { PerformanceWithEvent } from 'store/performances/performances.types';
 import {
   COLOR_PRIMARY,
   COLOR_PRIMARY_DARK,
@@ -55,6 +56,14 @@ const Profile: FC<ProfileProps> = memo(
       navigation.navigate('ViewPost', { postId });
     }
 
+    function handlePerformancePress(
+      performanceWithCounts: PerformanceWithEvent,
+    ) {
+      navigation.navigate('PerformanceStack', {
+        performanceId: performanceWithCounts.id,
+        performerId: performanceWithCounts.performerId,
+      });
+    }
     // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
     return (
       <View style={styles.colContainer}>
@@ -125,6 +134,7 @@ const Profile: FC<ProfileProps> = memo(
                 profileType={profileType}
                 handleCreatePerformancePress={handleCreatePerformancePress}
                 handleViewProfilePress={handleViewProfilePress}
+                handlePerformancePress={handlePerformancePress}
               ></ProfileTimeline>
             )}
             {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles

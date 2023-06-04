@@ -8,6 +8,7 @@ export * from './FilledLikeHeartSVG';
 export * from './HomeOutlineSVG';
 export * from './LikeHeartSVG';
 export * from './LinkSVG';
+export * from './LocationSVG';
 export * from './LogoutSVG';
 export * from './MailSVG';
 export * from './PeopleSVG';

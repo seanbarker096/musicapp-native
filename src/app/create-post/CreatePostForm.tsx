@@ -2,15 +2,14 @@ import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
-import { List } from 'components/list';
-import { PerformanceListItem } from 'components/performance-list/PerformanceListItem';
+import { SVGIcon } from 'components/icon';
+import { LocationSVG } from 'components/icon/svg-components';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { useFormik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { FC, useContext } from 'react';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFileCreateMutation } from 'store/files/files.queries';
-import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { performancesKeys } from 'store/performances/performances.query-keys';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
@@ -20,7 +19,6 @@ import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
-  SPACING_LARGE,
   SPACING_SMALL,
   SPACING_XSMALL,
 } from 'styles';
@@ -32,9 +30,7 @@ interface PostCreateFormValues {
 }
 
 const createPostFormSchema = Yup.object({
-  caption: Yup.string()
-    .required('Required')
-    .max(1000, 'Caption must be 1000 characters or less'),
+  caption: Yup.string().max(1000, 'Caption must be 1000 characters or less'),
 });
 
 interface CreatePostFormProps {
@@ -43,7 +39,9 @@ interface CreatePostFormProps {
   removePostFile: () => void;
   postFile: PostFile;
   performer?: Performer;
+  performance?: PerformanceWithEvent;
   handlSearchForPerformerPress: () => void;
+  handleSelectPerformancePress: () => void;
 }
 
 // todo: rename to UserCreatePostForm and simplify logic accordingly
@@ -53,12 +51,10 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   removePostFile,
   postFile,
   performer,
+  performance,
   handlSearchForPerformerPress,
+  handleSelectPerformancePress,
 }) => {
-  const [selectedPerformance, setSelectedPerformance] = useState<
-    PerformanceWithEvent | undefined
-  >(undefined);
-
   const [showError, setShowError] = React.useState(false);
 
   const { authState } = useContext(AuthStateContext);
@@ -96,18 +92,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     isError: createTagError,
   } = useTagCreateMutation();
 
-  const {
-    isLoading: performancesLoading,
-    isError: performancesError,
-    data: performances,
-    error: performancesGetError,
-  } = usePerformancesGetQuery({
-    queryParams: {
-      performerId: performer?.id,
-    },
-    enabled: !!performer,
-  });
-
   const handleFormSubmit = async function (form: PostCreateFormValues) {
     setShowError(true);
 
@@ -141,7 +125,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
     // if no performance found for the artist, tag the artist in the post so they cna view it later
     let tagResult;
-    if (!selectedPerformance) {
+    if (!performance) {
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMER,
         taggedEntityId: performer?.id as number, // submit button only active if performer is defined
@@ -152,7 +136,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       // Otherwise tag the post with the performance
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMANCE,
-        taggedEntityId: selectedPerformance.id,
+        taggedEntityId: performance.id,
         taggedInEntityType: TaggedInEntityType.POST,
         taggedInEntityId: createdPost.id,
       });
@@ -182,7 +166,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     dirty,
   } = useFormik({
     validationSchema: createPostFormSchema,
-    initialValues: { caption: '' },
+    initialValues: { caption: undefined },
     onSubmit: handleFormSubmit,
   });
 
@@ -191,8 +175,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   const handleCaptionChange = handleChange('caption');
 
   // Note we show the button even if the reuqired performer field hasn't been filled, so we display a clear error message to the user if they try to submit without selecting a performer
-  const buttonDisabled =
-    isSubmitting || !postFile || !isValid || !dirty || performancesLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
+  const buttonDisabled = isSubmitting || !postFile || !isValid; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
 
   // <Placeholder
   //   Animation={props => (
@@ -267,43 +250,48 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         ...styles.flexColumnContainer,
         width: '100%',
         height: '100%',
-        marginBottom: SPACING_LARGE,
+        paddingLeft: SPACING_XSMALL,
+        paddingRight: SPACING_XSMALL,
       }}
     >
-      <View style={{ ...styles.flexRowContainer }}>
+      <View
+        style={{
+          ...styles.flexRowContainer,
+          ...styles.borederedContainer,
+        }}
+      >
         <Image
           source={{
             uri: postFile?.imageInfo.uri,
-            width: 150,
-            height: 150,
+            width: 50,
+            height: 50,
           }}
         ></Image>
+        <AppTextInput
+          handleChange={(e: string | React.ChangeEvent<any>) => {
+            if (showError) {
+              setShowError(false);
+            }
+            handleCaptionChange(e);
+          }}
+          handleBlur={(e: any) => {
+            if (showError) {
+              setShowError(false);
+            }
+            setShowError(false);
+            handleCaptionBlur(e);
+          }}
+          value={values.caption}
+          placeholder="Write a caption"
+          error={errors.caption}
+          touched={touched.caption}
+        />
       </View>
-      <AppTextInput
-        handleChange={(e: string | React.ChangeEvent<any>) => {
-          if (showError) {
-            setShowError(false);
-          }
-          handleCaptionChange(e);
-        }}
-        handleBlur={(e: any) => {
-          if (showError) {
-            setShowError(false);
-          }
-          setShowError(false);
-          handleCaptionBlur(e);
-        }}
-        value={values.caption}
-        placeholder="Write a caption"
-        error={errors.caption}
-        touched={touched.caption}
-        marginBottom={SPACING_XSMALL}
-      />
+
       <View
         style={{
           ...styles.flexColumnContainer,
-          height: !performer ? 200 : 'auto',
-          marginBottom: SPACING_XSMALL,
+          ...styles.borederedContainer,
         }}
       >
         {!performer && (
@@ -311,7 +299,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
             isLink={true}
             handlePress={handlSearchForPerformerPress}
           >
-            Tag the artist
+            Select the artist
           </AppText>
         )}
         {performer && (
@@ -321,41 +309,50 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           ></PerformerSearchCard>
         )}
       </View>
-      {!!performances?.length && (
+      {performer && (
         <>
-          {selectedPerformance && (
-            <PerformanceListItem
-              performances={selectedPerformance}
-              onListItemPress={() => setSelectedPerformance(undefined)}
-            ></PerformanceListItem>
-          )}
-          {!selectedPerformance && (
-            <View style={{ width: '70%' }}>
-              <View
-                style={{
-                  borderColor: 'gray',
-                  borderWidth: 1,
-                  borderRadius: 3,
-                }}
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            {performance && (
+              <Pressable
+                style={styles.flexRowContainer}
+                onPress={handleSelectPerformancePress}
               >
-                <AppText>Select the artist's performance</AppText>
-              </View>
-              <List>
-                {performances.map(performance => (
-                  <PerformanceListItem
-                    key={performance.id}
-                    performances={performance}
-                    onListItemPress={setSelectedPerformance}
-                  ></PerformanceListItem>
-                ))}
-              </List>
-            </View>
-          )}
+                <SVGIcon
+                  styles={{ marginRight: SPACING_SMALL }}
+                  height={22}
+                  width={22}
+                  handlePress={handleSelectPerformancePress}
+                >
+                  <LocationSVG></LocationSVG>
+                </SVGIcon>
+                <AppText>
+                  {`${performance.venueName} ${new Date(
+                    performance.performanceDate * 1000,
+                  ).toLocaleDateString()}`}
+                </AppText>
+              </Pressable>
+            )}
+            {!performance && (
+              <AppText
+                isLink={true}
+                handlePress={handleSelectPerformancePress}
+              >
+                Select a performance
+              </AppText>
+            )}
+          </View>
         </>
       )}
+
       <View
         style={{
-          marginTop: 'auto',
+          flexGrow: 1,
+          justifyContent: 'flex-end',
           marginBottom: SPACING_SMALL,
           width: '100%',
         }}
@@ -407,10 +404,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   flexRowContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  textInput: {},
+  borederedContainer: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    paddingBottom: SPACING_XSMALL,
+    paddingTop: SPACING_XSMALL,
+  },
 });
