@@ -53,11 +53,12 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
   } = usePerformerGetOrCreateQuery({
     performerUUID: selectedSearchPerformer?.uuid,
     enabled: !!selectedSearchPerformer,
-    onSuccess: onPerformerSelected,
+    onSuccess: performer => {
+      setSelectedSearchPerformer(undefined);
+      onPerformerSelected(performer);
+    },
   });
 
-  console.log(selectedSearchPerformer);
-  
   const performerSearchResults = searchPerformers?.length
     ? searchPerformers.map(performer => (
         <PerformerSearchCard

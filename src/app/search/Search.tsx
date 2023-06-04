@@ -36,11 +36,13 @@ const Search: FC<SearchProps> = ({ navigation }) => {
     | 'Artist'
     | 'User';
 
-  const navigateToPerformerProfile = (performer: Performer) =>
+  const navigateToPerformerProfile = (performer: Performer) => {
+    console.log('navigateToPerformerProfile');
     navigation.navigate('SearchProfile', {
       profileType: ProfileType.PERFORMER,
       profileId: performer.id,
     });
+  };
 
   const navigateToUserProfile = (user: User) =>
     navigation.navigate('SearchProfile', {
