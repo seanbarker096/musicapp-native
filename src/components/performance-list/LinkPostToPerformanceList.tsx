@@ -20,6 +20,7 @@ import {
   TaggedInEntityType,
 } from 'store/tags/tags.types';
 import { SPACING_XSMALL } from 'styles';
+import { isDefined } from 'utils/utils';
 
 type LinkToPerformancListProps = {
   handleCreatePerformancePress: () => void;
@@ -129,6 +130,11 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
   async function handleLinkToPerformanceIconClick(
     performance: PerformanceWithEvent,
   ) {
+    // If performance tag was already selected, delete the tag associated with it before creating new one
+    if (isDefined(performanceTag)) {
+      await deleteTag({ id: performanceTag.id });
+    }
+
     await createTag({
       taggedEntityId: performance.id,
       taggedEntityType: TaggedEntityType.PERFORMANCE,

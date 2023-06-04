@@ -60,35 +60,22 @@ export const useTagCreateMutation = ({
       );
     }
 
-    if (taggedEntityId && taggedEntityType) {
-      // We have queries that only return tags if the tagged entity is either a PERFORMER or a PERFORMANCE. When we delete a tag on a PERFORMER or PERFORMANCE, we therefore ned to invalidate some query keys for other tagged entity (e.g. PERFORMER if deleted tag was on PERFORMANCE) to ensure our state is up to date.
-      let otherTaggedEntityType;
-      switch (taggedEntityType) {
-        case TaggedEntityType.PERFORMER:
-          otherTaggedEntityType = TaggedEntityType.PERFORMANCE;
-          break;
-        case TaggedEntityType.PERFORMANCE:
-          otherTaggedEntityType = TaggedEntityType.PERFORMER;
-          break;
-        default:
-          return null;
-      }
+    if (taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      // We have queries that only return tags if the resouce e.g. post is only tagged with a PERFORMER, and not a PERFORMANCE as well (e.g. ManageTaggedPost component). When we delete a tag on a PERFORMANCE (e.g. when unlinking a post to a performance) we therefore ned to invalidate some query keys to ensure the change is reflected elswhere in the app (e.g. ManageTaggedPost component).
 
-      await queryClient.invalidateQueries(
-        tagKeys.tagsByEntityTypesAndIds(otherTaggedEntityType, taggedEntityId),
-      );
+      await queryClient.invalidateQueries(tagKeys.performerTags);
     }
-    // TODO: Fix issue where list of performances and performance attendance aascoaited with it gets out of sync after untagging/tagging. They keep old id when need new performance attendance id
 
     if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      // Ensure any lists showing performances a user has attended for the performer are updated
       await queryClient.invalidateQueries(
-        performancesKeys.performancesByPerformerIds([taggedEntityId]),
+        // Invlidate all querys involving a performer id.
+        performancesKeys.performancesByPerformerIds([]),
       );
 
-      // invalidate all attendee-performers queries as well, so the list of performances the user has attended for that artist is up to date
+      // An attendance to a performance is created when a PERFORMANCE is tagged in a post This ensures that any performance lists with attendance counts gets updated
       await queryClient.invalidateQueries(attendeePerformerKeys.all);
     }
-
     return;
   };
 
@@ -136,23 +123,19 @@ export const useTagDeleteMutation = ({
       );
     }
 
-    if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
-      // We have queries that only return tags if the tagged entity is either a PERFORMER or a PERFORMANCE. When we delete a tag on a PERFORMER or PERFORMANCE, we therefore ned to invalidate some query keys for other tagged entity (e.g. PERFORMER if deleted tag was on PERFORMANCE) to ensure our state is up to date.
-
-      await queryClient.invalidateQueries(
-        tagKeys.tagsByEntityTypesAndIds(
-          TaggedEntityType.PERFORMER,
-          taggedEntityId,
-        ),
-      );
+    if (taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      // If a post has been linked/unlinked to a performance via a tag creation/deletion, invalidate all tag queries. We have various queries fetching posts for a given performance by getting tags between them, or tags between a performer and posts (e.g. ManageTaggedPost component).
+      await queryClient.invalidateQueries(tagKeys.all);
     }
 
     if (taggedEntityId && taggedEntityType === TaggedEntityType.PERFORMANCE) {
+      // Ensure any lists showing performances a user has attended for the performer are updated
       await queryClient.invalidateQueries(
-        performancesKeys.performancesByPerformerIds([taggedEntityId]),
+        // Invlidate all querys involving a performer id.
+        performancesKeys.performancesByPerformerIds([]),
       );
 
-      // invalidate all attendee-performers queries as well, so the list of performances the user has attended for that artist is up to date
+      // An attendance to a performance is created when a PERFORMANCE is tagged in a post This ensures that any performance lists with attendance counts gets updated
       await queryClient.invalidateQueries(attendeePerformerKeys.all);
     }
 
@@ -233,9 +216,31 @@ export function useTagsGetQuery({
       tagged_entity_type: taggedEntityType,
     };
 
-    queryKey = tagKeys.tagsByEntityTypesAndIds(
+    queryKey = tagKeys.tagsByTaggedEntity(taggedEntityType, taggedEntityId);
+  }
+
+  if (taggedEntityType && taggedEntityId && taggedInEntityType) {
+    if (
+      isArray(taggedEntityType) ||
+      isArray(taggedEntityId) ||
+      isArray(taggedInEntityType)
+    ) {
+      throw Error(
+        `Invalid query prarms for tags GET. Currently only getting tags for a single tagged entity is supported. Request: ${JSON.stringify(
+          queryParams,
+        )}`,
+      );
+    }
+    apiQueryParams = {
+      tagged_entity_id: taggedEntityId,
+      tagged_entity_type: taggedEntityType,
+      tagged_in_entity_type: taggedInEntityType,
+    };
+
+    queryKey = tagKeys.tagsByTaggedEntityAndTaggedInEntityType(
       taggedEntityType,
       taggedEntityId,
+      taggedInEntityType,
     );
   }
 
