@@ -74,6 +74,7 @@ export interface UsersGetResultApi {
 export interface UsersSearchRequestApi {
   search_query: string;
   include_profile_image?: boolean;
+  limit?: number;
 }
 
 export interface UserUpdateRequest {

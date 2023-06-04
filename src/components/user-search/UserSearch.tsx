@@ -2,7 +2,7 @@ import { AppText } from 'components/app-text';
 import { SearchBar } from 'components/search';
 import { UserSearchCard } from 'components/user-search-card';
 import React, { FC, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
 import { userUsersSearchQuery } from 'store/users';
 import { User } from 'store/users/users.types';
 import { useDebounceEffect } from 'utils/custom-hooks';
@@ -24,6 +24,8 @@ export const UserSearch: FC<UserSearchProps> = ({
     string | undefined
   >(undefined);
 
+  const [limit, setLimit] = useState(10);
+
   // We cant use the isLoading prop from the usePerformersSearchQuery hook because we are debouncing the search term, so we immediately want to render a loading state when user types, rather than waiting for debounce to finish and querys isLoading to then be set to true
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -36,33 +38,47 @@ export const UserSearch: FC<UserSearchProps> = ({
   } = userUsersSearchQuery({
     queryParams: {
       searchQuery: debouncedSearchTerm,
+      limit,
     },
     enabled: !!debouncedSearchTerm,
     onSettled: () => setIsLoading(false),
   });
 
-  const userSearchResults = searchUsers?.map(user => (
-    <UserSearchCard
-      user={user}
-      onPress={() => onUserSelected(user)}
-    ></UserSearchCard>
-  ));
+  const searchResultItem = ({ item, index }: ListRenderItemInfo<User>) => {
+    return (
+      <UserSearchCard
+        user={item}
+        onPress={() => onUserSelected(item)}
+      ></UserSearchCard>
+    );
+  };
 
   const searchReady = !isLoading && !usersGetError;
+
+  const hasNextPage = searchUsers ? searchUsers.length >= limit : false;
 
   return (
     <View style={styles.container}>
       <SearchBar
         searchTermChanged={searchTerm => {
           setIsLoading(true);
+          setLimit(10);
           searchTermChanged(searchTerm);
         }}
-        searchResults={userSearchResults ?? []}
+        searchResults={searchUsers ?? []}
+        searchResultRenderItem={searchResultItem}
         searchTerm={searchTerm}
+        onEndReached={() => {
+          if (hasNextPage) {
+            setLimit(limit + 10);
+          }
+        }}
+        hasMoreData={hasNextPage}
+        itemHeight={30 + 10} // height of the UserSearchCard component
       ></SearchBar>
       {isLoading && <AppText>Loading...</AppText>}
-      {searchReady && searchTerm && userSearchResults?.length === 0 && (
-        <AppText>ASD</AppText>
+      {searchReady && searchTerm && searchUsers?.length === 0 && (
+        <AppText>No results found</AppText>
       )}
     </View>
   );

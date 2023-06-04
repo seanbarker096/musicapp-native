@@ -15,7 +15,9 @@ import {
   PerformersStoreSlice,
 } from './performers.types';
 
-const performersSearch = async (searchQuery: string) => {
+const MAX_ALLOWED_SPOTIFY_API_LIMIT = 50;
+
+const performersSearch = async (searchQuery: string, limit: number) => {
   // for empty strings e.g. when backspacing, return empty array
   if (!searchQuery) {
     return [];
@@ -23,7 +25,7 @@ const performersSearch = async (searchQuery: string) => {
 
   const response = await searchRequest<PerformersStoreSlice>({
     url: 'performers/0.1/performers/search',
-    body: { search_query: searchQuery },
+    body: { search_query: searchQuery, limit },
   });
 
   return response.data.performers.map(performerSearchPerformerApi =>
@@ -33,10 +35,12 @@ const performersSearch = async (searchQuery: string) => {
 
 export function usePerformersSearchQuery({
   searchQuery,
+  limit = 10,
   enabled = true,
   onSettled,
 }: {
   searchQuery?: string;
+  limit?: number;
   enabled?: boolean;
   onSettled?: (
     data: readonly PerformerSearchPerformer[] | undefined,
@@ -47,9 +51,13 @@ export function usePerformersSearchQuery({
 
   let queryKey: QueryKey = performersKeys.null('usePerformersSearchQuery');
 
+  if (limit > MAX_ALLOWED_SPOTIFY_API_LIMIT) {
+    limit = MAX_ALLOWED_SPOTIFY_API_LIMIT;
+  }
+
   if (searchQuery) {
     query = searchQuery;
-    queryKey = performersKeys.performersBySearchQuery(searchQuery);
+    queryKey = performersKeys.performersBySearchQuery(searchQuery, limit);
   }
 
   return useQuery<
@@ -59,7 +67,7 @@ export function usePerformersSearchQuery({
     // to ensure loading states work correctly, if a search term i sundefined (e.g. by backspacing) we still resolve the promise, but with an empty array
   >(
     queryKey,
-    () => (query ? performersSearch(query) : Promise.resolve(undefined)),
+    () => (query ? performersSearch(query, limit) : Promise.resolve(undefined)),
     {
       enabled,
       onSettled,

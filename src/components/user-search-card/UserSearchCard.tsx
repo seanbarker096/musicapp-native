@@ -8,12 +8,16 @@ import {
 } from 'react-native';
 import { User } from 'store/users/users.types';
 import { SPACING_XXSMALL } from 'styles';
-import { ProfileImage } from '../profile-image';
+import { ProfileImage, profileImageSizeGenerator } from '../profile-image';
 
 interface UserSearchCardProps {
   user: User;
   onPress?: (event: GestureResponderEvent) => void;
 }
+
+const IMAGE_SIZE = 'small';
+const HEIGHT = profileImageSizeGenerator(IMAGE_SIZE) + 10;
+
 
 // TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
 export const UserSearchCard: FC<UserSearchCardProps> = ({
@@ -23,11 +27,12 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
   return (
     <Pressable
       onPress={onPress}
-      style={styles.container}
+      style={{ ...styles.container, height: HEIGHT }}
     >
       <ProfileImage
         styles={styles.profileImage}
         imageUrl={user.avatarFile?.url}
+        size={IMAGE_SIZE}
       ></ProfileImage>
       <View style={styles.columnContainer}>
         <AppText weight="normal">{user.username}</AppText>

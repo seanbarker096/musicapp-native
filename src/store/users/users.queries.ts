@@ -90,11 +90,15 @@ const usersSearch = async (
 };
 
 export function userUsersSearchQuery({
-  queryParams: { searchQuery, includeProfileImage = true },
+  queryParams: { searchQuery, includeProfileImage = true, limit = 10 },
   enabled = true,
   onSettled,
 }: {
-  queryParams: { searchQuery: string; includeProfileImage?: boolean };
+  queryParams: {
+    searchQuery?: string;
+    includeProfileImage?: boolean;
+    limit?: number;
+  };
   enabled?: boolean;
   onSettled?: () => void;
 }) {
@@ -107,8 +111,9 @@ export function userUsersSearchQuery({
     apiQueryParams = {
       search_query: searchQuery,
       include_profile_image: includeProfileImage,
+      limit,
     };
-    queryKey = usersKeys.usersBySearchQuery(searchQuery);
+    queryKey = usersKeys.usersBySearchQuery(searchQuery, limit);
   }
 
   return useQuery<readonly User[], unknown, readonly User[]>(

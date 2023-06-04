@@ -1,8 +1,7 @@
 import React, { FC, ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
 
 import { Post } from 'store/posts';
-import ScrollableGalleryLayout from './gallery-layout/ScrollableGalleryLayout';
+import { ScrollableGalleryLayout } from './gallery-layout/ScrollableGalleryLayout';
 
 interface ScrollableGalleryProps {
   postsWithAttachmentsAndFiles: readonly Post[]; // note that this should have files defined in each attachment
@@ -31,5 +30,3 @@ export const ScrollableGallery: FC<ScrollableGalleryProps> = ({
     ></ScrollableGalleryLayout>
   );
 };
-
-const styles = StyleSheet.create({});

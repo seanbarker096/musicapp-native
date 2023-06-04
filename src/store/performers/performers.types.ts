@@ -63,6 +63,7 @@ export interface PerformersGetFilterApi {
 
 export interface PerformerSearchRequestApi {
   search_query: string;
+  limit: number;
 }
 
 export interface PerformersGetResultApi {

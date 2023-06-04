@@ -2,7 +2,7 @@ import { AppText } from 'components/app-text';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { SearchBar } from 'components/search';
 import React, { FC, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, View } from 'react-native';
 import { Performer, PerformerSearchPerformer } from 'store/performers';
 import {
   usePerformerGetOrCreateQuery,
@@ -31,6 +31,8 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     PerformerSearchPerformer | undefined
   >(undefined);
 
+  const [limit, setLimit] = useState(10);
+
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<
     string | undefined
   >(undefined);
@@ -44,9 +46,11 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
   const { data: searchPerformers, error: performersSearchError } =
     usePerformersSearchQuery({
       searchQuery: debouncedSearchTerm,
+      limit,
       onSettled: () => setIsLoading(false),
     });
 
+  console.log('searchPerformers', searchPerformers?.length);
   const {
     data: performer,
     isLoading: performersGetOrCreateLoading,
@@ -67,22 +71,47 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     ></PerformerSearchCard>
   ));
 
-  console.log(performerSearchResults);
+  const searchResultItem = ({
+    item,
+    index,
+  }: ListRenderItemInfo<PerformerSearchPerformer>) => {
+    return (
+      <PerformerSearchCard
+        performer={item}
+        onPress={() => setSelectedSearchPerformer(item)}
+      ></PerformerSearchCard>
+    );
+  };
+
   const error = performersSearchError || performersGetOrCreateError;
 
   const searchReady = !isLoading && !performersSearchError;
+
+  const hasNextPage = searchPerformers
+    ? searchPerformers.length >= limit
+    : false;
 
   return (
     <View style={styles.container}>
       <SearchBar
         searchTermChanged={searchTerm => {
           setIsLoading(true);
+          setLimit(10);
           searchTermChanged(searchTerm);
         }}
-        searchResults={performerSearchResults ?? []}
+        searchResults={searchPerformers ?? []}
+        searchResultRenderItem={searchResultItem}
         searchTerm={searchTerm}
         handleBlur={onTextInputBlur}
         scrollable={true}
+        onEndReached={() => {
+          console.log('onEndReached');
+          if (hasNextPage) {
+            setLimit(limit + 10);
+          }
+        }}
+        hasMoreData={hasNextPage}
+        itemHeight={30} // height of the PerformerSearchCard component
       ></SearchBar>
       {isLoading && <AppText>Loading...</AppText>}
       {searchReady && searchTerm && performerSearchResults?.length === 0 && (

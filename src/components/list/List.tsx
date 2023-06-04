@@ -51,6 +51,7 @@ export const List: FC<ListProps> = ({
             paddingBottom: topBottomPadding,
             paddingTop: topBottomPadding,
           }}
+          showsVerticalScrollIndicator={false}
         >
           {childrenContent}
         </ScrollView>
