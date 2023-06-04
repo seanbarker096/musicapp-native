@@ -5,7 +5,10 @@ import { CreatePostForm } from './CreatePostForm';
 import { UploadFile } from './UploadFile';
 import { CreatePostStackScreenProps, PostFile } from './create-post.types';
 
-export const CreatePost: FC<CreatePostStackScreenProps> = ({ navigation }) => {
+export const CreatePost: FC<CreatePostStackScreenProps> = ({
+  navigation,
+  route: { params },
+}) => {
   const [postFile, setPostFile] = useState<PostFile | undefined>(undefined);
 
   const { profileState } = useContext(ProfileContext);
@@ -23,6 +26,10 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({ navigation }) => {
           onSuccess={() => navigation.navigate(PrimaryScreens.PROFILE)}
           onCancel={handleCancel}
           removePostFile={() => setPostFile(undefined)}
+          performer={params?.performer}
+          handlSearchForPerformerPress={() =>
+            navigation.navigate('CreatePostPerformerSearch')
+          }
         ></CreatePostForm>
       )}
       {!postFile && (

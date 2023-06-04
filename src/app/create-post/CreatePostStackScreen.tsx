@@ -8,6 +8,7 @@ import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import { CreatePostStackParamList } from './create-post.types';
 import CreatePost from './CreatePost';
+import { CreatePostPerformerSearch } from './CreatePostPerformerSearch';
 
 type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
@@ -28,6 +29,11 @@ const CreatePostStackScreen: FC<Props> = () => {
         options={{ headerShown: false }}
         component={CreatePerformanceStackScreen}
         name="CreatePerformanceStack"
+      ></CreateStackTabNavigator.Screen>
+      <CreateStackTabNavigator.Screen
+        options={{ headerShown: false }}
+        component={CreatePostPerformerSearch}
+        name="CreatePostPerformerSearch"
       ></CreateStackTabNavigator.Screen>
     </CreateStackTabNavigator.Navigator>
   );

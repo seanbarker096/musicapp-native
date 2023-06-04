@@ -2,10 +2,14 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppShellStackScreenProps } from 'app/app-shell/appShell.types';
 import * as ImagePicker from 'expo-image-picker';
+import { Performer } from 'store/performers';
 
 export type CreatePostStackParamList = {
-  CreatePost: undefined;
+  CreatePost: {
+    performer: Performer;
+  };
   CreatePerformanceStack: undefined;
+  CreatePostPerformerSearch: undefined;
 };
 
 // TODO: Should probably seperate these screens given completely unrelated navigators

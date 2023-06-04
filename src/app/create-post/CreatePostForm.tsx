@@ -4,12 +4,10 @@ import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 import { List } from 'components/list';
 import { PerformanceListItem } from 'components/performance-list/PerformanceListItem';
-import { PerformerSearch } from 'components/performer-search';
 import { PerformerSearchCard } from 'components/performer-search-card';
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { useFormik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
@@ -19,7 +17,6 @@ import { Performer } from 'store/performers';
 import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
-import { useUserGetQuery } from 'store/users';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
@@ -45,6 +42,8 @@ interface CreatePostFormProps {
   onSuccess: () => void;
   removePostFile: () => void;
   postFile: PostFile;
+  performer?: Performer;
+  handlSearchForPerformerPress: () => void;
 }
 
 // todo: rename to UserCreatePostForm and simplify logic accordingly
@@ -53,11 +52,9 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   onSuccess,
   removePostFile,
   postFile,
+  performer,
+  handlSearchForPerformerPress,
 }) => {
-  const [performer, setPerformer] = useState<Performer | undefined>(undefined);
-  const [performerSearchTerm, setPerformerSearchTerm] = useState<
-    string | undefined
-  >(undefined);
   const [selectedPerformance, setSelectedPerformance] = useState<
     PerformanceWithEvent | undefined
   >(undefined);
@@ -65,19 +62,14 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   const [showError, setShowError] = React.useState(false);
 
   const { authState } = useContext(AuthStateContext);
-  const { profileState } = useContext(ProfileContext);
 
   let errorComponent: React.ReactNode | undefined = undefined;
 
   const userId = authState.authUser.userId;
-  const postOwnerType =
-    profileState.profileType === ProfileType.PERFORMER
-      ? PostOwnerType.PERFORMER
-      : PostOwnerType.USER;
 
   const { mutateAsync: createPost } = usePostCreateMutation({
     ownerId: userId,
-    ownerType: postOwnerType,
+    ownerType: PostOwnerType.USER,
     queryKeysToInvalidate: [
       performer
         ? performancesKeys.performancesByPerformerIds([performer.id])
@@ -103,14 +95,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     isLoading: createTagLoading,
     isError: createTagError,
   } = useTagCreateMutation();
-
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    isError: isUserGetError,
-  } = useUserGetQuery({ queryParams: { id: userId } });
-
-  const postCreator = user && user[0];
 
   const {
     isLoading: performancesLoading,
@@ -144,7 +128,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
     const postResult = await createPost({
       ownerId: userId,
-      ownerType: postOwnerType,
+      ownerType: PostOwnerType.USER,
       content: form.caption as string, // submit button only active if caption is defined
       attachmentFileIds: [fileResult.file.id],
     });
@@ -180,15 +164,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
     onSuccess();
   };
-
-  function handlePerformerSelection(performer: Performer) {
-    setShowError(false);
-    setPerformer(performer);
-  }
-
-  function handleTaggedPerformerPress() {
-    setPerformer(undefined);
-  }
 
   function handleErrorActionPress() {
     setShowError(false);
@@ -331,32 +306,18 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           marginBottom: SPACING_XSMALL,
         }}
       >
-        <Text style={{ width: '100%' }}>
-          Tag the artist so they see your video
-        </Text>
         {!performer && (
-          <PerformerSearch
-            searchTermChanged={term => {
-              setPerformerSearchTerm(term);
-
-              if (showError) {
-                setShowError(false);
-              }
-            }}
-            searchTerm={performerSearchTerm}
-            onPerformerSelected={handlePerformerSelection}
-            onTextInputBlur={() => {
-              if (showError) {
-                setShowError(false);
-              }
-            }}
-            emptyStateMessage="No artists found. Try adjusting your search term"
-          ></PerformerSearch>
+          <AppText
+            isLink={true}
+            handlePress={handlSearchForPerformerPress}
+          >
+            Tag the artist
+          </AppText>
         )}
         {performer && (
           <PerformerSearchCard
             performer={performer}
-            onPress={handleTaggedPerformerPress}
+            onPress={handlSearchForPerformerPress}
           ></PerformerSearchCard>
         )}
       </View>
