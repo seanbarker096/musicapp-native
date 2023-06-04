@@ -1,4 +1,5 @@
 import { QueryKey, useMutation, useQuery, useQueryClient } from 'react-query';
+import { profilePostsKeys } from 'store/profile-posts/profile-posts.query-keys';
 import { deleteRequest, getRequest, postRequest } from 'store/request-builder';
 import { failedQuery } from 'store/store-utils';
 import { featuresKeys } from './features.query-keys';
@@ -39,8 +40,12 @@ export const useFeaturesDeleteMutation = ({
     // Be specific with invalidation if we can, otherwise invalidate all tags. If postIds arent provided we can
     // invalidate the slightly less specific ids, because the key factory function accepts undefined postIds
     if (featurerId && featurerType) {
-      return queryClient.invalidateQueries(
+      await queryClient.invalidateQueries(
         featuresKeys.postFeaturesByFeaturer(featurerId, featurerType, postIds),
+      );
+
+      return queryClient.invalidateQueries(
+        profilePostsKeys.performerFeaturedProfilePosts(featurerId),
       );
     } else {
       return queryClient.invalidateQueries(featuresKeys.all);
@@ -153,8 +158,12 @@ export function useFeatureCreateMutation({
     // Be specific with invalidation if we can, otherwise invalidate all tags. If postIds arent provided we can
     // invalidate the slightly less specific ids, because the key factory function accepts undefined postIds
     if (featurerId && featurerType) {
-      return queryClient.invalidateQueries(
+      await queryClient.invalidateQueries(
         featuresKeys.postFeaturesByFeaturer(featurerId, featurerType, postIds),
+      );
+
+      return queryClient.invalidateQueries(
+        profilePostsKeys.performerFeaturedProfilePosts(featurerId),
       );
     } else {
       return queryClient.invalidateQueries(featuresKeys.all);

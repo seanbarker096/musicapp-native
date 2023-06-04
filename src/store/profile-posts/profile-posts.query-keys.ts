@@ -2,6 +2,15 @@ import { ProfileType } from 'contexts/profile.context';
 
 export const profilePostsKeys = {
   all: ['profilePosts'] as const,
+  performerFeaturedProfilePosts: (performerId: number) => [
+    ...profilePostsKeys.all,
+    'profileId',
+    performerId,
+    'profileType',
+    ProfileType.PERFORMER,
+    'includeFeatured',
+    true,
+  ],
   profilePostsByProfile: (
     profileId: number,
     profileType: ProfileType,

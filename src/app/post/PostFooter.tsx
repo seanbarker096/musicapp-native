@@ -69,13 +69,21 @@ const PostFooter: FC<PostFooterProps> = ({
     mutateAsync: createFeature,
     isLoading: createFeatureLoading,
     isError: createFeatureError,
-  } = useFeatureCreateMutation();
+  } = useFeatureCreateMutation({
+    featurerId: postPerformer.id,
+    featurerType: FeaturerType.PERFORMER,
+    postIds: [post.id],
+  });
 
   const {
     mutateAsync: deleteFeature,
     isLoading: deleteFeatureLoading,
     isError: deleteFeatureError,
-  } = useFeaturesDeleteMutation();
+  } = useFeaturesDeleteMutation({
+    featurerId: postPerformer.id,
+    featurerType: FeaturerType.PERFORMER,
+    postIds: [post.id],
+  });
 
   async function featurePost() {
     await createFeature({
@@ -110,6 +118,7 @@ const PostFooter: FC<PostFooterProps> = ({
                 actionCompletedState={{
                   icon: StarFilledSVG,
                   text: 'Artist pick',
+                  iconColor: IconColor.PRIMARY,
                   onIconPress: () =>
                     !!artistFeature ? unFeaturePost(artistFeature) : () => {},
                 }}

@@ -50,7 +50,6 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
       onSettled: () => setIsLoading(false),
     });
 
-  console.log('searchPerformers', searchPerformers?.length);
   const {
     data: performer,
     isLoading: performersGetOrCreateLoading,
@@ -103,9 +102,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
         searchResultRenderItem={searchResultItem}
         searchTerm={searchTerm}
         handleBlur={onTextInputBlur}
-        scrollable={true}
         onEndReached={() => {
-          console.log('onEndReached');
           if (hasNextPage) {
             setLimit(limit + 10);
           }

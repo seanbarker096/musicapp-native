@@ -51,14 +51,8 @@ export const SearchBar: FC<Props> = ({
   };
 
   const handleScroll = event => {
-    console.log(
-      'event.nativeEvent.contentOffset.y',
-      event.nativeEvent.contentOffset.y,
-    );
     const offsetY = event.nativeEvent.contentOffset.y;
     setScrollOffset(offsetY);
-
-    console.log('scroll index', Math.floor(scrollOffset / itemHeight));
   };
 
   const windowHeight = Dimensions.get('window').height;
