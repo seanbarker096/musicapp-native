@@ -11,10 +11,7 @@ type Props = {
   onListItemPress: (performances: PerformanceWithEvent) => void;
 };
 
-export const PerformanceListItem: FC<Props> = ({
-  performances,
-  onListItemPress,
-}) => {
+export const PerformanceListItem: FC<Props> = ({ performances, onListItemPress }) => {
   const date = new Date(performances.performanceDate * 1000);
 
   const captures = performances.attendanceCount;

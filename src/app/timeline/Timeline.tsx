@@ -5,6 +5,7 @@ import { ProfileImage } from 'components/profile-image';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
 import { Button, StyleSheet, View } from 'react-native';
+import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useUserGetQuery } from 'store/users';
 import { BUTTON_COLOR_PRIMARY, SPACING_SMALL } from 'styles';
@@ -56,6 +57,13 @@ const Timeline: FC<TimelineProps> = ({
     });
   }
 
+  function handlePerformancePress(performanceWithCounts: PerformanceWithEvent) {
+    navigation.navigate('PerformanceStack', {
+      performanceId: performanceWithCounts.id,
+      performerId: performanceWithCounts.performerId,
+    });
+  }
+
   return (
     <>
       {performer && user && (
@@ -95,6 +103,7 @@ const Timeline: FC<TimelineProps> = ({
           <PerformanceList
             performerId={performerId}
             attendeeId={attendeeId}
+            handlePerformancePress={handlePerformancePress}
           ></PerformanceList>
         </View>
       )}
