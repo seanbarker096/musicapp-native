@@ -1,8 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { APP_BACKGROUND_COLOR, COLOR_PRIMARY } from 'styles';
 import { AuthState, AuthStatus } from '../store/auth/auth.types';
 import LoggedInAppShell from './app-shell/AppShell';
 import { LoggedOutPage } from './app-types';
@@ -13,6 +14,15 @@ import { authenticateUserOnAppStartup } from './services/authService';
 
 const queryClient = new QueryClient();
 
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: COLOR_PRIMARY,
+    background: APP_BACKGROUND_COLOR,
+  },
+};
+
 const App = function () {
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
   const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage | undefined>(
@@ -22,7 +32,7 @@ const App = function () {
   authenticateUserOnAppStartup(setAuthState);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       {authState?.status === AuthStatus.AUTHENTICATED ? (
         <LoggedInAppShell
           authState={authState}
