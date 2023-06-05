@@ -17,9 +17,11 @@ import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import React, { FC, useContext } from 'react';
+import React, { FC, memo, useContext } from 'react';
 import { View } from 'react-native';
+
 import { SPACING_MID } from 'styles';
+
 import Profile from './Profile';
 import {
   ProfileInternalStackScreenParams,
@@ -32,7 +34,7 @@ type Props = NativeStackScreenProps<
   PrimaryScreens.PROFILE
 >;
 
-const ProfileStackScreen: FC<Props> = ({ route: { params } }) => {
+const ProfileStackScreen: FC<Props> = ({ route: { params }, navigation }) => {
   const ProfileTab = createBottomTabNavigator<{
     main: ProfileInternalStackScreenParams;
   }>();
@@ -79,83 +81,85 @@ type InternalStackScreenProps = {
   isLoggedInUsersProfile?: boolean;
 };
 
-export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
-  profileId,
-  profileType,
-  createPostSuccess,
-  isLoggedInUsersProfile = false,
-}) => {
-  const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
+  ({
+    profileId,
+    profileType,
+    createPostSuccess,
+    isLoggedInUsersProfile = false,
+  }) => {
+    const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
-  const { profileState } = useContext(ProfileContext);
-  const { profileId: contextProfileId, profileType: contextProfileType } =
-    profileState;
+    const { profileState } = useContext(ProfileContext);
+    const { profileId: contextProfileId, profileType: contextProfileType } =
+      profileState;
 
-  let profileScreenPropsProfileId = profileId;
-  let profileScreenPropsProfileType = profileType;
+    let profileScreenPropsProfileId = profileId;
+    let profileScreenPropsProfileType = profileType;
 
-  // The logged in user can switch between viewing the app from their artist profile (if they have one) and their usre profile. Therefore, if the profile being viewed is the logged in users profile, we should use the up to date profile context. This is because initialParams passed in by ProfileStackScreen will be stale once the user has switched between the two
+    // The logged in user can switch between viewing the app from their artist profile (if they have one) and their usre profile. Therefore, if the profile being viewed is the logged in users profile, we should use the up to date profile context. This is because initialParams passed in by ProfileStackScreen will be stale once the user has switched between the two
 
-  if (isLoggedInUsersProfile) {
-    profileScreenPropsProfileId = contextProfileId;
-    profileScreenPropsProfileType = contextProfileType;
-  }
+    if (isLoggedInUsersProfile) {
+      profileScreenPropsProfileId = contextProfileId;
+      profileScreenPropsProfileType = contextProfileType;
+    }
 
-  return (
-    <ProfileStack.Navigator
-      screenOptions={
-        isLoggedInUsersProfile
-          ? {
-              header: ProfileStackScreenHeader,
-            }
-          : {}
-      }
-    >
-      <ProfileStack.Screen name="Profile">
-        {props => (
-          <Profile
-            {...props}
-            profileId={profileScreenPropsProfileId}
-            profileType={profileScreenPropsProfileType}
-            initialTab={
-              createPostSuccess ? SelectedProfileTab.SHOWS : undefined
-            }
-          />
-        )}
-      </ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="ViewPost"
-        component={PostStackScreen}
-        options={{ headerShown: false }}
-      ></ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="TimelineStack"
-        component={TimelineStackScreen}
-        options={{ headerShown: false }}
-      ></ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="PerformanceStack"
-        component={PerformanceStackScreen}
-        options={{ headerShown: false }}
-      ></ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="ProfileCreatePerformance"
-        component={CreatePerformanceStackScreen}
-        options={{ headerShown: false }}
-      ></ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="CreatePostStack"
-        component={CreatePostStackScreen}
-        options={{ headerShown: false }}
-      ></ProfileStack.Screen>
-      <ProfileStack.Screen
-        name="ProfileSettings"
-        component={SettingsStackScreen}
-        options={{ animation: 'none' }}
-      ></ProfileStack.Screen>
-    </ProfileStack.Navigator>
-  );
-};
+    return (
+      <ProfileStack.Navigator
+        screenOptions={
+          isLoggedInUsersProfile
+            ? {
+                header: ProfileStackScreenHeader,
+              }
+            : {}
+        }
+      >
+        <ProfileStack.Screen name="Profile">
+          {props => (
+            <Profile
+              {...props}
+              profileId={profileScreenPropsProfileId}
+              profileType={profileScreenPropsProfileType}
+              initialTab={
+                createPostSuccess ? SelectedProfileTab.SHOWS : undefined
+              }
+            />
+          )}
+        </ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="ViewPost"
+          component={PostStackScreen}
+          options={{ headerShown: false }}
+        ></ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="TimelineStack"
+          component={TimelineStackScreen}
+          options={{ headerShown: false }}
+        ></ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="PerformanceStack"
+          component={PerformanceStackScreen}
+          options={{ headerShown: false }}
+        ></ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="ProfileCreatePerformance"
+          component={CreatePerformanceStackScreen}
+          options={{ headerShown: false }}
+        ></ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="CreatePostStack"
+          component={CreatePostStackScreen}
+          options={{ headerShown: false }}
+        ></ProfileStack.Screen>
+        <ProfileStack.Screen
+          name="ProfileSettings"
+          component={SettingsStackScreen}
+          options={{ animation: 'none' }}
+        ></ProfileStack.Screen>
+      </ProfileStack.Navigator>
+    );
+  },
+);
 
 const ProfileStackScreenHeader: FC<NativeStackHeaderProps> = ({
   navigation,

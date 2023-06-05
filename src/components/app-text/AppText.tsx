@@ -17,6 +17,7 @@ interface AppTextProps {
   textAlign?: 'left' | 'center' | 'right';
   handlePress?: () => void;
   padding?: string | number;
+  hidden?: boolean;
 }
 
 export const AppText: FC<AppTextProps> = ({
@@ -28,6 +29,7 @@ export const AppText: FC<AppTextProps> = ({
   isLink = false,
   handlePress = undefined,
   padding = SPACING_NONE,
+  hidden = false,
   ...margins
 }) => {
   const styles = StyleSheet.create({
@@ -40,13 +42,17 @@ export const AppText: FC<AppTextProps> = ({
   return (
     <Pressable
       onPress={handlePress}
-      style={{ ...margins, paddingLeft: padding, paddingRight: padding }}
+      style={{
+        ...margins,
+        paddingLeft: padding,
+        paddingRight: padding,
+      }}
       disabled={!handlePress}
     >
       <Text
         style={{
           ...styles.text,
-          color: textColor,
+          color: hidden ? 'transparent' : textColor,
           textAlign,
           ...(isLink ? baseStyles.link : {}),
         }}
