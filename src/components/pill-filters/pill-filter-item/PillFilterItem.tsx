@@ -1,7 +1,7 @@
 import { AppText } from 'components/app-text';
 import { Pressable, StyleSheet } from 'react-native';
 import {
-  COLOR_NEUTRAL_LIGHT,
+  BORDER_COLOR,
   COLOR_NEUTRAL_XXXXLIGHT,
   COLOR_PRIMARY_DARK,
   COLOR_XXXXDARK,
@@ -23,7 +23,7 @@ export const PillFilterItem = ({
       style={{
         ...styles.pill,
         backgroundColor: control.value ? COLOR_PRIMARY_DARK : 'transparent',
-        borderColor: control.value ? 'transparent' : COLOR_NEUTRAL_LIGHT,
+        borderColor: control.value ? 'transparent' : BORDER_COLOR,
         alignItems: 'center',
       }}
       onPress={() => valueChanged(control, !control.value)}

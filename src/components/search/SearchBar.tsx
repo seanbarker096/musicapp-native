@@ -1,3 +1,4 @@
+import { AppTextInput } from 'components/form-components';
 import React, { FC, useState } from 'react';
 import {
   ActivityIndicator,
@@ -5,7 +6,6 @@ import {
   FlatList,
   ListRenderItemInfo,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -15,7 +15,6 @@ type Props = {
   searchResults: readonly any[];
   searchResultRenderItem: (item: ListRenderItemInfo<any>) => JSX.Element;
   handleBlur?: (e: any) => void;
-  height?: number; // if scrollable container used, this defines height of it
   onEndReached?: () => void;
   hasMoreData?: boolean;
   itemHeight: number;
@@ -28,7 +27,6 @@ export const SearchBar: FC<Props> = ({
   searchResults,
   searchResultRenderItem,
   handleBlur,
-  height,
   onEndReached,
   hasMoreData,
   itemHeight,
@@ -59,17 +57,13 @@ export const SearchBar: FC<Props> = ({
   const initialNumToRender = Math.ceil((0.8 * windowHeight) / itemHeight);
 
   return (
-    <View
-      style={{
-        ...styles.container,
-      }}
-    >
-      <TextInput
-        style={styles.text}
-        onChangeText={val => searchTermChanged(val)}
-        onBlur={handleBlur}
+    <View style={styles.container}>
+      <AppTextInput
+        handleChange={val => searchTermChanged(val)}
+        handleBlur={handleBlur}
         value={searchTerm}
         placeholder="Search"
+        borderless={false}
       />
       {searchResults && searchResults.length > 0 && (
         <FlatList
