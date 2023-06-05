@@ -1,7 +1,15 @@
 import { AppText } from 'components/app-text';
 import { FormikProps } from 'formik';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { COLOR_ERROR, COLOR_NEUTRAL_XXLIGHT, SPACING_XXSMALL } from 'styles';
+import {
+  BORDER_COLOR,
+  COLOR_ERROR,
+  COLOR_NEUTRAL_XXLIGHT,
+  SPACING_SMALL,
+  SPACING_XSMALL,
+  SPACING_XXXSMALL,
+  TEXT_SIZE_REGULAR,
+} from 'styles';
 
 export const AppTextInput: React.FC<
   FormikProps<{ [key: string]: any }> & { borderless: boolean }
@@ -13,16 +21,21 @@ export const AppTextInput: React.FC<
   error,
   touched,
   secureTextEntry = false,
-  marginBottom = 0,
   borderless = true,
+  renderValidationErrors = true,
 }) => {
   return (
-    <View style={{ marginBottom }}>
+    <>
       <TextInput
         style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
           backgroundColor: COLOR_NEUTRAL_XXLIGHT,
-          paddingLeft: SPACING_XXSMALL,
-          paddingRight: SPACING_XXSMALL,
+          paddingLeft: SPACING_XSMALL,
+          paddingRight: SPACING_XSMALL,
+          paddingTop: SPACING_XXXSMALL,
+          paddingBottom: SPACING_XXXSMALL,
           ...(borderless ? {} : styles.border),
         }}
         onChangeText={handleChange}
@@ -31,24 +44,25 @@ export const AppTextInput: React.FC<
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
       />
-      {touched && error && (
-        <AppText
-          padding={SPACING_XXSMALL}
-          textColor={COLOR_ERROR}
-        >
-          {error}
-        </AppText>
-      )}
-    </View>
+      <View
+        style={{ minHeight: TEXT_SIZE_REGULAR + SPACING_SMALL, width: '100%' }}
+      >
+        {touched && error && (
+          <AppText
+            padding={SPACING_XXXSMALL}
+            textColor={COLOR_ERROR}
+          >
+            {error}
+          </AppText>
+        )}
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40 + 20, // 40 for text input, 20 for error text
-  },
   border: {
-    borderColor: 'gray',
+    borderColor: BORDER_COLOR,
     borderWidth: 1,
     borderRadius: 3,
   },

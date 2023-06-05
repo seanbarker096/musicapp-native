@@ -1,5 +1,6 @@
 import * as colors from './colors-generic.styles';
 
+export const BORDER_COLOR = colors.COLOR_NEUTRAL_LIGHT;
 export const BORDER_COLOR_XDARK = colors.COLOR_XXXXDARK;
 
 export const NAVIGATION_BACKGROUND_COLOR = colors.COLOR_PRIMARY;
@@ -16,3 +17,4 @@ export const BUTTON_COLOR_SECONDARY = colors.COLOR_SECONDARY_XDARK;
 export const BUTTON_COLOR_DISABLED = colors.COLOR_NEUTRAL_LIGHT;
 
 export const COLOR_LINK = '#5C6BAF';
+

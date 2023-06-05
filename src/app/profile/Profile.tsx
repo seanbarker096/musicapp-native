@@ -15,28 +15,28 @@ import ProfileTaggedPosts from './ProfileTaggedPosts';
 import { ProfileTimeline } from './ProfileTimeline';
 import PerformerProfileHeader from './profile-header/PerformerProfileHeader';
 import UserProfileHeader from './profile-header/UserProfileHeader';
-import { ProfileStackParamList } from './profile.types';
+import { ProfileStackParamList, SelectedProfileTab } from './profile.types';
 
-enum SelectedTab {
-  SHOWS = 'shows',
-  TAGGED = 'tagged',
-  TIMELINE = 'timeline',
-}
 type ProfileProps = NativeStackScreenProps<ProfileStackParamList, 'Profile'> & {
   profileId: number;
   profileType: ProfileType;
+  initialTab?: SelectedProfileTab;
 };
 
 // TODO: Might be better to just have a sigle performer profile and user profile component, rather than creating things like ProfileHeader which internally branches either to performer or proifle
 // Benefit of current approach is Profile now doesn't ened to know how to deal with different profile types
 // Use react memo due to need for render callback in ProfileStackScreen
 const Profile: FC<ProfileProps> = memo(
-  ({ profileId, profileType, navigation }) => {
-    const [selectedTab, setSelectedTab] = React.useState<SelectedTab>(
-      SelectedTab.TIMELINE,
-    );
+  ({
+    profileId,
+    profileType,
+    initialTab = SelectedProfileTab.TIMELINE,
+    navigation,
+  }) => {
+    const [selectedTab, setSelectedTab] =
+      React.useState<SelectedProfileTab>(initialTab);
 
-    function handleTabSelected(selectedTab: SelectedTab) {
+    function handleTabSelected(selectedTab: SelectedProfileTab) {
       setSelectedTab(selectedTab);
     }
 
@@ -49,7 +49,7 @@ const Profile: FC<ProfileProps> = memo(
     }
 
     function handleViewProfilePress() {
-      setSelectedTab(SelectedTab.TAGGED);
+      setSelectedTab(SelectedProfileTab.TAGGED);
     }
 
     function handlePostPress(postId: number) {
@@ -82,21 +82,21 @@ const Profile: FC<ProfileProps> = memo(
           <View style={styles.headerContainer}>
             <Pressable
               style={
-                selectedTab === SelectedTab.TIMELINE
+                selectedTab === SelectedProfileTab.TIMELINE
                   ? styles.selectedTab
                   : styles.tabItem
               }
-              onPress={() => handleTabSelected(SelectedTab.TIMELINE)}
+              onPress={() => handleTabSelected(SelectedProfileTab.TIMELINE)}
             >
               <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
             </Pressable>
             <Pressable
               style={
-                selectedTab === SelectedTab.SHOWS
+                selectedTab === SelectedProfileTab.SHOWS
                   ? styles.selectedTab
                   : styles.tabItem
               }
-              onPress={() => handleTabSelected(SelectedTab.SHOWS)}
+              onPress={() => handleTabSelected(SelectedProfileTab.SHOWS)}
             >
               <AppText weight={FONT_WEIGHT_BOLD}>
                 {profileType === ProfileType.PERFORMER
@@ -107,18 +107,18 @@ const Profile: FC<ProfileProps> = memo(
             {profileType === ProfileType.PERFORMER && (
               <Pressable
                 style={
-                  selectedTab === SelectedTab.TAGGED
+                  selectedTab === SelectedProfileTab.TAGGED
                     ? styles.selectedTab
                     : styles.tabItem
                 }
-                onPress={() => handleTabSelected(SelectedTab.TAGGED)}
+                onPress={() => handleTabSelected(SelectedProfileTab.TAGGED)}
               >
                 <AppText weight={FONT_WEIGHT_BOLD}>Tagged</AppText>
               </Pressable>
             )}
           </View>
           <View style={{ height: 350 }}>
-            {selectedTab === SelectedTab.SHOWS && (
+            {selectedTab === SelectedProfileTab.SHOWS && (
               <ProfileShows
                 profileId={profileId}
                 profileType={profileType} // TODO: Update this to be dynamic
@@ -128,7 +128,7 @@ const Profile: FC<ProfileProps> = memo(
                 }
               ></ProfileShows>
             )}
-            {selectedTab === SelectedTab.TIMELINE && (
+            {selectedTab === SelectedProfileTab.TIMELINE && (
               <ProfileTimeline
                 profileId={profileId}
                 profileType={profileType}
@@ -137,7 +137,7 @@ const Profile: FC<ProfileProps> = memo(
                 handlePerformancePress={handlePerformancePress}
               ></ProfileTimeline>
             )}
-            {selectedTab === SelectedTab.TAGGED && ( // TODO: Hide for performer profiles
+            {selectedTab === SelectedProfileTab.TAGGED && ( // TODO: Hide for performer profiles
               <ProfileTaggedPosts
                 profileId={profileId}
                 profileType={profileType}

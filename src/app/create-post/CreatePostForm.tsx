@@ -174,30 +174,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
   const handleCaptionChange = handleChange('caption');
 
-  // Note we show the button even if the reuqired performer field hasn't been filled, so we display a clear error message to the user if they try to submit without selecting a performer
   const buttonDisabled = isSubmitting || !postFile || !isValid; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
-
-  // <Placeholder
-  //   Animation={props => (
-  //     <Shine
-  //       {...props}
-  //       reverse={false}
-  //     ></Shine>
-  //   )}
-  // >
-  //   <View style={{ ...styles.flexRowContainer }}>
-  //     <PlaceholderMedia
-  //       isRound={true}
-  //       size={48}
-  //       style={{ marginRight: SPACING_XXSMALL }}
-  //     ></PlaceholderMedia>
-  //     <PlaceholderLine
-  //       height={20}
-  //       width={40}
-  //       noMargin={true}
-  //     />
-  //   </View>
-  // </Placeholder>
 
   let formErrorComponent: React.ReactNode | undefined;
   let createFileErrorComponent: React.ReactNode | undefined;
@@ -387,6 +364,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
               disabled={buttonDisabled}
               text="Share"
               handlePress={handleSubmit}
+              isSubmitting={isSubmitting}
             ></AppButton>
           </View>
         </View>

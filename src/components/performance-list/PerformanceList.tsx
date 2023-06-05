@@ -85,9 +85,9 @@ export const PerformanceList: FC<Props> = ({
               <>
                 <AppText>
                   {"This artist hasn't created any performances yet." +
-                  handleViewProfilePress
-                    ? 'But you can still see lots of videos captured by fans!'
-                    : ''}
+                    (handleViewProfilePress
+                      ? 'But you can still see lots of videos captured by fans!'
+                      : '')}
                 </AppText>
                 {handleViewProfilePress && (
                   <Button

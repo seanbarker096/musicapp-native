@@ -1,3 +1,4 @@
+import { CommonActions } from '@react-navigation/native';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext, useState } from 'react';
@@ -23,7 +24,20 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
       {postFile && profileState.profileType === ProfileType.USER && (
         <CreatePostForm
           postFile={postFile}
-          onSuccess={() => navigation.navigate(PrimaryScreens.PROFILE)}
+          onSuccess={() => {
+            // Replace so we can't nav back to this create post screen
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: PrimaryScreens.PROFILE,
+                    params: { createPostSuccess: true },
+                  },
+                ],
+              }),
+            );
+          }}
           onCancel={handleCancel}
           removePostFile={() => setPostFile(undefined)}
           performer={params?.performer}
