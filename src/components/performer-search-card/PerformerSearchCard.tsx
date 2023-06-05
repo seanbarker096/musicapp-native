@@ -2,7 +2,7 @@ import { AppText } from 'components/app-text';
 import React, { FC } from 'react';
 import { GestureResponderEvent, Pressable, StyleSheet } from 'react-native';
 import { PerformerSearchPerformer } from 'store/performers';
-import { SPACING_XXSMALL } from 'styles';
+import { SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
 import { ProfileImage, profileImageSizeGenerator } from '../profile-image';
 
 interface PerformerSearchCardProps {
@@ -20,14 +20,14 @@ export const PerformerSearchCard: FC<PerformerSearchCardProps> = ({
 }) => (
   <Pressable
     onPress={onPress}
-    style={{ ...styles.container, height: HEIGHT }}
+    style={{ ...styles.container }}
   >
     <ProfileImage
       styles={styles.profileImage}
       imageUrl={performer.imageUrl}
       size={IMAGE_SIZE}
     ></ProfileImage>
-    <AppText>{performer.name}</AppText>
+    <AppText weight="bold">{performer.name}</AppText>
   </Pressable>
 );
 
@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: SPACING_XXXSMALL,
+    paddingBottom: SPACING_XXXSMALL,
     width: '100%',
   },
   profileImage: {

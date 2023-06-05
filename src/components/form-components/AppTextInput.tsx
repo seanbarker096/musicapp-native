@@ -12,7 +12,10 @@ import {
 } from 'styles';
 
 export const AppTextInput: React.FC<
-  FormikProps<{ [key: string]: any }> & { borderless: boolean }
+  FormikProps<{ [key: string]: any }> & {
+    borderless: boolean;
+    renderValidationErrors: boolean;
+  }
 > = ({
   handleChange,
   handleBlur,
@@ -44,18 +47,23 @@ export const AppTextInput: React.FC<
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
       />
-      <View
-        style={{ minHeight: TEXT_SIZE_REGULAR + SPACING_SMALL, width: '100%' }}
-      >
-        {touched && error && (
-          <AppText
-            padding={SPACING_XXXSMALL}
-            textColor={COLOR_ERROR}
-          >
-            {error}
-          </AppText>
-        )}
-      </View>
+      {renderValidationErrors && (
+        <View
+          style={{
+            minHeight: TEXT_SIZE_REGULAR + SPACING_SMALL,
+            width: '100%',
+          }}
+        >
+          {touched && error && (
+            <AppText
+              padding={SPACING_XXXSMALL}
+              textColor={COLOR_ERROR}
+            >
+              {error}
+            </AppText>
+          )}
+        </View>
+      )}
     </>
   );
 };

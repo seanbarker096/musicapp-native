@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { User } from 'store/users/users.types';
-import { SPACING_XXSMALL } from 'styles';
+import { SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
 import { ProfileImage, profileImageSizeGenerator } from '../profile-image';
 
 interface UserSearchCardProps {
@@ -18,7 +18,6 @@ interface UserSearchCardProps {
 const IMAGE_SIZE = 'small';
 const HEIGHT = profileImageSizeGenerator(IMAGE_SIZE) + 10;
 
-
 // TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
 export const UserSearchCard: FC<UserSearchCardProps> = ({
   user,
@@ -27,7 +26,7 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
   return (
     <Pressable
       onPress={onPress}
-      style={{ ...styles.container, height: HEIGHT }}
+      style={{ ...styles.container }}
     >
       <ProfileImage
         styles={styles.profileImage}
@@ -35,8 +34,11 @@ export const UserSearchCard: FC<UserSearchCardProps> = ({
         size={IMAGE_SIZE}
       ></ProfileImage>
       <View style={styles.columnContainer}>
-        <AppText weight="normal">{user.username}</AppText>
-        <AppText weight="light">
+        <AppText weight="bold">{user.username}</AppText>
+        <AppText
+          weight="light"
+          size="small"
+        >
           {user.firstName} {user.secondName}
         </AppText>
       </View>
@@ -50,6 +52,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    paddingTop: SPACING_XXXSMALL,
+    paddingBottom: SPACING_XXXSMALL,
     width: '100%',
   },
   columnContainer: {

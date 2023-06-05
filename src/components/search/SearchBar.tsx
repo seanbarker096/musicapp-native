@@ -64,6 +64,7 @@ export const SearchBar: FC<Props> = ({
         value={searchTerm}
         placeholder="Search"
         borderless={false}
+        renderValidationErrors={false}
       />
       {searchResults && searchResults.length > 0 && (
         <FlatList

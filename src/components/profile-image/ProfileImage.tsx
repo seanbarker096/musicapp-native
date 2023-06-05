@@ -10,7 +10,7 @@ interface ProfileImageProps {
   handlePress?: () => void;
 }
 
-const avatarImage = require('./../../assets/avatar.png');
+const avatarImage = require('./../../assets/avatar-v2.png');
 
 export const ProfileImage: FC<ProfileImageProps> = ({
   imageUrl,

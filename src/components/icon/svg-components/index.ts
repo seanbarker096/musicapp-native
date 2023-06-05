@@ -24,4 +24,3 @@ export * from './TaggedUserSVG';
 export * from './UserAvatarBorderedSVG';
 export * from './UserAvatarSVG';
 export * from './VideoCameraSVG';
-
