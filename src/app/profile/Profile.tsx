@@ -9,6 +9,7 @@ import {
   COLOR_PRIMARY_DARK,
   FONT_WEIGHT_BOLD,
   SPACING_XXSMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
@@ -172,25 +173,28 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   headerContainer: {
-    alignItems: 'center',
     backgroundColor: COLOR_PRIMARY,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingTop: SPACING_XXSMALL,
-    paddingBottom: SPACING_XXSMALL,
     width: '100%',
   },
   selectedTab: {
-    borderWidth: 0,
-    borderBottomWidth: 5,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingBottom: SPACING_XXXSMALL,
+    paddingTop: SPACING_XXSMALL,
+    borderBottomWidth: 2,
     borderBottomColor: COLOR_PRIMARY_DARK,
-    padding: SPACING_XXSMALL,
-    paddingBottom: 0,
+    flexGrow: 1,
   },
   tabItem: {
-    padding: SPACING_XXSMALL,
-    paddingBottom: 0,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingBottom: SPACING_XXXSMALL,
+    paddingTop: SPACING_XXSMALL,
+    flexGrow: 1,
   },
 });
 
