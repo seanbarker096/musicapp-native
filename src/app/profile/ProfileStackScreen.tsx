@@ -16,7 +16,7 @@ import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
-import { ProfileContext } from 'contexts/profile.context';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { View } from 'react-native';
 import { SPACING_MID } from 'styles';
@@ -24,6 +24,7 @@ import Profile from './Profile';
 import {
   ProfileInternalStackScreenParams,
   ProfileStackParamList,
+  SelectedProfileTab,
 } from './profile.types';
 
 type Props = NativeStackScreenProps<
@@ -31,7 +32,7 @@ type Props = NativeStackScreenProps<
   PrimaryScreens.PROFILE
 >;
 
-const ProfileStackScreen: FC<Props> = () => {
+const ProfileStackScreen: FC<Props> = ({ route: { params } }) => {
   const ProfileTab = createBottomTabNavigator<{
     main: ProfileInternalStackScreenParams;
   }>();
@@ -50,28 +51,39 @@ const ProfileStackScreen: FC<Props> = () => {
     >
       <ProfileTab.Screen
         options={{ headerShown: false }}
-        initialParams={{ profileId, profileType, isLoggedInUsersProfile: true }}
-        // @ts-ignore See ProfileInternalStackScreen for reason for this
-        component={ProfileInternalStackScreen}
         name="main"
-      ></ProfileTab.Screen>
+      >
+        {props => (
+          <ProfileInternalStackScreen
+            {...props}
+            profileId={profileId}
+            profileType={profileType}
+            createPostSuccess={params?.createPostSuccess}
+          />
+        )}
+      </ProfileTab.Screen>
     </ProfileTab.Navigator>
   );
 };
 
 export default ProfileStackScreen;
 
-type InternalStackScreenProps = {
-  route: { params: ProfileInternalStackScreenParams };
-};
-
 /**
  * Currently we can't type usages of this screen,because it is used by multiple navigators of various types (e.g. BottomTabNavigator, StackNavigator). We therefore need to add a @ts-ignore to the usages of this component in any navigators.
  */
+
+type InternalStackScreenProps = {
+  profileId: number;
+  profileType: ProfileType;
+  createPostSuccess?: boolean;
+  isLoggedInUsersProfile?: boolean;
+};
+
 export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
-  route: {
-    params: { profileId, profileType, isLoggedInUsersProfile = false },
-  },
+  profileId,
+  profileType,
+  createPostSuccess,
+  isLoggedInUsersProfile = false,
 }) => {
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
@@ -105,6 +117,9 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = ({
             {...props}
             profileId={profileScreenPropsProfileId}
             profileType={profileScreenPropsProfileType}
+            initialTab={
+              createPostSuccess ? SelectedProfileTab.SHOWS : undefined
+            }
           />
         )}
       </ProfileStack.Screen>

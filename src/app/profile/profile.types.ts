@@ -1,5 +1,13 @@
 import { ProfileType } from 'contexts/profile.context';
 
+
+
+export enum SelectedProfileTab {
+  SHOWS = 'shows',
+  TAGGED = 'tagged',
+  TIMELINE = 'timeline',
+}
+
 export type ProfileStackParamList = {
   Profile: {};
   ViewPost: {
@@ -32,4 +40,5 @@ export interface ProfileInternalStackScreenParams {
    * @see ProfileStackScreen for more details
    */
   isLoggedInUsersProfile: boolean;
+  createPostSuccess?: boolean;
 }

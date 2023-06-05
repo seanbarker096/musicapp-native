@@ -5,7 +5,9 @@ export type AppShellStackNavigatorParamList = {
   [PrimaryScreens.HOME]: undefined;
   [PrimaryScreens.CREATE_POST]: undefined;
   [PrimaryScreens.MANAGE]: undefined;
-  [PrimaryScreens.PROFILE]: undefined;
+  [PrimaryScreens.PROFILE]: {
+    createPostSuccess?: boolean;
+  };
   [PrimaryScreens.SEARCH]: undefined;
   [PrimaryScreens.CREATE_PERFORMANCE]: undefined;
 };

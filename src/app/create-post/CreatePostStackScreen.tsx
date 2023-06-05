@@ -5,6 +5,7 @@ import {
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import ProfileStackScreen from 'app/profile/ProfileStackScreen';
 import React, { FC } from 'react';
 import { CreatePostStackParamList } from './create-post.types';
 import CreatePost from './CreatePost';
@@ -38,6 +39,11 @@ const CreatePostStackScreen: FC<Props> = () => {
       <CreateStackTabNavigator.Screen
         component={CreatePostPerformanceSearch}
         name="CreatePostPerformanceSearch"
+      ></CreateStackTabNavigator.Screen>
+      <CreateStackTabNavigator.Screen
+        options={{ headerShown: false }}
+        component={ProfileStackScreen}
+        name="ProfileStackScreen"
       ></CreateStackTabNavigator.Screen>
     </CreateStackTabNavigator.Navigator>
   );

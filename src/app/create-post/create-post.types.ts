@@ -15,6 +15,9 @@ export type CreatePostStackParamList = {
   CreatePostPerformanceSearch: {
     performer: Performer;
   };
+  ProfileStackScreen: {
+    createPostSuccess: boolean;
+  };
 };
 
 // TODO: Should probably seperate these screens given completely unrelated navigators
