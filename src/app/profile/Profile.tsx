@@ -34,7 +34,6 @@ const Profile: FC<ProfileProps> = memo(
     initialTab = SelectedProfileTab.TIMELINE,
     navigation,
   }) => {
-
     const [selectedTab, setSelectedTab] =
       React.useState<SelectedProfileTab>(initialTab);
 
