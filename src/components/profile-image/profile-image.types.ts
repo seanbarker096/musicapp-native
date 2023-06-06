@@ -1,1 +1,6 @@
-export type ProfileImageSize = 'large' | 'medium' | 'small' | 'xsmall';
+export type ProfileImageSize =
+  | 'xlarge'
+  | 'large'
+  | 'medium'
+  | 'small'
+  | 'xsmall';

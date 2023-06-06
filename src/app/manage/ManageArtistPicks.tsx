@@ -7,6 +7,7 @@ import React, { FC, useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
+  APP_GUTTER,
   COLOR_NEUTRAL_XXXXLIGHT,
   SPACING_XXSMALL,
   SPACING_XXXSMALL,
@@ -77,21 +78,41 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
   };
 
   return (
-    <>
+    <View
+      style={{
+        padding: APP_GUTTER,
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       {artistFeaturedPosts && !!artistFeaturedPosts.length && (
-        <ScrollableGalleryLayout
-          posts={artistFeaturedPosts}
-          galleryItemFooter={PerformerFeaturedPostFooter}
-          onEndReached={() => {
-            if (isFeaturedByPerformersHasNextPage) {
-              setqueryLimit(queryLimit + 9);
+        <>
+          <AppText
+            size="large"
+            weight="bold"
+            marginBottom={SPACING_XXXSMALL}
+          >
+            You're getting noticed!
+          </AppText>
+          <AppText textAlign="center">
+            Some of your favourite artsits have picked your posts to appear on
+            their profiles! You can find them all below.
+          </AppText>
+
+          <ScrollableGalleryLayout
+            posts={artistFeaturedPosts}
+            galleryItemFooter={PerformerFeaturedPostFooter}
+            onEndReached={() => {
+              if (isFeaturedByPerformersHasNextPage) {
+                setqueryLimit(queryLimit + 9);
+              }
+            }}
+            hasMoreData={isFeaturedByPerformersHasNextPage}
+            handleGalleryItemPress={postId =>
+              navigation.navigate('ViewPost', { postId })
             }
-          }}
-          hasMoreData={isFeaturedByPerformersHasNextPage}
-          handleGalleryItemPress={postId =>
-            navigation.navigate('ViewPost', { postId })
-          }
-        ></ScrollableGalleryLayout>
+          ></ScrollableGalleryLayout>
+        </>
       )}
       {artistFeaturedPosts && !artistFeaturedPosts.length && (
         <AppText>
@@ -100,7 +121,7 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
           being featured.
         </AppText>
       )}
-    </>
+    </View>
   );
 };
 

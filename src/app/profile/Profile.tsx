@@ -8,8 +8,8 @@ import {
   COLOR_PRIMARY,
   COLOR_PRIMARY_DARK,
   FONT_WEIGHT_BOLD,
+  SPACING_XSMALL,
   SPACING_XXSMALL,
-  SPACING_XXXSMALL,
 } from 'styles';
 import ProfileShows from './ProfileShows';
 import ProfileTaggedPosts from './ProfileTaggedPosts';
@@ -179,22 +179,25 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   selectedTab: {
+    alignItems: 'flex-end',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingBottom: SPACING_XXXSMALL,
-    paddingTop: SPACING_XXSMALL,
-    borderBottomWidth: 2,
+    paddingBottom: SPACING_XXSMALL,
+    paddingTop: SPACING_XSMALL,
     borderBottomColor: COLOR_PRIMARY_DARK,
+    borderBottomWidth: 2,
     flexGrow: 1,
   },
   tabItem: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingBottom: SPACING_XXXSMALL,
-    paddingTop: SPACING_XXSMALL,
+    paddingBottom: SPACING_XXSMALL,
+    paddingTop: SPACING_XSMALL,
     flexGrow: 1,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
   },
 });
 

@@ -3,7 +3,7 @@ import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useUserGetQuery } from 'store/users';
-import { SPACING_MID } from 'styles';
+import { SPACING_MID, SPACING_XXSMALL } from 'styles';
 
 interface UserProfileHeaderProps {
   userId: number;
@@ -42,7 +42,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
           <View style={{ ...styles.colContainer, marginTop: SPACING_MID }}>
             <ProfileImage
               imageUrl={user.avatarFile?.url}
-              size="large"
+              size="xlarge"
             />
             <AppText
               size="large"
@@ -50,7 +50,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
             >
               {user.firstName} {user.secondName}
             </AppText>
-            <AppText>@{user.username}</AppText>
+            <AppText marginBottom={SPACING_XXSMALL}>@{user.username}</AppText>
             <AppText>{user.bio}</AppText>
           </View>
         </View>
@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    width: '100%',
   },
 });
 

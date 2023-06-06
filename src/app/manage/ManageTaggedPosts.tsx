@@ -7,6 +7,7 @@ import { Button, StyleSheet, View } from 'react-native';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
+  APP_GUTTER,
   BUTTON_COLOR_PRIMARY,
   SPACING_LARGE,
   SPACING_SMALL,
@@ -62,7 +63,7 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
     navigation.navigate('ManageCreatePerformance');
   }
   return (
-    <>
+    <View style={{ padding: APP_GUTTER }}>
       {postTags && postTags.length > 0 && postsWithAttachmentsAndFiles && (
         <View style={styles.container}>
           <AppText
@@ -117,7 +118,7 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
 
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error</AppText>}
-    </>
+    </View>
   );
 };
 

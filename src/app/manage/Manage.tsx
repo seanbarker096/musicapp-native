@@ -54,11 +54,16 @@ const Manage: FC<ManageProps> = ({ navigation }) => {
             borderBottomColor: 'rgba(0, 0, 0, 0.1)',
           }}
         >
-          <View style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+          <View
+            style={{
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              marginRight: SPACING_SMALL,
+            }}
+          >
             <View
               style={{
                 flexDirection: 'row',
-                marginRight: SPACING_SMALL,
                 alignItems: 'center',
               }}
             >

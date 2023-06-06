@@ -5,7 +5,7 @@ import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { SPACING_MID } from 'styles';
+import { SPACING_MID, SPACING_XXSMALL } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
@@ -45,15 +45,24 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
         >
           <View style={{ ...styles.colContainer, marginTop: SPACING_MID }}>
             <ProfileImage
-              size="large"
+              size="xlarge"
               imageUrl={performer.imageUrl}
             ></ProfileImage>
             <AppText
               size="large"
               weight="bold"
+              marginBottom={SPACING_XXSMALL}
             >
               {performer.name}
             </AppText>
+            {performer.biography && (
+              <AppText
+                textAlign="center"
+                size="small"
+              >
+                {performer.biography}
+              </AppText>
+            )}
             {profileState.profileType === ProfileType.USER && (
               <>
                 <AppText>

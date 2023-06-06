@@ -20,7 +20,7 @@ import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, memo, useContext } from 'react';
 import { View } from 'react-native';
 
-import { SPACING_MID } from 'styles';
+import { SPACING_SMALL, SPACING_XSMALL } from 'styles';
 
 import Profile from './Profile';
 import {
@@ -110,7 +110,7 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
         screenOptions={
           isLoggedInUsersProfile
             ? {
-                header: ProfileStackScreenHeader,
+                header: ProfileStackScreenHeader, // We set showHeader to false for all screens except the main profile screen
               }
             : {}
         }
@@ -178,15 +178,17 @@ const ProfileStackScreenHeader: FC<NativeStackHeaderProps> = ({
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingRight: SPACING_MID,
-        paddingLeft: SPACING_MID,
-        paddingBottom: SPACING_MID,
+        paddingRight: SPACING_SMALL,
+        paddingLeft: SPACING_SMALL,
+        marginBottom: SPACING_SMALL,
+        paddingTop: SPACING_XSMALL,
       }}
     >
-      <AppText>My App</AppText>
+      <AppText size="large">My App</AppText>
       <SVGIcon
         handlePress={navigate}
-        styles={{ flexShrink: 1 }}
+        height={22}
+        width={22}
       >
         <BurgerMenuSVG></BurgerMenuSVG>
       </SVGIcon>
