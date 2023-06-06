@@ -5,7 +5,6 @@ import {
   Dimensions,
   FlatList,
   ListRenderItemInfo,
-  StyleSheet,
   View,
 } from 'react-native';
 
@@ -76,7 +75,7 @@ export const SearchBar: FC<Props> = ({
             if (distanceFromEnd < 0) return;
             onEndReached();
           }}
-          onEndReachedThreshold={0.9}
+          onEndReachedThreshold={0.1}
           showsVerticalScrollIndicator={false}
           // This appears to make the list jump to the top whenever new items come in
           getItemLayout={(data, index) => ({
@@ -93,17 +92,3 @@ export const SearchBar: FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    padding: 10,
-    width: '100%',
-  },
-  text: {
-    height: 40,
-    borderWidth: 1,
-    width: '100%',
-  },
-});

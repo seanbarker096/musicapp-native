@@ -73,8 +73,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     });
   };
 
-  console.log(errorMessage);
-
   const {
     handleChange,
     handleSubmit,
@@ -131,6 +129,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           error={errors.email}
           touched={touched.email}
           marginBottom={SPACING_XSMALL}
+          borderless={false}
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
@@ -146,6 +145,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           error={errors.username}
           touched={touched.username}
           marginBottom={SPACING_XSMALL}
+          borderless={false}
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
@@ -162,6 +162,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           touched={touched.password}
           secureTextEntry={true}
           marginBottom={SPACING_XSMALL}
+          borderless={false}
         />
         {showErrorMessage && errorMessage && (
           <AppError
@@ -175,6 +176,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           text={'Sign Up'}
           handlePress={handleSubmit}
           marginBottom={SPACING_XSMALL}
+          isSubmitting={isSubmitting}
         ></AppButton>
 
         <View style={{ flexDirection: 'row' }}>

@@ -266,6 +266,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
             error={errors.caption}
             touched={touched.caption}
             backgroundColor="transparent"
+            multiline={true}
           />
         </View>
       </View>

@@ -15,6 +15,11 @@ export const AppTextInput: React.FC<
     borderless: boolean;
     renderValidationErrors: boolean;
     backgroundColor: string;
+    /**
+     * Will not work if multiline is true
+     */
+    secureTextEntry: boolean;
+    multiline: boolean;
   }
 > = ({
   handleChange,
@@ -27,10 +32,11 @@ export const AppTextInput: React.FC<
   borderless = true,
   renderValidationErrors = true,
   backgroundColor = COLOR_NEUTRAL_XXLIGHT,
+  multiline = false,
 }) => {
   return (
     <>
-      <View
+      <View // this is needed for some reason to get multiline wrapping of text to work
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -52,8 +58,8 @@ export const AppTextInput: React.FC<
           value={value}
           placeholder={placeholder}
           secureTextEntry={secureTextEntry}
-          multiline={true} // Enable multiline input
-          numberOfLines={1} // This is required to make multiline work, but numberOfLines doesnt actually seem to actually limit the number of lines
+          multiline={multiline} // Enable multiline input
+          numberOfLines={multiline ? 1 : undefined} // This is required to make multiline work, but numberOfLines doesnt actually seem to actually limit the number of lines
           backgroundColor={backgroundColor}
           textAlignVertical="center"
         />

@@ -138,6 +138,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           error={errors.usernameOrEmail}
           touched={touched.usernameOrEmail}
           marginBottom={SPACING_XSMALL}
+          borderless={false}
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
@@ -152,7 +153,9 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           placeholder="Password"
           error={errors.password}
           touched={touched.password}
+          secureTextEntry={true}
           marginBottom={errorMessage ? SPACING_XSMALL : 'auto'}
+          borderless={false}
         />
         {showErrorMessage && errorMessage && (
           <AppError
@@ -166,6 +169,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           text="Login"
           handlePress={handleSubmit}
           marginBottom={SPACING_XSMALL}
+          isSubmitting={isSubmitting}
         ></AppButton>
         <View style={{ flexDirection: 'row', marginBottom: SPACING_XSMALL }}>
           <Text>Don't have an account? </Text>

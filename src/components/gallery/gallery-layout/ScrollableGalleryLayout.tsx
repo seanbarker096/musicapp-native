@@ -116,7 +116,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
           if (distanceFromEnd < 0) return;
           onEndReached();
         }}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={0.1}
         showsVerticalScrollIndicator={false}
         getItemLayout={(data, index) => ({
           length: GALLERY_ITEM_HEIGHT,

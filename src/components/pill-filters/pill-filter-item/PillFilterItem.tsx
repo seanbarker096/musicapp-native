@@ -11,12 +11,14 @@ import { FormControl } from 'utils/form-controls';
 export const PillFilterItem = ({
   valueChanged,
   control,
+  marginRight,
 }: {
   valueChanged: (
     updatedControl: FormControl<boolean>,
     newValue: boolean,
   ) => void;
   control: FormControl<boolean>;
+  marginRight?: number;
 }) => {
   return (
     <Pressable
@@ -25,6 +27,7 @@ export const PillFilterItem = ({
         backgroundColor: control.value ? COLOR_PRIMARY_DARK : 'transparent',
         borderColor: control.value ? 'transparent' : BORDER_COLOR,
         alignItems: 'center',
+        marginRight,
       }}
       onPress={() => valueChanged(control, !control.value)}
     >
@@ -45,7 +48,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 4,
     paddingBottom: 5,
-    marginHorizontal: 5,
   },
   label: {
     color: '#fff',
