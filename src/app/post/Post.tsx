@@ -251,31 +251,23 @@ export const Post: FC<PostProps> = ({
 
   const Header = () =>
     postOwner ? (
-      <View
-        style={{
-          padding: SPACING_XSMALL,
-          ...styles.header,
-          ...styles.flexRowContainer,
-        }}
-      >
-        <PostHeader
-          imgUrl={postOwner.avatarFile?.url}
-          name={postOwner.username}
-          performanceText={
-            postPerformer
-              ? `${postPerformer.name}${
-                  taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
-                }`
-              : ''
-          }
-          onPerformerPress={() =>
-            postPerformer
-              ? navigateToPerformerProfile(postPerformer, taggedPerformance)
-              : undefined
-          }
-          onPostCreatorPress={() => navigateToPostCreatorProfile(postOwner)}
-        ></PostHeader>
-      </View>
+      <PostHeader
+        imgUrl={postOwner.avatarFile?.url}
+        name={postOwner.username}
+        performanceText={
+          postPerformer
+            ? `${postPerformer.name}${
+                taggedPerformance ? ' @ ' + taggedPerformance?.venueName : ''
+              }`
+            : ''
+        }
+        onPerformerPress={() =>
+          postPerformer
+            ? navigateToPerformerProfile(postPerformer, taggedPerformance)
+            : undefined
+        }
+        onPostCreatorPress={() => navigateToPostCreatorProfile(postOwner)}
+      ></PostHeader>
     ) : (
       <Placeholder
         Animation={props => (

@@ -20,14 +20,20 @@ const PostHeader: FC<PostHeaderProps> = ({
   onPostCreatorPress,
 }) => {
   return (
-    <>
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        margin: SPACING_XXSMALL,
+      }}
+    >
       <ProfileImage
         size="small"
         styles={{ marginRight: SPACING_XXSMALL }}
         imageUrl={imgUrl}
         handlePress={onPostCreatorPress}
       ></ProfileImage>
-      <View style={{ flexDirection: 'column' }}>
+      <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
         <AppText
           handlePress={onPostCreatorPress}
           size="large"
@@ -41,7 +47,7 @@ const PostHeader: FC<PostHeaderProps> = ({
           {performanceText}
         </AppText>
       </View>
-    </>
+    </View>
   );
 };
 

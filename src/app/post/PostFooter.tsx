@@ -136,7 +136,6 @@ const PostFooter: FC<PostFooterProps> = ({
                 style={{
                   ...styles.sidePadding,
                   ...styles.flexRowContainer,
-                  marginBottom: SPACING_SMALL,
                 }}
               >
                 <SVGIcon
@@ -159,6 +158,8 @@ const PostFooter: FC<PostFooterProps> = ({
               <SVGIcon
                 handlePress={handleLinkToPerformancePress}
                 styles={{ marginRight: SPACING_XXSMALL }}
+                width={20}
+                height={20}
               >
                 <LinkSVG></LinkSVG>
               </SVGIcon>

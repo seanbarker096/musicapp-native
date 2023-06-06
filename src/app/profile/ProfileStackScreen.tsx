@@ -16,7 +16,7 @@ import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { ProfileContext } from 'contexts/profile.context';
 import React, { FC, memo, useContext } from 'react';
 import { View } from 'react-native';
 
@@ -54,17 +54,15 @@ const ProfileStackScreen: FC<Props> = ({ route: { params }, navigation }) => {
       <ProfileTab.Screen
         options={{ headerShown: false }}
         name="main"
-      >
-        {props => (
-          <ProfileInternalStackScreen
-            {...props}
-            profileId={profileId}
-            profileType={profileType}
-            createPostSuccess={params?.createPostSuccess}
-            isLoggedInUsersProfile={true}
-          />
-        )}
-      </ProfileTab.Screen>
+        // Previously had issues with this being stale when navigating from create post sucess, and wanting createPostSuccess to have the updated value of true. To get this to work i am resetting the navigation state following a post success, which resets these initial params. See CreatePost.tsx
+        initialParams={{
+          profileId,
+          profileType,
+          createPostSuccess: params?.createPostSuccess,
+          isLoggedInUsersProfile: true,
+        }}
+        component={ProfileInternalStackScreen}
+      ></ProfileTab.Screen>
     </ProfileTab.Navigator>
   );
 };
@@ -75,20 +73,21 @@ export default ProfileStackScreen;
  * Currently we can't type usages of this screen,because it is used by multiple navigators of various types (e.g. BottomTabNavigator, StackNavigator). We therefore need to add a @ts-ignore to the usages of this component in any navigators.
  */
 
-type InternalStackScreenProps = {
-  profileId: number;
-  profileType: ProfileType;
-  createPostSuccess?: boolean;
-  isLoggedInUsersProfile?: boolean;
+type T = {
+  main: ProfileInternalStackScreenParams;
 };
 
+type InternalStackScreenProps = NativeStackScreenProps<T, 'main'>;
+
 export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
-  ({
-    profileId,
-    profileType,
-    createPostSuccess,
-    isLoggedInUsersProfile = false,
-  }) => {
+  ({ route: { params } }) => {
+    const {
+      profileId,
+      profileType,
+      createPostSuccess,
+      isLoggedInUsersProfile,
+    } = params;
+
     const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
     const { profileState } = useContext(ProfileContext);
