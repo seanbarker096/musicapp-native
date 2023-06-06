@@ -6,7 +6,6 @@ import {
   COLOR_ERROR,
   COLOR_NEUTRAL_XXLIGHT,
   SPACING_SMALL,
-  SPACING_XSMALL,
   SPACING_XXXSMALL,
   TEXT_SIZE_REGULAR,
 } from 'styles';
@@ -15,6 +14,7 @@ export const AppTextInput: React.FC<
   FormikProps<{ [key: string]: any }> & {
     borderless: boolean;
     renderValidationErrors: boolean;
+    backgroundColor: string;
   }
 > = ({
   handleChange,
@@ -26,19 +26,16 @@ export const AppTextInput: React.FC<
   secureTextEntry = false,
   borderless = true,
   renderValidationErrors = true,
+  backgroundColor = COLOR_NEUTRAL_XXLIGHT,
 }) => {
   return (
     <>
       <TextInput
         style={{
-          flexDirection: 'row',
-          alignItems: 'center',
           width: '100%',
-          backgroundColor: COLOR_NEUTRAL_XXLIGHT,
-          paddingLeft: SPACING_XSMALL,
-          paddingRight: SPACING_XSMALL,
-          paddingTop: SPACING_XXXSMALL,
-          paddingBottom: SPACING_XXXSMALL,
+          paddingRight: SPACING_XXXSMALL,
+          paddingLeft: SPACING_XXXSMALL,
+          backgroundColor,
           ...(borderless ? {} : styles.border),
         }}
         onChangeText={handleChange}
@@ -46,7 +43,12 @@ export const AppTextInput: React.FC<
         value={value}
         placeholder={placeholder}
         secureTextEntry={secureTextEntry}
+        multiline={true} // Enable multiline input
+        numberOfLines={3} // Set the desired number of visible lines
+        backgroundColor={backgroundColor}
+        textAlignVertical="top"
       />
+
       {renderValidationErrors && (
         <View
           style={{

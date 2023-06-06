@@ -21,6 +21,7 @@ import {
   BUTTON_COLOR_PRIMARY,
   SPACING_SMALL,
   SPACING_XSMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
 import * as Yup from 'yup';
 import { PostFile } from './create-post.types';
@@ -225,7 +226,6 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     <View
       style={{
         ...styles.flexColumnContainer,
-        width: '100%',
         height: '100%',
         paddingLeft: SPACING_XSMALL,
         paddingRight: SPACING_XSMALL,
@@ -238,31 +238,36 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         }}
       >
         <Image
+          style={{ marginRight: SPACING_XXXSMALL }}
           source={{
             uri: postFile?.imageInfo.uri,
             width: 50,
             height: 50,
           }}
         ></Image>
-        <AppTextInput
-          handleChange={(e: string | React.ChangeEvent<any>) => {
-            if (showError) {
+        {/* Had to wrap in View to stop the AppTextInput overflowing width of the screen */}
+        <View style={{ flex: 1 }}>
+          <AppTextInput
+            handleChange={(e: string | React.ChangeEvent<any>) => {
+              if (showError) {
+                setShowError(false);
+              }
+              handleCaptionChange(e);
+            }}
+            handleBlur={(e: any) => {
+              if (showError) {
+                setShowError(false);
+              }
               setShowError(false);
-            }
-            handleCaptionChange(e);
-          }}
-          handleBlur={(e: any) => {
-            if (showError) {
-              setShowError(false);
-            }
-            setShowError(false);
-            handleCaptionBlur(e);
-          }}
-          value={values.caption}
-          placeholder="Write a caption"
-          error={errors.caption}
-          touched={touched.caption}
-        />
+              handleCaptionBlur(e);
+            }}
+            value={values.caption}
+            placeholder="Write a caption"
+            error={errors.caption}
+            touched={touched.caption}
+            backgroundColor="transparent"
+          />
+        </View>
       </View>
 
       <View
@@ -378,17 +383,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '100%',
+    alignItems: 'stretch',
   },
   flexRowContainer: {
-    alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
   borederedContainer: {
-    width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0, 0, 0, 0.1)',
     paddingBottom: SPACING_XSMALL,
