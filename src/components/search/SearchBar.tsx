@@ -57,7 +57,7 @@ export const SearchBar: FC<Props> = ({
   const initialNumToRender = Math.ceil((0.8 * windowHeight) / itemHeight);
 
   return (
-    <View style={styles.container}>
+    <>
       <AppTextInput
         handleChange={val => searchTermChanged(val)}
         handleBlur={handleBlur}
@@ -66,6 +66,7 @@ export const SearchBar: FC<Props> = ({
         borderless={false}
         renderValidationErrors={false}
       />
+
       {searchResults && searchResults.length > 0 && (
         <FlatList
           data={searchResults}
@@ -88,7 +89,7 @@ export const SearchBar: FC<Props> = ({
           initialScrollIndex={Math.floor(scrollOffset / itemHeight)} // Set initial scroll index based on scroll offset
         ></FlatList>
       )}
-    </View>
+    </>
   );
 };
 

@@ -30,25 +30,34 @@ export const AppTextInput: React.FC<
 }) => {
   return (
     <>
-      <TextInput
+      <View
         style={{
-          width: '100%',
-          paddingRight: SPACING_XXXSMALL,
-          paddingLeft: SPACING_XXXSMALL,
-          backgroundColor,
-          ...(borderless ? {} : styles.border),
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
         }}
-        onChangeText={handleChange}
-        onBlur={handleBlur}
-        value={value}
-        placeholder={placeholder}
-        secureTextEntry={secureTextEntry}
-        multiline={true} // Enable multiline input
-        numberOfLines={3} // Set the desired number of visible lines
-        backgroundColor={backgroundColor}
-        textAlignVertical="top"
-      />
-
+      >
+        <TextInput
+          style={{
+            flexDirection: 'column',
+            alignItems: 'stretch', // ensures text container grows in height as new lines are added
+            width: '100%',
+            paddingRight: SPACING_XXXSMALL,
+            paddingLeft: SPACING_XXXSMALL,
+            backgroundColor,
+            ...(borderless ? {} : styles.border),
+          }}
+          onChangeText={handleChange}
+          onBlur={handleBlur}
+          value={value}
+          placeholder={placeholder}
+          secureTextEntry={secureTextEntry}
+          multiline={true} // Enable multiline input
+          numberOfLines={1} // This is required to make multiline work, but numberOfLines doesnt actually seem to actually limit the number of lines
+          backgroundColor={backgroundColor}
+          textAlignVertical="center"
+        />
+      </View>
       {renderValidationErrors && (
         <View
           style={{
