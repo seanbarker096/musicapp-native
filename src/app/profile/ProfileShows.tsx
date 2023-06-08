@@ -1,6 +1,4 @@
-import { AppButton } from 'components/app-button';
 import { AppEmptyState } from 'components/app-empty-state';
-import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext, useState } from 'react';
@@ -59,29 +57,34 @@ const ProfileShows: FC<ProfileShowsProps> = ({
         )}
       {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          {profileType === ProfileType.PERFORMER ? (
-            <AppEmptyState
-              primaryMessage="The best fan videos, hand picked by artists"
-              secondaryMessage="This artist hasn't picked any fan videos yet"
-            ></AppEmptyState>
-          ) : (
-            <AppEmptyState
-              primaryMessage="Videos of their favourite artists"
-              secondaryMessage="This user hasn't shared any videos yet"
-            ></AppEmptyState>
-          )}
-          {isViewingUsersProfile && profileType === ProfileType.USER && (
-            <>
-              <AppText>
-                Share all the moments you've captured at gigs you've attended
-                now!
-              </AppText>
-              <AppButton
-                handlePress={handleCreatePostPress}
-                text="Create a Post"
-              ></AppButton>
-            </>
-          )}
+          {profileType === ProfileType.USER &&
+            (isViewingUsersProfile ? (
+              <AppEmptyState
+                primaryMessage="Your favourite moments as a music fan"
+                secondaryMessage="Share all your favourite moments from shows you've attended
+                now!"
+                actionText="Create a post"
+                onActionPress={handleCreatePostPress}
+              ></AppEmptyState>
+            ) : (
+              <AppEmptyState
+                primaryMessage="Their favourite moments as a music fan"
+                secondaryMessage="This user hasn't shared any videos yet"
+              ></AppEmptyState>
+            ))}
+
+          {profileType === ProfileType.PERFORMER &&
+            (isViewingUsersProfile ? (
+              <AppEmptyState
+                primaryMessage="Your favourite moments, captured by your fans"
+                secondaryMessage="Artist Picks are fan videos that you can feature on your profile. View your fans videos, click the 'Artist Pick' icon, and they will be here for everyone to see!"
+              ></AppEmptyState>
+            ) : (
+              <AppEmptyState
+                primaryMessage="Artist's favourite moments, captured by their fans"
+                secondaryMessage="This artist hasn't picked any fan videos yet. Artist picks will appear here once they do."
+              ></AppEmptyState>
+            ))}
         </View>
       )}
     </>

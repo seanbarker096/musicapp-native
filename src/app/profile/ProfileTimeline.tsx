@@ -10,6 +10,7 @@ type Props = {
   handleViewProfilePress: () => void;
   handleCreatePerformancePress: () => void;
   handlePerformancePress: (performance: PerformanceWithEvent) => void;
+  handleUploadPostPress: () => void;
 };
 
 export const ProfileTimeline: FC<Props> = ({
@@ -18,6 +19,7 @@ export const ProfileTimeline: FC<Props> = ({
   handleCreatePerformancePress,
   handlePerformancePress,
   handleViewProfilePress,
+  handleUploadPostPress,
 }) => {
   return (
     <>
@@ -30,7 +32,10 @@ export const ProfileTimeline: FC<Props> = ({
         ></PerformanceList>
       )}
       {profileType === ProfileType.USER && (
-        <PerformerShowCountsList userId={profileId}></PerformerShowCountsList>
+        <PerformerShowCountsList
+          userId={profileId}
+          handleUploadPostPress={handleUploadPostPress}
+        ></PerformerShowCountsList>
       )}
     </>
   );

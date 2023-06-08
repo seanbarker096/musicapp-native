@@ -5,7 +5,7 @@ import { APP_GUTTER, SPACING_XXXSMALL } from 'styles';
 type Props = {
   onActionPress?: () => void;
   primaryMessage: string;
-  secondaryMessage: string;
+  secondaryMessage?: string;
   actionText?: string;
 };
 
@@ -30,12 +30,14 @@ export const AppEmptyState: React.FC<Props> = ({
     >
       {primaryMessage}
     </AppText>
-    <AppText
-      textAlign="center"
-      size="small"
-    >
-      {secondaryMessage}
-    </AppText>
+    {secondaryMessage && (
+      <AppText
+        textAlign="center"
+        size="small"
+      >
+        {secondaryMessage}
+      </AppText>
+    )}
     {onActionPress && (
       <AppText
         isLink={true}

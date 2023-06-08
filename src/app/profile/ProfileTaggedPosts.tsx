@@ -1,7 +1,7 @@
 import { AppEmptyState } from 'components/app-empty-state';
 import { ScrollableGalleryLayout } from 'components/gallery';
-import { ProfileType } from 'contexts/profile.context';
-import React, { FC, useState } from 'react';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import React, { FC, useContext, useState } from 'react';
 import { useGetProfilePostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 interface ProfileTaggedPostsProps {
@@ -16,6 +16,16 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
   handleTaggedPostPress,
 }) => {
   const [limit, setLimit] = useState(9);
+
+  const { profileState } = useContext(ProfileContext);
+  const {
+    profileId: viewingUserProfileId,
+    profileType: viewingUserProfileType,
+  } = profileState;
+
+  const isViewingUserProfile =
+    viewingUserProfileId === profileId &&
+    viewingUserProfileType === profileType;
 
   const { isLoading: postsLoading, postsWithAttachmentsAndFiles } =
     useGetProfilePostsWithAttachmentsAndFilesQuery({
@@ -46,12 +56,22 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
             handleGalleryItemPress={handleTaggedPostPress}
           ></ScrollableGalleryLayout>
         )}
-      {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (
-        <AppEmptyState
-          primaryMessage="Vides of the artist's shows"
-          secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
-        ></AppEmptyState>
-      )}
+      {postsWithAttachmentsAndFiles &&
+        !postsWithAttachmentsAndFiles.length &&
+        !isViewingUserProfile && (
+          <AppEmptyState
+            primaryMessage="Videos of the artist's shows"
+            secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
+          ></AppEmptyState>
+        )}
+      {postsWithAttachmentsAndFiles &&
+        !postsWithAttachmentsAndFiles.length &&
+        isViewingUserProfile && (
+          <AppEmptyState
+            primaryMessage="Your favourite videos captured by your fans"
+            secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
+          ></AppEmptyState>
+        )}
     </>
   );
 };

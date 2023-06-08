@@ -139,6 +139,7 @@ const Profile: FC<ProfileProps> = memo(
                 handleCreatePerformancePress={handleCreatePerformancePress}
                 handleViewProfilePress={handleViewProfilePress}
                 handlePerformancePress={handlePerformancePress}
+                handleUploadPostPress={handleUploadPostPress}
               ></ProfileTimeline>
             )}
             {selectedTab === SelectedProfileTab.TAGGED && ( // TODO: Hide for performer profiles

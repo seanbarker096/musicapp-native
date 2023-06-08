@@ -1,13 +1,12 @@
-import { AppButton } from 'components/app-button';
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { CreatePerformanceButton } from 'components/create-performance-button';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
-import { Button, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
-import { BUTTON_COLOR_PRIMARY } from 'styles';
 import { PerformanceListItem } from './PerformanceListItem';
 
 type Props = {
@@ -82,35 +81,29 @@ export const PerformanceList: FC<Props> = ({
         !attendeeId && performances && !performances.length && (
           <>
             {!loggedInUserIsThePerformer && (
-              <>
-                <AppText>
-                  {"This artist hasn't created any performances yet." +
-                    (handleViewProfilePress
-                      ? 'But you can still see lots of videos captured by fans!'
-                      : '')}
-                </AppText>
-                {handleViewProfilePress && (
-                  <Button
-                    color={BUTTON_COLOR_PRIMARY}
-                    onPress={handleViewProfilePress}
-                    title="View fan videos"
-                  />
-                )}
-              </>
+              <AppEmptyState
+                primaryMessage="This artist hasn't created any performances yet"
+                // If we provide a handleViewProfilePress, we are using this component on the profile page, so show a secondary message + action text. TODO: Create a wrapper component or something so this is clearer
+                secondaryMessage={
+                  handleViewProfilePress
+                    ? 'Once they have, link your videos from the show so the artist can see them.'
+                    : undefined
+                }
+                actionText={
+                  handleViewProfilePress
+                    ? 'View fan videos for this artist'
+                    : undefined
+                }
+                onActionPress={handleViewProfilePress}
+              ></AppEmptyState>
             )}
             {loggedInUserIsThePerformer && (
-              <>
-                <AppText>
-                  You haven't created any performances yet. Create performances
-                  so that your fans can link their videos to them, making it
-                  easy for you to see them all
-                </AppText>
-                <AppButton
-                  color={BUTTON_COLOR_PRIMARY}
-                  handlePress={handleCreatePerformancePress}
-                  text="Create performance"
-                />
-              </>
+              <AppEmptyState
+                primaryMessage="Your journey as an artist"
+                secondaryMessage="Keep a record of your journey as an artist by creating a show. They'll appear here, along with any videos your fans have uploaded from these shows."
+                actionText="Create a show"
+                onActionPress={handleCreatePerformancePress}
+              ></AppEmptyState>
             )}
           </>
         )

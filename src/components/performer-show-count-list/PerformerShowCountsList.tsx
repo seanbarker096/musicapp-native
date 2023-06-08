@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProfileStackParamList } from 'app/profile/profile.types';
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -12,9 +13,13 @@ import { PerformerShowCountsListItem } from './PerformerShowCountListItem';
 
 interface Props {
   userId: number;
+  handleUploadPostPress: () => void;
 }
 
-export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
+export const PerformerShowCountsList: FC<Props> = ({
+  userId,
+  handleUploadPostPress,
+}) => {
   const { profileState } = useContext(ProfileContext);
 
   const isViewingUser =
@@ -59,12 +64,19 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
           ))}
         </List>
       )}
-      {performers && !performers.length && <AppText>No shows attended</AppText>}
+      {performers && !performers.length && !isViewingUser && (
+        <AppEmptyState
+          primaryMessage="This user hasn't attended any shows"
+          secondaryMessage="Shows appear on your timeline once you upload videos from shows you've attended"
+        ></AppEmptyState>
+      )}
       {performers && !performers.length && isViewingUser && (
-        <AppText>
-          Performances appear here once you create posts and tag them in the
-          artists performances
-        </AppText>
+        <AppEmptyState
+          primaryMessage="Your journey as a music fan"
+          secondaryMessage="A history of shows you've seen will appear here once you upload videos from shows you've attended"
+          onActionPress={handleUploadPostPress}
+          actionText="Upload a video"
+        ></AppEmptyState>
       )}
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error...</AppText>}
