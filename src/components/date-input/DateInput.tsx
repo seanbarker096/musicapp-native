@@ -5,7 +5,7 @@ import DateTimePicker, {
 import { AppText } from 'components/app-text';
 import { FC, useState } from 'react';
 import { Platform, Text } from 'react-native';
-import { COLOR_ERROR } from 'styles';
+import { COLOR_ERROR, SPACING_XXXSMALL } from 'styles';
 
 export type DateInputProps = {
   inputTitle: string;
@@ -54,7 +54,12 @@ export const DateInput: FC<DateInputProps> = ({
 
   return (
     <>
-      <AppText>{inputTitle}</AppText>
+      <AppText
+        weight="bold"
+        marginBottom={SPACING_XXXSMALL}
+      >
+        {inputTitle}
+      </AppText>
       <Text
         // We cant use TextInput here sa we dont want the user to be able to edit the field other than via DatePicker, so we have to makeshift a placeholder and the corresponding text color
         style={{

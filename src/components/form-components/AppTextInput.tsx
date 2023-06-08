@@ -5,6 +5,8 @@ import {
   BORDER_COLOR,
   COLOR_ERROR,
   COLOR_NEUTRAL_XXLIGHT,
+  COLOR_TRANSPARENT,
+  SPACING_NONE,
   SPACING_SMALL,
   SPACING_XXXSMALL,
   TEXT_SIZE_REGULAR,
@@ -14,6 +16,7 @@ export const AppTextInput: React.FC<
   FormikProps<{ [key: string]: any }> & {
     borderless: boolean;
     renderValidationErrors: boolean;
+    expandOnValidationError: boolean;
     backgroundColor: string;
     /**
      * Will not work if multiline is true
@@ -31,6 +34,7 @@ export const AppTextInput: React.FC<
   secureTextEntry = false,
   borderless = true,
   renderValidationErrors = true,
+  expandOnValidationError = false,
   backgroundColor = COLOR_NEUTRAL_XXLIGHT,
   multiline = false,
 }) => {
@@ -48,8 +52,11 @@ export const AppTextInput: React.FC<
             flexDirection: 'column',
             alignItems: 'stretch', // ensures text container grows in height as new lines are added
             width: '100%',
-            paddingRight: SPACING_XXXSMALL,
-            paddingLeft: SPACING_XXXSMALL,
+            paddingHorizontal: SPACING_XXXSMALL,
+            paddingVertical:
+              backgroundColor === COLOR_TRANSPARENT || !borderless
+                ? SPACING_NONE
+                : SPACING_XXXSMALL,
             backgroundColor,
             ...(borderless ? {} : styles.border),
           }}
@@ -67,7 +74,9 @@ export const AppTextInput: React.FC<
       {renderValidationErrors && (
         <View
           style={{
-            minHeight: TEXT_SIZE_REGULAR + SPACING_SMALL,
+            minHeight: expandOnValidationError
+              ? 0
+              : TEXT_SIZE_REGULAR + SPACING_SMALL,
             width: '100%',
           }}
         >

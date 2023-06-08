@@ -15,6 +15,8 @@ export const COLOR_NEUTRAL_XLIGHT = '#DADADA';
 export const COLOR_NEUTRAL_XXLIGHT = '#F2F2F2';
 export const COLOR_NEUTRAL_XXXXLIGHT = '#ffffff';
 
+export const COLOR_TRANSPARENT = 'transparent';
+
 export const COLOR_XXXXDARK = '#000';
 
 export const COLOR_ERROR = '#e53e3e';

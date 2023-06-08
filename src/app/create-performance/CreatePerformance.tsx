@@ -15,8 +15,10 @@ import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import {
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
+  COLOR_TRANSPARENT,
   SPACING_SMALL,
   SPACING_XSMALL,
+  SPACING_XXSMALL,
 } from 'styles';
 import { createUTCDate, isDefined } from 'utils/utils';
 import * as Yup from 'yup';
@@ -161,23 +163,23 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     var timezoneOffset = new Date().getTimezoneOffset();
 
     await performanceCreate({
-       performerId: profileId,
-       eventStartDate:
-         Math.floor(new Date(eventStartDate).getTime() / 1000) -
-         timezoneOffset * 60,
-       eventEndDate:
-         Math.floor(new Date(eventEndDate).getTime() / 1000) -
-         timezoneOffset * 60,
-       // Convert to seconds so its a unix timestamp
-       performanceDate:
-         Math.floor(new Date(performanceDate).getTime() / 1000) -
-         timezoneOffset * 60,
-       venueName: venue,
-       eventType:
-         isFestival.toLowerCase() === 'yes'
-           ? EventType.MUSIC_FESTIVAL
-           : EventType.MUSIC_CONCERT,
-     });
+      performerId: profileId,
+      eventStartDate:
+        Math.floor(new Date(eventStartDate).getTime() / 1000) -
+        timezoneOffset * 60,
+      eventEndDate:
+        Math.floor(new Date(eventEndDate).getTime() / 1000) -
+        timezoneOffset * 60,
+      // Convert to seconds so its a unix timestamp
+      performanceDate:
+        Math.floor(new Date(performanceDate).getTime() / 1000) -
+        timezoneOffset * 60,
+      venueName: venue,
+      eventType:
+        isFestival.toLowerCase() === 'yes'
+          ? EventType.MUSIC_FESTIVAL
+          : EventType.MUSIC_CONCERT,
+    });
 
     navigation.goBack();
   }
@@ -201,111 +203,164 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
             width: '100%',
             height: '100%',
             paddingBottom: SPACING_SMALL,
+
+            paddingLeft: SPACING_XSMALL,
+            paddingRight: SPACING_XSMALL,
           }}
         >
-          <View style={{ ...styles.flexRowContainer }}>
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              alignItems: 'center',
+              paddingBottom: SPACING_XSMALL,
+              paddingTop: SPACING_XSMALL,
+            }}
+          >
             <ProfileImage
-              styles={{ marginRight: SPACING_XSMALL }}
+              size="large"
               imageUrl={performer.imageUrl}
             ></ProfileImage>
-            <AppText>{`New performance by ${performer.name}`}</AppText>
+            <AppText
+              size="large"
+              weight="bold"
+              marginBottom={SPACING_XXSMALL}
+            >
+              {performer.name}
+            </AppText>
           </View>
-
-          <AppText>Venue</AppText>
-          <AppTextInput
-            handleChange={handleChange('venue')}
-            handleBlur={handleBlur('venue')}
-            value={values.venue}
-            error={errors.venue}
-            touched={touched.venue}
-            placeholder="e.g. Wireless Festival, O2 Academy Brixton"
-            borderless={true}
-          />
-
-          <DateInput
-            handleDateSelected={e => {
-              if (e) {
-                // set to isoString to avoid any locale string effects when passing back into DateInput as the value
-                handleEventStartDateChange(e?.toISOString());
-              }
-            }}
-            handleBlur={e => {
-              handleEventStartDateBlur(e);
-              console.log('asdsajda');
-            }}
-            value={values.eventStartDate}
-            inputTitle="Event start date"
-            touched={touched.eventStartDate ?? false}
-            error={errors.eventStartDate}
-          ></DateInput>
-
-          <DateInput
-            handleDateSelected={e => {
-              if (e) {
-                handleEventEndDateChange(e?.toISOString());
-              }
-            }}
-            handleBlur={handleEventEndDateBlur}
-            value={values.eventEndDate}
-            inputTitle="Event end date"
-            touched={touched.eventEndDate ?? false}
-            error={errors.eventEndDate}
-          ></DateInput>
-
-          <AppText>Was it at a festival?</AppText>
-          <Dropdown
-            options={['Yes', 'No']}
-            value={values.isFestival}
-            onChange={handleChange('isFestival')}
-          ></Dropdown>
-          {/* {touched && error && (
-                <AppText textColor={COLOR_ERROR}>{error}</AppText>
-              )} */}
-
-          <DateInput
-            handleDateSelected={e => {
-              if (e) {
-                handlePerformanceDateChange(e?.toISOString());
-              }
-            }}
-            handleBlur={handlePerformanceDateBlur}
-            value={values.performanceDate ?? values.eventStartDate}
-            inputTitle="Date you performed"
-            touched={touched.performanceDate ?? false}
-            error={errors.performanceDate}
-          ></DateInput>
 
           <View
             style={{
-              ...styles.flexRowContainer,
-              marginTop: 'auto',
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            <AppText weight="bold">Venue</AppText>
+            <AppTextInput
+              backgroundColor={COLOR_TRANSPARENT}
+              expandOnValidationError={true}
+              handleChange={handleChange('venue')}
+              handleBlur={handleBlur('venue')}
+              value={values.venue}
+              error={errors.venue}
+              touched={touched.venue}
+              placeholder="e.g. Wireless Festival, O2 Academy Brixton"
+              borderless={true}
+            />
+          </View>
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            <DateInput
+              handleDateSelected={e => {
+                if (e) {
+                  // set to isoString to avoid any locale string effects when passing back into DateInput as the value
+                  handleEventStartDateChange(e?.toISOString());
+                }
+              }}
+              handleBlur={e => {
+                handleEventStartDateBlur(e);
+              }}
+              value={values.eventStartDate}
+              inputTitle="Event start date"
+              touched={touched.eventStartDate ?? false}
+              error={errors.eventStartDate}
+            ></DateInput>
+          </View>
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            <DateInput
+              handleDateSelected={e => {
+                if (e) {
+                  handleEventEndDateChange(e?.toISOString());
+                }
+              }}
+              handleBlur={handleEventEndDateBlur}
+              value={values.eventEndDate}
+              inputTitle="Event end date"
+              touched={touched.eventEndDate ?? false}
+              error={errors.eventEndDate}
+            ></DateInput>
+          </View>
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            <AppText weight="bold">Was it at a festival?</AppText>
+            <Dropdown
+              options={['Yes', 'No']}
+              value={values.isFestival}
+              onChange={handleChange('isFestival')}
+            ></Dropdown>
+          </View>
+          <View
+            style={{
+              ...styles.flexColumnContainer,
+              ...styles.borederedContainer,
+            }}
+          >
+            <DateInput
+              handleDateSelected={e => {
+                if (e) {
+                  handlePerformanceDateChange(e?.toISOString());
+                }
+              }}
+              handleBlur={handlePerformanceDateBlur}
+              value={values.performanceDate ?? values.eventStartDate}
+              inputTitle="Date you performed"
+              touched={touched.performanceDate ?? false}
+              error={errors.performanceDate}
+            ></DateInput>
+          </View>
+          <View
+            style={{
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+              marginBottom: SPACING_SMALL,
+              width: '100%',
             }}
           >
             <View
               style={{
-                flexGrow: 1,
-                flexShrink: 0,
-                marginRight: SPACING_SMALL,
+                ...styles.flexRowContainer,
               }}
             >
-              <AppButton
-                color={BUTTON_COLOR_DISABLED}
-                handlePress={handleCancelClick}
-                text="Cancel"
-              ></AppButton>
-            </View>
-            <View
-              style={{
-                flexGrow: 1,
-                flexShrink: 0,
-              }}
-            >
-              <AppButton
-                color={BUTTON_COLOR_PRIMARY}
-                handlePress={handleSubmit}
-                disabled={buttonDisabled}
-                text="Create"
-              />
+              <View
+                style={{
+                  flexGrow: 1,
+                  flexShrink: 0,
+                  marginRight: SPACING_SMALL,
+                }}
+              >
+                <AppButton
+                  color={BUTTON_COLOR_DISABLED}
+                  handlePress={handleCancelClick}
+                  text="Cancel"
+                ></AppButton>
+              </View>
+              <View
+                style={{
+                  flexGrow: 1,
+                  flexShrink: 0,
+                }}
+              >
+                <AppButton
+                  color={BUTTON_COLOR_PRIMARY}
+                  handlePress={handleSubmit}
+                  disabled={buttonDisabled}
+                  isSubmitting={isSubmitting}
+                  text="Create"
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -323,14 +378,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '100%',
+    alignItems: 'stretch',
   },
   flexRowContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  textInput: {},
+  borederedContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    paddingBottom: SPACING_XSMALL,
+    paddingTop: SPACING_XSMALL,
+  },
 });

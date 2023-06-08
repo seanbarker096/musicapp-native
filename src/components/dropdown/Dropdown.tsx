@@ -36,7 +36,7 @@ export const Dropdown: React.FC<Props> = ({ options, value, onChange }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <TouchableOpacity
         onPress={toggleDropdown}
         style={styles.dropdownButton}
@@ -67,14 +67,11 @@ export const Dropdown: React.FC<Props> = ({ options, value, onChange }) => {
           </View>
         </TouchableOpacity>
       </Modal>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 10,
-  },
   dropdownButton: {},
   dropdownButtonText: {},
   modalContainer: {
