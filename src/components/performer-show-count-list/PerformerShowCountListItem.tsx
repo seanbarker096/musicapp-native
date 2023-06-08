@@ -1,6 +1,4 @@
 import { AppText } from 'components/app-text';
-import { SVGIcon } from 'components/icon/';
-import { CalendarSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -34,20 +32,20 @@ export const PerformerShowCountsListItem: FC<Props> = ({
         >
           {performer.name}
         </AppText>
-        <View style={styles.rowContainer}>
-          <SVGIcon
+        {/* <View style={styles.rowContainer}> */}
+        {/* <SVGIcon
             height={18}
             width={18}
             styles={{ marginRight: SPACING_XXSMALL }}
           >
             <CalendarSVG></CalendarSVG>
-          </SVGIcon>
-          <AppText>
-            {showCount > 1
-              ? `${showCount} shows attended`
-              : `${showCount} show attended`}
-          </AppText>
-        </View>
+          </SVGIcon> */}
+        <AppText>
+          {showCount > 1
+            ? `${showCount} shows attended`
+            : `${showCount} show attended`}
+        </AppText>
+        {/* </View> */}
       </View>
     </Pressable>
   );

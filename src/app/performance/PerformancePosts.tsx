@@ -10,7 +10,13 @@ import { usePerformancesGetQuery } from 'store/performances/performances.queries
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
-import { BUTTON_COLOR_PRIMARY, COLOR_PRIMARY, SPACING_XXSMALL } from 'styles';
+import {
+  APP_GUTTER,
+  BUTTON_COLOR_PRIMARY,
+  COLOR_PRIMARY,
+  SPACING_XXSMALL,
+  SPACING_XXXSMALL,
+} from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
 
 type PerformancePostsProps = {
@@ -104,16 +110,26 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
   return (
     <>
       {taggedPosts && performer && performance && (
-        <View>
-          <View style={styles.colContainer}>
-            <ProfileImage imageUrl={performer.imageUrl}></ProfileImage>
+        <>
+          <View
+            style={{
+              ...styles.colContainer,
+              padding: APP_GUTTER,
+            }}
+          >
+            <ProfileImage
+              size="large"
+              imageUrl={performer.imageUrl}
+              styles={{ marginBottom: SPACING_XXXSMALL }}
+            ></ProfileImage>
             <AppText
               size="large"
               weight="bold"
+              marginBottom={SPACING_XXXSMALL}
             >
-              {performer.name}
+              {performer.name} @ {performance.venueName}
             </AppText>
-            <AppText>{performance.venueName}</AppText>
+
             <View style={{ display: 'flex', flexDirection: 'row' }}>
               <SVGIcon
                 styles={{ marginRight: SPACING_XXSMALL }}
@@ -123,15 +139,23 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
                 <CalendarSVG></CalendarSVG>
               </SVGIcon>
 
-              <AppText>{performanceDate?.toLocaleDateString()}</AppText>
+              <AppText marginBottom={SPACING_XXSMALL}>
+                {performanceDate?.toLocaleDateString()}
+              </AppText>
             </View>
           </View>
+          <View
+            style={{
+              ...styles.headerContainer,
+            }}
+          ></View>
           {taggedPosts.length === 0 && (
             <View
               style={{
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
+                padding: APP_GUTTER,
               }}
             >
               <AppText>
@@ -147,11 +171,13 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               )}
             </View>
           )}
-          <ScrollableGalleryLayout
-            posts={taggedPosts}
-            handleGalleryItemPress={handlePostPress}
-          ></ScrollableGalleryLayout>
-        </View>
+          {taggedPosts.length > 0 && (
+            <ScrollableGalleryLayout
+              posts={taggedPosts}
+              handleGalleryItemPress={handlePostPress}
+            ></ScrollableGalleryLayout>
+          )}
+        </>
       )}
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error</AppText>}
@@ -167,13 +193,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   headerContainer: {
-    alignItems: 'center',
     backgroundColor: COLOR_PRIMARY,
+    paddingVertical: SPACING_XXSMALL,
+    paddingHorizontal: APP_GUTTER,
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingTop: SPACING_XXSMALL,
-    paddingBottom: SPACING_XXSMALL,
     width: '100%',
   },
 });

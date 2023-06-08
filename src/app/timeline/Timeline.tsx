@@ -1,14 +1,21 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { PerformanceList } from 'components/performance-list';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useUserGetQuery } from 'store/users';
-import { BUTTON_COLOR_PRIMARY, SPACING_SMALL } from 'styles';
+import {
+  APP_GUTTER,
+  BUTTON_COLOR_PRIMARY,
+  COLOR_PRIMARY,
+  SPACING_SMALL,
+  SPACING_XSMALL,
+} from 'styles';
 import { TimelineStackParamList } from './timeline-types';
 
 type TimelineProps = NativeStackScreenProps<TimelineStackParamList, 'Timeline'>;
@@ -68,7 +75,7 @@ const Timeline: FC<TimelineProps> = ({
     <>
       {performer && user && (
         <View style={{ ...styles.colContainer }}>
-          <View style={{ ...styles.rowContainer }}>
+          <View style={{ ...styles.rowContainer, padding: APP_GUTTER }}>
             <ProfileImage
               size="large"
               imageUrl={performer.imageUrl}
@@ -82,6 +89,7 @@ const Timeline: FC<TimelineProps> = ({
           <AppText
             size="large"
             weight="bold"
+            marginBottom={SPACING_XSMALL}
           >
             {performer.name} & {user.firstName}
           </AppText>
@@ -89,16 +97,18 @@ const Timeline: FC<TimelineProps> = ({
             style={{
               flexGrow: 1,
               flexShrink: 0,
+              marginBottom: SPACING_XSMALL,
             }}
           >
-            <Button
+            <AppButton
               color={BUTTON_COLOR_PRIMARY}
-              onPress={navigateToArtistProfile}
-              title={`View more of ${performer.name}'s shows`}
-            ></Button>
+              handlePress={navigateToArtistProfile}
+              text={`View all ${performer.name}'s shows`}
+              size="small"
+            ></AppButton>
           </View>
-          <View style={{ alignSelf: 'flex-start' }}>
-            <AppText>Shows attended by {user.firstName}</AppText>
+          <View style={{ ...styles.headerContainer }}>
+            <AppText weight="bold">Shows attended by {user.firstName}</AppText>
           </View>
           <PerformanceList
             performerId={performerId}
@@ -127,5 +137,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  headerContainer: {
+    backgroundColor: COLOR_PRIMARY,
+    paddingVertical: SPACING_XSMALL,
+    paddingHorizontal: APP_GUTTER,
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
   },
 });

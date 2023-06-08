@@ -1,7 +1,12 @@
 import { AppText } from 'components/app-text';
 import { FC } from 'react';
 import { ActivityIndicator, TouchableOpacity } from 'react-native';
-import { BUTTON_COLOR_PRIMARY, COLOR_NEUTRAL_XXXXLIGHT } from 'styles';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_XSMALL,
+  SPACING_XXSMALL,
+} from 'styles';
 
 interface AppButtonProps {
   disabled?: boolean;
@@ -10,6 +15,7 @@ interface AppButtonProps {
   handlePress: () => void;
   marginBottom?: number;
   isSubmitting?: boolean;
+  size?: 'small' | 'mid';
 }
 export const AppButton: FC<AppButtonProps> = ({
   color = BUTTON_COLOR_PRIMARY,
@@ -18,13 +24,14 @@ export const AppButton: FC<AppButtonProps> = ({
   handlePress,
   marginBottom = 0,
   isSubmitting = false,
+  size = 'mid',
 }) => {
   return (
     <TouchableOpacity
       style={{
         backgroundColor: color,
         opacity: disabled && !isSubmitting ? 0.5 : 1,
-        padding: 10,
+        padding: size === 'mid' ? SPACING_XSMALL : SPACING_XXSMALL,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',

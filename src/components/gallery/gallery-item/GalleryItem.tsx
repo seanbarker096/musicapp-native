@@ -13,6 +13,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { COLOR_NEUTRAL_XXLIGHT } from 'styles';
 
 interface GalleryItemProps {
   postId: number;
@@ -93,6 +94,7 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
+              backgroundColor: COLOR_NEUTRAL_XXLIGHT,
             }}
           >
             <SVGIcon

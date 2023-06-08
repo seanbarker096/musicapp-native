@@ -11,7 +11,7 @@ import { Pressable, View } from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useLogoutMutation } from 'store/auth/auth.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { SPACING_MID, SPACING_SMALL } from 'styles';
+import { SPACING_SMALL, SPACING_XSMALL } from 'styles';
 
 const Settings = () => {
   const { profileState, setProfileState } = useContext(ProfileContext);
@@ -70,7 +70,9 @@ const Settings = () => {
   return (
     <>
       {settingItems.length && (
-        <View style={{ paddingLeft: SPACING_MID, paddingRight: SPACING_MID }}>
+        <View
+          style={{ paddingLeft: SPACING_SMALL, paddingRight: SPACING_SMALL }}
+        >
           <List>
             {settingItems.map(item => (
               <ListItem key={item.text}>
@@ -78,7 +80,7 @@ const Settings = () => {
                   style={{ flexDirection: 'row', marginBottom: SPACING_SMALL }}
                   onPress={() => item.action()}
                 >
-                  <SVGIcon styles={{ marginRight: SPACING_SMALL }}>
+                  <SVGIcon styles={{ marginRight: SPACING_XSMALL }}>
                     {item.icon()}
                   </SVGIcon>
                   <AppText>{item.text}</AppText>

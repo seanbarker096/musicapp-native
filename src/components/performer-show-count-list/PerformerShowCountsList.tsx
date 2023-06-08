@@ -44,7 +44,7 @@ export const PerformerShowCountsList: FC<Props> = ({ userId }) => {
     <>
       {performers && !!performers.length && (
         <List
-          sidePadding="xsmall"
+          sidePadding="xxxsmall"
           verticalPadding="xxxsmall"
           scrollable={true}
         >
