@@ -1,14 +1,17 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileImage } from 'components/profile-image';
-import { ProfileContext, ProfileType } from 'contexts/profile.context';
+import { ProfileContext } from 'contexts/profile.context';
 import React, { FC, useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Post, PostOwnerType } from 'store/posts';
 import {
   APP_GUTTER,
   COLOR_NEUTRAL_XXXXLIGHT,
+  COLOR_PRIMARY,
+  SPACING_LARGE,
   SPACING_XXSMALL,
   SPACING_XXXSMALL,
 } from 'styles';
@@ -27,18 +30,13 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
   const { profileId, profileType } = profileState;
   const [queryLimit, setqueryLimit] = useState(9);
 
-  const postOwnerType =
-    profileType === ProfileType.PERFORMER
-      ? PostOwnerType.PERFORMER
-      : PostOwnerType.USER;
-
   const {
     isLoading: artistFeaturedPostsLoading,
     postsWithAttachmentsAndFiles: artistFeaturedPosts,
   } = useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     queryParams: {
       ownerId: profileId,
-      ownerType: postOwnerType,
+      ownerType: PostOwnerType.USER,
       isFeaturedByUsers: false,
       isFeaturedByPerformers: true,
       limit: queryLimit,
@@ -51,53 +49,65 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
 
   const PerformerFeaturedPostFooter = ({ featuringPerformer }: Post) => {
     return (
-      <View
-        style={{
-          ...styles.flexRowContainer,
-          backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
-          opacity: 0.85,
-          paddingLeft: SPACING_XXSMALL,
-          paddingRight: SPACING_XXSMALL,
-          paddingTop: SPACING_XXXSMALL,
-          paddingBottom: SPACING_XXXSMALL,
-        }}
-      >
-        <ProfileImage
-          imageUrl={featuringPerformer.imageUrl}
-          styles={{ marginRight: SPACING_XXSMALL }}
-          size="xsmall"
-        ></ProfileImage>
-        <AppText
-          size="small"
-          weight="bold"
-        >
-          {featuringPerformer.name}
-        </AppText>
-      </View>
+      <>
+        {featuringPerformer && (
+          <View
+            style={{
+              ...styles.flexRowContainer,
+              backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
+              opacity: 0.85,
+              paddingLeft: SPACING_XXSMALL,
+              paddingRight: SPACING_XXSMALL,
+              paddingTop: SPACING_XXXSMALL,
+              paddingBottom: SPACING_XXXSMALL,
+            }}
+          >
+            <ProfileImage
+              imageUrl={featuringPerformer.imageUrl}
+              styles={{ marginRight: SPACING_XXSMALL }}
+              size="xsmall"
+            ></ProfileImage>
+            <AppText
+              size="small"
+              weight="bold"
+            >
+              {featuringPerformer.name}
+            </AppText>
+          </View>
+        )}
+      </>
     );
   };
 
   return (
-    <View
-      style={{
-        padding: APP_GUTTER,
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+    <>
       {artistFeaturedPosts && !!artistFeaturedPosts.length && (
         <>
-          <AppText
-            size="large"
-            weight="bold"
-            marginBottom={SPACING_XXXSMALL}
+          <View
+            style={{
+              padding: APP_GUTTER,
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginBottom: SPACING_LARGE,
+            }}
           >
-            You're getting noticed!
-          </AppText>
-          <AppText textAlign="center">
-            Some of your favourite artsits have picked your posts to appear on
-            their profiles! You can find them all below.
-          </AppText>
+            <AppText
+              size="large"
+              weight="bold"
+              marginBottom={SPACING_XXSMALL}
+            >
+              You're getting noticed!
+            </AppText>
+            <AppText textAlign="center">
+              Some of your favourite artsits have picked your posts to appear on
+              their profiles! You can find them all below.
+            </AppText>
+          </View>
+          <View
+            style={{
+              ...styles.headerContainer,
+            }}
+          ></View>
 
           <ScrollableGalleryLayout
             posts={artistFeaturedPosts}
@@ -115,19 +125,26 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
         </>
       )}
       {artistFeaturedPosts && !artistFeaturedPosts.length && (
-        <AppText>
-          No artists have picked your posts yet to appear in their Gallery yet.
-          Link your posts to the artists performance to increase your chance of
-          being featured.
-        </AppText>
+        <AppEmptyState
+          primaryMessage="Your posts, hand picked by your favourite artists"
+          secondaryMessage="No artists have picked your posts yet to appear in their Gallery yet. Link your posts to the artists performance to increase your chance of being featured."
+        ></AppEmptyState>
       )}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   flexRowContainer: {
     alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+  },
+  headerContainer: {
+    backgroundColor: COLOR_PRIMARY,
+    paddingVertical: SPACING_XXSMALL,
+    paddingHorizontal: APP_GUTTER,
     display: 'flex',
     flexDirection: 'row',
     width: '100%',

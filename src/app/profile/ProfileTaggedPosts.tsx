@@ -1,4 +1,4 @@
-import { AppText } from 'components/app-text';
+import { AppEmptyState } from 'components/app-empty-state';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, useState } from 'react';
@@ -47,7 +47,10 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
           ></ScrollableGalleryLayout>
         )}
       {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (
-        <AppText>No posts here</AppText>
+        <AppEmptyState
+          primaryMessage="Vides of the artist's shows"
+          secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
+        ></AppEmptyState>
       )}
     </>
   );

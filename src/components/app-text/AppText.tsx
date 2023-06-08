@@ -18,6 +18,7 @@ interface AppTextProps {
   handlePress?: () => void;
   padding?: string | number;
   hidden?: boolean;
+  maxLines?: number;
 }
 
 export const AppText: FC<AppTextProps> = ({
@@ -30,6 +31,7 @@ export const AppText: FC<AppTextProps> = ({
   handlePress = undefined,
   padding = SPACING_NONE,
   hidden = false,
+  maxLines = undefined,
   ...margins
 }) => {
   const styles = StyleSheet.create({
@@ -50,6 +52,7 @@ export const AppText: FC<AppTextProps> = ({
       disabled={!handlePress}
     >
       <Text
+        numberOfLines={maxLines} // This is required to make multiline work, but numberOfLines
         style={{
           ...styles.text,
           color: hidden ? 'transparent' : textColor,

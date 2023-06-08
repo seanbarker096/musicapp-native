@@ -1,3 +1,4 @@
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { SVGIcon } from 'components/icon';
@@ -5,14 +6,13 @@ import { CalendarSVG } from 'components/icon/svg-components';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
   APP_GUTTER,
-  BUTTON_COLOR_PRIMARY,
   COLOR_PRIMARY,
   SPACING_XXSMALL,
   SPACING_XXXSMALL,
@@ -150,26 +150,12 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
             }}
           ></View>
           {taggedPosts.length === 0 && (
-            <View
-              style={{
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-                padding: APP_GUTTER,
-              }}
-            >
-              <AppText>
-                No fans have shared videos for this performance yet. Be the
-                first!
-              </AppText>
-              {!loggedInUserIsPerformer && (
-                <Button
-                  onPress={handleCreatePostPress}
-                  title="Create a Post"
-                  color={BUTTON_COLOR_PRIMARY}
-                ></Button>
-              )}
-            </View>
+            <AppEmptyState
+              primaryMessage="Moments captured by fans"
+              secondaryMessage="Be the first to share a video for this performance!"
+              onActionPress={handleCreatePostPress}
+              actionText="Create a post"
+            ></AppEmptyState>
           )}
           {taggedPosts.length > 0 && (
             <ScrollableGalleryLayout

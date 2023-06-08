@@ -54,7 +54,7 @@ export const AppTextInput: React.FC<
             width: '100%',
             paddingHorizontal: SPACING_XXXSMALL,
             paddingVertical:
-              backgroundColor === COLOR_TRANSPARENT || !borderless
+              backgroundColor === COLOR_TRANSPARENT || borderless
                 ? SPACING_NONE
                 : SPACING_XXXSMALL,
             backgroundColor,

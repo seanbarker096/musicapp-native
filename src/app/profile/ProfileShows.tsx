@@ -1,4 +1,5 @@
 import { AppButton } from 'components/app-button';
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -58,7 +59,17 @@ const ProfileShows: FC<ProfileShowsProps> = ({
         )}
       {postsWithAttachmentsAndFiles && !postsWithAttachmentsAndFiles.length && (
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <AppText>No posts here</AppText>
+          {profileType === ProfileType.PERFORMER ? (
+            <AppEmptyState
+              primaryMessage="The best fan videos, hand picked by artists"
+              secondaryMessage="This artist hasn't picked any fan videos yet"
+            ></AppEmptyState>
+          ) : (
+            <AppEmptyState
+              primaryMessage="Videos of their favourite artists"
+              secondaryMessage="This user hasn't shared any videos yet"
+            ></AppEmptyState>
+          )}
           {isViewingUsersProfile && profileType === ProfileType.USER && (
             <>
               <AppText>

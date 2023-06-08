@@ -5,6 +5,7 @@ import React, { FC, memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import {
+  APP_GUTTER,
   COLOR_PRIMARY,
   COLOR_PRIMARY_DARK,
   FONT_WEIGHT_BOLD,
@@ -68,14 +69,16 @@ const Profile: FC<ProfileProps> = memo(
     // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
     return (
       <View style={styles.colContainer}>
-        {profileType === ProfileType.USER ? (
-          <UserProfileHeader userId={profileId}></UserProfileHeader>
-        ) : (
-          <PerformerProfileHeader
-            performerId={profileId}
-            handleUploadPostPress={handleUploadPostPress}
-          ></PerformerProfileHeader>
-        )}
+        <View style={{ padding: APP_GUTTER, width: '100%' }}>
+          {profileType === ProfileType.USER ? (
+            <UserProfileHeader userId={profileId}></UserProfileHeader>
+          ) : (
+            <PerformerProfileHeader
+              performerId={profileId}
+              handleUploadPostPress={handleUploadPostPress}
+            ></PerformerProfileHeader>
+          )}
+        </View>
         <View
           // We want the header container and content of the tab to appear at the bottom of the screen
           style={{ width: '100%', flexGrow: 1, justifyContent: 'flex-end' }}

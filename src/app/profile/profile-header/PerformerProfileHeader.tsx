@@ -1,11 +1,10 @@
-import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { SPACING_MID, SPACING_XXSMALL } from 'styles';
+import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
@@ -39,11 +38,17 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
         <View
           style={{
             ...styles.colContainer,
-            height: 200,
+            minHeight: 200,
             width: '100%',
           }}
         >
-          <View style={{ ...styles.colContainer, marginTop: SPACING_MID }}>
+          <View
+            style={{
+              ...styles.colContainer,
+              alignItems: 'center',
+              alignSelf: 'center',
+            }}
+          >
             <ProfileImage
               size="xlarge"
               imageUrl={performer.imageUrl}
@@ -55,27 +60,32 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
             >
               {performer.name}
             </AppText>
-            {performer.biography && (
-              <AppText
-                textAlign="center"
-                size="small"
-              >
-                {performer.biography}
-              </AppText>
-            )}
-            {profileState.profileType === ProfileType.USER && (
-              <>
-                <AppText>
-                  {`Seen ${performer.name} live? Share your videos from the show`}
-                </AppText>
-                <AppButton
-                  text="Upload"
-                  // TODO: Send in the performer id and prefill the performer field
-                  handlePress={handleUploadPostPress}
-                ></AppButton>
-              </>
-            )}
           </View>
+          {performer.biography && (
+            <AppText
+              marginBottom={SPACING_XXSMALL}
+              maxLines={4}
+            >
+              {performer.biography}
+            </AppText>
+          )}
+          {profileState.profileType === ProfileType.USER && (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                marginBottom: SPACING_XSMALL,
+              }}
+            >
+              <AppText>{`Seen ${performer.name} live? `}</AppText>
+              <AppText
+                handlePress={handleUploadPostPress}
+                isLink={true}
+              >
+                Share your videos from the show
+              </AppText>
+            </View>
+          )}
         </View>
       )}
       {performerGetLoading && <AppText>Loading...</AppText>}
@@ -97,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   colContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',

@@ -1,17 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { AppEmptyState } from 'components/app-empty-state';
 import { AppText } from 'components/app-text';
 import { ScrollableGalleryLayout } from 'components/gallery';
 import { ProfileContext } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTagsGetQuery } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
   APP_GUTTER,
-  BUTTON_COLOR_PRIMARY,
+  COLOR_PRIMARY,
   SPACING_LARGE,
   SPACING_SMALL,
-  SPACING_XSMALL,
+  SPACING_XXSMALL,
   SPACING_XXXSMALL,
 } from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
@@ -63,62 +64,65 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
     navigation.navigate('ManageCreatePerformance');
   }
   return (
-    <View style={{ padding: APP_GUTTER }}>
+    <>
       {postTags && postTags.length > 0 && postsWithAttachmentsAndFiles && (
-        <View style={styles.container}>
-          <AppText
-            weight={'bold'}
-            size="large"
-            marginBottom={SPACING_XXXSMALL}
+        <>
+          <View
+            style={{
+              padding: APP_GUTTER,
+              flexDirection: 'column',
+              alignItems: 'center',
+              marginBottom: SPACING_LARGE,
+            }}
           >
-            Showcase Your Performances
-          </AppText>
-          <AppText marginBottom={SPACING_SMALL}>
-            Here are all your fan's videos that are not linked to any of your
-            performances. Showcase these videos to other fans and users by
-            adding them to a performance.
-          </AppText>
+            <AppText
+              weight="bold"
+              size="large"
+              marginBottom={SPACING_XXXSMALL}
+            >
+              Showcase Your Performances
+            </AppText>
+            <AppText marginBottom={SPACING_SMALL}>
+              Here are all your fan's videos that are not linked to any of your
+              performances. Showcase these videos to other fans and users by
+              adding them to a performance.
+            </AppText>
 
-          <View style={{ marginBottom: SPACING_LARGE }}>
-            <Button
-              color={BUTTON_COLOR_PRIMARY}
-              onPress={handleCreatePerformancePress}
-              title="Create a Performance"
-            ></Button>
+            <AppText
+              isLink={true}
+              handlePress={handleCreatePerformancePress}
+            >
+              Create a Performance
+            </AppText>
           </View>
+
+          <View
+            style={{
+              ...styles.headerContainer,
+            }}
+          ></View>
+
           <ScrollableGalleryLayout
             posts={postsWithAttachmentsAndFiles}
             handleGalleryItemPress={postId =>
               navigation.navigate('ViewPost', { postId })
             }
           ></ScrollableGalleryLayout>
-        </View>
+        </>
       )}
       {postTags && postTags.length === 0 && (
-        <View style={styles.container}>
-          <AppText
-            weight={'bold'}
-            size="regular"
-            marginBottom={SPACING_XSMALL}
-          >
-            There aren't any fan videos left for you to add to your
-            performances.
-          </AppText>
-          <AppText marginBottom={SPACING_SMALL}>
-            Save yourself time, and showcase your fan's videos. Create
-            performances so that fans can add their videos to them.
-          </AppText>
-          <Button
-            color={BUTTON_COLOR_PRIMARY}
-            onPress={handleCreatePerformancePress}
-            title="Create a Performance"
-          ></Button>
-        </View>
+        <AppEmptyState
+          primaryMessage="There aren't any fan videos left for you to link to your
+          performances."
+          secondaryMessage="Help your fans get their videos of your shows to you! Once a video is linked to your performance, you'll be able to see it here, and on your profile."
+          actionText="Create a Performance"
+          onActionPress={handleCreatePerformancePress}
+        ></AppEmptyState>
       )}
 
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error</AppText>}
-    </View>
+    </>
   );
 };
 
@@ -127,6 +131,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  headerContainer: {
+    backgroundColor: COLOR_PRIMARY,
+    paddingVertical: SPACING_XXSMALL,
+    paddingHorizontal: APP_GUTTER,
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
   },
 });
 

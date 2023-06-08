@@ -3,7 +3,7 @@ import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useUserGetQuery } from 'store/users';
-import { SPACING_MID, SPACING_XXSMALL } from 'styles';
+import { SPACING_XXSMALL } from 'styles';
 
 interface UserProfileHeaderProps {
   userId: number;
@@ -28,18 +28,23 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
 
   const profileReady = user;
 
-  console.log('user', user);
   return (
     <>
       {profileReady && (
         <View
           style={{
             ...styles.colContainer,
-            height: 200,
+            minHeight: 200,
             width: '100%',
           }}
         >
-          <View style={{ ...styles.colContainer, marginTop: SPACING_MID }}>
+          <View
+            style={{
+              ...styles.colContainer,
+              alignItems: 'center',
+              alignSelf: 'center',
+            }}
+          >
             <ProfileImage
               imageUrl={user.avatarFile?.url}
               size="xlarge"
@@ -51,8 +56,8 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
               {user.firstName} {user.secondName}
             </AppText>
             <AppText marginBottom={SPACING_XXSMALL}>@{user.username}</AppText>
-            <AppText>{user.bio}</AppText>
           </View>
+          <AppText maxLines={4}>{user.bio}</AppText>
         </View>
       )}
     </>
@@ -72,11 +77,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   colContainer: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    width: '100%',
   },
 });
 
