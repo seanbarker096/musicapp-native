@@ -12,9 +12,8 @@ import {
   APP_GUTTER,
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
-  SPACING_LARGE,
+  SPACING_MID,
   SPACING_SMALL,
-  SPACING_XXXSMALL,
 } from 'styles';
 import * as Yup from 'yup';
 import { SignUpStackParamList } from './sign-up.types';
@@ -22,7 +21,9 @@ import { SignUpStackParamList } from './sign-up.types';
 type Props = NativeStackScreenProps<SignUpStackParamList, 'CreateBio'>;
 
 const formSchema = Yup.object({
-  biography: Yup.string().max(150, 'Must be less than 150 characters'),
+  biography: Yup.string()
+    .required()
+    .max(150, 'Must be less than 150 characters'),
 });
 
 export const CreateBio: FC<Props> = ({
@@ -78,20 +79,20 @@ export const CreateBio: FC<Props> = ({
     setLoggedOutPage(undefined);
   }
 
-  const buttonDisabled = isSubmitting || !isValid;
+  const buttonDisabled = isSubmitting || !isValid || !dirty;
 
   return (
     <View
       style={{
-        margin: 10,
-        padding: APP_GUTTER,
-        paddingBottom: SPACING_LARGE,
+        ...styles.flexColumnContainer,
         height: '100%',
+        padding: APP_GUTTER,
+        paddingTop: '25%',
       }}
     >
       <AppText
-        weight="light"
-        marginBottom={SPACING_XXXSMALL}
+        size="large"
+        marginBottom={SPACING_MID}
       >
         Tell us about yourself
       </AppText>

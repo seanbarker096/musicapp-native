@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LoggedOutPage } from 'app/app-types';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { AppButton } from 'components/app-button';
-import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import {
   AppTextInput,
@@ -13,8 +12,6 @@ import {
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useSignUpMutation } from 'store/auth/auth.queries';
-import { SignUpMutationResult } from 'store/auth/auth.types';
 import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
 import * as Yup from 'yup';
 import { SignUpStackParamList } from './sign-up.types';
@@ -36,41 +33,12 @@ const signupFormSchema = Yup.object({
 export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
   const { setLoggedOutPage } = React.useContext(SignUpPageStateSettersContext);
 
-  const navigateToUploadProfileImage = (userId: number) => {
-    navigate('UploadProfileImage', { userId: userId });
-  };
-
-  const { mutate, error } = useSignUpMutation({
-    onSuccess: ({ authState }: SignUpMutationResult) =>
-      navigateToUploadProfileImage(authState.authUser.userId),
-  });
-
-  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
-
-  let errorMessage;
-
-  switch (error?.error_code) {
-    case 'USER_ALREADY_EXISTS':
-      errorMessage = 'An account with this email or username already exists';
-      break;
-    case 'UNKNOWN_ERROR':
-      errorMessage = 'Unknown error';
-      break;
-    default:
-      errorMessage = undefined;
-  }
-
   const handleFormSubmit = async ({
     email,
     username,
     password,
   }: SignUpFormValues) => {
-    setShowErrorMessage(true);
-    mutate({
-      email,
-      username,
-      password,
-    });
+    navigate('ConfirmSignUp', { email, username, password });
   };
 
   const {
@@ -99,12 +67,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
-  function setShowError(show: boolean) {
-    if (showErrorMessage !== show) {
-      setShowErrorMessage(show);
-    }
-  }
-
   return (
     <>
       <View
@@ -117,11 +79,9 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
       >
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
-            setShowError(false);
             handleEmailChange(e);
           }}
           handleBlur={(e: any) => {
-            setShowError(false);
             handleEmailBlur(e);
           }}
           value={values.email}
@@ -133,11 +93,9 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
-            setShowError(false);
             handleUsernameChange(e);
           }}
           handleBlur={(e: any) => {
-            setShowError(false);
             handleUsernameBlur(e);
           }}
           value={values.username}
@@ -149,11 +107,9 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
-            setShowError(false);
             handlePasswordChange(e);
           }}
           handleBlur={(e: any) => {
-            setShowError(false);
             handlePasswordBlur(e);
           }}
           value={values.password}
@@ -164,12 +120,6 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
           marginBottom={SPACING_XSMALL}
           borderless={false}
         />
-        {showErrorMessage && errorMessage && (
-          <AppError
-            message={errorMessage}
-            marginBottom={SPACING_XSMALL}
-          ></AppError>
-        )}
         <AppButton
           color={BUTTON_COLOR_PRIMARY}
           disabled={buttonDisabled}

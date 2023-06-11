@@ -70,7 +70,7 @@ export const AppButton: FC<AppButtonProps> = ({
         textColor={
           color === BUTTON_COLOR_DISABLED ? 'black' : COLOR_NEUTRAL_XXXXLIGHT
         }
-        weight="bold"
+        weight="semi-bold"
       >
         {text}
       </AppText>

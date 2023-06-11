@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { AppButton } from 'components/app-button';
+import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 import { IconColor, SVGIcon } from 'components/icon';
 import { PlusSVG } from 'components/icon/svg-components';
@@ -163,9 +164,15 @@ export const UploadProfileImage: FC<Props> = ({
         ...styles.flexColumnContainer,
         height: '100%',
         padding: APP_GUTTER,
-        paddingTop: '35%',
+        paddingTop: '25%',
       }}
     >
+      <AppText
+        size="large"
+        marginBottom={SPACING_MID}
+      >
+        Enter your name, and upload a profile image
+      </AppText>
       <View
         style={{
           position: 'relative',

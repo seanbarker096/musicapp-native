@@ -13,8 +13,11 @@ export const textSizeMap: { [key in TextSize]: number } = {
   xsmall: TEXT_SIZE_XSMALL,
 };
 
-export const textWeightMap: { [key in TextWeight]: 'normal' | 'bold' | '300' } = {
+export const textWeightMap: {
+  [key in TextWeight]: 'normal' | 'bold' | '300' | '600';
+} = {
   normal: 'normal',
+  'semi-bold': '600',
   bold: 'bold',
   light: '300',
 };
