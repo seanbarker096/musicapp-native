@@ -1,14 +1,17 @@
+import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
+import { ClaimProfileModal } from 'components/claim-profile-modal';
 import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
-import React, { FC, useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { FC, useContext, useState } from 'react';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Performer } from 'store/performers';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
-  handleUploadPostPress: () => void;
+  handleUploadPostPress: (performer: Performer) => void;
 }
 
 const PerformerHeader: FC<PerformerHeaderProps> = ({
@@ -16,6 +19,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
   handleUploadPostPress,
 }) => {
   const { profileState } = useContext(ProfileContext);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     isLoading: performerGetLoading,
@@ -78,14 +82,31 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
               }}
             >
               <AppText>{`Seen ${performer.name} live? `}</AppText>
-              <AppText
-                handlePress={handleUploadPostPress}
-                isLink={true}
-              >
-                Share your videos from the show
-              </AppText>
+              <AppButton
+                handlePress={() => handleUploadPostPress(performer)}
+                size="small"
+                text="Create Post"
+              ></AppButton>
+              <AppButton
+                handlePress={() => setIsOpen(true)}
+                text="Claim Profile"
+              ></AppButton>
             </View>
           )}
+          <Modal
+            visible={isOpen}
+            animationType="fade"
+            transparent={true}
+            onRequestClose={() => setIsOpen(false)}
+          >
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setIsOpen(false)}
+            >
+              <ClaimProfileModal></ClaimProfileModal>
+            </TouchableOpacity>
+          </Modal>
         </View>
       )}
       {performerGetLoading && <AppText>Loading...</AppText>}
@@ -111,6 +132,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 10,
+  },
+  optionsContainer: {
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
 });
 

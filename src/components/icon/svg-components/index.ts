@@ -4,6 +4,7 @@ export * from './CalendarSVG';
 export * from './CameraSVG';
 export * from './CheckCircleSVG';
 export * from './CheckMarkSVG';
+export * from './CrowdSVG';
 export * from './FilledLikeHeartSVG';
 export * from './HomeOutlineSVG';
 export * from './LikeHeartSVG';
@@ -24,3 +25,4 @@ export * from './TaggedUserSVG';
 export * from './UserAvatarBorderedSVG';
 export * from './UserAvatarSVG';
 export * from './VideoCameraSVG';
+

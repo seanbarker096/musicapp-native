@@ -17,6 +17,7 @@ import { PostOwnerType, usePostCreateMutation } from 'store/posts';
 import { useTagCreateMutation } from 'store/tags/tags.queries';
 import { TaggedEntityType, TaggedInEntityType } from 'store/tags/tags.types';
 import {
+  APP_GUTTER,
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
   SPACING_SMALL,
@@ -227,10 +228,15 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       style={{
         ...styles.flexColumnContainer,
         height: '100%',
-        paddingLeft: SPACING_XSMALL,
-        paddingRight: SPACING_XSMALL,
+        padding: APP_GUTTER,
       }}
     >
+      <AppText
+        weight="bold"
+        size="regular"
+      >
+        Upload your video from your favourite artist's shows
+      </AppText>
       <View
         style={{
           ...styles.flexRowContainer,

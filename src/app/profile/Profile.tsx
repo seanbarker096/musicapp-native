@@ -4,6 +4,7 @@ import { ProfileType } from 'contexts/profile.context';
 import React, { FC, memo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
+import { Performer } from 'store/performers';
 import {
   APP_GUTTER,
   COLOR_PRIMARY,
@@ -50,6 +51,12 @@ const Profile: FC<ProfileProps> = memo(
       navigation.navigate('CreatePostStack');
     }
 
+    function handleUploadPostPressWithArtist(performer: Performer) {
+      navigation.navigate('CreatePostStack', {
+        performer,
+      });
+    }
+
     function handleViewProfilePress() {
       setSelectedTab(SelectedProfileTab.TAGGED);
     }
@@ -75,7 +82,7 @@ const Profile: FC<ProfileProps> = memo(
           ) : (
             <PerformerProfileHeader
               performerId={profileId}
-              handleUploadPostPress={handleUploadPostPress}
+              handleUploadPostPress={handleUploadPostPressWithArtist}
             ></PerformerProfileHeader>
           )}
         </View>
@@ -128,7 +135,9 @@ const Profile: FC<ProfileProps> = memo(
                 profileType={profileType} // TODO: Update this to be dynamic
                 handlePostPress={handlePostPress}
                 handleCreatePostPress={() =>
-                  navigation.navigate('CreatePostStack')
+                  navigation.navigate('CreatePostStack', {
+                    performerId: profileId,
+                  })
                 }
               ></ProfileShows>
             )}

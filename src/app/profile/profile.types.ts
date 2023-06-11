@@ -1,6 +1,5 @@
 import { ProfileType } from 'contexts/profile.context';
-
-
+import { Performer } from 'store/performers';
 
 export enum SelectedProfileTab {
   SHOWS = 'shows',
@@ -24,7 +23,9 @@ export type ProfileStackParamList = {
   };
   ProfileCreatePerformance: undefined;
   ProfileSettings: undefined;
-  CreatePostStack: undefined;
+  CreatePostStack: {
+    performer: Performer;
+  };
 };
 
 /**

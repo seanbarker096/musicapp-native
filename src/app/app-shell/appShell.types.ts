@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 
+// TODO: Make all navigation return a {} instead of undefined so dont have to do if params checks in screens
 export type AppShellStackNavigatorParamList = {
   [PrimaryScreens.HOME]: undefined;
   [PrimaryScreens.CREATE_POST]: undefined;
