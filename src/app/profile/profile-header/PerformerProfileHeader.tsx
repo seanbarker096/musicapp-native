@@ -67,7 +67,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
           </View>
           {performer.biography && (
             <AppText
-              marginBottom={SPACING_XXSMALL}
+              marginBottom={SPACING_XSMALL}
               maxLines={4}
             >
               {performer.biography}
@@ -77,20 +77,26 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'flex-start',
+                width: '100%',
+                justifyContent: 'center',
                 marginBottom: SPACING_XSMALL,
               }}
             >
-              <AppText>{`Seen ${performer.name} live? `}</AppText>
-              <AppButton
-                handlePress={() => handleUploadPostPress(performer)}
-                size="small"
-                text="Create Post"
-              ></AppButton>
-              <AppButton
-                handlePress={() => setIsOpen(true)}
-                text="Claim Profile"
-              ></AppButton>
+              <View style={{ flexGrow: 1 }}>
+                <AppButton
+                  handlePress={() => handleUploadPostPress(performer)}
+                  size="mini"
+                  text="Create Post"
+                  marginRight={SPACING_XSMALL}
+                ></AppButton>
+              </View>
+              <View style={{ flexGrow: 1 }}>
+                <AppButton
+                  handlePress={() => setIsOpen(true)}
+                  size="mini"
+                  text="Claim Profile"
+                ></AppButton>
+              </View>
             </View>
           )}
           <Modal

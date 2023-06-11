@@ -6,6 +6,7 @@ import {
   COLOR_NEUTRAL_XXXXLIGHT,
   SPACING_XSMALL,
   SPACING_XXSMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
 
 interface AppButtonProps {
@@ -14,8 +15,9 @@ interface AppButtonProps {
   text: string;
   handlePress: () => void;
   marginBottom?: number;
+  marginRight?: number;
   isSubmitting?: boolean;
-  size?: 'small' | 'mid';
+  size?: 'mini' | 'small' | 'mid';
 }
 export const AppButton: FC<AppButtonProps> = ({
   color = BUTTON_COLOR_PRIMARY,
@@ -23,19 +25,40 @@ export const AppButton: FC<AppButtonProps> = ({
   text,
   handlePress,
   marginBottom = 0,
+  marginRight = 0,
   isSubmitting = false,
   size = 'mid',
 }) => {
+  let paddingHorizontal;
+  let paddingVertical;
+
+  switch (size) {
+    case 'mini':
+      paddingHorizontal = SPACING_XXSMALL;
+      paddingVertical = SPACING_XXXSMALL;
+      break;
+    case 'small':
+      paddingHorizontal = SPACING_XXSMALL;
+      paddingVertical = SPACING_XXSMALL;
+      break;
+    default: // mid
+      paddingHorizontal = SPACING_XSMALL;
+      paddingVertical = SPACING_XSMALL;
+      break;
+  }
+
   return (
     <TouchableOpacity
       style={{
         backgroundColor: color,
         opacity: disabled && !isSubmitting ? 0.5 : 1,
-        padding: size === 'mid' ? SPACING_XSMALL : SPACING_XXSMALL,
+        paddingHorizontal,
+        paddingVertical,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom,
+        marginRight,
         position: 'relative',
       }}
       disabled={disabled || isSubmitting}

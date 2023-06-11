@@ -85,8 +85,8 @@ export const ClaimProfileModal: FC<{}> = () => {
           marginLeft={SPACING_XXSMALL}
         >
           Claiming a profile allows you to manage the creation of shows for this
-          artist. Fans can link their videos to these shows, creating a timeline
-          of videos documenting your journey as an artist.
+          artist. Fans can link their videos to these shows, helping you build a
+          collection of videos documenting your journey as an artist.
         </AppText>
         <SVGIcon
           height={40}

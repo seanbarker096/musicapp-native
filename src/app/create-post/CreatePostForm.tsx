@@ -22,6 +22,7 @@ import {
   BUTTON_COLOR_PRIMARY,
   SPACING_SMALL,
   SPACING_XSMALL,
+  SPACING_XXSMALL,
   SPACING_XXXSMALL,
 } from 'styles';
 import * as Yup from 'yup';
@@ -233,9 +234,11 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     >
       <AppText
         weight="bold"
-        size="regular"
+        size="large"
+        textAlign="center"
+        marginBottom={SPACING_XXSMALL}
       >
-        Upload your video from your favourite artist's shows
+        Upload your video from the artist's show
       </AppText>
       <View
         style={{
