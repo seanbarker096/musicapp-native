@@ -1,7 +1,7 @@
 import { AppButton } from 'components/app-button';
 import { AppText } from 'components/app-text';
 import { CreatePerformanceButton } from 'components/create-performance-button';
-import { SVGIcon } from 'components/icon';
+import { IconColor, SVGIcon } from 'components/icon';
 import { CheckMarkSVG, PlusSVG } from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
@@ -115,6 +115,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
 
           {performance.id == performanceTag?.taggedEntityId && (
             <SVGIcon
+              color={IconColor.SECONDARY}
               handlePress={() =>
                 handleUnlinkToPerformanceIconClick(performanceTag)
               }

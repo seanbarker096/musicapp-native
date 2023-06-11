@@ -29,6 +29,7 @@ export const PerformanceStackScreen: FC<PerformanceStackScreenProps> = ({
         name="Performance"
         component={Performance}
         initialParams={{ performanceId, performerId }}
+        options={{ headerTitle: 'Show' }}
       ></PerformanceStack.Screen>
       <PerformanceStack.Screen
         name="ViewPost"

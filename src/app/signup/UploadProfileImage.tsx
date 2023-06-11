@@ -1,26 +1,26 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
 import { AppButton } from 'components/app-button';
-import { AppText } from 'components/app-text';
+import { AppTextInput } from 'components/form-components';
 import { IconColor, SVGIcon } from 'components/icon';
-import {
-  CameraSVG,
-  UserAvatarBorderedSVG,
-} from 'components/icon/svg-components';
+import { PlusSVG } from 'components/icon/svg-components';
+import { ProfileImage } from 'components/profile-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import React, { FC, useState } from 'react';
-import { Image, StyleSheet, TextInput, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { useFileCreateMutation } from 'store/files/files.queries';
 import { File } from 'store/files/files.types';
 import { useUsersUpdateMutation } from 'store/users';
 import {
+  APP_GUTTER,
   BUTTON_COLOR_PRIMARY,
   COLOR_NEUTRAL_LIGHT,
   COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_MID,
   SPACING_NONE,
-  SPACING_XXSMALL,
 } from 'styles';
+import * as Yup from 'yup';
 import { SignUpStackParamList } from './sign-up.types';
 
 interface ProfileImage {
@@ -31,6 +31,15 @@ interface ProfileImage {
 }
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'UploadProfileImage'>;
+
+const formSchema = Yup.object({
+  firstName: Yup.string()
+    .required('Required')
+    .min(2, 'Must be at least 2 characters'),
+  secondName: Yup.string()
+    .required('Required')
+    .min(2, 'Must be at least 2 characters'),
+});
 
 export const UploadProfileImage: FC<Props> = ({
   route: {
@@ -65,6 +74,24 @@ export const UploadProfileImage: FC<Props> = ({
     onSuccess: () => navigateToCreateBio(userId),
   });
 
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    dirty,
+  } = useFormik({
+    validationSchema: formSchema,
+    initialValues: { firstName: '', secondName: '' },
+    onSubmit: onFormSubmit,
+  });
+
+  const buttonDisabled = isSubmitting || !isValid || !dirty;
+
   async function handleUploadPress() {
     await ImagePicker.requestMediaLibraryPermissionsAsync();
     const response = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -94,7 +121,7 @@ export const UploadProfileImage: FC<Props> = ({
     }
   }
 
-  async function handleSubmit({
+  async function onFormSubmit({
     firstName,
     secondName,
   }: {
@@ -131,11 +158,18 @@ export const UploadProfileImage: FC<Props> = ({
   }
 
   return (
-    <View style={{ ...styles.flexColumnContainer, height: '100%' }}>
-      <AppText>Upload Profile Picture</AppText>
+    <View
+      style={{
+        ...styles.flexColumnContainer,
+        height: '100%',
+        padding: APP_GUTTER,
+        paddingTop: '35%',
+      }}
+    >
       <View
         style={{
           position: 'relative',
+          marginBottom: SPACING_MID,
         }}
       >
         <View
@@ -154,12 +188,7 @@ export const UploadProfileImage: FC<Props> = ({
               }}
             ></Image>
           ) : (
-            <SVGIcon
-              height={100}
-              width={100}
-            >
-              <UserAvatarBorderedSVG></UserAvatarBorderedSVG>
-            </SVGIcon>
+            <ProfileImage size="xlarge" />
           )}
         </View>
 
@@ -168,72 +197,67 @@ export const UploadProfileImage: FC<Props> = ({
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 40 / 2,
-            width: 40,
-            height: 40,
+            borderRadius: 30 / 2,
+            width: 30,
+            height: 30,
             backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
             position: 'absolute',
-            bottom: -SPACING_XXSMALL,
-            right: -SPACING_XXSMALL,
+            bottom: -1,
+            right: -1,
           }}
         >
           <SVGIcon
             color={IconColor.SECONDARY}
             handlePress={handleUploadPress}
           >
-            <CameraSVG></CameraSVG>
+            <PlusSVG></PlusSVG>
           </SVGIcon>
         </View>
       </View>
-      <Formik
-        initialValues={{
-          firstName: '',
-          secondName: '',
+      <View style={{ width: '80%' }}>
+        <AppTextInput
+          handleChange={handleChange('firstName')}
+          handleBlur={handleBlur('firstName')}
+          value={values.firstName}
+          value={values.firstName}
+          placeholder="First name"
+          error={errors.firstName}
+          touched={touched.firstName}
+          borderless={false}
+        />
+        <AppTextInput
+          handleChange={handleChange('secondName')}
+          handleBlur={handleBlur('secondName')}
+          value={values.secondName}
+          value={values.secondName}
+          placeholder="Second name"
+          error={errors.secondName}
+          touched={touched.secondName}
+          borderless={false}
+        />
+      </View>
+      <View
+        style={{
+          ...styles.flexRowContainer,
+          marginTop: 'auto',
         }}
-        onSubmit={handleSubmit}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <>
-            <View>
-              <TextInput
-                style={styles.text}
-                onChangeText={handleChange('firstName')}
-                onBlur={handleBlur('firstName')}
-                value={values.firstName}
-                placeholder="firstName"
-              />
-              <TextInput
-                style={styles.text}
-                onChangeText={handleChange('secondName')}
-                onBlur={handleBlur('secondName')}
-                value={values.secondName}
-                placeholder="secondName"
-              />
-            </View>
-            <View
-              style={{
-                ...styles.flexRowContainer,
-                marginTop: 'auto',
-              }}
-            >
-              <View
-                style={{
-                  flexGrow: 1,
-                  flexShrink: 0,
-                }}
-              >
-                <AppButton
-                  color={BUTTON_COLOR_PRIMARY}
-                  disabled={!values.firstName || !values.secondName}
-                  text="Next"
-                  handlePress={handleSubmit}
-                  marginBottom={SPACING_NONE}
-                ></AppButton>
-              </View>
-            </View>
-          </>
-        )}
-      </Formik>
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 0,
+          }}
+        >
+          <AppButton
+            color={BUTTON_COLOR_PRIMARY}
+            disabled={buttonDisabled}
+            text="Next"
+            handlePress={handleSubmit}
+            isSubmitting={isSubmitting}
+            marginBottom={SPACING_NONE}
+          ></AppButton>
+        </View>
+      </View>
     </View>
   );
 };

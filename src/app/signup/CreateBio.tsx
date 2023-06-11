@@ -1,18 +1,29 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SignUpPageStateSettersContext } from 'app/logged-out-pages/logged-out-page.contexts';
-import { Formik } from 'formik';
+import { AppButton } from 'components/app-button';
+import { AppText } from 'components/app-text';
+import { AppTextInput } from 'components/form-components';
+import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { Button, StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { AuthStatus, AuthUserRole } from 'store/auth/auth.types';
 import { useUsersUpdateMutation } from 'store/users';
 import {
+  APP_GUTTER,
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
+  SPACING_LARGE,
   SPACING_SMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
+import * as Yup from 'yup';
 import { SignUpStackParamList } from './sign-up.types';
 
 type Props = NativeStackScreenProps<SignUpStackParamList, 'CreateBio'>;
+
+const formSchema = Yup.object({
+  biography: Yup.string().max(150, 'Must be less than 150 characters'),
+});
 
 export const CreateBio: FC<Props> = ({
   route: {
@@ -32,11 +43,27 @@ export const CreateBio: FC<Props> = ({
     onSuccess: updateAuthState,
   });
 
-  async function handleSubmit({ bio }: { bio: string }) {
+  async function onFormSubmit({ biography }: { biography: string }) {
     mutate({
-      bio,
+      bio: biography,
     });
   }
+
+  const {
+    handleChange,
+    handleSubmit,
+    handleBlur,
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    isValid,
+    dirty,
+  } = useFormik({
+    validationSchema: formSchema,
+    initialValues: { biography: '' },
+    onSubmit: onFormSubmit,
+  });
 
   function updateAuthState() {
     // Set auth state to logged in provided user was created successfully in main sign up screen
@@ -51,59 +78,69 @@ export const CreateBio: FC<Props> = ({
     setLoggedOutPage(undefined);
   }
 
-  return (
-    <Formik
-      initialValues={{
-        bio: '',
-      }}
-      onSubmit={handleSubmit}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <View>
-          <TextInput
-            style={styles.text}
-            onChangeText={handleChange('bio')}
-            onBlur={handleBlur('bio')}
-            value={values.bio}
-            // TODO: Make multiline and include emojis
-            placeholder="e.g. London, United Kingdom."
-          />
+  const buttonDisabled = isSubmitting || !isValid;
 
-          <View
-            style={{
-              ...styles.flexRowContainer,
-              marginTop: 'auto',
-            }}
-          >
-            <View
-              style={{
-                flexGrow: 1,
-                flexShrink: 0,
-                marginRight: SPACING_SMALL,
-              }}
-            >
-              <Button
-                color={BUTTON_COLOR_DISABLED}
-                onPress={updateAuthState}
-                title="Skip"
-              ></Button>
-            </View>
-            <View
-              style={{
-                flexGrow: 1,
-                flexShrink: 0,
-              }}
-            >
-              <Button
-                color={BUTTON_COLOR_PRIMARY}
-                onPress={handleSubmit}
-                title="Submit"
-              ></Button>
-            </View>
-          </View>
+  return (
+    <View
+      style={{
+        margin: 10,
+        padding: APP_GUTTER,
+        paddingBottom: SPACING_LARGE,
+        height: '100%',
+      }}
+    >
+      <AppText
+        weight="light"
+        marginBottom={SPACING_XXXSMALL}
+      >
+        Tell us about yourself
+      </AppText>
+      <AppTextInput
+        handleChange={handleChange('biography')}
+        handleBlur={handleBlur('biography')}
+        value={values.biography}
+        placeholder="e.g. 21 year old from London. I love 90's hip hop..."
+        error={errors.biography}
+        touched={touched.biography}
+        borderless={false}
+        multiline={true}
+      />
+
+      <View
+        style={{
+          ...styles.flexRowContainer,
+          marginTop: 'auto',
+        }}
+      >
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 0,
+            marginRight: SPACING_SMALL,
+          }}
+        >
+          <AppButton
+            color={BUTTON_COLOR_DISABLED}
+            text="Skip"
+            handlePress={updateAuthState}
+          ></AppButton>
         </View>
-      )}
-    </Formik>
+        <View
+          style={{
+            flexGrow: 1,
+            flexShrink: 0,
+          }}
+        >
+          <AppButton
+            color={BUTTON_COLOR_PRIMARY}
+            disabled={buttonDisabled}
+            text="Submit"
+            handlePress={handleSubmit}
+            isSubmitting={isSubmitting}
+          ></AppButton>
+        </View>
+      </View>
+    </View>
   );
 };
 

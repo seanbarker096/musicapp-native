@@ -2,6 +2,7 @@ import { AppText } from 'components/app-text';
 import { FC } from 'react';
 import { ActivityIndicator, TouchableOpacity } from 'react-native';
 import {
+  BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
   COLOR_NEUTRAL_XXXXLIGHT,
   SPACING_XSMALL,
@@ -66,7 +67,10 @@ export const AppButton: FC<AppButtonProps> = ({
     >
       <AppText
         hidden={isSubmitting}
-        textColor={COLOR_NEUTRAL_XXXXLIGHT}
+        textColor={
+          color === BUTTON_COLOR_DISABLED ? 'black' : COLOR_NEUTRAL_XXXXLIGHT
+        }
+        weight="bold"
       >
         {text}
       </AppText>

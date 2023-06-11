@@ -11,6 +11,7 @@ const CreatePeformanceStackScreen = () => {
       <CreatePerformanceStack.Screen
         name="CreatePerformance"
         component={CreatePerformance}
+        options={{ headerTitle: 'Create Performance' }}
       ></CreatePerformanceStack.Screen>
     </CreatePerformanceStack.Navigator>
   );

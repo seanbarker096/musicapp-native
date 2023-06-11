@@ -21,7 +21,12 @@ import {
 } from 'store/features/features.types';
 import { Performer } from 'store/performers';
 import { Post } from 'store/posts';
-import { SPACING_SMALL, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import {
+  APP_GUTTER,
+  SPACING_SMALL,
+  SPACING_XSMALL,
+  SPACING_XXSMALL,
+} from 'styles';
 
 interface PostFooterProps {
   post: Post;
@@ -105,7 +110,6 @@ const PostFooter: FC<PostFooterProps> = ({
       {!loading && !error && (
         <View
           style={{
-            ...styles.sidePadding,
             ...styles.flexRowContainer,
             marginBottom: SPACING_SMALL,
           }}
@@ -191,7 +195,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
   },
-  sidePadding: { paddingLeft: SPACING_XSMALL, paddingRight: SPACING_XSMALL },
+  sidePadding: { paddingHorizontal: APP_GUTTER },
   videoContainer: {
     position: 'relative',
     height: 'auto',

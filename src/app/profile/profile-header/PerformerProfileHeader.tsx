@@ -7,7 +7,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Performer } from 'store/performers';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import { BUTTON_COLOR_DISABLED, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
@@ -84,6 +84,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
             >
               <View style={{ flexGrow: 1 }}>
                 <AppButton
+                  color={BUTTON_COLOR_DISABLED}
                   handlePress={() => handleUploadPostPress(performer)}
                   size="mini"
                   text="Create Post"
@@ -92,6 +93,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
               </View>
               <View style={{ flexGrow: 1 }}>
                 <AppButton
+                  color={BUTTON_COLOR_DISABLED}
                   handlePress={() => setIsOpen(true)}
                   size="mini"
                   text="Claim Profile"

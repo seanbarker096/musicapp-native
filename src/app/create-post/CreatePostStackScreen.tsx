@@ -30,6 +30,7 @@ const CreatePostStackScreen: FC<Props> = ({ route: { params } }) => {
         // Should be ok, but might need to check if any issues here with initialParams becoming stale
         initialParams={params ? { performer: params?.performer } : undefined}
         name="CreatePost"
+        options={{ headerTitle: 'Create Post' }}
       ></CreateStackTabNavigator.Screen>
       <CreateStackTabNavigator.Screen
         options={{ headerShown: false }}
@@ -39,10 +40,12 @@ const CreatePostStackScreen: FC<Props> = ({ route: { params } }) => {
       <CreateStackTabNavigator.Screen
         component={CreatePostPerformerSearch}
         name="CreatePostPerformerSearch"
+        options={{ headerTitle: 'Artist Search' }}
       ></CreateStackTabNavigator.Screen>
       <CreateStackTabNavigator.Screen
         component={CreatePostPerformanceSearch}
         name="CreatePostPerformanceSearch"
+        options={{ headerTitle: 'Performance Search' }}
       ></CreateStackTabNavigator.Screen>
     </CreateStackTabNavigator.Navigator>
   );

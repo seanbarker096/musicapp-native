@@ -21,14 +21,17 @@ export const SignUpStackScreen = () => {
       <SignUpStack.Screen
         name="SignUpForm"
         component={SignUpForm}
+        options={{ headerTitle: 'Sign Up' }}
       ></SignUpStack.Screen>
       <SignUpStack.Screen
         name="UploadProfileImage"
         component={UploadProfileImage}
+        options={{ headerTitle: 'Sign Up' }}
       ></SignUpStack.Screen>
       <SignUpStack.Screen
         name="CreateBio"
         component={CreateBio}
+        options={{ headerTitle: 'Sign Up' }}
       ></SignUpStack.Screen>
     </SignUpStack.Navigator>
   );

@@ -55,10 +55,12 @@ const InternalManageStackScreen = () => {
       <InternalManageStack.Screen
         component={ManageArtistPicks}
         name="ManageArtistPicks"
+        options={{ headerTitle: 'Artist Picks' }}
       ></InternalManageStack.Screen>
       <InternalManageStack.Screen
         component={ManageTaggedPosts}
         name="ManageTaggedPosts"
+        options={{ headerTitle: 'Tagged Posts' }}
       ></InternalManageStack.Screen>
       <InternalManageStack.Screen
         component={PostStackScreen}

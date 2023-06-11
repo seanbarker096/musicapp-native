@@ -6,7 +6,7 @@ import {
   CrowdSVG,
 } from 'components/icon/svg-components';
 import { FC } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 import {
   SPACING_LARGE,
   SPACING_MID,
@@ -15,9 +15,10 @@ import {
   SPACING_XXXSMALL,
 } from 'styles';
 
-export const ClaimProfileModal: FC<{}> = () => {
+type Props = {};
+export const ClaimProfileModal: FC<Props> = ({}) => {
   return (
-    <View style={{ maxHeight: '80%', width: '100%' }}>
+    <Pressable style={{ maxHeight: '80%', width: '100%' }}>
       <ScrollView contentContainerStyle={styles.container}>
         <AppText
           textAlign="center"
@@ -123,7 +124,7 @@ export const ClaimProfileModal: FC<{}> = () => {
           name.
         </AppText>
       </ScrollView>
-    </View>
+    </Pressable>
   );
 };
 
@@ -131,7 +132,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     borderRadius: 5,
-    padding: SPACING_XSMALL,
+    paddingHorizontal: SPACING_XSMALL,
+    paddingVertical: SPACING_MID,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

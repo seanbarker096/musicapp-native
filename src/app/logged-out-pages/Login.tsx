@@ -6,7 +6,7 @@ import { AppTextInput } from 'components/form-components';
 
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 import {
@@ -196,15 +196,4 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  errorText: {
-    color: 'red',
-  },
-});
 export default Login;
