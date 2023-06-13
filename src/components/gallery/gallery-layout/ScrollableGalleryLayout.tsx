@@ -50,7 +50,6 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     return arrangedPosts;
   }, [posts]);
 
-
   const listItem = ({ item, index }: ListRenderItemInfo<Post[]>) => {
     return (
       <Row
@@ -106,7 +105,9 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   };
 
   return (
-    <View style={{ height: 350, width: '100%' }}>
+    <View
+      style={{ height: 350, width: '100%', marginTop: SPACING_XXSMALL / 2 }}
+    >
       <FlatList
         data={processedPosts}
         renderItem={listItem}
