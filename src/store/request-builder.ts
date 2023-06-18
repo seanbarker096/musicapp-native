@@ -1,4 +1,5 @@
 import { AxiosResponse, RawAxiosRequestHeaders } from 'axios';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import axios, { transformAxiosError } from '../axios-instance';
 import { GetRequestConfig, StoreSlice } from './store.types';
@@ -25,7 +26,7 @@ export async function getRequest<S extends StoreSlice>({
   };
 
   return axios.get<S['Get']['ResultType']>(
-    `http://192.168.1.217:5000/api/${url}`,
+    `${Constants.expoConfig?.extra?.baseUrl}/api/${url}`,
     getRequestConfig,
   );
 }

@@ -1,5 +1,6 @@
 import { SignUpFormValues } from 'app/signup/SignUpForm';
 import { AxiosResponse } from 'axios';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import { useContext } from 'react';
 import { useMutation } from 'react-query';
@@ -54,8 +55,10 @@ const login = async ({
   email,
 }: LoginRequest): Promise<LoginMutationResult> => {
   try {
+    console.log('login');
+    console.log(Constants.expoConfig?.extra?.baseUrl);
     const response = await axios.post<LoginResultApi>(
-      'http://192.168.1.217:5000/api/auth/0.1/login/',
+      `${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/login/`,
       {
         username,
         password,

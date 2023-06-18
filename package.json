@@ -47,8 +47,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@expo/config": "^8.0.2",
     "@types/jest": "^28.1.6",
     "@types/mime": "^3.0.1",
+    "@types/node": "^20.3.1",
     "@types/react": "~18.0.14",
     "@types/react-native": "^0.69.5",
     "@types/react-test-renderer": "^18.0.0",
