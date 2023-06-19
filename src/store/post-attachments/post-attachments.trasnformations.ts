@@ -9,5 +9,6 @@ export function transformPostAttachmentApi(
     fileId: attachment.file_id,
     createTime: attachment.create_time,
     file: undefined,
+    thumbnailFile: undefined,
   };
 }

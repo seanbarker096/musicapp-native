@@ -5,11 +5,19 @@ import { AppTextInput } from 'components/form-components';
 import { SVGIcon } from 'components/icon';
 import { LocationSVG } from 'components/icon/svg-components';
 import { PerformerSearchCard } from 'components/performer-search-card';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 import { useFormik } from 'formik';
-import React, { FC, useContext } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import React, { FC, useContext, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { AuthStateContext } from 'store/auth/auth.contexts';
 import { useFileCreateMutation } from 'store/files/files.queries';
+import { FileCreateResult } from 'store/files/files.types';
 import { performancesKeys } from 'store/performances/performances.query-keys';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import { Performer } from 'store/performers';
@@ -60,11 +68,54 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 }) => {
   const [showError, setShowError] = React.useState(false);
 
+  const [thumbnailUri, setThumbnailUri] = useState<string | undefined>(
+    undefined,
+  );
+
+  const [thumbnailLoading, setThumbnailLoading] = useState(true);
+
   const { authState } = useContext(AuthStateContext);
 
   let errorComponent: React.ReactNode | undefined = undefined;
 
   const userId = authState.authUser.userId;
+
+  useEffect(() => {
+    const _extractThumbnail = async () => {
+      try {
+        setThumbnailLoading(true);
+        const result = await VideoThumbnails.getThumbnailAsync(
+          postFile.imageInfo.uri,
+          {
+            time: 0,
+          },
+        );
+        setThumbnailUri(result.uri);
+        setThumbnailLoading(false);
+      } catch (e) {
+        console.warn(e);
+        setThumbnailLoading(false);
+      }
+    };
+    _extractThumbnail();
+  }, [postFile]);
+
+  const LoadingThumbnail = () => (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+      }}
+    >
+      <ActivityIndicator
+        size="small"
+        color="#000000"
+      />
+    </View>
+  );
 
   const { mutateAsync: createPost } = usePostCreateMutation({
     ownerId: userId,
@@ -109,6 +160,21 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       uri: postFile.imageInfo.uri,
     });
 
+    let attachmentThumbnailResult: FileCreateResult | undefined = undefined;
+
+    if (thumbnailUri) {
+      const thumbnailFile = await fetch(thumbnailUri);
+
+      const thumbnailBlob = await thumbnailFile.blob();
+
+      attachmentThumbnailResult = await createFile({
+        fileName: `${postFile.fileName}-thumbnail`,
+        file: thumbnailBlob,
+        mimeType: thumbnailBlob.type,
+        uri: thumbnailUri,
+      });
+    }
+
     if (!fileResult) {
       throw Error('create file request failed');
     }
@@ -118,6 +184,14 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       ownerType: PostOwnerType.USER,
       content: form.caption as string, // submit button only active if caption is defined
       attachmentFileIds: [fileResult.file.id],
+      attachmentThumbnails: attachmentThumbnailResult
+        ? [
+            {
+              attachmentFileId: fileResult.file.id,
+              thumbnailFileId: attachmentThumbnailResult.file.id,
+            },
+          ]
+        : [],
     });
 
     const createdPost = postResult && postResult.post;
@@ -246,14 +320,18 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           ...styles.borederedContainer,
         }}
       >
-        <Image
-          style={{ marginRight: SPACING_XXXSMALL }}
-          source={{
-            uri: postFile?.imageInfo.uri,
-            width: 50,
-            height: 50,
-          }}
-        ></Image>
+        {!thumbnailLoading && thumbnailUri ? (
+          <Image
+            style={{ marginRight: SPACING_XXXSMALL }}
+            source={{
+              uri: thumbnailUri,
+              width: 50,
+              height: 50,
+            }}
+          ></Image>
+        ) : (
+          <LoadingThumbnail />
+        )}
         {/* Had to wrap in View to stop the AppTextInput overflowing width of the screen */}
         <View style={{ flex: 1 }}>
           <AppTextInput

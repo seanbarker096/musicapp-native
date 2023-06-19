@@ -105,9 +105,9 @@ const postCreate = async function ({
   ownerId,
   ownerType,
   content,
-  attachmentFileIds,
+  attachmentFiles,
 }: PostCreateRequest): Promise<PostCreateResult> {
-  if (attachmentFileIds.length === 0) {
+  if (attachmentFiles.length === 0) {
     throw Error(
       'Must provide at least one  attachment id when creating a post',
     );
@@ -119,7 +119,10 @@ const postCreate = async function ({
       owner_id: ownerId,
       owner_type: ownerType,
       content,
-      attachment_file_ids: attachmentFileIds,
+      attachment_files: attachmentFiles.map(attachmentFile => ({
+        attachment_file_id: attachmentFile.attachmentFileId,
+        thumbnail_file_id: attachmentFile.thumbnailFileId,
+      })),
     },
   });
 

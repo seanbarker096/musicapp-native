@@ -205,7 +205,16 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
   } = useFilesGetQuery({
     queryParams: {
       id: postsAttachments
-        ? postsAttachments.map(attachment => attachment.fileId)
+        ? postsAttachments.reduce<readonly number[]>(
+            (allIds, attachment) => [
+              ...allIds,
+              attachment.fileId,
+              ...(attachment.thumbnailFileId
+                ? [attachment.thumbnailFileId]
+                : []),
+            ],
+            [],
+          )
         : undefined,
     },
     enabled: postsAttachmentsReady && postsAttachments.length > 0,
@@ -245,6 +254,9 @@ function createPostsWithAttachmentsAndFiles(
   attachments?.forEach(attachment => {
     // We dont want to create a new attachment object here. We want to keep the original object received from the backend, so ensure our UI doesn't re-render unnecessarily due to the attachment object changing, even though the attachment data itself has not changed. If the attachment data changes, our api query will re-run and we will get a new attachment object anyway due to our transformation of the api response
     attachment.file = filesByIdMap[attachment.fileId];
+    attachment.thumbnailFile = attachment.thumbnailFileId
+      ? filesByIdMap[attachment.thumbnailFileId]
+      : undefined;
 
     postAttachmentsByPostIdMap[attachment.postId] = [
       ...(postAttachmentsByPostIdMap[attachment.postId] ?? []),

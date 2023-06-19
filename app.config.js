@@ -7,7 +7,7 @@ export default ({ config }) => {
       : {
           name: 'My app',
           extra: {
-            baseUrl: 'http://api-dev222222.us-east-2.elasticbeanstalk.com'
+            baseUrl: process.env.LOCAL_HOST === 'true' ? 'http://192.168.1.217:5000': 'http://api-dev222222.us-east-2.elasticbeanstalk.com'
           }
         };
 

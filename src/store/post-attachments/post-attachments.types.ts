@@ -15,11 +15,13 @@ export interface PostAttachment {
   id: number;
   postId: number;
   fileId: number;
+  thumbnailFileId?: number;
   createTime: number;
   /**
    * Added on frontend for convienent access. Not received in API response.
    */
   file?: File;
+  thumbnailFile?: File;
 }
 
 export interface PostAttachmentApi {

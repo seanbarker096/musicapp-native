@@ -79,17 +79,27 @@ export type Test = {
   [key in keyof PostsGetFilterApi]: any;
 };
 
+export interface PostAttachmentFile {
+  attachmentFileId: number;
+  thumbnailFileId: number;
+}
+
+export interface PostAttachmentFileApi {
+  attachment_file_id: number;
+  thumbnail_file_id: number;
+}
+
 export interface PostCreateRequest {
   ownerId: number;
   ownerType: PostOwnerType;
   content: string;
-  attachmentFileIds: readonly number[];
+  attachmentFiles: readonly PostAttachmentFile[];
 }
 export interface PostCreateRequestApi {
-  attachment_file_ids: readonly number[];
   content: string;
   owner_id: number;
   owner_type: PostOwnerType;
+  attachment_files: readonly PostAttachmentFileApi[];
 }
 
 export interface PostCreateResultApi {
