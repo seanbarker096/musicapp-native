@@ -30,11 +30,11 @@ const GalleryLayout: FC<GalleryLayoutProps> = ({
           <GalleryItem
             galleryItemStyles={{ ...styles.item, position: 'relative' }}
             postId={post.id}
-            fileUrl={
-              (post.attachments &&
-                post.attachments[0] &&
-                post.attachments[0].file?.url) as string
-            } // We know that is defined due to isPostWithFile check above
+            thumbnailUrl={
+              post.attachments &&
+              post.attachments[0] &&
+              post.attachments[0].thumbnailFile?.url
+            }
           ></GalleryItem>
           {galleryItemFooter && (
             <MemoizedGalleryItemFooter

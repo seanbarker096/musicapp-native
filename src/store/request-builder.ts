@@ -56,7 +56,11 @@ export async function postRequest<S extends StoreSlice>({
       S['Post']['ResultType'],
       AxiosResponse<S['Post']['ResultType']>,
       S['Post']['RequestBodyType']
-    >(`http://192.168.1.217:5000/api/${url}`, body, postRequestConfig);
+    >(
+      `${Constants.expoConfig?.extra?.baseUrl}/api/${url}`,
+      body,
+      postRequestConfig,
+    );
   } catch (e: any) {
     return Promise.reject(transformAxiosError<S, 'Post'>(e));
   }
@@ -86,7 +90,11 @@ export async function searchRequest<S extends StoreSlice>({
     S['Search']['ResultType'],
     AxiosResponse<S['Search']['ResultType']>,
     S['Search']['RequestBodyType']
-  >(`http://192.168.1.217:5000/api/${url}`, body, searchRequestConfig);
+  >(
+    `${Constants.expoConfig?.extra?.baseUrl}/api/${url}`,
+    body,
+    searchRequestConfig,
+  );
 }
 
 export async function deleteRequest<S extends StoreSlice>({
@@ -114,7 +122,7 @@ export async function deleteRequest<S extends StoreSlice>({
     S['Delete']['ResultType'],
     AxiosResponse<S['Delete']['ResultType']>,
     S['Delete']['RequestParametersType']
-  >(`http://192.168.1.217:5000/api/${url}`, getRequestConfig);
+  >(`${Constants.expoConfig?.extra?.baseUrl}/api/${url}`, getRequestConfig);
 }
 
 export async function patchRequest<S extends StoreSlice>({
@@ -141,5 +149,9 @@ export async function patchRequest<S extends StoreSlice>({
     S['Patch']['ResultType'],
     AxiosResponse<S['Patch']['ResultType']>,
     S['Patch']['RequestBodyType']
-  >(`http://192.168.1.217:5000/api/${url}`, body, patchRequestConfig);
+  >(
+    `${Constants.expoConfig?.extra?.baseUrl}/api/${url}`,
+    body,
+    patchRequestConfig,
+  );
 }

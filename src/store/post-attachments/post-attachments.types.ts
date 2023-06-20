@@ -28,6 +28,7 @@ export interface PostAttachmentApi {
   id: number;
   post_id: number;
   file_id: number;
+  thumbnail_file_id?: number;
   create_time: number;
 }
 

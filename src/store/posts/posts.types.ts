@@ -81,12 +81,12 @@ export type Test = {
 
 export interface PostAttachmentFile {
   attachmentFileId: number;
-  thumbnailFileId: number;
+  thumbnailFileId?: number;
 }
 
 export interface PostAttachmentFileApi {
   attachment_file_id: number;
-  thumbnail_file_id: number;
+  thumbnail_file_id?: number;
 }
 
 export interface PostCreateRequest {

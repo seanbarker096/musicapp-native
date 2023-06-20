@@ -1,5 +1,6 @@
 import { LoggedOutPage, SetLoggedOutPage } from 'app/app-types';
 import { AxiosResponse } from 'axios';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { Dispatch, SetStateAction, useEffect } from 'react';
@@ -54,7 +55,7 @@ function getAccessToken(refreshToken: string) {
     AxiosResponse<{ token: string }>,
     { token_type: string }
   >(
-    'http://192.168.1.217:5000/api/auth/0.1/token/',
+    `${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/token/`,
     { token_type: 'access' },
     { headers: { 'Refresh-Token': refreshToken } },
   );

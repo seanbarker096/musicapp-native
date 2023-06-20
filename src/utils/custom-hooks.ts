@@ -63,7 +63,16 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
   } = useFilesGetQuery({
     queryParams: {
       id: postsAttachments
-        ? postsAttachments.map(attachment => attachment.fileId)
+        ? postsAttachments.reduce<readonly number[]>(
+            (allIds, attachment) => [
+              ...allIds,
+              attachment.fileId,
+              ...(attachment.thumbnailFileId
+                ? [attachment.thumbnailFileId]
+                : []),
+            ],
+            [],
+          )
         : undefined,
     },
     enabled: postsAttachmentsReady && postsAttachments.length > 0,
@@ -124,19 +133,26 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
 
   const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
 
-  const postAttachmentIds = postsAttachments
-    ? postsAttachments.map(attachment => attachment.fileId)
-    : undefined;
-
   const {
     data: files,
     isLoading: filesLoading,
     isError: filesError,
   } = useFilesGetQuery({
     queryParams: {
-      id: postAttachmentIds,
+      id: postsAttachments
+        ? postsAttachments.reduce<readonly number[]>(
+            (allIds, attachment) => [
+              ...allIds,
+              attachment.fileId,
+              ...(attachment.thumbnailFileId
+                ? [attachment.thumbnailFileId]
+                : []),
+            ],
+            [],
+          )
+        : undefined,
     },
-    enabled: postAttachmentIds && postAttachmentIds.length > 0,
+    enabled: postsAttachmentsReady && postsAttachments.length > 0,
   });
 
   const filesReady = !!files && !filesLoading;

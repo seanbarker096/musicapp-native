@@ -183,15 +183,12 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       ownerId: userId,
       ownerType: PostOwnerType.USER,
       content: form.caption as string, // submit button only active if caption is defined
-      attachmentFileIds: [fileResult.file.id],
-      attachmentThumbnails: attachmentThumbnailResult
-        ? [
-            {
-              attachmentFileId: fileResult.file.id,
-              thumbnailFileId: attachmentThumbnailResult.file.id,
-            },
-          ]
-        : [],
+      attachmentFiles: [
+        {
+          attachmentFileId: fileResult.file.id,
+          thumbnailFileId: attachmentThumbnailResult?.file.id,
+        },
+      ],
     });
 
     const createdPost = postResult && postResult.post;
@@ -251,7 +248,8 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
 
   const handleCaptionChange = handleChange('caption');
 
-  const buttonDisabled = isSubmitting || !postFile || !isValid; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
+  const buttonDisabled =
+    isSubmitting || !postFile || !isValid || !thumbnailLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
 
   let formErrorComponent: React.ReactNode | undefined;
   let createFileErrorComponent: React.ReactNode | undefined;

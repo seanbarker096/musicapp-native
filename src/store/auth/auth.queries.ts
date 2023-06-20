@@ -113,7 +113,7 @@ const signUp = async ({
       SignUpResultApi,
       AxiosResponse<SignUpResultApi>,
       UserCreateRequestApi
-    >('http://192.168.1.217:5000/api/auth/0.1/signup/', {
+    >(`${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/signup/`, {
       email,
       username,
       password,
@@ -173,7 +173,7 @@ async function logout() {
   }
 
   await axios.post<void, AxiosResponse<void>, void>(
-    'http://192.168.1.217:5000/api/auth/0.1/logout/',
+    `${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/logout/`,
     undefined,
     {
       headers: {
