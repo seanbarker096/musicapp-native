@@ -106,7 +106,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 
   return (
     <View
-      style={{ height: 350, width: '100%', marginTop: SPACING_XXSMALL / 2 }}
+      style={{ height: 400, width: '100%', marginTop: SPACING_XXSMALL / 2 }}
     >
       <FlatList
         data={processedPosts}
@@ -125,8 +125,8 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
           index,
         })}
         onScroll={handleScroll} // Track the scroll offset
-        initialNumToRender={Math.ceil(150 / GALLERY_ITEM_HEIGHT)} // Render initial items based on window height
-        initialScrollIndex={Math.floor(scrollOffset / GALLERY_ITEM_HEIGHT)} // Set initial scroll index based on scroll offset
+        initialNumToRender={Math.ceil(400 / GALLERY_ITEM_HEIGHT)} // Render initial items based on window height
+        // initialScrollIndex={Math.floor(scrollOffset / GALLERY_ITEM_HEIGHT)} // Set initial scroll index based on scroll offset
       />
     </View>
   );
