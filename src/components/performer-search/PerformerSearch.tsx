@@ -2,7 +2,7 @@ import { AppText } from 'components/app-text';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { SearchBar } from 'components/search';
 import React, { FC, useState } from 'react';
-import { ListRenderItemInfo } from 'react-native';
+import { ListRenderItemInfo, View } from 'react-native';
 import { Performer, PerformerSearchPerformer } from 'store/performers';
 import {
   usePerformerGetOrCreateQuery,
@@ -63,13 +63,6 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     },
   });
 
-  const performerSearchResults = searchPerformers?.map(performer => (
-    <PerformerSearchCard
-      performer={performer}
-      onPress={() => setSelectedSearchPerformer(performer)}
-    ></PerformerSearchCard>
-  ));
-
   const searchResultItem = ({
     item,
     index,
@@ -91,7 +84,7 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     : false;
 
   return (
-    <>
+    <View style={{ width: '100%' }}>
       <SearchBar
         searchTermChanged={searchTerm => {
           setIsLoading(true);
@@ -111,10 +104,10 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
         itemHeight={30} // height of the PerformerSearchCard component
       ></SearchBar>
       {isLoading && <AppText>Loading...</AppText>}
-      {searchReady && searchTerm && performerSearchResults?.length === 0 && (
+      {searchReady && searchTerm && searchPerformers?.length === 0 && (
         <AppText>{emptyStateMessage}</AppText>
       )}
-    </>
+    </View>
   );
 };
 

@@ -2,7 +2,7 @@ import { AppText } from 'components/app-text';
 import { SearchBar } from 'components/search';
 import { UserSearchCard } from 'components/user-search-card';
 import React, { FC, useState } from 'react';
-import { ListRenderItemInfo } from 'react-native';
+import { ListRenderItemInfo, View } from 'react-native';
 import { userUsersSearchQuery } from 'store/users';
 import { User } from 'store/users/users.types';
 import { useDebounceEffect } from 'utils/custom-hooks';
@@ -58,7 +58,7 @@ export const UserSearch: FC<UserSearchProps> = ({
   const hasNextPage = searchUsers ? searchUsers.length >= limit : false;
 
   return (
-    <>
+    <View style={{ width: '100%' }}>
       <SearchBar
         searchTermChanged={searchTerm => {
           setIsLoading(true);
@@ -80,7 +80,7 @@ export const UserSearch: FC<UserSearchProps> = ({
       {searchReady && searchTerm && searchUsers?.length === 0 && (
         <AppText>No results found</AppText>
       )}
-    </>
+    </View>
   );
 };
 
