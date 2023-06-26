@@ -1,1 +1,1 @@
-export const GALLERY_ITEM_HEIGHT = 100;
+export const GALLERY_ITEM_HEIGHT = 120;

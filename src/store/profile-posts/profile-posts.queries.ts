@@ -27,6 +27,7 @@ async function profilePostsGet({
       limit,
     },
   });
+
   return response.data.posts.map(post => transformPostApi(post));
 }
 export const useProfilePostsGetQuery = ({
@@ -59,5 +60,8 @@ export const useProfilePostsGetQuery = ({
       limit,
     ),
     () => profilePostsGet(apiQueryParams),
+    {
+      keepPreviousData: true,
+    },
   );
 };

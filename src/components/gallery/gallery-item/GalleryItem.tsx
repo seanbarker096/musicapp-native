@@ -3,6 +3,7 @@ import { PlayButtonSVG } from 'components/icon/svg-components';
 import React, { FC, memo } from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { COLOR_NEUTRAL_XXLIGHT } from 'styles';
+import { GALLERY_ITEM_HEIGHT } from '../gallery.types';
 
 interface GalleryItemProps {
   postId: number;
@@ -18,16 +19,15 @@ interface GalleryItemProps {
  */
 export const GalleryItem: FC<GalleryItemProps> = memo(
   ({ postId, thumbnailUrl, galleryItemStyles, handleGalleryItemPress }) => {
-    console.log(thumbnailUrl);
     // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)
     return (
       <Pressable
-        style={{ ...galleryItemStyles, width: 150 }}
+        style={{ ...galleryItemStyles, height: GALLERY_ITEM_HEIGHT }}
         onPress={() => handleGalleryItemPress(postId)}
       >
         {thumbnailUrl ? (
           <Image
-            source={{ uri: thumbnailUrl, width: 150 }}
+            source={{ uri: thumbnailUrl, height: GALLERY_ITEM_HEIGHT }}
             resizeMode="cover"
           />
         ) : (

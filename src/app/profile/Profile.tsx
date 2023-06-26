@@ -76,7 +76,15 @@ const Profile: FC<ProfileProps> = memo(
     // TODO: Might need to keep all components showing pist in dom so we dont reset limits etc. and loose all the posts they scroleld though when switching tabs
     return (
       <View style={styles.colContainer}>
-        <View style={{ padding: APP_GUTTER, width: '100%' }}>
+        <View
+          style={{
+            padding: APP_GUTTER,
+            width: '100%',
+            marginBottom: 'auto',
+            flexShrink: 0,
+            flexGrow: 1,
+          }}
+        >
           {profileType === ProfileType.USER ? (
             <UserProfileHeader userId={profileId}></UserProfileHeader>
           ) : (
@@ -87,8 +95,14 @@ const Profile: FC<ProfileProps> = memo(
           )}
         </View>
         <View
-          // We want the header container and content of the tab to appear at the bottom of the screen
-          style={{ width: '100%', flexGrow: 1, justifyContent: 'flex-end' }}
+          // Header container should always be visisble, so we shrink all other components if required
+          style={{
+            width: '100%',
+            flexGrow: 0,
+            flexShrink: 1,
+            flexBasis: 'auto',
+            justifyContent: 'flex-end',
+          }}
         >
           <View style={styles.headerContainer}>
             <Pressable
@@ -128,7 +142,10 @@ const Profile: FC<ProfileProps> = memo(
               </Pressable>
             )}
           </View>
-          <View style={{ height: 350 }}>
+
+          <View
+            style={{ height: 400, flexShrink: 1 }} // Shrink if it will cut off header
+          >
             {selectedTab === SelectedProfileTab.SHOWS && (
               <ProfileShows
                 profileId={profileId}

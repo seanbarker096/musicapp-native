@@ -3,7 +3,7 @@ import { ProfileImage } from 'components/profile-image';
 import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useUserGetQuery } from 'store/users';
-import { SPACING_XXSMALL } from 'styles';
+import { SPACING_XSMALL } from 'styles';
 
 interface UserProfileHeaderProps {
   userId: number;
@@ -55,7 +55,7 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
             >
               {user.firstName} {user.secondName}
             </AppText>
-            <AppText marginBottom={SPACING_XXSMALL}>@{user.username}</AppText>
+            <AppText marginBottom={SPACING_XSMALL}>@{user.username}</AppText>
           </View>
           <AppText maxLines={4}>{user.bio}</AppText>
         </View>

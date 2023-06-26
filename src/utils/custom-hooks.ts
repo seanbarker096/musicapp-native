@@ -108,6 +108,7 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
 } {
   const {
     data: posts,
+    isPreviousData,
     isLoading: postsLoading,
     isError: postsError,
   } = useProfilePostsGetQuery({
@@ -118,6 +119,8 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     includeTagged,
     limit,
   });
+
+  console.log('posts', posts, isPreviousData);
   const postsReady = !!posts && !postsLoading;
 
   const postIds = posts?.map(post => post.id);

@@ -7,7 +7,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Performer } from 'store/performers';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
-import { BUTTON_COLOR_DISABLED, SPACING_XSMALL, SPACING_XXSMALL } from 'styles';
+import { BUTTON_COLOR_DISABLED, SPACING_XSMALL } from 'styles';
 
 interface PerformerHeaderProps {
   performerId: number;
@@ -60,7 +60,7 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
             <AppText
               size="large"
               weight="bold"
-              marginBottom={SPACING_XXSMALL}
+              marginBottom={SPACING_XSMALL}
             >
               {performer.name}
             </AppText>
