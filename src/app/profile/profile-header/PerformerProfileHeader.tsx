@@ -64,22 +64,22 @@ const PerformerHeader: FC<PerformerHeaderProps> = ({
             >
               {performer.name}
             </AppText>
+            {performer.biography && (
+              <AppText
+                marginBottom={SPACING_XSMALL}
+                maxLines={4}
+              >
+                {performer.biography}
+              </AppText>
+            )}
           </View>
-          {performer.biography && (
-            <AppText
-              marginBottom={SPACING_XSMALL}
-              maxLines={4}
-            >
-              {performer.biography}
-            </AppText>
-          )}
+
           {profileState.profileType === ProfileType.USER && (
             <View
               style={{
                 flexDirection: 'row',
                 width: '100%',
                 justifyContent: 'center',
-                marginBottom: SPACING_XSMALL,
               }}
             >
               <View style={{ flexGrow: 1 }}>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
   },
   modalContainer: {
     flex: 1,

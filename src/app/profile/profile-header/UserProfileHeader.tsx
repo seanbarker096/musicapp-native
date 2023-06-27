@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
   },
 });
 

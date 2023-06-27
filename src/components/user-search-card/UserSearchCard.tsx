@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING_XXXSMALL,
     paddingBottom: SPACING_XXXSMALL,
     width: '100%',
+    height: HEIGHT,
   },
   columnContainer: {
     display: 'flex',
