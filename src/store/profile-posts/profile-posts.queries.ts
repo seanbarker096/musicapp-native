@@ -61,7 +61,7 @@ export const useProfilePostsGetQuery = ({
     ),
     () => profilePostsGet(apiQueryParams),
     {
-      keepPreviousData: true,
+      keepPreviousData: true, // Needed otherwise the results array becomes undefined between follow up requests, e.g. when incrementing the limit whilst scrolling through results
     },
   );
 };

@@ -22,7 +22,10 @@ export const GalleryItem: FC<GalleryItemProps> = memo(
     // TODO add state for if no file was retried (e.g. just empty tstate message as we can't load post in this case)
     return (
       <Pressable
-        style={{ ...galleryItemStyles, height: GALLERY_ITEM_HEIGHT }}
+        style={{
+          ...galleryItemStyles,
+          height: GALLERY_ITEM_HEIGHT,
+        }}
         onPress={() => handleGalleryItemPress(postId)}
       >
         {thumbnailUrl ? (

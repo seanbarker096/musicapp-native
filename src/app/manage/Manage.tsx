@@ -59,6 +59,7 @@ const Manage: FC<ManageProps> = ({ navigation }) => {
               flexDirection: 'column',
               alignItems: 'flex-start',
               marginRight: SPACING_SMALL,
+              flexShrink: 1,
             }}
           >
             <View

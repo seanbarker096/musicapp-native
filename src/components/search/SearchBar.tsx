@@ -1,5 +1,5 @@
 import { AppTextInput } from 'components/form-components';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -30,8 +30,6 @@ export const SearchBar: FC<Props> = ({
   hasMoreData,
   itemHeight,
 }) => {
-  const [scrollOffset, setScrollOffset] = useState(0);
-
   const renderFooter = () => {
     if (!hasMoreData) {
       return null;
@@ -45,11 +43,6 @@ export const SearchBar: FC<Props> = ({
         />
       </View>
     );
-  };
-
-  const handleScroll = event => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    setScrollOffset(offsetY);
   };
 
   const windowHeight = Dimensions.get('window').height;
@@ -68,6 +61,7 @@ export const SearchBar: FC<Props> = ({
 
       {searchResults && searchResults.length > 0 && (
         <FlatList
+          contentContainerStyle={{ flexGrow: 1 }}
           data={searchResults}
           renderItem={searchResultRenderItem}
           ListFooterComponent={renderFooter}
@@ -83,9 +77,7 @@ export const SearchBar: FC<Props> = ({
             offset: itemHeight * index,
             index,
           })}
-          onScroll={handleScroll} // Track the scroll offset
           initialNumToRender={initialNumToRender} // Render initial items based on window height
-          initialScrollIndex={Math.floor(scrollOffset / itemHeight)} // Set initial scroll index based on scroll offset
         ></FlatList>
       )}
     </>

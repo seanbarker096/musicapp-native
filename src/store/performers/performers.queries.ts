@@ -71,6 +71,7 @@ export function usePerformersSearchQuery({
     {
       enabled,
       onSettled,
+      keepPreviousData: true, // Needed otherwise the results array becomes undefined between follow up requests, e.g. when incrementing the limit whilst scrolling through results
     },
   );
 }

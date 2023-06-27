@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FeaturedPostsGetQueryFields,
   useFeaturedPostsGetQuery,
@@ -13,7 +13,7 @@ import {
   useProfilePostsGetQuery,
 } from 'store/profile-posts';
 
-// TODO: Make infinite query copy and use this instead
+// TODO: Currently isLoading won't be set back to true after first request, need to fix this
 export function useGetPostsWithAttachmentsAndFilesQuery({
   queryParams: { ownerId, ownerType, id, limit },
   enabled = true,
@@ -27,6 +27,10 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
+  const [isLoading, setIsLoading] = useState(true);
+  const [postsWithAttachmentsAndFiles, setPostsWithAttachmentsAndFiles] =
+    useState<readonly Post[] | undefined>(undefined);
+
   const {
     data: posts,
     isLoading: postsLoading,
@@ -41,8 +45,6 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     enabled,
   });
 
-  const postsReady = !!posts && !postsLoading;
-
   const postIds = posts?.map(post => post.id);
 
   const {
@@ -51,10 +53,8 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postsReady && posts.length > 0,
+    enabled: postIds && postIds.length > 0,
   });
-
-  const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
 
   const {
     data: files,
@@ -75,18 +75,27 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
           )
         : undefined,
     },
-    enabled: postsAttachmentsReady && postsAttachments.length > 0,
+    enabled: postsAttachments && postsAttachments.length > 0,
   });
 
-  const filesReady = !!files && !filesLoading;
-
-  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+  useEffect(() => {
+    if (!postsLoading && !postsAttachmentsLoading && !filesLoading) {
+      const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+        files,
+        postsAttachments,
+        posts,
+      );
+      setPostsWithAttachmentsAndFiles(postsWithAttachmentsAndFiles);
+      setIsLoading(false);
+    }
+  }, [
+    postsLoading,
+    postsAttachmentsLoading,
+    filesLoading,
     files,
     postsAttachments,
     posts,
-  );
-
-  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
+  ]);
 
   return {
     isLoading,
@@ -94,7 +103,7 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
   };
 }
 
-// TODO:: Extract logic that is repeated with one above
+// TODO: Currently isLoading won't be set back to true after first request, need to fix this
 export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   profileId,
   profileType,
@@ -106,6 +115,10 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
   isLoading: boolean;
   postsWithAttachmentsAndFiles: readonly Post[] | undefined;
 } {
+  const [isLoading, setIsLoading] = useState(true);
+  const [postsWithAttachmentsAndFiles, setPostsWithAttachmentsAndFiles] =
+    useState<readonly Post[] | undefined>(undefined);
+
   const {
     data: posts,
     isPreviousData,
@@ -120,9 +133,6 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     limit,
   });
 
-  console.log('posts', posts, isPreviousData);
-  const postsReady = !!posts && !postsLoading;
-
   const postIds = posts?.map(post => post.id);
 
   const {
@@ -133,8 +143,6 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     queryParams: { postId: postIds },
     enabled: postIds && postIds.length > 0,
   });
-
-  const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
 
   const {
     data: files,
@@ -155,27 +163,35 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
           )
         : undefined,
     },
-    enabled: postsAttachmentsReady && postsAttachments.length > 0,
+    enabled: postsAttachments && postsAttachments.length > 0,
   });
 
-  const filesReady = !!files && !filesLoading;
-
-  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+  useEffect(() => {
+    if (!postsLoading && !postsAttachmentsLoading && !filesLoading) {
+      const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+        files,
+        postsAttachments,
+        posts,
+      );
+      setPostsWithAttachmentsAndFiles(postsWithAttachmentsAndFiles);
+      setIsLoading(false);
+    }
+  }, [
+    postsLoading,
+    postsAttachmentsLoading,
+    filesLoading,
     files,
     postsAttachments,
     posts,
-  );
-
-  // We use ready instead of the isLoading states, because isLoading will flick between true and false after each dependant query finishes, which could result in lots of re-renders of componens which accept the isLoading value as a prop. This way, we only re-render once when all the data is returned
-  const ready = postsReady || postsAttachmentsReady || filesReady;
+  ]);
 
   return {
-    isLoading: !ready,
+    isLoading,
     postsWithAttachmentsAndFiles,
   };
 }
 
-// TODO: Make infinite query copy and use this instead
+// TODO: Currently isLoading won't be set back to true after first request, need to fix this
 export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
   queryParams: {
     ownerId,
@@ -188,6 +204,9 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
   queryParams: FeaturedPostsGetQueryFields;
   enabled?: boolean;
 }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [postsWithAttachmentsAndFiles, setPostsWithAttachmentsAndFiles] =
+    useState<readonly Post[] | undefined>(undefined);
   const {
     data: posts,
     isLoading: postsLoading,
@@ -202,8 +221,6 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     enabled,
   });
 
-  const postsReady = !!posts && !postsLoading;
-
   const postIds = posts?.map(post => post.id);
 
   const {
@@ -212,10 +229,8 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postsReady && posts.length > 0,
+    enabled: postIds && postIds.length > 0,
   });
-
-  const postsAttachmentsReady = !!postsAttachments && !postsAttachmentsLoading;
 
   const {
     data: files,
@@ -236,18 +251,27 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
           )
         : undefined,
     },
-    enabled: postsAttachmentsReady && postsAttachments.length > 0,
+    enabled: postsAttachments && postsAttachments.length > 0,
   });
 
-  const filesReady = !!files && !filesLoading;
-
-  const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+  useEffect(() => {
+    if (!postsLoading && !postsAttachmentsLoading && !filesLoading) {
+      const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
+        files,
+        postsAttachments,
+        posts,
+      );
+      setPostsWithAttachmentsAndFiles(postsWithAttachmentsAndFiles);
+      setIsLoading(false);
+    }
+  }, [
+    postsLoading,
+    postsAttachmentsLoading,
+    filesLoading,
     files,
     postsAttachments,
     posts,
-  );
-
-  const isLoading = postsLoading || postsAttachmentsLoading || filesLoading;
+  ]);
 
   return {
     isLoading,
@@ -285,10 +309,10 @@ function createPostsWithAttachmentsAndFiles(
 
   return posts
     ? posts.map(post => {
-      // We dont want to create a new post object here. We want to keep the original object received from the backend, so ensure our UI doesn't re-render unnecessarily due to the post object changing, even though the post data itself has not changed. If the post data changes, our api query will re-run and we will get a new post object anyway due to our transformation of the api response
-      post.attachments = postAttachmentsByPostIdMap[post.id];
-      return post;
-    })
+        // We dont want to create a new post object here. We want to keep the original object received from the backend, so ensure our UI doesn't re-render unnecessarily due to the post object changing, even though the post data itself has not changed. If the post data changes, our api query will re-run and we will get a new post object anyway due to our transformation of the api response
+        post.attachments = postAttachmentsByPostIdMap[post.id];
+        return post;
+      })
     : undefined;
 }
 

@@ -1,5 +1,5 @@
 import { AppText } from 'components/app-text';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import { GestureResponderEvent, Pressable, StyleSheet } from 'react-native';
 import { PerformerSearchPerformer } from 'store/performers';
 import { SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
@@ -14,7 +14,7 @@ const IMAGE_SIZE = 'small';
 const HEIGHT = profileImageSizeGenerator(IMAGE_SIZE);
 
 // TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
-export const PerformerSearchCard: FC<PerformerSearchCardProps> = ({
+export const PerformerSearchCard: FC<PerformerSearchCardProps> = memo(({
   performer,
   onPress = () => {},
 }) => (
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   profileImage: {
     marginRight: SPACING_XXSMALL,
   },
-});
+}));

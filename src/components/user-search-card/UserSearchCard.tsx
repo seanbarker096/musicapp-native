@@ -1,5 +1,5 @@
 import { AppText } from 'components/app-text';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import {
   GestureResponderEvent,
   Pressable,
@@ -19,32 +19,31 @@ const IMAGE_SIZE = 'small';
 const HEIGHT = profileImageSizeGenerator(IMAGE_SIZE) + 10;
 
 // TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
-export const UserSearchCard: FC<UserSearchCardProps> = ({
-  user,
-  onPress = () => {},
-}) => {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={{ ...styles.container }}
-    >
-      <ProfileImage
-        styles={styles.profileImage}
-        imageUrl={user.avatarFile?.url}
-        size={IMAGE_SIZE}
-      ></ProfileImage>
-      <View style={styles.columnContainer}>
-        <AppText weight="bold">{user.username}</AppText>
-        <AppText
-          weight="light"
-          size="small"
-        >
-          {user.firstName} {user.secondName}
-        </AppText>
-      </View>
-    </Pressable>
-  );
-};
+export const UserSearchCard: FC<UserSearchCardProps> = memo(
+  ({ user, onPress = () => {} }) => {
+    return (
+      <Pressable
+        onPress={onPress}
+        style={{ ...styles.container }}
+      >
+        <ProfileImage
+          styles={styles.profileImage}
+          imageUrl={user.avatarFile?.url}
+          size={IMAGE_SIZE}
+        ></ProfileImage>
+        <View style={styles.columnContainer}>
+          <AppText weight="bold">{user.username}</AppText>
+          <AppText
+            weight="light"
+            size="small"
+          >
+            {user.firstName} {user.secondName}
+          </AppText>
+        </View>
+      </Pressable>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {

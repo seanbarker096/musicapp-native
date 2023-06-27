@@ -1,7 +1,5 @@
-import { GalleryItem, MemoizedGalleryItemFooter } from 'components/gallery';
-
 import { Row } from 'components/row';
-import React, { FC, ReactElement, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useMemo } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,6 +10,8 @@ import {
 import { Post } from 'store/posts/posts.types';
 import { SPACING_XXSMALL } from 'styles';
 import { isPostWithFile } from 'utils/utils';
+import { GalleryItem } from '../gallery-item/GalleryItem';
+import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
 import { GALLERY_ITEM_HEIGHT } from '../gallery.types';
 
 interface GalleryLayoutProps {
@@ -32,8 +32,6 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   hasMoreData,
   handleGalleryItemPress,
 }) => {
-  const [scrollOffset, setScrollOffset] = useState(0);
-
   const processedPosts: Post[][] = useMemo(() => {
     const arrangedPosts: Post[][] = [];
     // map over posts and put them into a lis of nested arrays, with with post per array
@@ -90,18 +88,21 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
     }
 
     return (
-      <View style={{ paddingVertical: 20 }}>
+      <View
+        style={{
+          paddingVertical: 20,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
         <ActivityIndicator
           size="small"
           color="#000000"
         />
       </View>
     );
-  };
-
-  const handleScroll = event => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    setScrollOffset(offsetY);
   };
 
   return (
@@ -117,16 +118,14 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
           if (distanceFromEnd < 0) return;
           onEndReached();
         }}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
         showsVerticalScrollIndicator={false}
         getItemLayout={(data, index) => ({
           length: GALLERY_ITEM_HEIGHT,
           offset: GALLERY_ITEM_HEIGHT * index,
           index,
         })}
-        onScroll={handleScroll} // Track the scroll offset
         initialNumToRender={Math.ceil(400 / GALLERY_ITEM_HEIGHT)} // Render initial items based on window height
-        // initialScrollIndex={Math.floor(scrollOffset / GALLERY_ITEM_HEIGHT)} // Set initial scroll index based on scroll offset
       />
     </View>
   );
