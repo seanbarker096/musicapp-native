@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppText } from 'components/app-text';
-import { IconColor, SVGIcon } from 'components/icon';
-import { PlayButtonSVG } from 'components/icon/svg-components';
 
+import { AppPlayButton } from 'components/app-play-button';
 import { ProfileType } from 'contexts/profile.context';
 import {
   AVPlaybackStatus,
@@ -325,16 +324,7 @@ export const Post: FC<PostProps> = ({
               onReadyForDisplay={_onReadyForDisplay}
             />
             {componentState.showPlayIcon && (
-              <SVGIcon
-                styles={styles.playIcon}
-                color={IconColor.MID}
-                height={50}
-                position="absolute"
-                width={50}
-                handlePress={handlePlayPress}
-              >
-                <PlayButtonSVG opacity={0.6}></PlayButtonSVG>
-              </SVGIcon>
+              <AppPlayButton handlePlayPress={handlePlayPress}></AppPlayButton>
             )}
           </Pressable>
           {postPerformer && (

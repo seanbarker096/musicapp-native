@@ -6,6 +6,7 @@ export enum IconColor {
   LIGHT = 'light',
   SECONDARY = 'secondary',
   PRIMARY = 'primary',
+  WHITE = 'white',
 }
 
 export interface SVGProps extends SvgProps {

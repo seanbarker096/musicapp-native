@@ -14,21 +14,20 @@ const IMAGE_SIZE = 'small';
 const HEIGHT = profileImageSizeGenerator(IMAGE_SIZE);
 
 // TODO: Add imgUrl as projection for User GET requests so we can have a single search card for users and performers
-export const PerformerSearchCard: FC<PerformerSearchCardProps> = memo(({
-  performer,
-  onPress = () => {},
-}) => (
-  <Pressable
-    onPress={onPress}
-    style={{ ...styles.container }}
-  >
-    <ProfileImage
-      styles={styles.profileImage}
-      imageUrl={performer.imageUrl}
-      size={IMAGE_SIZE}
-    ></ProfileImage>
-    <AppText>{performer.name}</AppText>
-  </Pressable>
+export const PerformerSearchCard: FC<PerformerSearchCardProps> = memo(
+  ({ performer, onPress = () => {} }) => (
+    <Pressable
+      onPress={onPress}
+      style={{ ...styles.container }}
+    >
+      <ProfileImage
+        styles={styles.profileImage}
+        imageUrl={performer.imageUrl}
+        size={IMAGE_SIZE}
+      ></ProfileImage>
+      <AppText>{performer.name}</AppText>
+    </Pressable>
+  ),
 );
 
 const styles = StyleSheet.create({
@@ -44,4 +43,4 @@ const styles = StyleSheet.create({
   profileImage: {
     marginRight: SPACING_XXSMALL,
   },
-}));
+});
