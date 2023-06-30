@@ -1,5 +1,4 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import { registerRootComponent } from 'expo';
 import 'expo-dev-client'; // Allows better error messages during development (https://docs.expo.dev/development/installation/#add-better-error-handlers)
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -23,7 +22,7 @@ const MyTheme = {
   },
 };
 
-const App = function () {
+const AppMain = function () {
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
   const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage | undefined>(
     LoggedOutPage.LOGIN,
@@ -66,10 +65,10 @@ const App = function () {
   );
 };
 
-const WrappedApp = () => (
+const App = () => (
   <QueryClientProvider client={queryClient}>
-    <App></App>
+    <AppMain></AppMain>
   </QueryClientProvider>
 );
 
-registerRootComponent(WrappedApp);
+export default App;

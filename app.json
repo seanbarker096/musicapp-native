@@ -1,10 +1,7 @@
 {
   "expo": {
-    "name": "MusicPortfolios",
-    "slug": "MusicPortfolios",
     "version": "1.0.0",
     "orientation": "portrait",
-    "entryPoint": "./src/app/App.tsx",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -19,23 +16,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "music.app"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      },
-      "package": "music.app"
+      }
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "d3850d37-1745-4a5b-b469-1d24498e76bc"
-      }
     },
     "plugins": [
       [

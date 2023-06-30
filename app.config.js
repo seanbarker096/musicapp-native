@@ -1,15 +1,18 @@
-export default ({ config }) => {
-  const baseConfig = { ...config };
-
-  const envConfig =
-    process.env.NODE_ENV === 'production'
-      ? {}
-      : {
-          name: 'My app',
-          extra: {
-            baseUrl: process.env.LOCAL_HOST === 'true' ? 'http://192.168.1.217:5000': 'http://api-dev222222.us-east-2.elasticbeanstalk.com'
-          }
-        };
-
-  return { ...baseConfig, ...envConfig };
-};
+export default ({ config }) => ({ 
+    ...config, 
+    owner: 'seanbarker6',
+    name: process.env.ENV === 'dev' ? 'MusicFans (Dev)' : 'MusicFans',
+    slug: 'music-fans',
+    ios: {
+      bundleIdentifier: process.env.ENV === 'dev' ? 'com.myapp.dev' : 'com.myapp',
+    },
+    android: {
+      package: process.env.ENV ? 'com.myapp.dev' : 'com.myapp',
+    },
+    extra: {
+      eas: {
+      projectId: "0135b451-fb20-4ad5-bca8-dc931ae8b774"
+      },
+      baseUrl: process.env.LOCAL_HOST === 'true' && process.env.ENV === 'dev' ? 'http://192.168.1.217:5000': process.env.API_URL,
+    }
+   });

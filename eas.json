@@ -10,14 +10,30 @@
         "simulator": true
       }
     },
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "production": {
+      "yarn":"1.22.19",
+      "node": "16.10.0",
+      "env":  {
+        "API_URL": "http://api-dev222222.us-east-2.elasticbeanstalk.com",
+        "ENV": "production"
+      }
     },
     "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "extends": "production",
       "distribution": "internal"
     },
-    "production": {}
+    "development": {
+      "extends": "production",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "API_URL": "http://api-dev222222.us-east-2.elasticbeanstalk.com",
+        "ENV": "dev"
+      }
+    }
   },
   "submit": {
     "production": {}
