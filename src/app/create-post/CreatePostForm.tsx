@@ -259,7 +259,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   if (!performer) {
     formErrorComponent = (
       <AppError
-        message={'You must select an artist to create a post'}
+        message="You must select an artist to create a post"
         marginBottom={SPACING_SMALL}
       ></AppError>
     );
@@ -281,7 +281,8 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     createFileErrorComponent = msg ? (
       <AppError
         message={msg}
-        onAction={handleErrorActionPress}
+        retryText="Upload another video"
+        onRetryAction={handleErrorActionPress}
         marginBottom={SPACING_SMALL}
       ></AppError>
     ) : undefined;

@@ -4,26 +4,31 @@ import { COLOR_LINK } from 'styles';
 interface ErrorProps {
   message: string;
   marginBottom?: number;
-  onAction?: () => void;
-  errorActionText?: string;
+  onRetryAction?: () => void;
+  retryText?: string;
 }
 
 export const AppError: React.FC<ErrorProps> = ({
   message,
   marginBottom = 0,
-  onAction,
-  errorActionText,
+  onRetryAction,
+  retryText,
 }) => {
   return (
     <View style={{ ...styles.container, marginBottom }}>
       <Text>
-        {message}{' '}
-        <Text
-          onPress={onAction}
-          style={{ color: COLOR_LINK }}
-        >
-          Upload another video
-        </Text>
+        <>
+          {message}
+          {!!onRetryAction && !!retryText && (
+            <Text
+              onPress={onRetryAction}
+              style={{ color: COLOR_LINK }}
+            >
+              {' '}
+              {retryText}
+            </Text>
+          )}
+        </>
       </Text>
     </View>
   );
