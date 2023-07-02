@@ -7,6 +7,5 @@ export enum PrimaryScreens {
   MANAGE = 'primaryScreenManage',
   CREATE_POST = 'primaryScreenCreatePost',
   SEARCH = 'primaryScreenSearch',
-  HOME = 'primaryScreenHome',
   CREATE_PERFORMANCE = 'primaryScreenCreatePerformance',
 }

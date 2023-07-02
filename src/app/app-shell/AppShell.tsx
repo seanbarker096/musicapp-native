@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SetLoggedOutPage } from 'app/app-types';
 import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
-import HomeStackScreen from 'app/home/HomeStackScreen';
 import ManageStackScreen from 'app/manage/ManageStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import ProfileStackScreen from 'app/profile/ProfileStackScreen';
@@ -78,10 +77,6 @@ const LoggedInScreens = () => {
       <Stack.Screen
         component={ProfileStackScreen}
         name={PrimaryScreens.PROFILE}
-      ></Stack.Screen>
-      <Stack.Screen
-        name={PrimaryScreens.HOME}
-        component={HomeStackScreen}
       ></Stack.Screen>
       <Stack.Screen
         component={SearchStackScreen}

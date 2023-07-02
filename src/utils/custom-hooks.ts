@@ -53,8 +53,19 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postIds && postIds.length > 0,
+    enabled: !!postIds && postIds.length > 0,
   });
+
+  const fileIds = postsAttachments
+    ? postsAttachments.reduce<readonly number[]>(
+        (allIds, attachment) => [
+          ...allIds,
+          attachment.fileId,
+          ...(attachment.thumbnailFileId ? [attachment.thumbnailFileId] : []),
+        ],
+        [],
+      )
+    : undefined;
 
   const {
     data: files,
@@ -62,20 +73,9 @@ export function useGetPostsWithAttachmentsAndFilesQuery({
     isError: filesError,
   } = useFilesGetQuery({
     queryParams: {
-      id: postsAttachments
-        ? postsAttachments.reduce<readonly number[]>(
-            (allIds, attachment) => [
-              ...allIds,
-              attachment.fileId,
-              ...(attachment.thumbnailFileId
-                ? [attachment.thumbnailFileId]
-                : []),
-            ],
-            [],
-          )
-        : undefined,
+      id: fileIds,
     },
-    enabled: postsAttachments && postsAttachments.length > 0,
+    enabled: !!fileIds && fileIds.length > 0,
   });
 
   useEffect(() => {
@@ -141,8 +141,19 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postIds && postIds.length > 0,
+    enabled: !!postIds && postIds.length > 0,
   });
+
+  const fileIds = postsAttachments
+    ? postsAttachments.reduce<readonly number[]>(
+        (allIds, attachment) => [
+          ...allIds,
+          attachment.fileId,
+          ...(attachment.thumbnailFileId ? [attachment.thumbnailFileId] : []),
+        ],
+        [],
+      )
+    : undefined;
 
   const {
     data: files,
@@ -150,22 +161,12 @@ export function useGetProfilePostsWithAttachmentsAndFilesQuery({
     isError: filesError,
   } = useFilesGetQuery({
     queryParams: {
-      id: postsAttachments
-        ? postsAttachments.reduce<readonly number[]>(
-            (allIds, attachment) => [
-              ...allIds,
-              attachment.fileId,
-              ...(attachment.thumbnailFileId
-                ? [attachment.thumbnailFileId]
-                : []),
-            ],
-            [],
-          )
-        : undefined,
+      id: fileIds,
     },
-    enabled: postsAttachments && postsAttachments.length > 0,
+    enabled: !!fileIds && fileIds.length > 0,
   });
 
+  
   useEffect(() => {
     if (!postsLoading && !postsAttachmentsLoading && !filesLoading) {
       const postsWithAttachmentsAndFiles = createPostsWithAttachmentsAndFiles(
@@ -229,8 +230,19 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     isError: postsAttachmentsError,
   } = usePostAttachmentsGetQuery({
     queryParams: { postId: postIds },
-    enabled: postIds && postIds.length > 0,
+    enabled: !!postIds && postIds.length > 0,
   });
+
+  const fileIds = postsAttachments
+    ? postsAttachments.reduce<readonly number[]>(
+        (allIds, attachment) => [
+          ...allIds,
+          attachment.fileId,
+          ...(attachment.thumbnailFileId ? [attachment.thumbnailFileId] : []),
+        ],
+        [],
+      )
+    : undefined;
 
   const {
     data: files,
@@ -238,20 +250,9 @@ export function useGetFeaturedPostsWithAttachmentsAndFilesQuery({
     isError: filesError,
   } = useFilesGetQuery({
     queryParams: {
-      id: postsAttachments
-        ? postsAttachments.reduce<readonly number[]>(
-            (allIds, attachment) => [
-              ...allIds,
-              attachment.fileId,
-              ...(attachment.thumbnailFileId
-                ? [attachment.thumbnailFileId]
-                : []),
-            ],
-            [],
-          )
-        : undefined,
+      id: fileIds,
     },
-    enabled: postsAttachments && postsAttachments.length > 0,
+    enabled: !!fileIds && fileIds.length > 0,
   });
 
   useEffect(() => {

@@ -41,17 +41,17 @@ export const usePostAttachmentsGetQuery = ({
   const { postId } = queryParams;
 
   let apiQueryParams:
-    | PostAttachmentsStoreSlice['Get']['RequestParametersType']
-    | undefined = undefined;
+    | PostAttachmentsStoreSlice['Get']['RequestParametersType'] = {};
 
   let queryKey: QueryKey = postAttachmentsKeys.null;
 
   if (postId) {
-    apiQueryParams = {};
     const processedPostId = isArray(postId) ? postId : [postId];
 
-    apiQueryParams['post_ids'] = processedPostId;
-    queryKey = postAttachmentsKeys.postAttachmentsByPostIds(processedPostId);
+    if (processedPostId.length) {
+      apiQueryParams['post_ids'] = processedPostId;
+      queryKey = postAttachmentsKeys.postAttachmentsByPostIds(processedPostId);
+    }
   }
 
   return useQuery<
@@ -60,10 +60,20 @@ export const usePostAttachmentsGetQuery = ({
     readonly PostAttachment[]
   >(
     queryKey,
-    () =>
-      apiQueryParams
-        ? usePostAttachmentsGet(apiQueryParams)
-        : failedQuery('Invalid uuids and ids. At least one must be defined'),
+    () => {
+      const hasQueryParams = !!Object.keys(apiQueryParams).length;
+
+      if (enabled && hasQueryParams) {
+        return usePostAttachmentsGet(apiQueryParams);
+      }
+      if (enabled && !hasQueryParams) {
+        return failedQuery(
+          'Invalid uuids and ids. At least one must be defined',
+        );
+      }
+
+      return Promise.resolve([]);
+    },
     {
       enabled,
     },

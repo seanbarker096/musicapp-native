@@ -1,10 +1,10 @@
 import 'react-native-get-random-values';
 import { QueryKey, useMutation, useQuery } from 'react-query';
 import { getRequest, postRequest } from 'store/request-builder';
-import { failedQuery } from 'store/store-utils';
 import { isArray } from 'utils/utils';
 import { v4 as uuidv4 } from 'uuid';
 
+import { failedQuery } from 'store/store-utils';
 import { filesKeys } from './files.query-keys';
 import { transformFileApi } from './files.transformations';
 import {
@@ -47,40 +47,47 @@ export function useFilesGetQuery({
   // used in determining value of enabled. Also even if is defined at runtime,
   // at compile time, when using dependant queries, TS won't know at runtime it will be defined
   // so need to  account for this too
-  let apiQueryParams:
-    | FilesStoreSlice['Get']['RequestParametersType']
-    | undefined = undefined;
+  let apiQueryParams: FilesStoreSlice['Get']['RequestParametersType'] = {};
 
   let queryKey: QueryKey = filesKeys.null;
 
   if (uuid || id) {
-    apiQueryParams = {};
-
     // Settting query key like this assumes we only ever use one parameter
     if (uuid) {
       const processedUUID = isArray(uuid) ? uuid : [uuid];
-
-      apiQueryParams['uuids'] = processedUUID;
-      queryKey = filesKeys.filesByUUIDs(processedUUID);
+      if (!processedUUID.length) {
+        apiQueryParams['uuids'] = processedUUID;
+        queryKey = filesKeys.filesByUUIDs(processedUUID);
+      }
     }
 
     if (id) {
       const processedId = isArray(id) ? id : [id];
 
-      apiQueryParams['ids'] = processedId;
-      queryKey = filesKeys.filesByIds(processedId);
+      if (processedId.length) {
+        apiQueryParams['ids'] = processedId;
+        queryKey = filesKeys.filesByIds(processedId);
+      }
     }
   }
 
   return useQuery<readonly File[], unknown, readonly File[]>(
     queryKey,
-    () =>
-      apiQueryParams
-        ? filesGet(apiQueryParams)
-        : // TODO: Make it clear this could be just because of waiting for external variables to be defined (e.g in chanined requests)
-        enabled
-        ? failedQuery('Invalid uuids and ids. At least one must be defined')
-        : Promise.resolve([]),
+    () => {
+      const hasQueryParams = !!Object.keys(apiQueryParams).length;
+
+      if (enabled && hasQueryParams) {
+        return filesGet(apiQueryParams);
+      }
+
+      if (enabled && !hasQueryParams) {
+        return failedQuery(
+          'Invalid uuids and ids. At least one must be defined',
+        );
+      }
+
+      return Promise.resolve([]);
+    },
     {
       enabled,
     },

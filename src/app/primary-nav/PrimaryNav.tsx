@@ -5,7 +5,6 @@ import { SVGIcon } from 'components/icon/SVGIcon';
 import { IconColor } from 'components/icon/icon.types';
 import {
   BorderedPlusSVG,
-  HomeOutlineSVG,
   MailSVG,
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
@@ -36,16 +35,6 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
 
   return (
     <View style={styles.navContainer}>
-      <SVGIcon
-        color={
-          currentScreen === PrimaryScreens.HOME
-            ? IconColor.SECONDARY
-            : IconColor.DARK
-        }
-        handlePress={() => handleIconPress(PrimaryScreens.HOME)}
-      >
-        <HomeOutlineSVG></HomeOutlineSVG>
-      </SVGIcon>
       <SVGIcon
         color={
           currentScreen === PrimaryScreens.SEARCH
