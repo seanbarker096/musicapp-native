@@ -11,7 +11,14 @@ import SessionExpired from './logged-out-pages/SessionExpired';
 import { SignUp } from './logged-out-pages/SignUp';
 import { authenticateUserOnAppStartup } from './services/authService';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 mins. This prevents the app from re-fetching data whenever a component using the query mounts (e.g. when switching back and forth between gallery and show tabs on the profile page)
+    },
+  },
+});
+
 
 const MyTheme = {
   ...DefaultTheme,

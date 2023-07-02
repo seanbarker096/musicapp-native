@@ -36,6 +36,7 @@ const ProfileShows: FC<ProfileShowsProps> = ({
       limit,
     });
 
+
   const hasNextPage = postsWithAttachmentsAndFiles
     ? postsWithAttachmentsAndFiles.length >= limit
     : false;

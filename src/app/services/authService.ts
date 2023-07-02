@@ -61,18 +61,6 @@ function getAccessToken(refreshToken: string) {
   );
 }
 
-// function getRefreshAndAccessToken(userId: number, appifr: string) {
-//   return axios.post<
-//     LoginResultApi,
-//     AxiosResponse<LoginResultApi>,
-//     { user_id: number }
-//   >(
-//     'http://192.168.1.217:5000/api/auth/0.1/refresh-token/',
-//     { user_id: userId },
-//     { headers: { 'x-appifr': appifr } },
-//   );
-// }
-
 /**
  * @param Optional onError callback which for setting the user as unauthenticated
  */

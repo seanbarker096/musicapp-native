@@ -16,7 +16,7 @@ import { TimelineStackScreen } from 'app/timeline/TimelineStackScreen';
 import { AppText } from 'components/app-text';
 import { SVGIcon } from 'components/icon';
 import { BurgerMenuSVG } from 'components/icon/svg-components';
-import { ProfileContext } from 'contexts/profile.context';
+import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, memo, useContext } from 'react';
 import { View } from 'react-native';
 
@@ -91,6 +91,7 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
     const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
     const { profileState } = useContext(ProfileContext);
+
     const { profileId: contextProfileId, profileType: contextProfileType } =
       profileState;
 
@@ -116,14 +117,29 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
       >
         <ProfileStack.Screen name="Profile">
           {props => (
-            <Profile
-              {...props}
-              profileId={profileScreenPropsProfileId}
-              profileType={profileScreenPropsProfileType}
-              initialTab={
-                createPostSuccess ? SelectedProfileTab.SHOWS : undefined
-              }
-            />
+            <>
+              {profileScreenPropsProfileType === ProfileType.PERFORMER && (
+                //To prevent stale data, if a user switches between viewing their user and performer account, we want to re-mount so our queries don't return data from the previous profile
+                <Profile
+                  {...props}
+                  profileId={profileScreenPropsProfileId}
+                  profileType={ProfileType.PERFORMER}
+                  initialTab={
+                    createPostSuccess ? SelectedProfileTab.SHOWS : undefined
+                  }
+                />
+              )}
+              {profileScreenPropsProfileType === ProfileType.USER && (
+                <Profile
+                  {...props}
+                  profileId={profileScreenPropsProfileId}
+                  profileType={ProfileType.USER}
+                  initialTab={
+                    createPostSuccess ? SelectedProfileTab.SHOWS : undefined
+                  }
+                />
+              )}
+            </>
           )}
         </ProfileStack.Screen>
         <ProfileStack.Screen
