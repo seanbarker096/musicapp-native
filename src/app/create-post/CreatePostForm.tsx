@@ -2,8 +2,8 @@ import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
-import { SVGIcon } from 'components/icon';
-import { LocationSVG } from 'components/icon/svg-components';
+import { IconColor, SVGIcon } from 'components/icon';
+import { LocationSVG, PictureSVG } from 'components/icon/svg-components';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { useFormik } from 'formik';
@@ -28,6 +28,7 @@ import {
   APP_GUTTER,
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXLIGHT,
   SPACING_SMALL,
   SPACING_XSMALL,
   SPACING_XXSMALL,
@@ -249,7 +250,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   const handleCaptionChange = handleChange('caption');
 
   const buttonDisabled =
-    isSubmitting || !postFile || !isValid || !thumbnailLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
+    isSubmitting || !postFile || !isValid || thumbnailLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
 
   let formErrorComponent: React.ReactNode | undefined;
   let createFileErrorComponent: React.ReactNode | undefined;
@@ -318,18 +319,38 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           ...styles.borederedContainer,
         }}
       >
-        {!thumbnailLoading && thumbnailUri ? (
-          <Image
-            style={{ marginRight: SPACING_XXXSMALL }}
-            source={{
-              uri: thumbnailUri,
-              width: 50,
-              height: 50,
-            }}
-          ></Image>
-        ) : (
-          <LoadingThumbnail />
-        )}
+        {!thumbnailLoading &&
+          (thumbnailUri ? (
+            <Image
+              style={{ marginRight: SPACING_XXXSMALL }}
+              source={{
+                uri: thumbnailUri,
+                width: 50,
+                height: 50,
+              }}
+            ></Image>
+          ) : (
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 50,
+                height: 50,
+                backgroundColor: COLOR_NEUTRAL_XXLIGHT,
+              }}
+            >
+              <SVGIcon
+                height={40}
+                width={40}
+                color={IconColor.LIGHT}
+              >
+                <PictureSVG></PictureSVG>
+              </SVGIcon>
+            </View>
+          ))}
+        {thumbnailLoading && <LoadingThumbnail />}
         {/* Had to wrap in View to stop the AppTextInput overflowing width of the screen */}
         <View style={{ flex: 1 }}>
           <AppTextInput

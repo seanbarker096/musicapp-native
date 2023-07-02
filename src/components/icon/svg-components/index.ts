@@ -15,6 +15,7 @@ export * from './MailSVG';
 export * from './PeopleSVG';
 export * from './PictureCheckMarkSVG';
 export * from './PicturePlusSVG';
+export * from './PictureSVG';
 export * from './PlayButtonSVG';
 export * from './PlusSVG';
 export * from './RightChevronSVG';
