@@ -1,7 +1,7 @@
 import {
   COLOR_NEUTRAL_XXXXLIGHT,
   COLOR_PRIMARY_DARK,
-  COLOR_SECONDARY_XXDARK,
+  COLOR_SECONDARY,
   ICON_COLOR_DARK,
   ICON_COLOR_LIGHT,
   ICON_COLOR_MID,
@@ -17,7 +17,7 @@ export function iconColorGenerator(color: IconColor): string {
     case IconColor.LIGHT:
       return ICON_COLOR_LIGHT;
     case IconColor.SECONDARY:
-      return COLOR_SECONDARY_XXDARK;
+      return COLOR_SECONDARY;
     case IconColor.PRIMARY:
       return COLOR_PRIMARY_DARK;
     case IconColor.WHITE:

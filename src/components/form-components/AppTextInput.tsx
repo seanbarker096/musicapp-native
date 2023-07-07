@@ -59,6 +59,7 @@ export const AppTextInput: React.FC<
                 : SPACING_XXXSMALL,
             backgroundColor,
             ...(borderless ? {} : styles.border),
+            fontFamily: 'Quicksand',
           }}
           onChangeText={handleChange}
           onBlur={handleBlur}

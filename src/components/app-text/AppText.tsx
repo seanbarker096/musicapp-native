@@ -58,6 +58,7 @@ export const AppText: FC<AppTextProps> = ({
           color: hidden ? 'transparent' : textColor,
           textAlign,
           ...(isLink ? baseStyles.link : {}),
+          fontFamily: 'Quicksand',
         }}
       >
         {children}

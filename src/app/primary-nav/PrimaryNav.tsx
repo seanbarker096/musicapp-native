@@ -12,8 +12,8 @@ import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  BORDER_COLOR_XDARK,
   BORDER_RADIUS_XXSMALL,
+  COLOR_NEUTRAL_XXXXLIGHT,
   NAVIGATION_BACKGROUND_COLOR,
   SPACING_SMALL,
 } from 'styles';
@@ -25,7 +25,6 @@ interface PrimaryNavProps {
 }
 
 const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
-  
   const { profileState } = useContext(ProfileContext);
   const profileType = profileState.profileType;
 
@@ -38,7 +37,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
       <SVGIcon
         color={
           currentScreen === PrimaryScreens.SEARCH
-            ? IconColor.SECONDARY
+            ? IconColor.WHITE
             : IconColor.DARK
         }
         handlePress={() => handleIconPress(PrimaryScreens.SEARCH)}
@@ -49,7 +48,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
         <SVGIcon
           color={
             currentScreen === PrimaryScreens.CREATE_PERFORMANCE
-              ? IconColor.SECONDARY
+              ? IconColor.WHITE
               : IconColor.DARK
           }
           handlePress={() => handleIconPress(PrimaryScreens.CREATE_PERFORMANCE)}
@@ -61,7 +60,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
         <SVGIcon
           color={
             currentScreen === PrimaryScreens.CREATE_POST
-              ? IconColor.SECONDARY
+              ? IconColor.WHITE
               : IconColor.DARK
           }
           handlePress={() => handleIconPress(PrimaryScreens.CREATE_POST)}
@@ -72,7 +71,7 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
       <SVGIcon
         color={
           currentScreen === PrimaryScreens.MANAGE
-            ? IconColor.SECONDARY
+            ? IconColor.WHITE
             : IconColor.DARK
         }
         handlePress={() => handleIconPress(PrimaryScreens.MANAGE)}
@@ -114,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: AvatarSize.SMALL / 2,
     borderStyle: 'solid',
     borderWidth: BORDER_RADIUS_XXSMALL,
-    borderColor: BORDER_COLOR_XDARK,
+    borderColor: COLOR_NEUTRAL_XXXXLIGHT,
   },
 });
 
