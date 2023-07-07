@@ -199,7 +199,12 @@ const ProfileStackScreenHeader: FC<NativeStackHeaderProps> = ({
         paddingTop: SPACING_XSMALL,
       }}
     >
-      <AppText size="large">My App</AppText>
+      <AppText
+        size="xlarge"
+        weight="semi-bold"
+      >
+        Gigstory
+      </AppText>
       <SVGIcon
         handlePress={navigate}
         height={22}
