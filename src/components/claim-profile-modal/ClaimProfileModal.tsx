@@ -6,7 +6,7 @@ import {
   CrowdSVG,
 } from 'components/icon/svg-components';
 import { FC } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import {
   SPACING_LARGE,
   SPACING_MID,
@@ -48,6 +48,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           size="regular"
           textAlign="center"
           marginBottom={SPACING_XXXSMALL}
+          weight="bold"
         >
           Fan captures
         </AppText>
@@ -74,6 +75,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           size="regular"
           textAlign="center"
           marginBottom={SPACING_XXXSMALL}
+          weight="bold"
         >
           Create shows
         </AppText>
@@ -100,6 +102,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
         <AppText
           size="regular"
           textAlign="center"
+          weight="bold"
           marginBottom={SPACING_XXXSMALL}
         >
           Interact with fans
@@ -120,8 +123,9 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           textAlign="center"
           weight="light"
         >
-          To claim this profile, contact @yourMum on Instagram with the aritst
-          name.
+          To claim this profile, contact{' '}
+          <Text style={{ fontWeight: '800' }}>@gigstoryy </Text>
+          on Instagram with the aritst name.
         </AppText>
       </ScrollView>
     </Pressable>

@@ -4,7 +4,7 @@ import { BorderedPlusSVG } from 'components/icon/svg-components';
 import { FC } from 'react';
 import { Pressable } from 'react-native';
 import {
-  COLOR_SECONDARY_XXDARK,
+  COLOR_SECONDARY_XDARK,
   SPACING_XSMALL,
   SPACING_XXXSMALL,
 } from 'styles';
@@ -36,7 +36,7 @@ export const CreatePerformanceButton: FC<CreatePerformanceButtonProps> = ({
       >
         <BorderedPlusSVG></BorderedPlusSVG>
       </SVGIcon>
-      <AppText textColor={COLOR_SECONDARY_XXDARK}>Create performance</AppText>
+      <AppText textColor={COLOR_SECONDARY_XDARK}>Create performance</AppText>
     </Pressable>
   );
 };

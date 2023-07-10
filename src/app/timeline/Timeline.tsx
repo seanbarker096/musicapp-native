@@ -12,6 +12,7 @@ import { useUserGetQuery } from 'store/users';
 import {
   APP_GUTTER,
   BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXXXLIGHT,
   COLOR_PRIMARY,
   SPACING_SMALL,
   SPACING_XSMALL,
@@ -108,7 +109,12 @@ const Timeline: FC<TimelineProps> = ({
             ></AppButton>
           </View>
           <View style={{ ...styles.headerContainer }}>
-            <AppText weight="bold">Shows attended by {user.firstName}</AppText>
+            <AppText
+              textColor={COLOR_NEUTRAL_XXXXLIGHT}
+              weight="semi-bold"
+            >
+              Shows attended by {user.firstName}
+            </AppText>
           </View>
           <PerformanceList
             performerId={performerId}
