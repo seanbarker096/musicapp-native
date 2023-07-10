@@ -106,6 +106,7 @@ const postCreate = async function ({
   ownerId,
   ownerType,
   content,
+  note,
   attachmentFiles,
 }: PostCreateRequest): Promise<PostCreateResult> {
   if (attachmentFiles.length === 0) {
@@ -120,6 +121,7 @@ const postCreate = async function ({
       owner_id: ownerId,
       owner_type: ownerType,
       content,
+      note,
       attachment_files: attachmentFiles.map(attachmentFile => ({
         attachment_file_id: attachmentFile.attachmentFileId,
         thumbnail_file_id: attachmentFile.thumbnailFileId,

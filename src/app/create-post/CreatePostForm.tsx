@@ -39,10 +39,14 @@ import { PostFile } from './create-post.types';
 
 interface PostCreateFormValues {
   caption: string | undefined;
+  note: string | undefined;
 }
 
 const createPostFormSchema = Yup.object({
   caption: Yup.string().max(1000, 'Caption must be 1000 characters or less'),
+  note: Yup.string()
+    .optional()
+    .max(1000, 'Note must be 1000 characters or less'),
 });
 
 interface CreatePostFormProps {
@@ -184,6 +188,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       ownerId: userId,
       ownerType: PostOwnerType.USER,
       content: form.caption as string, // submit button only active if caption is defined
+      note: form.note,
       attachmentFiles: [
         {
           attachmentFileId: fileResult.file.id,
@@ -241,13 +246,15 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
     dirty,
   } = useFormik({
     validationSchema: createPostFormSchema,
-    initialValues: { caption: undefined },
+    initialValues: { caption: undefined, note: undefined },
     onSubmit: handleFormSubmit,
   });
 
   const handleCaptionBlur = handleBlur('caption');
-
   const handleCaptionChange = handleChange('caption');
+
+  const handleNoteBlur = handleBlur('note');
+  const handleNoteChange = handleChange('note');
 
   const buttonDisabled =
     isSubmitting || !postFile || !isValid || thumbnailLoading; // Wait until we hacve fetched any performance that matches the artist and show dates before allow user to create post;
@@ -438,7 +445,38 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           </View>
         </>
       )}
-
+      {performer && (
+        <View style={{ marginTop: SPACING_SMALL }}>
+          <AppText marginBottom={SPACING_XXSMALL}>
+            Can't find the artist's performance?
+          </AppText>
+          <AppText marginBottom={SPACING_XXSMALL}>
+            Describe the gig to us. Once the performance has been created, we
+            can use your description to link your post to the performance
+          </AppText>
+          <AppTextInput
+            handleChange={(e: string | React.ChangeEvent<any>) => {
+              if (showError) {
+                setShowError(false);
+              }
+              handleNoteChange(e);
+            }}
+            handleBlur={(e: any) => {
+              if (showError) {
+                setShowError(false);
+              }
+              setShowError(false);
+              handleNoteBlur(e);
+            }}
+            value={values.note}
+            placeholder="e.g. O2 Academy Brixton, London. 22/03/23"
+            error={errors.note}
+            touched={touched.note}
+            backgroundColor="transparent"
+            multiline={true}
+          />
+        </View>
+      )}
       <View
         style={{
           flexGrow: 1,

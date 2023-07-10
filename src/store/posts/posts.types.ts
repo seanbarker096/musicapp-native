@@ -93,12 +93,14 @@ export interface PostCreateRequest {
   ownerId: number;
   ownerType: PostOwnerType;
   content: string;
+  note?: string;
   attachmentFiles: readonly PostAttachmentFile[];
 }
 export interface PostCreateRequestApi {
   content: string;
   owner_id: number;
   owner_type: PostOwnerType;
+  note?: string;
   attachment_files: readonly PostAttachmentFileApi[];
 }
 
