@@ -11,6 +11,7 @@ import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
 import Manage from './Manage';
 import { ManageArtistPicks } from './ManageArtistPicks';
+import { ManageFeedback } from './ManageFeedback';
 import { ManageTaggedPosts } from './ManageTaggedPosts';
 import { ManageStackParamList } from './manage-types';
 
@@ -61,6 +62,11 @@ const InternalManageStackScreen = () => {
         component={ManageTaggedPosts}
         name="ManageTaggedPosts"
         options={{ headerTitle: 'Tagged Posts' }}
+      ></InternalManageStack.Screen>
+      <InternalManageStack.Screen
+        component={ManageFeedback}
+        name="ManageFeedback"
+        options={{ headerTitle: 'Feedback' }}
       ></InternalManageStack.Screen>
       <InternalManageStack.Screen
         component={PostStackScreen}

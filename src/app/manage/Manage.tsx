@@ -5,6 +5,7 @@ import {
   RightChevronSVG,
   StarOutlineSVG,
   TaggedUserSVG,
+  ThumbsSVG,
 } from 'components/icon/svg-components';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
@@ -38,6 +39,14 @@ const Manage: FC<ManageProps> = ({ navigation }) => {
       action: () => navigation.navigate('ManageArtistPicks'),
     });
   }
+
+  manageListItems.push({
+    heading: 'Give us your feedback',
+    text: 'Our team are always looking to speak to users in order to improve your experience on Gigstory.',
+    icon: ThumbsSVG,
+    // If user was previously viewing app as their artist profile, switch to user, otherwise switch to artist
+    action: () => navigation.navigate('ManageFeedback'),
+  });
 
   return (
     <>
