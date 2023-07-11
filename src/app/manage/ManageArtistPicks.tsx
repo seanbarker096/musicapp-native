@@ -92,13 +92,13 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
             }}
           >
             <AppText
-              size="large"
+              size="xxlarge"
               weight="bold"
               marginBottom={SPACING_XXSMALL}
             >
               You're getting noticed!
             </AppText>
-            <AppText textAlign="center">
+            <AppText>
               Some of your favourite artsits have picked your posts to appear on
               their profiles! You can find them all below.
             </AppText>

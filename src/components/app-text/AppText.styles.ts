@@ -1,4 +1,5 @@
 import {
+  TEXT_SIZE_H2,
   TEXT_SIZE_H3,
   TEXT_SIZE_H4,
   TEXT_SIZE_REGULAR,
@@ -8,6 +9,7 @@ import {
 import { TextSize, TextWeight } from './AppText.types';
 
 export const textSizeMap: { [key in TextSize]: number } = {
+  xxlarge: TEXT_SIZE_H2,
   xlarge: TEXT_SIZE_H3,
   large: TEXT_SIZE_H4,
   regular: TEXT_SIZE_REGULAR,

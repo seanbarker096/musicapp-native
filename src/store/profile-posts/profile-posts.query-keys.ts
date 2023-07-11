@@ -11,6 +11,16 @@ export const profilePostsKeys = {
     'includeFeatured',
     true,
   ],
+  profilePostsByProfileIdAndType: (
+    profileId: number,
+    profileType: ProfileType,
+  ) => [
+    ...profilePostsKeys.all,
+    'profileId',
+    profileId,
+    'profileType',
+    profileType,
+  ],
   profilePostsByProfile: (
     profileId: number,
     profileType: ProfileType,

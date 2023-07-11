@@ -102,6 +102,7 @@ export function usePerformerGetOrCreateQuery({
   enabled: boolean;
   onSuccess?: (performer: Performer) => void;
 }) {
+
   let queryKey: QueryKey = performersKeys.null('usePerformerGetOrCreateQuery');
 
   if (performerUUID) {

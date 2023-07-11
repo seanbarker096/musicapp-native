@@ -171,13 +171,11 @@ export const usePostCreateMutation = ({
     // TODO: Might also need to invalidate all profile post queries for the performer tagged in the post
 
     // Invalidate queries used to fetch profile posts, so the new post appears in their gallery when navigating back to it
-    const profileType =
-      ownerType === PostOwnerType.PERFORMER
-        ? ProfileType.PERFORMER
-        : ProfileType.USER;
-
     return queryClient.invalidateQueries(
-      profilePostsKeys.profilePostsByProfile(ownerId, profileType),
+      profilePostsKeys.profilePostsByProfileIdAndType(
+        ownerId,
+        ProfileType.USER,
+      ),
     );
   };
 

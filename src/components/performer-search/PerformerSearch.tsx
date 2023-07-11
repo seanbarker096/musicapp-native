@@ -1,7 +1,7 @@
 import { AppText } from 'components/app-text';
 import { PerformerSearchCard } from 'components/performer-search-card';
 import { SearchBar } from 'components/search';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { ListRenderItemInfo, View } from 'react-native';
 import { Performer, PerformerSearchPerformer } from 'store/performers';
 import {
@@ -59,9 +59,14 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
     enabled: !!selectedSearchPerformer,
     onSuccess: performer => {
       setSelectedSearchPerformer(undefined);
-      onPerformerSelected(performer);
     },
   });
+
+  useEffect(() => {
+    if (performer) {
+      onPerformerSelected(performer);
+    }
+  }, [performer]);
 
   const searchResultItem = ({
     item,
