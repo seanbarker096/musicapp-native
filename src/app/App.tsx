@@ -40,6 +40,44 @@ const AppMain = function () {
     LoggedOutPage.LOGIN,
   );
 
+  authenticateUserOnAppStartup(setAuthState);
+
+  return (
+    <NavigationContainer theme={MyTheme}>
+      {authState?.status === AuthStatus.AUTHENTICATED ? (
+        <LoggedInAppShell
+          authState={authState}
+          setAuthState={
+            setAuthState as React.Dispatch<React.SetStateAction<AuthState>> // we know authState is defined here, so can safely cast
+          }
+          setLoggedOutPage={setLoggedOutPage}
+        ></LoggedInAppShell>
+      ) : (
+        <>
+          {(!loggedOutPage || loggedOutPage === LoggedOutPage.LOGIN) && (
+            <Login
+              setAuthState={setAuthState}
+              setLoggedOutPage={setLoggedOutPage}
+            ></Login>
+          )}
+          {loggedOutPage === LoggedOutPage.SIGN_UP && (
+            <SignUp
+              setAuthState={setAuthState}
+              setLoggedOutPage={setLoggedOutPage}
+            ></SignUp>
+          )}
+          {loggedOutPage === LoggedOutPage.SESSION_EXPIRED && (
+            <SessionExpired
+              setLoggedOutPage={setLoggedOutPage}
+            ></SessionExpired>
+          )}
+        </>
+      )}
+    </NavigationContainer>
+  );
+};
+
+const App = () => {
   const [fontsLoaded] = useFonts({
     Quicksand: require('../assets/fonts/Quicksand-Medium.ttf'),
   });
@@ -50,8 +88,6 @@ const AppMain = function () {
     }
   }, [fontsLoaded]);
 
-  authenticateUserOnAppStartup(setAuthState);
-
   if (!fontsLoaded) {
     return null;
   }
@@ -61,45 +97,11 @@ const AppMain = function () {
       onLayout={onLayoutRootView}
       style={{ height: '100%', width: '100%' }}
     >
-      <NavigationContainer theme={MyTheme}>
-        {authState?.status === AuthStatus.AUTHENTICATED ? (
-          <LoggedInAppShell
-            authState={authState}
-            setAuthState={
-              setAuthState as React.Dispatch<React.SetStateAction<AuthState>> // we know authState is defined here, so can safely cast
-            }
-            setLoggedOutPage={setLoggedOutPage}
-          ></LoggedInAppShell>
-        ) : (
-          <>
-            {(!loggedOutPage || loggedOutPage === LoggedOutPage.LOGIN) && (
-              <Login
-                setAuthState={setAuthState}
-                setLoggedOutPage={setLoggedOutPage}
-              ></Login>
-            )}
-            {loggedOutPage === LoggedOutPage.SIGN_UP && (
-              <SignUp
-                setAuthState={setAuthState}
-                setLoggedOutPage={setLoggedOutPage}
-              ></SignUp>
-            )}
-            {loggedOutPage === LoggedOutPage.SESSION_EXPIRED && (
-              <SessionExpired
-                setLoggedOutPage={setLoggedOutPage}
-              ></SessionExpired>
-            )}
-          </>
-        )}
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <AppMain></AppMain>
+      </QueryClientProvider>
     </View>
   );
 };
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AppMain></AppMain>
-  </QueryClientProvider>
-);
 
 export default App;

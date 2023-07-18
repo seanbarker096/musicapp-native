@@ -14,8 +14,8 @@
       "yarn":"1.22.19",
       "node": "16.10.0",
       "env":  {
-        "API_URL": "http://api-dev222222.us-east-2.elasticbeanstalk.com",
-        "ENV": "production"
+        "API_URL": "gigsstory-api-prod.eba-c662d9mj.us-east-2.elasticbeanstalk.com",
+        "ENV": "prod"
       }
     },
     "preview": {
@@ -30,7 +30,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "API_URL": "http://api-dev222222.us-east-2.elasticbeanstalk.com",
+        "API_URL": "http://gigsstory-api-dev.us-east-2.elasticbeanstalk.com",
         "ENV": "dev"
       }
     }
