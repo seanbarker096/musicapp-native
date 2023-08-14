@@ -16,5 +16,5 @@ export const featuredPostKeys = {
       // limit is optional because when we invalidate queries, we dont want to have to provide a limit
       ...(limit ? ['limit', limit] : []),
     ] as const,
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };

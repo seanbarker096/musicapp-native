@@ -77,7 +77,7 @@ export function usePerformancesGetQuery({
     | PerformancesStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = performancesKeys.null;
+  let queryKey: QueryKey = performancesKeys.null('performancesGet');
 
   if (isArray(performanceDate)) {
     throw Error('Querying by multiple performance dates is not supported');

@@ -4,5 +4,5 @@ export const filesKeys = {
   filesByUUIDs: (UUIDs: readonly string[]) =>
     [...filesKeys.all, UUIDs] as const,
   filesByIds: (ids: readonly number[]) => [...filesKeys.all, ids] as const,
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };

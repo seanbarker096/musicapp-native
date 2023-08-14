@@ -200,7 +200,7 @@ export function useTagsGetQuery({
     | TagsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = tagKeys.null;
+  let queryKey: QueryKey = tagKeys.null('tagsGet');
 
   if (taggedEntityId && taggedEntityType) {
     if (isArray(taggedEntityId) || isArray(taggedEntityType)) {

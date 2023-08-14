@@ -12,7 +12,7 @@ export const postsKeys = {
     ...(limit ? ['limit', limit] : []),
   ],
   postsByIds: (ids: readonly number[]) => [...postsKeys.all, ...ids],
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };
 
 export type postKeys = typeof postsKeys[keyof typeof postsKeys];

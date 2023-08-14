@@ -17,5 +17,5 @@ export const featuresKeys = {
       'postIds',
       ...postIds,
     ] as const,
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };

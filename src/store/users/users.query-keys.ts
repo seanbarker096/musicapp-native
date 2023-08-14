@@ -9,5 +9,5 @@ export const usersKeys = {
       'limit',
       limit,
     ] as const,
-  null: [],
+  null: (queryName: string) => [queryName, 'null'] as const,
 };

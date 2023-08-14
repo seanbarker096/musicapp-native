@@ -42,7 +42,7 @@ export const useUserGetQuery = ({
     | UsersStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = usersKeys.null;
+  let queryKey: QueryKey = usersKeys.null('usersGet');
 
   if (id) {
     const processdUserId = isArray(id) ? id : [id];
@@ -105,7 +105,7 @@ export function userUsersSearchQuery({
   let apiQueryParams: UsersStoreSlice['Search']['RequestBodyType'] | undefined =
     undefined;
 
-  let queryKey: QueryKey = usersKeys.null;
+  let queryKey: QueryKey = usersKeys.null('usersSearch');
 
   if (searchQuery) {
     apiQueryParams = {

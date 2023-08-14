@@ -57,12 +57,10 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
   } = usePerformerGetOrCreateQuery({
     performerUUID: selectedSearchPerformer?.uuid,
     enabled: !!selectedSearchPerformer,
-    onSuccess: performer => {
-      setSelectedSearchPerformer(undefined);
-    },
   });
 
   useEffect(() => {
+    console.log(performer);
     if (performer) {
       onPerformerSelected(performer);
     }

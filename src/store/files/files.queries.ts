@@ -49,7 +49,7 @@ export function useFilesGetQuery({
   // so need to  account for this too
   let apiQueryParams: FilesStoreSlice['Get']['RequestParametersType'] = {};
 
-  let queryKey: QueryKey = filesKeys.null;
+  let queryKey: QueryKey = filesKeys.null('filesGet');
 
   if (uuid || id) {
     // Settting query key like this assumes we only ever use one parameter

@@ -85,7 +85,7 @@ export function useFeaturesGetQuery({
   queryParams: FeaturesGetQueryField;
   enabled?: boolean;
 }) {
-  let queryKey: QueryKey = featuresKeys.null;
+  let queryKey: QueryKey = featuresKeys.null('featuresGet');
 
   let apiQueryParams:
     | FeaturesStoreSlice['Get']['RequestParametersType']

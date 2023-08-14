@@ -48,7 +48,7 @@ export function useFeaturedPostsGetQuery({
     | FeaturedPostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = featuredPostKeys.null;
+  let queryKey: QueryKey = featuredPostKeys.null('featuredPostsGet');
 
   if (
     ownerId &&

@@ -33,7 +33,7 @@ export function useAttendeePerformersGetQuery({
   attendeeId: number;
   enabled?: boolean;
 }) {
-  let queryKey: QueryKey = attendeePerformerKeys.null;
+  let queryKey: QueryKey = attendeePerformerKeys.null('attendeePerformersGet');
   let apiQueryParams: AttendeePerformersGetFilterApi | undefined;
 
   if (attendeeId) {

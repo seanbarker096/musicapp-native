@@ -1,6 +1,6 @@
 export const performancesKeys = {
   all: ['performances'],
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
   performancesByIds: (ids: readonly number[]) => [
     ...performancesKeys.all,
     'id',

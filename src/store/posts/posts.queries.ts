@@ -59,7 +59,7 @@ export const usePostsGetQuery = ({
     | PostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;
 
-  let queryKey: QueryKey = postsKeys.null;
+  let queryKey: QueryKey = postsKeys.null('postsGet');
 
   if (ownerId && ownerType) {
     const processedOwnerId = isArray(ownerId) ? ownerId : [ownerId];

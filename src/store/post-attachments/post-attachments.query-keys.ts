@@ -6,7 +6,7 @@ export const postAttachmentsKeys = {
     ...postAttachmentsKeys.all,
     ...ids,
   ],
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };
 
 export type PostAttachmentKeys =

@@ -43,7 +43,7 @@ export const usePostAttachmentsGetQuery = ({
   let apiQueryParams:
     | PostAttachmentsStoreSlice['Get']['RequestParametersType'] = {};
 
-  let queryKey: QueryKey = postAttachmentsKeys.null;
+  let queryKey: QueryKey = postAttachmentsKeys.null('postAttachmentsGet');
 
   if (postId) {
     const processedPostId = isArray(postId) ? postId : [postId];

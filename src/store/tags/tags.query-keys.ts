@@ -43,5 +43,5 @@ export const tagKeys = {
       'taggedInEntityType',
       taggedInEntityType,
     ] as const,
-  null: [],
+  null: (queryName: string) => [queryName, 'null'],
 };
