@@ -152,7 +152,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
           {taggedPosts.length === 0 && (
             <AppEmptyState
               primaryMessage="Moments captured by fans"
-              secondaryMessage="Be the first to share a video for this performance!"
+              secondaryMessage="Be the first to share a video for this gig!"
               onActionPress={handleCreatePostPress}
               actionText="Create a post"
             ></AppEmptyState>

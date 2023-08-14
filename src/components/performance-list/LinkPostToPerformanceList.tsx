@@ -176,7 +176,7 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
           {canCreatePerformance && (
             <AppButton
               handlePress={handleCreatePerformancePress}
-              text="Create Performance"
+              text="Create Gig"
             ></AppButton>
           )}
         </>

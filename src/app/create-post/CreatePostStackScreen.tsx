@@ -45,7 +45,7 @@ const CreatePostStackScreen: FC<Props> = ({ route: { params } }) => {
       <CreateStackTabNavigator.Screen
         component={CreatePostPerformanceSearch}
         name="CreatePostPerformanceSearch"
-        options={{ headerTitle: 'Performance Search' }}
+        options={{ headerTitle: 'Gig Search' }}
       ></CreateStackTabNavigator.Screen>
     </CreateStackTabNavigator.Navigator>
   );

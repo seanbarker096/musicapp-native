@@ -36,7 +36,7 @@ export const CreatePerformanceButton: FC<CreatePerformanceButtonProps> = ({
       >
         <BorderedPlusSVG></BorderedPlusSVG>
       </SVGIcon>
-      <AppText textColor={COLOR_SECONDARY_XDARK}>Create performance</AppText>
+      <AppText textColor={COLOR_SECONDARY_XDARK}>Create gig</AppText>
     </Pressable>
   );
 };

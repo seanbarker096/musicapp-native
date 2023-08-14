@@ -63,7 +63,7 @@ const validationSchema = Yup.object({
       });
     }),
   performanceDate: Yup.string()
-    .required('Please select a performance date')
+    .required('Please select the date of the performance')
     .when(
       ['eventStartDate', 'eventEndDate'],
       ([eventStartDate, eventEndDate], schema) => {

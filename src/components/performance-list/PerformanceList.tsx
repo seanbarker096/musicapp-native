@@ -82,7 +82,7 @@ export const PerformanceList: FC<Props> = ({
           <>
             {!loggedInUserIsThePerformer && (
               <AppEmptyState
-                primaryMessage="This artist hasn't created any performances yet"
+                primaryMessage="This artist hasn't created any gigs yet"
                 // If we provide a handleViewProfilePress, we are using this component on the profile page, so show a secondary message + action text. TODO: Create a wrapper component or something so this is clearer
                 secondaryMessage={
                   handleViewProfilePress
@@ -100,8 +100,8 @@ export const PerformanceList: FC<Props> = ({
             {loggedInUserIsThePerformer && (
               <AppEmptyState
                 primaryMessage="Your journey as an artist"
-                secondaryMessage="Keep a record of your journey as an artist by creating a show. They'll appear here, along with any videos your fans have uploaded from these shows."
-                actionText="Create a show"
+                secondaryMessage="Keep a record of your journey as an artist by creating a gig. They'll appear here, along with any videos your fans have uploaded from these gigs."
+                actionText="Create a gig"
                 onActionPress={handleCreatePerformancePress}
               ></AppEmptyState>
             )}

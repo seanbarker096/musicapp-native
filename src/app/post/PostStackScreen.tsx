@@ -35,7 +35,7 @@ export const PostStackScreen: FC<PostStackScreenProps> = ({
       <PostStack.Screen
         name="PostLinkToPerformance"
         component={LinkPostToPerformance}
-        options={{ headerTitle: 'Performances' }}
+        options={{ headerTitle: 'Gigs' }}
       ></PostStack.Screen>
       <PostStack.Screen
         name="PostCreatePerformance"

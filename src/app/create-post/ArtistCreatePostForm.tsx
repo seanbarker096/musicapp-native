@@ -273,9 +273,7 @@ export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
           )}
           {!selectedPerformance && (
             <View style={{ width: '100%' }}>
-              <AppText>
-                Select or create a performance to link to your post
-              </AppText>
+              <AppText>Select or create a gig to link to your post</AppText>
 
               <CreatePerformanceButton
                 onPress={handleCreatePerformancePress}

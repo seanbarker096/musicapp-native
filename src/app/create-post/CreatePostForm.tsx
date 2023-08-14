@@ -439,7 +439,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
                 isLink={true}
                 handlePress={handleSelectPerformancePress}
               >
-                Select a performance
+                Select a gig
               </AppText>
             )}
           </View>
@@ -448,12 +448,12 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       {performer && (
         <View style={{ marginTop: SPACING_SMALL }}>
           <AppText marginBottom={SPACING_XXSMALL}>
-            Can't find the artist's performance?
+            Can't find the artist's gig?
           </AppText>
           <AppText marginBottom={SPACING_XXSMALL}>
-            Describe the gig to us. Once the performance has been created by our
-            team or the artist, we can use your description to link your post to
-            the performance.
+            Describe the gig to us. Once the gig has been created by our team or
+            the artist, we can use your description to link your post to the
+            gig.
           </AppText>
           <AppTextInput
             handleChange={(e: string | React.ChangeEvent<any>) => {

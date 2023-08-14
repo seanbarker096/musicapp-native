@@ -167,7 +167,7 @@ const PostFooter: FC<PostFooterProps> = ({
               >
                 <LinkSVG></LinkSVG>
               </SVGIcon>
-              <AppText>Link to a performance</AppText>
+              <AppText>Link to a gig</AppText>
             </Pressable>
           )}
         </View>

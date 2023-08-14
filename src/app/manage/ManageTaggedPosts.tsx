@@ -80,19 +80,19 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
               size="large"
               marginBottom={SPACING_XXXSMALL}
             >
-              Showcase Your Performances
+              Showcase Your Gigs
             </AppText>
             <AppText marginBottom={SPACING_SMALL}>
               Here are all your fan's videos that are not linked to any of your
-              performances. Showcase these videos to other fans and users by
-              adding them to a performance.
+              gigs. Showcase these videos to other fans and users by adding them
+              to a gig.
             </AppText>
 
             <AppText
               isLink={true}
               handlePress={handleCreatePerformancePress}
             >
-              Create a Performance
+              Create a Gig
             </AppText>
           </View>
 
@@ -113,9 +113,9 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
       {postTags && postTags.length === 0 && (
         <AppEmptyState
           primaryMessage="There aren't any fan videos left for you to link to your
-          performances."
-          secondaryMessage="Help your fans get their videos of your shows to you! Once a video is linked to your performance, you'll be able to see it here, and on your profile."
-          actionText="Create a Performance"
+          gigs."
+          secondaryMessage="Help your fans get their videos of your shows to you! Once a video is linked to your gig, you'll be able to see it here, and on your profile."
+          actionText="Create a Gig"
           onActionPress={handleCreatePerformancePress}
         ></AppEmptyState>
       )}
