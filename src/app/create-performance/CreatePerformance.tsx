@@ -146,8 +146,6 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
-  console.log(errors);
-
   function handleCancelClick() {
     navigation.goBack();
   }

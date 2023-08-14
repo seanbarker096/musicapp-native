@@ -98,7 +98,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         setThumbnailUri(result.uri);
         setThumbnailLoading(false);
       } catch (e) {
-        console.warn(e);
+        console.error(e);
         setThumbnailLoading(false);
       }
     };

@@ -22,8 +22,6 @@ export const CreatePostPerformerSearch: FC<Props> = ({ navigation }) => {
     // first post the previous create post screen from the stack
     navigation.pop();
 
-    console.log('performer', performer);
-
     // then navigate back to the create post screen but with the performer selected
     navigation.navigate('CreatePost', { performer });
   }

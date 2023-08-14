@@ -21,8 +21,7 @@ export default function TestAuthComponent() {
             })
         })
         
-        const json = await response.json()
-        console.log(json)
+        const json = await response.json();
         
         // let result = await Keychain.setGenericPassword('access_token', json.token, {service: "music_app_access"});
         // let result2 = await Keychain.setGenericPassword("refresh_token", json.r_token, {service: "music_app_refresh"})
@@ -31,17 +30,13 @@ export default function TestAuthComponent() {
         let result2 = await SecureStore.setItemAsync('refresh_token', json.r_token)
     
         } catch(error){
-          console.log("error")
-          console.log(error)
+          console.warn(error);
         }
   }
 
   async function handleGetTokens(){
      let accessToken = await SecureStore.getItemAsync('access_token');
      let refreshToken = await SecureStore.getItemAsync('refresh_token');
-
-     console.log("accessToken", accessToken)
-     console.log("refresh token", refreshToken)
   }
 
   async function handleLogin(){
@@ -57,8 +52,7 @@ export default function TestAuthComponent() {
             })
         })
       } catch(error) {
-        console.log("error")
-        console.log(error)
+        console.error(error);
       }
   }
   

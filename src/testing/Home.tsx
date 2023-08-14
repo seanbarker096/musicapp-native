@@ -23,16 +23,8 @@ export default function TestApiComponent() {
   // // }, []);
 
 
-  async function handleUploadButtonClick(){
-
-    await ImagePicker.requestMediaLibraryPermissionsAsync()
-    const response = await ImagePicker.getMediaLibraryPermissionsAsync()
-    const resp2 = await ImagePicker.requestCameraPermissionsAsync()
-    console.log("permission response")
-    console.log(response)
-
-    console.log("camnera permission response")
-    console.log(resp2)
+  async function handleUploadButtonClick() {
+    await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -40,37 +32,37 @@ export default function TestApiComponent() {
       quality: 1,
     });
 
-    let mimeType: string| null = ""
-    if(!result.cancelled){
-      console.log(result.uri)
-      const regexArray = result.uri.match(/\.[0-9a-z]+$/i)
-      const extension = regexArray ? regexArray[0] : undefined
-      setExt(extension ?? "")
-      console.log(extension)
-      mimeType = extension ? mime.getType(result.uri) : ""
-  
-      console.log(mimeType)
-       try {
+    let mimeType: string | null = '';
+    if (!result.cancelled) {
+      const regexArray = result.uri.match(/\.[0-9a-z]+$/i);
+      const extension = regexArray ? regexArray[0] : undefined;
+      setExt(extension ?? '');
+      mimeType = extension ? mime.getType(result.uri) : '';
 
-      const response = await FileSystem.uploadAsync(`http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file/`, result.uri, {
-      httpMethod: 'POST',
-      fieldName: 'file',
-      mimeType: 'multipart/form-data',
-      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      parameters: {'uuid': uuid, 'mime_type': `${mimeType}`, file_name: `test-file-name${extension}`} 
-    });
-    console.log("file upload response", response)
+      try {
+        const response = await FileSystem.uploadAsync(
+          `http://192.168.1.217:5000/api/fileservice/0.1/files/upload_file/`,
+          result.uri,
+          {
+            httpMethod: 'POST',
+            fieldName: 'file',
+            mimeType: 'multipart/form-data',
+            uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+            parameters: {
+              uuid: uuid,
+              mime_type: `${mimeType}`,
+              file_name: `test-file-name${extension}`,
+            },
+          },
+        );
 
-    const parsed_response = JSON.parse(response.body)
+        const parsed_response = JSON.parse(response.body);
 
-    setFileId(parsed_response.file.id)
-
-  }catch(error){
-    console.log(error)
-  }
-  
-}
-    
+        setFileId(parsed_response.file.id);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 
   async function handleDownloadButtonClick(){
@@ -78,46 +70,41 @@ export default function TestApiComponent() {
     const response =  await FileSystem.downloadAsync(
       `http://192.168.1.217:5000/api/fileservice/0.1/files/${uuid}/`, 
       FileSystem.documentDirectory + `test.mp4`)
-     
-        console.log(response)
-        setFileUri(response.uri)
+    
+        setFileUri(response.uri);
     
 
     
-        console.log("requesting perms")
       const permissionResponse = await MediaLibrary.requestPermissionsAsync()
 
-      console.log("checking access", permissionResponse)
-      if(permissionResponse.status === PermissionStatus.GRANTED){
-        console.log("saving to library")
-        console.log(response.uri)
-        const res = await MediaLibrary.saveToLibraryAsync(response.uri)
-        console.log("saved", res)
+    
+      if (permissionResponse.status === PermissionStatus.GRANTED) {
+        const res = await MediaLibrary.saveToLibraryAsync(response.uri);
       }
 
     } catch(error){
-      console.log("error")
-      console.log(error)
+      console.error('error');
     }
 }
 
 async function handlePostButtonClick(){
   try {
-    const response =  await fetch(`http://192.168.1.217:5000/api/posts/0.1/posts/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                owner_id: 123,
-                content: 'my great post',
-                attachment_file_ids: `["${fileId}"]`
-            })
-        })
-
-        console.log("Post response", response.json())
+    const response = await fetch(
+      `http://192.168.1.217:5000/api/posts/0.1/posts/`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          owner_id: 123,
+          content: 'my great post',
+          attachment_file_ids: `["${fileId}"]`,
+        }),
+      },
+    );
   } catch(err){
-    console.log("create post error", err)
+    console.error(err);
   }
 }
 

@@ -3,7 +3,6 @@ import axios, { AxiosError } from 'axios';
 import { ApiError, ErrorCodes } from 'store/backend-errors.types';
 import { RequestTypes, StoreSlice } from 'store/store.types';
 
-console.log(BASE_URL);
 
 const appAxios = axios.create({
   baseURL: BASE_URL,
