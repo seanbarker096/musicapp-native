@@ -50,7 +50,7 @@ const createPostFormSchema = Yup.object({
 });
 
 interface CreatePostFormProps {
-  onCancel: () => void;
+  onCancel: (fileTypeError?: boolean) => void;
   onSuccess: () => void;
   removePostFile: () => void;
   postFile: PostFile;

@@ -21,7 +21,7 @@ const usersGet = async (
   params: UsersStoreSlice['Get']['RequestParametersType'],
 ) => {
   const response = await getRequest<UsersStoreSlice>({
-    url: `users/0.1/users`,
+    url: `users/0.1/users/`,
     params,
   });
 
@@ -82,7 +82,7 @@ const usersSearch = async (
   params: UsersStoreSlice['Search']['RequestBodyType'],
 ) => {
   const response = await getRequest<UsersStoreSlice>({
-    url: `users/0.1/search`,
+    url: `users/0.1/search/`,
     params,
   });
 

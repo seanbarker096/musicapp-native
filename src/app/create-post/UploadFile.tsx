@@ -7,7 +7,7 @@ import { PostFile } from './create-post.types';
 
 interface UploadFileProps {
   onFileSelected: (file: PostFile) => void;
-  onCancel: () => void;
+  onCancel: (fileTypeError: boolean) => void;
 }
 
 export const UploadFile: FC<UploadFileProps> = ({
@@ -31,13 +31,17 @@ export const UploadFile: FC<UploadFileProps> = ({
         });
 
         if (result.cancelled) {
-          onCancel();
+          onCancel(false);
         }
 
         if (!result.cancelled) {
           const file = await fetch(result.uri);
 
           const blob = await file.blob();
+
+          if (blob.type !== 'video/mp4' && blob.type !== 'video/webm') {
+            onCancel(true);
+          }
 
           onFileSelected({
             imageInfo: result,

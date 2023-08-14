@@ -135,7 +135,7 @@ async function performerGet(
   params: PerformersStoreSlice['Get']['RequestParametersType'],
 ) {
   const response = await getRequest<PerformersStoreSlice>({
-    url: `performers/0.1/performers`,
+    url: `performers/0.1/performers/`,
     params,
   });
 

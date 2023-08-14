@@ -25,7 +25,7 @@ async function tagCreate({
   taggedInEntityType,
 }: TagCreateRequest) {
   const response = await postRequest<TagsStoreSlice>({
-    url: 'tags/0.1/tags',
+    url: 'tags/0.1/tags/',
     body: {
       tagged_entity_type: taggedEntityType,
       tagged_entity_id: taggedEntityId,
@@ -91,7 +91,7 @@ export const useTagCreateMutation = ({
 
 async function tagsDelete({ id }: TagDeleteRequest) {
   const response = await deleteRequest<TagsStoreSlice>({
-    url: 'tags/0.1/tags',
+    url: 'tags/0.1/tags/',
     params: {
       id,
     },
@@ -168,7 +168,7 @@ async function tagsGet({
   only_single_tagged_entity_type,
 }: TagsStoreSlice['Get']['RequestParametersType']) {
   const response = await getRequest<TagsStoreSlice>({
-    url: 'tags/0.1/tags',
+    url: 'tags/0.1/tags/',
     params: {
       tagged_entity_type,
       tagged_entity_id,

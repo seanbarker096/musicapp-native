@@ -29,7 +29,7 @@ async function performancesGet(
   params: PerformancesStoreSlice['Get']['RequestParametersType'],
 ): Promise<readonly PerformanceWithEvent[]> {
   const response = await getRequest<PerformancesStoreSlice>({
-    url: `performances/0.1/performances`,
+    url: `performances/0.1/performances/`,
     params: { ...params, include_attendance_count: true }, // We always want to include the attendee count
   });
 
@@ -42,7 +42,7 @@ async function performancesGet(
   }
 
   const eventsResponse = await getRequest<EventsStoreSlice>({
-    url: `events/0.1/events`,
+    url: `events/0.1/events/`,
     params: {
       ids: performancesApi.map(performance => performance.event_id),
     },
@@ -166,7 +166,7 @@ async function performanceCreate({
   eventType,
 }: PerformanceCreateRequest) {
   const repsonse = await postRequest<PerformancesStoreSlice>({
-    url: `performances/0.1/performances`,
+    url: `performances/0.1/performances/`,
     body: {
       performer_id: performerId,
       performance_date: performanceDate,

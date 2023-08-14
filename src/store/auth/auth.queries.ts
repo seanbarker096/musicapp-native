@@ -55,8 +55,6 @@ const login = async ({
   email,
 }: LoginRequest): Promise<LoginMutationResult> => {
   try {
-    console.log('login');
-    console.log(Constants.expoConfig?.extra?.baseUrl);
     const response = await axios.post<LoginResultApi>(
       `${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/login/`,
       {

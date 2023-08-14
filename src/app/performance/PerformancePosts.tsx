@@ -94,7 +94,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
     enabled: taggedPostIds && !!taggedPostIds.length,
   });
 
-  const taggedPosts = taggedPostsList?.length ? taggedPostsList : [];
+  const taggedPosts = !!taggedPostsList?.length ? taggedPostsList : [];
 
   const loading =
     (!performance && performanceLoading) ||

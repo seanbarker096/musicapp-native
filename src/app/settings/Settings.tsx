@@ -69,7 +69,7 @@ const Settings = () => {
 
   return (
     <>
-      {settingItems.length && (
+      {!!settingItems.length && (
         <View
           style={{ paddingLeft: SPACING_SMALL, paddingRight: SPACING_SMALL }}
         >

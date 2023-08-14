@@ -280,7 +280,7 @@ export const ArtistCreatePostForm: FC<ArtistCreatePostFormProps> = ({
               <CreatePerformanceButton
                 onPress={handleCreatePerformancePress}
               ></CreatePerformanceButton>
-              {performances.length && (
+              {!!performances.length && (
                 <List>
                   {performances.map(performance => (
                     <PerformanceListItem

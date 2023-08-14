@@ -16,7 +16,7 @@ import {
 
 async function featuresDelete({ ids }: FeaturesDeleteRequest) {
   const response = await deleteRequest<FeaturesStoreSlice>({
-    url: 'features/0.1/features',
+    url: 'features/0.1/features/',
     params: {
       ids,
     },
@@ -71,7 +71,7 @@ async function getFeatures(
   params: FeaturesStoreSlice['Get']['RequestParametersType'],
 ): Promise<readonly FeaturesStoreSlice['ObjectType'][]> {
   const response = await getRequest<FeaturesStoreSlice>({
-    url: 'features/0.1/features',
+    url: 'features/0.1/features/',
     params,
   });
 
@@ -131,7 +131,7 @@ export function useFeaturesGetQuery({
 /* -------------------- FEATURE CREATE -------------------- */
 async function featureCreate(request: FeatureCreateRequest) {
   const response = await postRequest<FeaturesStoreSlice>({
-    url: 'features/0.1/features',
+    url: 'features/0.1/features/',
     body: {
       featured_entity_type: request.featuredEntityType,
       featured_entity_id: request.featuredEntityId,

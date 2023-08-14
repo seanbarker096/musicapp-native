@@ -17,7 +17,7 @@ async function profilePostsGet({
   limit,
 }: ProfilePostsStoreSlice['Get']['RequestParametersType']) {
   const response = await getRequest<ProfilePostsStoreSlice>({
-    url: `posts/0.1/profiles/${profile_id}/posts`,
+    url: `posts/0.1/profiles/${profile_id}/posts/`,
     params: {
       profile_type,
       profile_id: undefined, // Its in the url

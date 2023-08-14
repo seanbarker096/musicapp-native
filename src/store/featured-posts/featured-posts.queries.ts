@@ -14,7 +14,7 @@ async function featuredPostsGet(
   params: FeaturedPostsStoreSlice['Get']['RequestParametersType'],
 ) {
   const response = await getRequest<FeaturedPostsStoreSlice>({
-    url: 'posts/0.1/featured',
+    url: 'posts/0.1/featured/',
     params: {
       owner_id: params.owner_id,
       owner_type: params.owner_type,
@@ -44,7 +44,6 @@ export function useFeaturedPostsGetQuery({
     limit,
   } = queryParams;
 
-  console.log(queryParams);
   let apiQueryParams:
     | FeaturedPostsStoreSlice['Get']['RequestParametersType']
     | undefined = undefined;

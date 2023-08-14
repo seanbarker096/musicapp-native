@@ -34,7 +34,7 @@ const postsGet = async ({
   limit = 9,
 }: PostsStoreSlice['Get']['RequestParametersType']) => {
   const response = await getRequest<PostsStoreSlice>({
-    url: 'posts/0.1/posts',
+    url: 'posts/0.1/posts/',
     params: {
       owner_ids,
       owner_types,
