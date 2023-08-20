@@ -61,7 +61,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
         >
           If your request is successful, you'll gain full access to the artist
           profile. From there you can easily find and watch all the videos your
-          fans have captured from your shows.
+          fans have captured from your gigs.
         </AppText>
         <SVGIcon
           height={30}
@@ -77,7 +77,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           marginBottom={SPACING_XXXSMALL}
           weight="bold"
         >
-          Create shows
+          Create gigs
         </AppText>
 
         <AppText
@@ -87,8 +87,8 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           marginBottom={SPACING_MID}
           marginLeft={SPACING_XXSMALL}
         >
-          Claiming a profile allows you to manage the creation of shows for this
-          artist. Fans can link their videos to these shows, helping you build a
+          Claiming a profile allows you to manage the creation of gigs for this
+          artist. Fans can link their videos to these gigs, helping you build a
           collection of videos documenting your journey as an artist.
         </AppText>
         <SVGIcon
@@ -115,7 +115,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           marginBottom={SPACING_LARGE}
         >
           Features like 'Artist Picks' allow you to interact and give credit to
-          the fans who record the best moments from your shows.
+          the fans who record the best moments from your gigs.
         </AppText>
 
         <AppText

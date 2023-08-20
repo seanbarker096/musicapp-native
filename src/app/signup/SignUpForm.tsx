@@ -26,7 +26,7 @@ type SignUpProps = NativeStackScreenProps<SignUpStackParamList, 'SignUpForm'>;
 
 const signupFormSchema = Yup.object({
   email: emailValidator,
-  username: usernameValidator,
+  username: usernameValidator.required('Required'),
   password: passwordValidator,
 });
 
@@ -49,6 +49,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     errors,
     touched,
     isSubmitting,
+    setFieldTouched,
     isValid,
     dirty,
   } = useFormik({
@@ -79,6 +80,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
       >
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
+            setFieldTouched('email', true, true);
             handleEmailChange(e);
           }}
           handleBlur={(e: any) => {
@@ -93,6 +95,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
+            setFieldTouched('username', true, true);
             handleUsernameChange(e);
           }}
           handleBlur={(e: any) => {
@@ -107,6 +110,7 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
+            setFieldTouched('password', true, true);
             handlePasswordChange(e);
           }}
           handleBlur={(e: any) => {

@@ -66,14 +66,14 @@ export const PerformerShowCountsList: FC<Props> = ({
       )}
       {performers && !performers.length && !isViewingUser && (
         <AppEmptyState
-          primaryMessage="This user hasn't attended any shows"
-          secondaryMessage="Shows appear on your timeline once you upload videos from shows you've attended"
+          primaryMessage="This user hasn't attended any gigs"
+          secondaryMessage="Upload a video from a gig you've attended, and it will appear on your timeline"
         ></AppEmptyState>
       )}
       {performers && !performers.length && isViewingUser && (
         <AppEmptyState
           primaryMessage="Your journey as a music fan"
-          secondaryMessage="A history of shows you've seen will appear here once you upload videos from shows you've attended"
+          secondaryMessage="Add gigs to your timeline by uploading videos you've taken at them"
           onActionPress={handleUploadPostPress}
           actionText="Upload a video"
         ></AppEmptyState>

@@ -86,7 +86,7 @@ export const PerformanceList: FC<Props> = ({
                 // If we provide a handleViewProfilePress, we are using this component on the profile page, so show a secondary message + action text. TODO: Create a wrapper component or something so this is clearer
                 secondaryMessage={
                   handleViewProfilePress
-                    ? 'Once they have, link your videos from the show so the artist can see them.'
+                    ? 'Once they have, link your videos from the gig so the artist can see them.'
                     : undefined
                 }
                 actionText={

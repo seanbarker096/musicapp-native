@@ -42,8 +42,8 @@ export const PerformerShowCountsListItem: FC<Props> = ({
           </SVGIcon> */}
         <AppText>
           {showCount > 1
-            ? `${showCount} shows attended`
-            : `${showCount} show attended`}
+            ? `${showCount} gigs attended`
+            : `${showCount} gig attended`}
         </AppText>
         {/* </View> */}
       </View>

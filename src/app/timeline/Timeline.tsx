@@ -104,7 +104,7 @@ const Timeline: FC<TimelineProps> = ({
             <AppButton
               color={BUTTON_COLOR_PRIMARY}
               handlePress={navigateToArtistProfile}
-              text={`View all ${performer.name}'s shows`}
+              text={`View all ${performer.name}'s gigs`}
               size="small"
             ></AppButton>
           </View>
@@ -113,7 +113,7 @@ const Timeline: FC<TimelineProps> = ({
               textColor={COLOR_NEUTRAL_XXXXLIGHT}
               weight="semi-bold"
             >
-              Shows attended by {user.firstName}
+              Gigs attended by {user.firstName}
             </AppText>
           </View>
           <PerformanceList

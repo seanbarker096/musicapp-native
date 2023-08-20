@@ -93,6 +93,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     handleChange,
     handleSubmit,
     handleBlur,
+    setFieldTouched,
     values,
     errors,
     touched,
@@ -127,6 +128,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
             setShowErrorMessage(false);
+            setFieldTouched('usernameOrEmail', true, true);
             handleUsernameOrEmailChange(e);
           }}
           handleBlur={(e: any) => {
@@ -143,6 +145,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
             setShowErrorMessage(false);
+            setFieldTouched('usernameOrEmail', true, true);
             handlePasswordChange(e);
           }}
           handleBlur={(e: any) => {

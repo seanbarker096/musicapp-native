@@ -114,7 +114,7 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
         <AppEmptyState
           primaryMessage="There aren't any fan videos left for you to link to your
           gigs."
-          secondaryMessage="Help your fans get their videos of your shows to you! Once a video is linked to your gig, you'll be able to see it here, and on your profile."
+          secondaryMessage="Help your fans get videos to you! Once a video is linked to your gig, you'll be able to see it here, and on your profile."
           actionText="Create a Gig"
           onActionPress={handleCreatePerformancePress}
         ></AppEmptyState>

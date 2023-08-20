@@ -60,8 +60,8 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
         !postsWithAttachmentsAndFiles.length &&
         !isViewingUserProfile && (
           <AppEmptyState
-            primaryMessage="Videos of the artist's shows"
-            secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
+            primaryMessage="Videos of the artist's gigs"
+            secondaryMessage="When fans upload videos from this aritst's gigs, they'll appear here"
           ></AppEmptyState>
         )}
       {postsWithAttachmentsAndFiles &&
@@ -69,7 +69,7 @@ const ProfileTaggedPosts: FC<ProfileTaggedPostsProps> = ({
         isViewingUserProfile && (
           <AppEmptyState
             primaryMessage="Your favourite videos captured by your fans"
-            secondaryMessage="When fans upload videos from this aritst's shows, they'll appear here"
+            secondaryMessage="When fans upload videos from this aritst's gigs, they'll appear here"
           ></AppEmptyState>
         )}
     </>
