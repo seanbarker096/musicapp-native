@@ -3,10 +3,11 @@ import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
+import { ResetPasswordModal } from 'components/reset-password-modal';
 
 import { useFormik } from 'formik';
-import React, { FC, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 import {
@@ -53,8 +54,9 @@ interface LoginFormValues {
 const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
   const { mutate, error } = useLoginMutation({
     onSuccess: result => {
-      setAuthState(result.authState);
       setLoggedOutPage(undefined);
+      setAuthState(result.authState);
+      console.log(result.authState);
     },
   });
 
@@ -62,9 +64,9 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     undefined,
   );
 
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
-    console.log(error?.error_code);
-    console.log(errorMessage);
     switch (error?.error_code) {
       case 'USER_NOT_FOUND':
         setErrorMessage('Username or email does not exist');
@@ -115,6 +117,8 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
   const handleUsernameOrEmailBlur = handleBlur('usernameOrEmail');
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
+
+  console.log(isSubmitting);
 
   return (
     <>
@@ -187,14 +191,37 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
           <AppText
             isLink={true}
-            handlePress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}
+            handlePress={() => setIsOpen(true)}
           >
             Get help signing in
           </AppText>
         </View>
+        <Modal
+          visible={isOpen}
+          animationType="fade"
+          transparent={true}
+          onRequestClose={() => setIsOpen(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setIsOpen(false)}
+          >
+            <ResetPasswordModal></ResetPasswordModal>
+          </TouchableOpacity>
+        </Modal>
       </View>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 10,
+  },
+});
 
 export default Login;

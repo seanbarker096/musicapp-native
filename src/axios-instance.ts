@@ -1,17 +1,12 @@
-import { BASE_URL } from '@env';
 import axios, { AxiosError } from 'axios';
 import { ApiError, ErrorCodes } from 'store/backend-errors.types';
 import { RequestTypes, StoreSlice } from 'store/store.types';
 
-
-const appAxios = axios.create({
-  baseURL: BASE_URL,
-});
+const appAxios = axios.create({});
 
 appAxios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export default appAxios;
-
 
 export function transformAxiosError<
   S extends StoreSlice,
