@@ -55,6 +55,7 @@ const login = async ({
   email,
 }: LoginRequest): Promise<LoginMutationResult> => {
   try {
+    console.log(Constants.expoConfig);
     const response = await axios.post<LoginResultApi>(
       `${Constants.expoConfig?.extra?.baseUrl}/api/auth/0.1/login/`,
       {
@@ -138,8 +139,10 @@ const signUp = async ({
 // TODO: Pass in reuqest valuse to signup
 export const useSignUpMutation = ({
   onSuccess,
+  onSettled,
 }: {
   onSuccess: (result: SignUpMutationResult) => void;
+  onSettled?: () => void;
 }) => {
   const onSuccessCallback = async (result: SignUpMutationResult) => {
     onSuccess(result);
@@ -156,6 +159,7 @@ export const useSignUpMutation = ({
     SignUpFormValues
   >(signUp, {
     onSuccess: onSuccessCallback,
+    onSettled,
   });
 };
 

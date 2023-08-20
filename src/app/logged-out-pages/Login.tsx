@@ -5,7 +5,7 @@ import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 
 import { useFormik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
@@ -58,29 +58,32 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     },
   });
 
-  const [showErrorMessage, setShowErrorMessage] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
+    undefined,
+  );
 
-  let errorMessage;
-
-  switch (error?.error_code) {
-    case 'USER_NOT_FOUND':
-      errorMessage = 'Username or email does not exist';
-      break;
-    case 'UNAUTHORIZED':
-      errorMessage = 'Incorrect password!';
-      break;
-    case 'UNKNOWN_ERROR':
-      errorMessage = 'Unknown error';
-    default:
-      errorMessage = undefined;
-  }
+  useEffect(() => {
+    console.log(error?.error_code);
+    console.log(errorMessage);
+    switch (error?.error_code) {
+      case 'USER_NOT_FOUND':
+        setErrorMessage('Username or email does not exist');
+        break;
+      case 'UNAUTHORIZED':
+        setErrorMessage('Incorrect password!');
+        break;
+      case 'UNKNOWN_ERROR':
+        setErrorMessage('Unknown error');
+        break;
+      default:
+        setErrorMessage(undefined);
+    }
+  }, [error?.error_code]);
 
   const handleFormSubmit = async ({
     usernameOrEmail,
     password,
   }: LoginFormValues) => {
-    setShowErrorMessage(true);
-
     const emailEntered = emailRegex.test(usernameOrEmail);
 
     const email = emailEntered ? usernameOrEmail : undefined;
@@ -93,7 +96,6 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     handleChange,
     handleSubmit,
     handleBlur,
-    setFieldTouched,
     values,
     errors,
     touched,
@@ -127,14 +129,12 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
       >
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
-            setShowErrorMessage(false);
-            setFieldTouched('usernameOrEmail', true, true);
             handleUsernameOrEmailChange(e);
           }}
           handleBlur={(e: any) => {
-            setShowErrorMessage(false);
             handleUsernameOrEmailBlur(e);
           }}
+          handleFocus={() => setErrorMessage(undefined)}
           value={values.usernameOrEmail}
           placeholder="Username or email address"
           error={errors.usernameOrEmail}
@@ -144,12 +144,10 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
         />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
-            setShowErrorMessage(false);
-            setFieldTouched('usernameOrEmail', true, true);
             handlePasswordChange(e);
           }}
+          handleFocus={() => setErrorMessage(undefined)}
           handleBlur={(e: any) => {
-            setShowErrorMessage(false);
             handlePasswordBlur(e);
           }}
           value={values.password}
@@ -160,7 +158,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           marginBottom={errorMessage ? SPACING_XSMALL : 'auto'}
           borderless={false}
         />
-        {showErrorMessage && errorMessage && (
+        {!!errorMessage && (
           <AppError
             message={errorMessage}
             marginBottom={SPACING_XSMALL}

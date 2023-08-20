@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppButton } from 'components/app-button';
 import { AppError } from 'components/app-error';
 import { AppText } from 'components/app-text';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { View } from 'react-native';
 import { useSignUpMutation } from 'store/auth/auth.queries';
 import { SignUpMutationResult } from 'store/auth/auth.types';
@@ -24,23 +24,30 @@ export const ConfirmSignUp: FC<Props> = ({
       navigation.navigate('UploadProfileImage', {
         userId: authState.authUser.userId,
       }),
+    onSettled: () => setSubmitting(false),
   });
 
-  let errorMessage;
+  const [errorMessage, setErrorMessage] = React.useState<string | undefined>(
+    undefined,
+  );
 
-  switch (error?.error_code) {
-    case 'USER_ALREADY_EXISTS':
-      errorMessage = 'An account with this email or username already exists';
-      break;
-    case 'UNKNOWN_ERROR':
-      errorMessage = 'Unknown error';
-      break;
-    default:
-      errorMessage = undefined;
-  }
+  useEffect(() => {
+    switch (error?.error_code) {
+      case 'USER_ALREADY_EXISTS':
+        setErrorMessage(
+          'An account with this email or username already exists',
+        );
+        break;
+      case 'UNKNOWN_ERROR':
+        setErrorMessage('Unknown error');
+        break;
+      default:
+        setErrorMessage(undefined);
+    }
+  }, [error?.error_code]);
 
   const handleFormSubmit = async () => {
-    errorMessage = undefined;
+    setErrorMessage(undefined);
     setSubmitting(true);
     mutate({ email, username, password });
   };
@@ -64,8 +71,9 @@ export const ConfirmSignUp: FC<Props> = ({
         handlePress={handleFormSubmit}
         text="Complete Sign-up"
         isSubmitting={submitting}
+        marginBottom={!!errorMessage ? SPACING_XSMALL : undefined}
       ></AppButton>
-      {errorMessage && (
+      {!!errorMessage && (
         <AppError
           message={errorMessage}
           marginBottom={SPACING_XSMALL}

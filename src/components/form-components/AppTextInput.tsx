@@ -23,10 +23,12 @@ export const AppTextInput: React.FC<
      */
     secureTextEntry: boolean;
     multiline: boolean;
+    handleFocus?: () => void;
   }
 > = ({
   handleChange,
   handleBlur,
+  handleFocus,
   value,
   placeholder,
   error,
@@ -63,6 +65,7 @@ export const AppTextInput: React.FC<
           }}
           onChangeText={handleChange}
           onBlur={handleBlur}
+          onFocus={handleFocus}
           value={value}
           placeholder={placeholder}
           secureTextEntry={secureTextEntry}
