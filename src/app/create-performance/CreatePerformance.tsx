@@ -8,11 +8,12 @@ import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { useFormik } from 'formik';
 import React, { FC, useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { EventType } from 'store/events/events.types';
 import { usePerformanceCreateMutation } from 'store/performances/performances.queries';
 import { usePerformersGetQuery } from 'store/performers/performers.queries';
 import {
+  APP_GUTTER,
   BUTTON_COLOR_DISABLED,
   BUTTON_COLOR_PRIMARY,
   COLOR_TRANSPARENT,
@@ -195,16 +196,12 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
   return (
     <>
       {profileType === ProfileType.PERFORMER && performer && (
-        <View
-          style={{
-            ...styles.flexColumnContainer,
+        <ScrollView
+          contentContainerStyle={{
             width: '100%',
-            height: '100%',
-            paddingBottom: SPACING_SMALL,
-
-            paddingLeft: SPACING_XSMALL,
-            paddingRight: SPACING_XSMALL,
+            padding: APP_GUTTER,
           }}
+          showsVerticalScrollIndicator={false}
         >
           <View
             style={{
@@ -361,7 +358,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
               </View>
             </View>
           </View>
-        </View>
+        </ScrollView>
       )}
       {loading && <AppText>Loading...</AppText>}
       {error && <AppText>Error</AppText>}

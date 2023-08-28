@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Image,
   Pressable,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -306,12 +307,12 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   }
 
   return (
-    <View
-      style={{
-        ...styles.flexColumnContainer,
-        height: '100%',
+    <ScrollView
+      contentContainerStyle={{
+        width: '100%',
         padding: APP_GUTTER,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <AppText
         weight="bold"
@@ -521,7 +522,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

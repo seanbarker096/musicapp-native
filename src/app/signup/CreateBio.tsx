@@ -5,7 +5,7 @@ import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { AuthStatus, AuthUserRole } from 'store/auth/auth.types';
 import { useUsersUpdateMutation } from 'store/users';
 import {
@@ -80,9 +80,6 @@ export const CreateBio: FC<Props> = ({
     setLoggedOutPage(undefined);
   }
 
-  console.log(errors);
-  console.log(touched);
-
   const handleBioBlur = handleBlur('biography');
 
   const handleBioChange = handleChange('biography');
@@ -90,13 +87,13 @@ export const CreateBio: FC<Props> = ({
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
   return (
-    <View
-      style={{
-        ...styles.flexColumnContainer,
-        height: '100%',
+    <ScrollView
+      contentContainerStyle={{
+        width: '100%',
         padding: APP_GUTTER,
         paddingTop: '25%',
       }}
+      showsVerticalScrollIndicator={false}
     >
       <AppText
         size="large"
@@ -155,7 +152,7 @@ export const CreateBio: FC<Props> = ({
           ></AppButton>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
