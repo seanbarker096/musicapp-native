@@ -1,4 +1,4 @@
-import { AppText } from 'components/app-text';
+import { AppText, TextSize } from 'components/app-text';
 import { View } from 'react-native';
 import { APP_GUTTER, SPACING_XXXSMALL } from 'styles';
 
@@ -7,6 +7,8 @@ type Props = {
   primaryMessage: string;
   secondaryMessage?: string;
   actionText?: string;
+  headingSize?: TextSize;
+  bodyTextSize?: TextSize;
 };
 
 export const AppEmptyState: React.FC<Props> = ({
@@ -14,6 +16,8 @@ export const AppEmptyState: React.FC<Props> = ({
   primaryMessage,
   secondaryMessage,
   actionText,
+  headingSize = 'regular',
+  bodyTextSize = 'small',
 }) => (
   <View
     style={{
@@ -27,13 +31,14 @@ export const AppEmptyState: React.FC<Props> = ({
       weight="bold"
       textAlign="center"
       marginBottom={SPACING_XXXSMALL}
+      size={headingSize}
     >
       {primaryMessage}
     </AppText>
     {secondaryMessage && (
       <AppText
         textAlign="center"
-        size="small"
+        size={bodyTextSize}
       >
         {secondaryMessage}
       </AppText>

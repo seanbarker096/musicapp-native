@@ -39,7 +39,6 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
   } = profileState;
 
   const loggedInUserIsPerformer =
-    performerId === loggedInUserProfileId &&
     loggedInUserProfileType === ProfileType.PERFORMER;
 
   const {
@@ -149,12 +148,18 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               ...styles.headerContainer,
             }}
           ></View>
-          {taggedPosts.length === 0 && (
+          {taggedPosts.length === 0 && !loggedInUserIsPerformer && (
             <AppEmptyState
               primaryMessage="Moments captured by fans"
               secondaryMessage="Be the first to share a video for this gig!"
               onActionPress={handleCreatePostPress}
-              actionText="Create a post"
+              actionText="Upload a video"
+            ></AppEmptyState>
+          )}
+          {taggedPosts.length === 0 && loggedInUserIsPerformer && (
+            <AppEmptyState
+              primaryMessage="No fans have uploaded any videos for this gig yet"
+              secondaryMessage=" Uploaded videos that are linked to this performance will appear here"
             ></AppEmptyState>
           )}
           {taggedPosts.length > 0 && (

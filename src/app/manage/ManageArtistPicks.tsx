@@ -128,6 +128,8 @@ export const ManageArtistPicks: FC<ManageFeaturedPostsProps> = ({
         <AppEmptyState
           primaryMessage="Your posts, hand picked by your favourite artists"
           secondaryMessage="No artists have picked your posts yet to appear in their Gallery yet. Link your posts to the artists gig so they can see them, and pick them to appear on their profile."
+          headingSize="xlarge"
+          bodyTextSize="regular"
         ></AppEmptyState>
       )}
     </>

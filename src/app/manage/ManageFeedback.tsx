@@ -15,7 +15,7 @@ export const ManageFeedback: React.FC<Props> = () => {
   return (
     <View style={styles.container}>
       <AppText
-        size="xxlarge"
+        size="xlarge"
         weight="bold"
         textAlign="center"
         marginBottom={SPACING_XXSMALL}

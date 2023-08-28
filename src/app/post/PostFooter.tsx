@@ -112,6 +112,8 @@ const PostFooter: FC<PostFooterProps> = ({
           style={{
             ...styles.flexRowContainer,
             marginBottom: SPACING_SMALL,
+            paddingLeft: APP_GUTTER,
+            paddingRight: APP_GUTTER,
           }}
         >
           {/* If viewing user is the performer in the post, then give them the option to artist pick*/}

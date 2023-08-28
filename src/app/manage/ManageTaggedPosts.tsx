@@ -116,6 +116,8 @@ export const ManageTaggedPosts: FC<ManageTaggedPostProps> = ({
           gigs."
           secondaryMessage="Help your fans get videos to you! Once a video is linked to your gig, you'll be able to see it here, and on your profile."
           actionText="Create a Gig"
+          headingSize="xlarge"
+          bodyTextSize="regular"
           onActionPress={handleCreatePerformancePress}
         ></AppEmptyState>
       )}

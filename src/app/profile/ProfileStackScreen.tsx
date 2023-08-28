@@ -84,7 +84,7 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
       profileId,
       profileType,
       createPostSuccess,
-      isLoggedInUsersProfile,
+      isLoggedInUsersProfile = false,
     } = params;
 
     const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();

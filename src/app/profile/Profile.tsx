@@ -120,7 +120,7 @@ const Profile: FC<ProfileProps> = memo(
               }
               onPress={() => handleTabSelected(SelectedProfileTab.TIMELINE)}
             >
-              <AppText weight={FONT_WEIGHT_BOLD}>Shows</AppText>
+              <AppText weight={FONT_WEIGHT_BOLD}>Gigs</AppText>
             </Pressable>
             <Pressable
               style={

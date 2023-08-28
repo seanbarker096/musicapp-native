@@ -73,7 +73,7 @@ export const PerformerShowCountsList: FC<Props> = ({
       {performers && !performers.length && isViewingUser && (
         <AppEmptyState
           primaryMessage="Your journey as a music fan"
-          secondaryMessage="Add gigs to your timeline by uploading videos you've taken at them"
+          secondaryMessage="Add gigs to your timeline by uploading videos you've taken at them. Link them to a gig and they'll appear here"
           onActionPress={handleUploadPostPress}
           actionText="Upload a video"
         ></AppEmptyState>

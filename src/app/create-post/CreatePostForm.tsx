@@ -204,17 +204,16 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
       throw Error('failed to create post');
     }
 
-    // if no performance found for the artist, tag the artist in the post so they cna view it later
     let tagResult;
-    if (!performance) {
-      tagResult = await createTag({
-        taggedEntityType: TaggedEntityType.PERFORMER,
-        taggedEntityId: performer?.id as number, // submit button only active if performer is defined
-        taggedInEntityType: TaggedInEntityType.POST,
-        taggedInEntityId: createdPost.id,
-      });
-    } else {
-      // Otherwise tag the post with the performance
+    // Always create a performer tag in case a performance is unlinked from the post. TODO: Add this logic to backend?
+    tagResult = await createTag({
+      taggedEntityType: TaggedEntityType.PERFORMER,
+      taggedEntityId: performer?.id as number, // submit button only active if performer is defined
+      taggedInEntityType: TaggedInEntityType.POST,
+      taggedInEntityId: createdPost.id,
+    });
+
+    if (performance) {
       tagResult = await createTag({
         taggedEntityType: TaggedEntityType.PERFORMANCE,
         taggedEntityId: performance.id,
@@ -503,7 +502,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
             <AppButton
               color={BUTTON_COLOR_DISABLED}
               text="Cancel"
-              handlePress={onCancel}
+              handlePress={() => onCancel(false)}
             ></AppButton>
           </View>
           <View
