@@ -3,7 +3,6 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
-import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import React, { FC } from 'react';
@@ -31,11 +30,6 @@ const CreatePostStackScreen: FC<Props> = ({ route: { params } }) => {
         initialParams={params ? { performer: params?.performer } : undefined}
         name="CreatePost"
         options={{ headerTitle: 'Create Post' }}
-      ></CreateStackTabNavigator.Screen>
-      <CreateStackTabNavigator.Screen
-        options={{ headerShown: false }}
-        component={CreatePerformanceStackScreen}
-        name="CreatePerformanceStack"
       ></CreateStackTabNavigator.Screen>
       <CreateStackTabNavigator.Screen
         component={CreatePostPerformerSearch}

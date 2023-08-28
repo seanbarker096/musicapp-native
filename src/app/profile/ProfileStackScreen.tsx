@@ -6,7 +6,6 @@ import {
 } from '@react-navigation/native-stack';
 import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import CreatePerformanceStackScreen from 'app/create-performance/CreatePerformanceStackScreen';
-import CreatePostStackScreen from 'app/create-post/CreatePostStackScreen';
 import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { PostStackScreen } from 'app/post/PostStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
@@ -160,11 +159,6 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
         <ProfileStack.Screen
           name="ProfileCreatePerformance"
           component={CreatePerformanceStackScreen}
-          options={{ headerShown: false }}
-        ></ProfileStack.Screen>
-        <ProfileStack.Screen
-          name="CreatePostStack"
-          component={CreatePostStackScreen}
           options={{ headerShown: false }}
         ></ProfileStack.Screen>
         <ProfileStack.Screen

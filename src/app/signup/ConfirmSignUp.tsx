@@ -66,7 +66,7 @@ export const ConfirmSignUp: FC<Props> = ({
         size="large"
         weight="bold"
         marginBottom={SPACING_XSMALL}
-      >{`Welcome to <APP_NAME>, ${username}`}</AppText>
+      >{`Welcome to Gigstory, ${username}`}</AppText>
       <AppButton
         handlePress={handleFormSubmit}
         text="Complete Sign-up"

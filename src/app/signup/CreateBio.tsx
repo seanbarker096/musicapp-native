@@ -58,6 +58,7 @@ export const CreateBio: FC<Props> = ({
     errors,
     touched,
     isSubmitting,
+    setFieldTouched,
     isValid,
     dirty,
   } = useFormik({
@@ -79,6 +80,13 @@ export const CreateBio: FC<Props> = ({
     setLoggedOutPage(undefined);
   }
 
+  console.log(errors);
+  console.log(touched);
+
+  const handleBioBlur = handleBlur('biography');
+
+  const handleBioChange = handleChange('biography');
+
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
   return (
@@ -96,9 +104,15 @@ export const CreateBio: FC<Props> = ({
       >
         Tell us about yourself
       </AppText>
+
       <AppTextInput
-        handleChange={handleChange('biography')}
-        handleBlur={handleBlur('biography')}
+        handleChange={(e: string | React.ChangeEvent<any>) => {
+          setFieldTouched('biography', true, true);
+          handleBioChange(e);
+        }}
+        handleBlur={(e: any) => {
+          handleBioBlur(e);
+        }}
         value={values.biography}
         placeholder="e.g. 21 year old from London. I love 90's hip hop..."
         error={errors.biography}

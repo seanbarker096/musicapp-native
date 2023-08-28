@@ -7,7 +7,7 @@ import { ResetPasswordModal } from 'components/reset-password-modal';
 
 import { useFormik } from 'formik';
 import React, { FC, useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 import {
@@ -118,8 +118,6 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
-  console.log(isSubmitting);
-
   return (
     <>
       <View
@@ -177,9 +175,10 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           isSubmitting={isSubmitting}
         ></AppButton>
         <View style={{ flexDirection: 'row', marginBottom: SPACING_XSMALL }}>
-          <Text>Don't have an account? </Text>
+          <AppText size="large">Don't have an account? </AppText>
 
           <AppText
+            size="large"
             isLink={true}
             handlePress={() => setLoggedOutPage(LoggedOutPage.SIGN_UP)}
           >
@@ -187,9 +186,10 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
           </AppText>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <Text>Forgotten your password? </Text>
+          <AppText size="large">Forgotten your password? </AppText>
 
           <AppText
+            size="large"
             isLink={true}
             handlePress={() => setIsOpen(true)}
           >

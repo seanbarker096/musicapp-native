@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppText } from 'components/app-text';
 import { ProfileType } from 'contexts/profile.context';
 import React, { FC, memo } from 'react';
@@ -47,12 +48,18 @@ const Profile: FC<ProfileProps> = memo(
       navigation.navigate('ProfileCreatePerformance');
     }
 
+    /**
+     * Navigate to create post stack in the AppShell router to avoid rendering the bottom nav
+     */
     function handleUploadPostPress() {
-      navigation.navigate('CreatePostStack');
+      navigation.navigate(PrimaryScreens.CREATE_POST);
     }
 
+    /**
+     * Navigate to create post stack in the AppShell router to avoid rendering the bottom nav
+     */
     function handleUploadPostPressWithArtist(performer: Performer) {
-      navigation.navigate('CreatePostStack', {
+      navigation.navigate(PrimaryScreens.CREATE_POST, {
         performer,
       });
     }
@@ -151,11 +158,7 @@ const Profile: FC<ProfileProps> = memo(
                 profileId={profileId}
                 profileType={profileType} // TODO: Update this to be dynamic
                 handlePostPress={handlePostPress}
-                handleCreatePostPress={() =>
-                  navigation.navigate('CreatePostStack', {
-                    performerId: profileId,
-                  })
-                }
+                handleCreatePostPress={handleUploadPostPress}
               ></ProfileShows>
             )}
             {selectedTab === SelectedProfileTab.TIMELINE && (

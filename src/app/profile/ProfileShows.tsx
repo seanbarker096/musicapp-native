@@ -62,9 +62,9 @@ const ProfileShows: FC<ProfileShowsProps> = ({
             (isViewingUsersProfile ? (
               <AppEmptyState
                 primaryMessage="Your favourite moments as a music fan"
-                secondaryMessage="Share all your favourite moments from gigsc you've attended
+                secondaryMessage="Share all your favourite moments from gigs you've attended
                 now!"
-                actionText="Create a post"
+                actionText="Upload a video"
                 onActionPress={handleCreatePostPress}
               ></AppEmptyState>
             ) : (
