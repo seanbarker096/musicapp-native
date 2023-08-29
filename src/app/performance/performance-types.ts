@@ -1,3 +1,5 @@
+import { ProfileType } from 'contexts/profile.context';
+
 export type PerformanceStackParamList = {
   Performance: {
     performanceId: number;
@@ -5,6 +7,10 @@ export type PerformanceStackParamList = {
   };
   ViewPost: {
     postId: number;
+  };
+  ViewPerformer: {
+    profileId: number;
+    profileType: ProfileType;
   };
 };
 

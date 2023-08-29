@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Post } from 'store/posts/posts.types';
-import { SPACING_XXSMALL } from 'styles';
+import { SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
 import { isPostWithFile } from 'utils/utils';
 import { GalleryItem } from '../gallery-item/GalleryItem';
 import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
@@ -107,7 +107,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 
   return (
     <View
-      style={{ height: 400, width: '100%', marginTop: SPACING_XXSMALL / 2 }}
+      style={{ height: 400, width: '100%', marginTop: SPACING_XXXSMALL / 2 }}
     >
       <FlatList
         data={processedPosts}
@@ -133,8 +133,8 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
 
 const styles = StyleSheet.create({
   item: {
-    marginBottom: SPACING_XXSMALL / 2,
-    marginRight: SPACING_XXSMALL / 2,
+    marginBottom: SPACING_XXXSMALL / 2,
+    marginRight: SPACING_XXXSMALL / 2,
     marginTop: 0,
     marginLeft: 0,
   },

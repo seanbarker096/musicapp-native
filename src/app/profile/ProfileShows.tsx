@@ -78,7 +78,7 @@ const ProfileShows: FC<ProfileShowsProps> = ({
             (isViewingUsersProfile ? (
               <AppEmptyState
                 primaryMessage="Your favourite moments, captured by your fans"
-                secondaryMessage="Artist Picks are fan videos that you can feature on your profile. View your fans videos, click the 'Artist Pick' icon, and they will be here for everyone to see!"
+                secondaryMessage="Artist Picks are fan videos that artists can feature on their profile. View your fans videos, click the 'Artist Pick' icon, and they will be here for everyone to see!"
               ></AppEmptyState>
             ) : (
               <AppEmptyState

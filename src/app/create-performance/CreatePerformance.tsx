@@ -212,7 +212,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
             }}
           >
             <ProfileImage
-              size="large"
+              size="xlarge"
               imageUrl={performer.imageUrl}
             ></ProfileImage>
             <AppText

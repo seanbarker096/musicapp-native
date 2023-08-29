@@ -1,6 +1,6 @@
 import { AppText, TextSize } from 'components/app-text';
 import { View } from 'react-native';
-import { APP_GUTTER, SPACING_XXXSMALL } from 'styles';
+import { APP_GUTTER, SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
 
 type Props = {
   onActionPress?: () => void;
@@ -45,6 +45,7 @@ export const AppEmptyState: React.FC<Props> = ({
     )}
     {onActionPress && (
       <AppText
+        marginTop={SPACING_XXSMALL}
         isLink={true}
         handlePress={onActionPress}
       >

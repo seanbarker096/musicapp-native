@@ -1,7 +1,7 @@
 import { ReactElement, memo } from 'react';
 import { View } from 'react-native';
 import { Post } from 'store/posts';
-import { SPACING_XXSMALL } from 'styles';
+import { SPACING_XXXSMALL } from 'styles';
 
 type props = {
   galleryItemFooter: (post: Post) => ReactElement;
@@ -20,8 +20,8 @@ export const MemoizedGalleryItemFooter: React.FC<props> = memo(
       <View
         style={{
           position: 'absolute',
-          bottom: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
-          right: SPACING_XXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
+          bottom: SPACING_XXXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
+          right: SPACING_XXXSMALL / 2, // ensures the footer stays confined to the edges of the image, rather than hanging of its right edge
           width: '100%',
         }}
       >

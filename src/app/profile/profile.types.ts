@@ -40,6 +40,6 @@ export interface ProfileInternalStackScreenParams {
    *
    * @see ProfileStackScreen for more details
    */
-  isLoggedInUsersProfile: boolean;
+  isLoggedInUsersProfile?: boolean;
   createPostSuccess?: boolean;
 }

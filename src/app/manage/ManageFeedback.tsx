@@ -23,7 +23,7 @@ export const ManageFeedback: React.FC<Props> = () => {
         Give us your feedback!
       </AppText>
       <AppText marginBottom={SPACING_XXSMALL}>
-        Our team are always looking to speak to users in order to improve your
+        We are always looking to speak to users in order to improve your
         experience on Gigstory. We'd love to hear from you with any feedback,
         ideas or suggestions you have for the app.
       </AppText>

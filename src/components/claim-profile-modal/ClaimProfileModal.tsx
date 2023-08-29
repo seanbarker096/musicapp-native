@@ -24,7 +24,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
           textAlign="center"
           marginBottom={SPACING_XXSMALL}
         >
-          Claim this artists profile
+          Claim this artist's profile
         </AppText>
         <AppText
           size="small"

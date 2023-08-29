@@ -24,6 +24,7 @@ type PerformancePostsProps = {
   performerId: number;
   handleCreatePostPress: () => void;
   handlePostPress: (postId: number) => void;
+  handleArtistPress: (performerId: number) => void;
 };
 
 export const PerformancePosts: FC<PerformancePostsProps> = ({
@@ -31,6 +32,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
   performerId,
   handleCreatePostPress,
   handlePostPress,
+  handleArtistPress,
 }) => {
   const { profileState } = useContext(ProfileContext);
   const {
@@ -120,11 +122,13 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
               size="large"
               imageUrl={performer.imageUrl}
               styles={{ marginBottom: SPACING_XXXSMALL }}
+              handlePress={() => handleArtistPress(performer.id)}
             ></ProfileImage>
             <AppText
               size="large"
               weight="bold"
               marginBottom={SPACING_XXXSMALL}
+              handlePress={() => handleArtistPress(performer.id)}
             >
               {performer.name} @ {performance.venueName}
             </AppText>
@@ -159,7 +163,7 @@ export const PerformancePosts: FC<PerformancePostsProps> = ({
           {taggedPosts.length === 0 && loggedInUserIsPerformer && (
             <AppEmptyState
               primaryMessage="No fans have uploaded any videos for this gig yet"
-              secondaryMessage=" Uploaded videos that are linked to this performance will appear here"
+              secondaryMessage="When fans upload videos and link them to this gig, they will appear here"
             ></AppEmptyState>
           )}
           {taggedPosts.length > 0 && (

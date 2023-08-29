@@ -2,6 +2,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppShellStackScreenProps } from 'app/app-shell/appShell.types';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
+import { ProfileType } from 'contexts/profile.context';
 import { FC } from 'react';
 import { View } from 'react-native';
 import { PerformancePosts } from './PerformancePosts';
@@ -31,6 +32,12 @@ export const Performance: FC<PerformanceScreenProps> = ({
         handlePostPress={(postId: number) => {
           navigation.navigate('ViewPost', { postId });
         }}
+        handleArtistPress={(performerId: number) =>
+          navigation.navigate('ViewPerformer', {
+            profileId: performerId,
+            profileType: ProfileType.PERFORMER,
+          })
+        }
       ></PerformancePosts>
     </View>
   );
