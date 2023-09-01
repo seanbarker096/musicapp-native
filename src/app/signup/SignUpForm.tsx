@@ -11,8 +11,14 @@ import {
 } from 'components/form-components';
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { BUTTON_COLOR_PRIMARY, SPACING_LARGE, SPACING_XSMALL } from 'styles';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import {
+  BUTTON_COLOR_PRIMARY,
+  COLOR_NEUTRAL_XXXXLIGHT,
+  SPACING_LARGE,
+  SPACING_MID,
+  SPACING_XSMALL,
+} from 'styles';
 import * as Yup from 'yup';
 import { SignUpStackParamList } from './sign-up.types';
 
@@ -23,6 +29,8 @@ export interface SignUpFormValues {
 }
 
 type SignUpProps = NativeStackScreenProps<SignUpStackParamList, 'SignUpForm'>;
+
+const appLogo = require('./../../assets/gigstory.png');
 
 const signupFormSchema = Yup.object({
   email: emailValidator,
@@ -72,12 +80,19 @@ export const SignUpForm: FC<SignUpProps> = ({ navigation: { navigate } }) => {
     <>
       <View
         style={{
+          backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
           margin: 10,
-          paddingTop: '35%',
+          alignItems: 'stretch',
+          justifyContent: 'center',
+          flexDirection: 'column',
           paddingBottom: SPACING_LARGE,
           height: '100%',
         }}
       >
+        <Image
+          source={appLogo}
+          style={styles.image}
+        />
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
             setFieldTouched('email', true, true);
@@ -154,5 +169,12 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  image: {
+    height: 170,
+    width: 170,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: SPACING_MID,
   },
 });

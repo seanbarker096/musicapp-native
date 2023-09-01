@@ -3,6 +3,7 @@ export const COLOR_PRIMARY_XXLIGHT = '#DFF0E6';
 export const COLOR_PRIMARY_XLIGHT = '#B4E3CD';
 export const COLOR_PRIMARY_LIGHT = '#8AD9BD';
 
+
 export const COLOR_PRIMARY_DARK = '#2E816A';
 
 export const COLOR_SECONDARY = '#FF6C55';

@@ -4,13 +4,13 @@ export default ({ config }) => {
   return { 
     ...config, 
     owner: 'seanbarker6',
-    name: process.env.ENV === 'dev' ? 'MusicFans (Dev)' : 'MusicFans',
-    slug: 'music-fans',
+    name: process.env.ENV === 'dev' ? 'Gigstory (Dev)' : 'Gigstory',
+    slug: 'gigstory',
     ios: {
-      bundleIdentifier: process.env.ENV === 'dev' ? 'com.myapp.dev' : 'com.myapp',
+      bundleIdentifier: process.env.ENV === 'dev' ? 'com.gigstory.dev' : 'com.gigstory',
     },
     android: {
-      package: process.env.ENV ? 'com.myapp.dev' : 'com.myapp',
+      package: process.env.ENV ? 'com.gigstory.dev' : 'com.gigstory',
     },
     extra: {
       eas: {

@@ -7,16 +7,19 @@ import { ResetPasswordModal } from 'components/reset-password-modal';
 
 import { useFormik } from 'formik';
 import React, { FC, useEffect, useState } from 'react';
-import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useLoginMutation } from 'store/auth/auth.queries';
 import { AuthState } from 'store/auth/auth.types';
 import {
   BUTTON_COLOR_PRIMARY,
   COLOR_NEUTRAL_XXXXLIGHT,
   SPACING_LARGE,
+  SPACING_MID,
   SPACING_XSMALL,
 } from 'styles';
 import * as Yup from 'yup';
+
+const appLogo = require('./../../assets/gigstory.png');
 
 type LoginProps = {
   setAuthState: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
@@ -56,7 +59,6 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     onSuccess: result => {
       setLoggedOutPage(undefined);
       setAuthState(result.authState);
-      console.log(result.authState);
     },
   });
 
@@ -118,17 +120,25 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
+  console.log(appLogo);
   return (
     <>
       <View
         style={{
           backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
           margin: 10,
-          paddingTop: '35%',
+          alignItems: 'stretch',
+          justifyContent: 'center',
+          flexDirection: 'column',
           paddingBottom: SPACING_LARGE,
           height: '100%',
         }}
       >
+        <Image
+          source={appLogo}
+          style={styles.image}
+        />
+
         <AppTextInput
           handleChange={(e: string | React.ChangeEvent<any>) => {
             handleUsernameOrEmailChange(e);
@@ -221,6 +231,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingHorizontal: 10,
+  },
+  image: {
+    height: 170,
+    width: 170,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: SPACING_MID,
   },
 });
 
