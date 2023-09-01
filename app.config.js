@@ -5,7 +5,7 @@ export default ({ config }) => {
     ...config, 
     owner: 'seanbarker6',
     name: process.env.ENV === 'dev' ? 'Gigstory (Dev)' : 'Gigstory',
-    slug: 'gigstory',
+    slug: 'music-fans',
     ios: {
       bundleIdentifier: process.env.ENV === 'dev' ? 'com.gigstory.dev' : 'com.gigstory',
     },
