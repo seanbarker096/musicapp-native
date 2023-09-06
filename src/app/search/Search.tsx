@@ -37,7 +37,6 @@ const Search: FC<SearchProps> = ({ navigation }) => {
     | 'User';
 
   const navigateToPerformerProfile = (performer: Performer) => {
-    console.log(performer);
     navigation.navigate('SearchProfile', {
       profileType: ProfileType.PERFORMER,
       profileId: performer.id,

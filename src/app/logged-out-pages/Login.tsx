@@ -120,7 +120,6 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
-  console.log(appLogo);
   return (
     <>
       <View

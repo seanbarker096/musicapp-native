@@ -60,7 +60,6 @@ export const PerformerSearch: FC<PerformerSearchProps> = ({
   });
 
   useEffect(() => {
-    console.log(performer);
     if (performer) {
       onPerformerSelected(performer);
     }
