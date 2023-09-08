@@ -319,7 +319,7 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
         textAlign="center"
         marginBottom={SPACING_XXSMALL}
       >
-        Upload your video from the artist's show
+        Upload your video from the artist's gig
       </AppText>
       <View
         style={{

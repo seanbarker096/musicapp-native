@@ -41,7 +41,7 @@ export const ResetPasswordModal: FC<Props> = ({}) => {
           >
             <MailSVG></MailSVG>
           </SVGIcon>
-          <AppText size="large">gigstory@gmail.com</AppText>
+          <AppText size="large">gigstoryy@gmail.com</AppText>
         </View>
         <View style={styles.listItem}>
           <SVGIcon
