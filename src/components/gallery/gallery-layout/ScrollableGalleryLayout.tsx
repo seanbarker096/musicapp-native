@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Post } from 'store/posts/posts.types';
-import { SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
+import { SPACING_NONE, SPACING_XXSMALL, SPACING_XXXSMALL } from 'styles';
 import { isPostWithFile } from 'utils/utils';
 import { GalleryItem } from '../gallery-item/GalleryItem';
 import { MemoizedGalleryItemFooter } from '../gallery-item/MemoizedGalleryItemFooter';
@@ -54,10 +54,16 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
         key={index}
         maxItems={3}
       >
-        {item.filter(isPostWithFile).map(post => (
+        {item.filter(isPostWithFile).map((post, j) => (
           <>
             <GalleryItem
-              galleryItemStyles={{ ...styles.item, position: 'relative' }}
+              galleryItemStyles={{
+                ...styles.item,
+                ...{
+                  marginRight: j === 2 ? SPACING_NONE : SPACING_XXXSMALL / 2, // No margin for rightmost item
+                },
+                position: 'relative',
+              }}
               thumbnailUrl={
                 post.attachments &&
                 post.attachments[0] &&
@@ -106,9 +112,7 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   };
 
   return (
-    <View
-      style={{ height: 400, width: '100%', marginTop: SPACING_XXXSMALL / 2 }}
-    >
+    <View style={{ height: 400, width: '100%' }}>
       <FlatList
         data={processedPosts}
         renderItem={listItem}

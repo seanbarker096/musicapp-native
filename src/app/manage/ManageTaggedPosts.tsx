@@ -12,7 +12,6 @@ import {
   COLOR_PRIMARY,
   SPACING_LARGE,
   SPACING_SMALL,
-  SPACING_XXSMALL,
   SPACING_XXXSMALL,
 } from 'styles';
 import { useGetPostsWithAttachmentsAndFilesQuery } from 'utils/custom-hooks';
@@ -140,7 +139,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: COLOR_PRIMARY,
-    paddingVertical: SPACING_XXSMALL,
+    paddingVertical: SPACING_XXXSMALL / 2,
     paddingHorizontal: APP_GUTTER,
     display: 'flex',
     flexDirection: 'row',

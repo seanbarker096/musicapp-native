@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: COLOR_PRIMARY,
-    paddingVertical: SPACING_XXSMALL,
+    paddingVertical: SPACING_XXXSMALL / 2,
     paddingHorizontal: APP_GUTTER,
     display: 'flex',
     flexDirection: 'row',

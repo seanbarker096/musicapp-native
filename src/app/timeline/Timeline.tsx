@@ -16,6 +16,7 @@ import {
   COLOR_PRIMARY,
   SPACING_SMALL,
   SPACING_XSMALL,
+  SPACING_XXXSMALL,
 } from 'styles';
 import { TimelineStackParamList } from './timeline-types';
 
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     backgroundColor: COLOR_PRIMARY,
-    paddingVertical: SPACING_XSMALL,
+    paddingVertical: SPACING_XXXSMALL / 2,
     paddingHorizontal: APP_GUTTER,
     display: 'flex',
     flexDirection: 'row',

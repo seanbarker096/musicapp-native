@@ -1,6 +1,6 @@
 import { BottomTabNavigationEventMap } from '@react-navigation/bottom-tabs';
 import { NavigationHelpers, ParamListBase } from '@react-navigation/native';
-import { Avatar, AvatarSize } from 'components/avatar';
+import { AvatarSize } from 'components/avatar';
 import { SVGIcon } from 'components/icon/SVGIcon';
 import { IconColor } from 'components/icon/icon.types';
 import {
@@ -8,9 +8,11 @@ import {
   MailSVG,
   SearchOutlineSVG,
 } from 'components/icon/svg-components';
+import { ProfileImage } from 'components/profile-image';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import { FC, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useUserGetQuery } from 'store/users';
 import {
   BORDER_RADIUS_XXSMALL,
   COLOR_NEUTRAL_XXXXLIGHT,
@@ -18,7 +20,6 @@ import {
   SPACING_SMALL,
 } from 'styles';
 import { PrimaryScreens } from './PrimaryNav.types';
-
 interface PrimaryNavProps {
   navigation: NavigationHelpers<ParamListBase, BottomTabNavigationEventMap>;
   currentScreen: PrimaryScreens;
@@ -27,6 +28,19 @@ interface PrimaryNavProps {
 const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
   const { profileState } = useContext(ProfileContext);
   const profileType = profileState.profileType;
+
+  const {
+    isLoading: userGetLoading,
+    isError: isUsersGetError,
+    data: userData,
+    error: usersGetError,
+  } = useUserGetQuery({
+    queryParams: { id: profileState.profileId },
+  });
+
+  const userReady = userData && !userGetLoading;
+
+  const user = userReady ? userData[0] : undefined;
 
   const handleIconPress = (selectedScreen: PrimaryScreens) => {
     navigation.navigate(selectedScreen);
@@ -78,16 +92,16 @@ const PrimaryNav: FC<PrimaryNavProps> = ({ navigation, currentScreen }) => {
       >
         <MailSVG></MailSVG>
       </SVGIcon>
-      <Avatar
-        style={
+      <ProfileImage
+        styles={
           currentScreen === PrimaryScreens.PROFILE
             ? styles.avatarActive
             : styles.avatarInactive
         }
-        size={AvatarSize.SMALL}
-        imageUrl="https://www.w3schools.com/howto/img_avatar.png"
+        size="small"
+        imageUrl={user?.avatarFile?.url}
         handlePress={() => handleIconPress(PrimaryScreens.PROFILE)}
-      ></Avatar>
+      ></ProfileImage>
     </View>
   );
 };
