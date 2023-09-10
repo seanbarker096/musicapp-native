@@ -7,10 +7,10 @@ export default ({ config }) => {
     name: process.env.ENV === 'dev' ? 'Gigstory (Dev)' : process.env.ENV == 'stg' ? 'Gigstory (Stg)' : 'Gigstory',
     slug: 'music-fans',
     ios: {
-      bundleIdentifier: process.env.ENV === 'dev' ? 'gigstory.dev' : process.env.ENV == 'stg' ? 'gigstory.stg' : 'gigstory',
+      bundleIdentifier: process.env.ENV === 'dev' ? 'com.gigstory.dev' : process.env.ENV == 'stg' ? 'com.gigstory.stg' : 'com.gigstory',
     },
     android: {
-      package: process.env.ENV === 'dev' ? 'gigstory.dev' : process.env.ENV == 'stg' ? 'gigstory.stg' : 'gigstory',
+      package: process.env.ENV === 'dev' ? 'com.gigstory.dev' : process.env.ENV == 'stg' ? 'com.gigstory.stg' : 'com.gigstory',
     },
     extra: {
       eas: {
