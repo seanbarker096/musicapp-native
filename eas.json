@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 2.4.0"
+    "version": ">= 2.4.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development-simulator": {
@@ -11,6 +12,7 @@
       }
     },
     "production": {
+      "autoIncrement": true,
       "yarn":"1.22.19",
       "node": "16.10.0",
       "env":  {
