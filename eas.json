@@ -25,7 +25,7 @@
       "extends": "production",
       "distribution": "internal",
       "env": {
-        "API_URL": "https://gigsstory-api-prod.eba-c662d9mj.us-east-2.elasticbeanstalk.com",
+        "API_URL": "https://gigsstory-api-dev.us-east-2.elasticbeanstalk.com",
         "ENV": "stg"
       }
     },
