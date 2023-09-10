@@ -7,10 +7,10 @@ export default ({ config }) => {
     name: process.env.ENV === 'dev' ? 'Gigstory (Dev)' : process.env.ENV == 'stg' ? 'Gigstory (Stg)' : 'Gigstory',
     slug: 'music-fans',
     ios: {
-      bundleIdentifier: process.env.ENV === 'dev' ? 'com.gigstory.dev' : process.env.ENV == 'stg' ? 'com.gigstory.stg' : 'com.gigstory',
+      bundleIdentifier: process.env.ENV === 'dev' ? 'gigstory.dev' : process.env.ENV == 'stg' ? 'gigstory.stg' : 'gigstory',
     },
     android: {
-      package: process.env.ENV === 'dev' ? 'com.gigstory.dev' : process.env.ENV == 'stg' ? 'com.gigstory.stg' : 'com.gigstory',
+      package: process.env.ENV === 'dev' ? 'gigstory.dev' : process.env.ENV == 'stg' ? 'gigstory.stg' : 'gigstory',
     },
     extra: {
       eas: {
@@ -36,5 +36,5 @@ export default ({ config }) => {
     }
 
     // Handle case of local development against real dev backend
-    return 'https://gigsstory-api-dev.us-east-2.elasticbeanstalk.com';
+    return 'https://gigsstory-api-prod.eba-c662d9mj.us-east-2.elasticbeanstalk.com';
   }
