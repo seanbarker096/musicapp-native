@@ -125,7 +125,7 @@ export const ClaimProfileModal: FC<Props> = ({}) => {
         >
           To claim this profile, contact{' '}
           <Text style={{ fontWeight: '800' }}>@gigstoryy </Text>
-          on Instagram with the aritst name.
+          on Instagram with the artist's name.
         </AppText>
       </ScrollView>
     </Pressable>

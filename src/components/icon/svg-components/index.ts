@@ -9,6 +9,7 @@ export * from './FacebookSVG';
 export * from './FilledLikeHeartSVG';
 export * from './HomeOutlineSVG';
 export * from './InstagramSVG';
+export * from './LeftArrowSVG';
 export * from './LikeHeartSVG';
 export * from './LinkSVG';
 export * from './LocationSVG';

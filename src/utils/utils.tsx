@@ -1,5 +1,8 @@
 import { File } from 'store/files/files.types';
 import { Post } from 'store/posts';
+import { SVGIcon } from 'components/icon';
+import { LeftArrowSVG } from 'components/icon/svg-components';
+import { NavigationHelpers, ParamListBase } from '@react-navigation/native';
 
 export function isArray(arg: any): arg is readonly any[] {
   return Array.isArray(arg);
@@ -32,4 +35,11 @@ export function isPostWithFile(
  */
 export function createUTCDate(date: Date): number {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function navigationHeaderFactory(screenOptions: {} = {}){
+ return ({navigation}: {navigation: NavigationHelpers<ParamListBase>}) => ({
+  ...screenOptions,
+   headerBackTitleVisible: false, // for ios to prevent showing name of previous page
+   headerLeft: () => navigation.canGoBack() ? <SVGIcon handlePress={navigation.goBack}><LeftArrowSVG></LeftArrowSVG></SVGIcon>: <></>})
 }

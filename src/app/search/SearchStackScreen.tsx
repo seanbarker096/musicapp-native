@@ -8,6 +8,9 @@ import { ProfileInternalStackScreen } from 'app/profile/ProfileStackScreen';
 import React, { FC } from 'react';
 import Search from './Search';
 import { InternalSearchStackScreenParamList } from './search-types';
+import { SVGIcon } from 'components/icon/';
+import { LeftArrowSVG } from 'components/icon/svg-components';
+import { navigationHeaderFactory } from 'utils/utils';
 
 type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
@@ -19,7 +22,9 @@ const SearchStack =
 
 export const SearchStackScreen: FC<Props> = () => {
   return (
-    <SearchStack.Navigator>
+    <SearchStack.Navigator 
+    screenOptions={navigationHeaderFactory()}
+  >
       <SearchStack.Screen
         component={Search}
         name="Search"
