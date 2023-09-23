@@ -11,6 +11,10 @@ import Login from './logged-out-pages/Login';
 import SessionExpired from './logged-out-pages/SessionExpired';
 import { SignUp } from './logged-out-pages/SignUp';
 import { authenticateUserOnAppStartup } from './services/authService';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets
+} from 'react-native-safe-area-context';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { View } from 'react-native';
@@ -35,6 +39,7 @@ const MyTheme = {
 };
 
 const AppMain = function () {
+ const insets = useSafeAreaInsets();
   const [authState, setAuthState] = useState<undefined | AuthState>(undefined);
   const [loggedOutPage, setLoggedOutPage] = useState<LoggedOutPage | undefined>(
     LoggedOutPage.LOGIN,
@@ -44,6 +49,11 @@ const AppMain = function () {
 
   return (
     <NavigationContainer theme={MyTheme}>
+    <View style={{ height: '100%', width: '100%',   paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right
+        }}>
       {authState?.status === AuthStatus.AUTHENTICATED ? (
         <LoggedInAppShell
           authState={authState}
@@ -73,6 +83,7 @@ const AppMain = function () {
           )}
         </>
       )}
+      </View>
     </NavigationContainer>
   );
 };
@@ -98,7 +109,9 @@ const App = () => {
       style={{ height: '100%', width: '100%' }}
     >
       <QueryClientProvider client={queryClient}>
+       <SafeAreaProvider>
         <AppMain></AppMain>
+         </SafeAreaProvider>
       </QueryClientProvider>
     </View>
   );
