@@ -42,4 +42,5 @@ export interface ProfileInternalStackScreenParams {
    */
   isLoggedInUsersProfile?: boolean;
   createPostSuccess?: boolean;
+  hideBackForEntryScreen?: boolean;
 }

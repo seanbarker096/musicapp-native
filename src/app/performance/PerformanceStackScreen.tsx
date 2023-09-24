@@ -8,6 +8,7 @@ import { ProfileStackParamList } from 'app/profile/profile.types';
 import { ProfileInternalStackScreen } from 'app/profile/ProfileStackScreen';
 import { TimelineStackParamList } from 'app/timeline/timeline-types';
 import { FC } from 'react';
+import { navHeaderFactory } from 'utils/utils';
 import { Performance } from './Performance';
 import { PerformanceStackParamList } from './performance-types';
 
@@ -25,7 +26,7 @@ export const PerformanceStackScreen: FC<PerformanceStackScreenProps> = ({
     createNativeStackNavigator<PerformanceStackParamList>();
 
   return (
-    <PerformanceStack.Navigator>
+    <PerformanceStack.Navigator screenOptions={navHeaderFactory()}>
       <PerformanceStack.Screen
         name="Performance"
         component={Performance}

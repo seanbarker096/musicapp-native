@@ -1,8 +1,13 @@
-import { File } from 'store/files/files.types';
-import { Post } from 'store/posts';
+import { ParamListBase } from '@react-navigation/native';
+import {
+  NativeStackNavigationOptions,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import { SVGIcon } from 'components/icon';
 import { LeftArrowSVG } from 'components/icon/svg-components';
-import { NavigationHelpers, ParamListBase } from '@react-navigation/native';
+import { View } from 'react-native';
+import { File } from 'store/files/files.types';
+import { Post } from 'store/posts';
 
 export function isArray(arg: any): arg is readonly any[] {
   return Array.isArray(arg);
@@ -37,9 +42,39 @@ export function createUTCDate(date: Date): number {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
-export function navigationHeaderFactory(screenOptions: {} = {}){
- return ({navigation}: {navigation: NavigationHelpers<ParamListBase>}) => ({
-  ...screenOptions,
-   headerBackTitleVisible: false, // for ios to prevent showing name of previous page
-   headerLeft: () => navigation.canGoBack() ? <SVGIcon handlePress={navigation.goBack}><LeftArrowSVG></LeftArrowSVG></SVGIcon>: <></>})
+/**
+ * On IOS, there is an issue with the back button not appearing inside nested navigators. https://github.com/software-mansion/react-native-screens/issues/1460.
+ *
+ * This helper method should be used to define the screenOptions in the navigator props, or the options value in the screen props, in order to ensure the back button appears on android and IOS
+ */
+export function navHeaderFactory({
+  screenOptions = {},
+  hideBackForEntryScreen = false,
+}: {
+  screenOptions?: NativeStackNavigationOptions;
+  hideBackForEntryScreen?: boolean;
+} = {}) {
+  return ({
+    navigation,
+  }: {
+    navigation: NativeStackNavigationProp<ParamListBase>;
+  }) => {
+    const state = navigation.getState();
+
+    return {
+      ...screenOptions,
+      headerLeft: () =>
+        !navigation.canGoBack() ||
+        // If we are the first navigator inside the tab navigator, and the entry screen, we don't want to show the back button. You navigate back via the tabs. We pass hideBackForEntryScreen = true in this case.
+        (hideBackForEntryScreen && state.routes.length === 1) ? (
+          <></>
+        ) : (
+          <View style={{ marginRight: 10 }}>
+            <SVGIcon handlePress={navigation.goBack}>
+              <LeftArrowSVG></LeftArrowSVG>
+            </SVGIcon>
+          </View>
+        ),
+    };
+  };
 }

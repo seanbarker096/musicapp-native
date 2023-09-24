@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { COLOR_NEUTRAL_XXXXLIGHT } from 'styles';
+import { navHeaderFactory } from 'utils/utils';
 import { ConfirmSignUp } from './ConfirmSignUp';
 import { CreateBio } from './CreateBio';
 import { SignUpForm } from './SignUpForm';
@@ -12,12 +13,14 @@ const SignUpStack = createNativeStackNavigator<SignUpStackParamList>();
 export const SignUpStackScreen = () => {
   return (
     <SignUpStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
+      screenOptions={navHeaderFactory({
+        screenOptions: {
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: COLOR_NEUTRAL_XXXXLIGHT,
+          },
         },
-      }}
+      })}
     >
       <SignUpStack.Screen
         name="SignUpForm"

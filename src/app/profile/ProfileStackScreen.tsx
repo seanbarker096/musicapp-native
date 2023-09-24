@@ -21,6 +21,7 @@ import { View } from 'react-native';
 
 import { SPACING_SMALL, SPACING_XSMALL } from 'styles';
 
+import { navHeaderFactory } from 'utils/utils';
 import Profile from './Profile';
 import {
   ProfileInternalStackScreenParams,
@@ -59,6 +60,7 @@ const ProfileStackScreen: FC<Props> = ({ route: { params }, navigation }) => {
           profileType,
           createPostSuccess: params?.createPostSuccess,
           isLoggedInUsersProfile: true,
+          hideBackForEntryScreen: true,
         }}
         component={ProfileInternalStackScreen}
       ></ProfileTab.Screen>
@@ -79,12 +81,13 @@ type T = {
 type InternalStackScreenProps = NativeStackScreenProps<T, 'main'>;
 
 export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
-  ({ route: { params } }) => {
+  ({ route: { params }, navigation }) => {
     const {
       profileId,
       profileType,
       createPostSuccess,
       isLoggedInUsersProfile = false,
+      hideBackForEntryScreen,
     } = params;
 
     const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
@@ -111,7 +114,10 @@ export const ProfileInternalStackScreen: FC<InternalStackScreenProps> = memo(
             ? {
                 header: ProfileStackScreenHeader, // We set showHeader to false for all screens except the main profile screen
               }
-            : {}
+            : navHeaderFactory({
+                screenOptions: {},
+                hideBackForEntryScreen,
+              })
         }
       >
         <ProfileStack.Screen name="Profile">

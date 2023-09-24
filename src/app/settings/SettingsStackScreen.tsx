@@ -4,6 +4,7 @@ import {
 } from '@react-navigation/native-stack';
 import React, { FC } from 'react';
 
+import { navHeaderFactory } from 'utils/utils';
 import Settings from './Settings';
 import { SettingsStackParamList } from './settings.types';
 
@@ -13,7 +14,11 @@ const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
 const SettingsStackScreen: FC<Props> = () => {
   return (
-    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+    <SettingsStack.Navigator
+      screenOptions={navHeaderFactory({
+        screenOptions: { headerShown: false },
+      })}
+    >
       <SettingsStack.Screen
         component={Settings}
         name="Settings"

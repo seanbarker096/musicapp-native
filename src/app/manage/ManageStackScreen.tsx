@@ -9,11 +9,15 @@ import { PostStackScreen } from 'app/post/PostStackScreen';
 import PrimaryNav from 'app/primary-nav/PrimaryNav';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import React, { FC } from 'react';
+import { navHeaderFactory } from 'utils/utils';
 import Manage from './Manage';
 import { ManageArtistPicks } from './ManageArtistPicks';
 import { ManageFeedback } from './ManageFeedback';
 import { ManageTaggedPosts } from './ManageTaggedPosts';
-import { ManageStackParamList } from './manage-types';
+import {
+  InternalManageStackScreenParamsList,
+  ManageStackParamList,
+} from './manage-types';
 
 type Props = NativeStackScreenProps<
   AppShellStackNavigatorParamList,
@@ -21,7 +25,9 @@ type Props = NativeStackScreenProps<
 >;
 
 const ManageStackScreen: FC<Props> = () => {
-  const ManageTab = createBottomTabNavigator();
+  const ManageTab = createBottomTabNavigator<{
+    main: InternalManageStackScreenParamsList;
+  }>();
 
   return (
     <ManageTab.Navigator
@@ -35,6 +41,7 @@ const ManageStackScreen: FC<Props> = () => {
       <ManageTab.Screen
         options={{ headerShown: false }}
         component={InternalManageStackScreen}
+        initialParams={{ hideBackForEntryScreen: true }}
         name="main"
       ></ManageTab.Screen>
     </ManageTab.Navigator>
@@ -43,12 +50,25 @@ const ManageStackScreen: FC<Props> = () => {
 
 export default ManageStackScreen;
 
-const InternalManageStackScreen = () => {
+const InternalManageStackScreen: FC<
+  NativeStackScreenProps<
+    {
+      main: InternalManageStackScreenParamsList;
+    },
+    'main'
+  >
+> = ({ navigation, route: { params } }) => {
   const InternalManageStack =
     createNativeStackNavigator<ManageStackParamList>();
 
+  const hideBackForEntryScreen = params?.hideBackForEntryScreen;
+
+  const state = navigation.getState();
+
   return (
-    <InternalManageStack.Navigator>
+    <InternalManageStack.Navigator
+      screenOptions={navHeaderFactory({ hideBackForEntryScreen })}
+    >
       <InternalManageStack.Screen
         component={Manage}
         name="Manage"

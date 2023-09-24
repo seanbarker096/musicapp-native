@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { navHeaderFactory } from 'utils/utils';
 import CreatePerformance from './CreatePerformance';
 import { CreatePerformanceStackParamList } from './create-performance.types';
 
@@ -7,7 +8,7 @@ const CreatePeformanceStackScreen = () => {
     createNativeStackNavigator<CreatePerformanceStackParamList>();
 
   return (
-    <CreatePerformanceStack.Navigator>
+    <CreatePerformanceStack.Navigator screenOptions={navHeaderFactory()}>
       <CreatePerformanceStack.Screen
         name="CreatePerformance"
         component={CreatePerformance}

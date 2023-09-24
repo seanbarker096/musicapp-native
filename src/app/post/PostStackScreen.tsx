@@ -9,6 +9,7 @@ import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { ProfileInternalStackScreen } from 'app/profile/ProfileStackScreen';
 import { FC } from 'react';
+import { navHeaderFactory } from 'utils/utils';
 import { LinkPostToPerformance } from './LinkPostToPerformance';
 import { Post } from './Post';
 import { PostStackParamList } from './post.types';
@@ -26,7 +27,7 @@ export const PostStackScreen: FC<PostStackScreenProps> = ({
   const PostStack = createNativeStackNavigator<PostStackParamList>();
 
   return (
-    <PostStack.Navigator>
+    <PostStack.Navigator screenOptions={navHeaderFactory()}>
       <PostStack.Screen
         name="Post"
         component={Post}

@@ -6,6 +6,7 @@ import { AppShellStackNavigatorParamList } from 'app/app-shell/appShell.types';
 import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import React, { FC } from 'react';
+import { navHeaderFactory } from 'utils/utils';
 import { CreatePostStackParamList } from './create-post.types';
 import CreatePost from './CreatePost';
 import { CreatePostPerformanceSearch } from './CreatePostPerformanceSearch';
@@ -23,7 +24,7 @@ const CreateStackTabNavigator =
 
 const CreatePostStackScreen: FC<Props> = ({ route: { params } }) => {
   return (
-    <CreateStackTabNavigator.Navigator>
+    <CreateStackTabNavigator.Navigator screenOptions={navHeaderFactory()}>
       <CreateStackTabNavigator.Screen
         component={CreatePost}
         // Should be ok, but might need to check if any issues here with initialParams becoming stale

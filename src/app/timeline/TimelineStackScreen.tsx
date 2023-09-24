@@ -6,6 +6,7 @@ import { PerformanceStackScreen } from 'app/performance/PerformanceStackScreen';
 import { ProfileStackParamList } from 'app/profile/profile.types';
 import { ProfileInternalStackScreen } from 'app/profile/ProfileStackScreen';
 import { FC } from 'react';
+import { navHeaderFactory } from 'utils/utils';
 import Timeline from './Timeline';
 import { TimelineStackParamList } from './timeline-types';
 
@@ -25,7 +26,7 @@ export const TimelineStackScreen: FC<TimelineStackScreenProps> = ({
   const TimelineStack = createNativeStackNavigator<TimelineStackParamList>();
 
   return (
-    <TimelineStack.Navigator>
+    <TimelineStack.Navigator screenOptions={navHeaderFactory()}>
       <TimelineStack.Screen
         name="Timeline"
         initialParams={{ attendeeId, performerId }}
