@@ -129,7 +129,6 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     handleBlur,
     values,
     errors,
-    setTouched,
     touched,
     isSubmitting,
     isValid,
@@ -257,12 +256,12 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                 if (e) {
                   // set to isoString to avoid any locale string effects when passing back into DateInput as the value
                   handleEventStartDateChange(e?.toISOString());
-                  setTouched({ ...touched, eventStartDate: true });
+                  // Formik setTouched method was causing incorrect states, so set directly
+                  touched.eventStartDate = true;
                 }
               }}
               handleBlur={e => {
                 handleEventStartDateBlur(e);
-                setTouched({ ...touched, eventStartDate: true });
               }}
               value={values.eventStartDate}
               inputTitle="Event start date"
@@ -280,12 +279,12 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
               handleDateSelected={e => {
                 if (e) {
                   handleEventEndDateChange(e?.toISOString());
-                  setTouched({ ...touched, eventEndDate: true });
+                  // Formik setTouched method was causing incorrect states, so set directly
+                  touched.eventEndDate = true;
                 }
               }}
               handleBlur={e => {
                 handleEventEndDateBlur(e);
-                setTouched({ ...touched, eventEndDate: true });
               }}
               value={values.eventEndDate}
               inputTitle="Event end date"
@@ -316,12 +315,12 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
               handleDateSelected={e => {
                 if (e) {
                   handlePerformanceDateChange(e?.toISOString());
-                  setTouched({ ...touched, performanceDate: true });
+                  // Formik setTouched method was causing incorrect states, so set directly
+                  touched.performanceDate = true;
                 }
               }}
               handleBlur={e => {
                 handlePerformanceDateBlur(e);
-                setTouched({ ...touched, performanceDate: true });
               }}
               value={values.performanceDate ?? values.eventStartDate}
               inputTitle="Date you performed"
