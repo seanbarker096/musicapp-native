@@ -28,7 +28,7 @@ interface GalleryLayoutProps {
 export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
   posts,
   galleryItemFooter,
-  onEndReached,
+  onEndReached = undefined,
   hasMoreData,
   handleGalleryItemPress,
 }) => {
@@ -119,8 +119,10 @@ export const ScrollableGalleryLayout: FC<GalleryLayoutProps> = ({
         keyExtractor={(item, index) => index.toString()}
         ListFooterComponent={renderFooter}
         onEndReached={({ distanceFromEnd }) => {
-          if (distanceFromEnd < 0) return;
-          onEndReached();
+          if (distanceFromEnd < 0) {
+            return;
+          }
+          !!onEndReached && onEndReached();
         }}
         onEndReachedThreshold={0.5}
         showsVerticalScrollIndicator={false}
