@@ -129,6 +129,7 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     handleBlur,
     values,
     errors,
+    setTouched,
     touched,
     isSubmitting,
     isValid,
@@ -144,6 +145,8 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
     validationSchema,
     onSubmit: handleFormSubmit,
   });
+
+  console.log(values, errors, touched);
 
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
@@ -254,10 +257,12 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
                 if (e) {
                   // set to isoString to avoid any locale string effects when passing back into DateInput as the value
                   handleEventStartDateChange(e?.toISOString());
+                  setTouched({ ...touched, eventStartDate: true });
                 }
               }}
               handleBlur={e => {
                 handleEventStartDateBlur(e);
+                setTouched({ ...touched, eventStartDate: true });
               }}
               value={values.eventStartDate}
               inputTitle="Event start date"
@@ -275,9 +280,13 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
               handleDateSelected={e => {
                 if (e) {
                   handleEventEndDateChange(e?.toISOString());
+                  setTouched({ ...touched, eventEndDate: true });
                 }
               }}
-              handleBlur={handleEventEndDateBlur}
+              handleBlur={e => {
+                handleEventEndDateBlur(e);
+                setTouched({ ...touched, eventEndDate: true });
+              }}
               value={values.eventEndDate}
               inputTitle="Event end date"
               touched={touched.eventEndDate ?? false}
@@ -307,9 +316,13 @@ const CreatePerformance: FC<CreatePerformanceProps> = ({ navigation }) => {
               handleDateSelected={e => {
                 if (e) {
                   handlePerformanceDateChange(e?.toISOString());
+                  setTouched({ ...touched, performanceDate: true });
                 }
               }}
-              handleBlur={handlePerformanceDateBlur}
+              handleBlur={e => {
+                handlePerformanceDateBlur(e);
+                setTouched({ ...touched, performanceDate: true });
+              }}
               value={values.performanceDate ?? values.eventStartDate}
               inputTitle="Date you performed"
               touched={touched.performanceDate ?? false}

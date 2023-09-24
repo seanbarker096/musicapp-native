@@ -39,8 +39,6 @@ export const DateInput: FC<DateInputProps> = ({
         mode: 'date',
         is24Hour: true,
       });
-    } else {
-      setShowDatePicker(true);
     }
   }
 
@@ -60,25 +58,25 @@ export const DateInput: FC<DateInputProps> = ({
       >
         {inputTitle}
       </AppText>
-      <Text
-        // We cant use TextInput here sa we dont want the user to be able to edit the field other than via DatePicker, so we have to makeshift a placeholder and the corresponding text color
-        style={{
-          width: '100%',
-          display: 'flex',
-          color: value ? 'black' : 'grey',
-        }}
-        onPress={handleDateInputPress}
-        onPressOut={handleBlur}
-      >
-        {!value
-          ? 'DD/MM/YY'
-          : isDate(value)
-          ? value.toLocaleDateString()
-          : new Date(value).toLocaleDateString()}
-      </Text>
-
-      {touched && error && <AppText textColor={COLOR_ERROR}>{error}</AppText>}
-      {showDatePicker && (
+      {Platform.OS === 'android' && (
+        <Text
+          // We cant use TextInput here sa we dont want the user to be able to edit the field other than via DatePicker, so we have to makeshift a placeholder and the corresponding text color
+          style={{
+            width: '100%',
+            display: 'flex',
+            color: value ? 'black' : 'grey',
+          }}
+          onPress={handleDateInputPress}
+          onPressOut={handleBlur}
+        >
+          {!value
+            ? 'DD/MM/YY'
+            : isDate(value)
+            ? value.toLocaleDateString()
+            : new Date(value).toLocaleDateString()}
+        </Text>
+      )}
+      {Platform.OS !== 'android' && (
         <DateTimePicker
           value={!value ? today : isDate(value) ? value : new Date(value)}
           mode="date"
@@ -87,6 +85,7 @@ export const DateInput: FC<DateInputProps> = ({
           onChange={handleDateChange}
         />
       )}
+      {touched && error && <AppText textColor={COLOR_ERROR}>{error}</AppText>}
     </>
   );
 };
