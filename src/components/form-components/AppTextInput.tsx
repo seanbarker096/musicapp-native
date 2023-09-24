@@ -11,6 +11,7 @@ import {
   SPACING_XXXSMALL,
   TEXT_SIZE_REGULAR,
 } from 'styles';
+import { addNativePadding } from 'utils/utils';
 
 export const AppTextInput: React.FC<
   FormikProps<{ [key: string]: any }> & {
@@ -56,9 +57,9 @@ export const AppTextInput: React.FC<
             width: '100%',
             paddingHorizontal: SPACING_XXXSMALL,
             paddingVertical:
-              backgroundColor === COLOR_TRANSPARENT || borderless
+              (backgroundColor === COLOR_TRANSPARENT || borderless
                 ? SPACING_NONE
-                : SPACING_XXXSMALL,
+                : SPACING_XXXSMALL) + addNativePadding(),
             backgroundColor,
             ...(borderless ? {} : styles.border),
             fontFamily: 'Quicksand',

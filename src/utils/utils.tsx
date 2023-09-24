@@ -5,7 +5,7 @@ import {
 } from '@react-navigation/native-stack';
 import { SVGIcon } from 'components/icon';
 import { LeftArrowSVG } from 'components/icon/svg-components';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { File } from 'store/files/files.types';
 import { Post } from 'store/posts';
 
@@ -77,4 +77,11 @@ export function navHeaderFactory({
         ),
     };
   };
+}
+
+/**
+ * Android appears to add some small padding by default, even when padding is set to 0 in react native components. This helper method adds some padding on IOS to ensure consistent spacings on all platforms.
+ */
+export function addNativePadding() {
+  return Platform.OS === 'ios' ? 4 : 0;
 }
