@@ -6,7 +6,7 @@ import { CheckMarkSVG, PlusSVG } from 'components/icon/svg-components';
 import { List, ListItem } from 'components/list';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { usePerformancesGetQuery } from 'store/performances/performances.queries';
 import { PerformanceWithEvent } from 'store/performances/performances.types';
 import {
@@ -105,24 +105,40 @@ export const LinkPostToPerformanceList: FC<LinkToPerformancListProps> = ({
           } - ${date.toLocaleDateString()}`}</AppText>
 
           {(!performanceTag ||
-            performance.id !== performanceTag.taggedEntityId) && (
-            <SVGIcon
-              handlePress={() => handleLinkToPerformanceIconClick(performance)}
-            >
-              <PlusSVG></PlusSVG>
-            </SVGIcon>
-          )}
+            performance.id !== performanceTag.taggedEntityId) &&
+            (createTagLoading ? (
+              <ActivityIndicator
+                size="small"
+                color="#000000"
+                style={{ width: 10, height: 10, marginRight: 4 }}
+              />
+            ) : (
+              <SVGIcon
+                handlePress={() =>
+                  handleLinkToPerformanceIconClick(performance)
+                }
+              >
+                <PlusSVG></PlusSVG>
+              </SVGIcon>
+            ))}
 
-          {performance.id == performanceTag?.taggedEntityId && (
-            <SVGIcon
-              color={IconColor.SECONDARY}
-              handlePress={() =>
-                handleUnlinkToPerformanceIconClick(performanceTag)
-              }
-            >
-              <CheckMarkSVG></CheckMarkSVG>
-            </SVGIcon>
-          )}
+          {performance.id == performanceTag?.taggedEntityId &&
+            (deleteTagLoading ? (
+              <ActivityIndicator
+                size="small"
+                color="#000000"
+                style={{ width: 10, height: 10, marginRight: 4 }}
+              />
+            ) : (
+              <SVGIcon
+                color={IconColor.SECONDARY}
+                handlePress={() =>
+                  handleUnlinkToPerformanceIconClick(performanceTag)
+                }
+              >
+                <CheckMarkSVG></CheckMarkSVG>
+              </SVGIcon>
+            ))}
         </Pressable>
       </ListItem>
     );
