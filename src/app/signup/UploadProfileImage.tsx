@@ -67,7 +67,7 @@ export const UploadProfileImage: FC<Props> = ({
   };
 
   const {
-    mutate,
+    mutateAsync: updateUser,
     isLoading: updateUserLoading,
     error: updateUserError,
   } = useUsersUpdateMutation({
@@ -147,7 +147,7 @@ export const UploadProfileImage: FC<Props> = ({
       avatarImageFile = fileResult.file;
     }
 
-    mutate({
+    return updateUser({
       avatarFileUuid: avatarImageFile?.uuid,
       firstName,
       secondName,

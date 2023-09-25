@@ -55,7 +55,7 @@ interface LoginFormValues {
 }
 
 const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
-  const { mutate, error } = useLoginMutation({
+  const { mutateAsync: login, error } = useLoginMutation({
     onSuccess: result => {
       setLoggedOutPage(undefined);
       setAuthState(result.authState);
@@ -93,7 +93,7 @@ const Login: FC<LoginProps> = ({ setAuthState, setLoggedOutPage }) => {
     const email = emailEntered ? usernameOrEmail : undefined;
     const username = emailEntered ? undefined : usernameOrEmail;
 
-    await mutate({ email, username, password });
+    return login({ email, username, password });
   };
 
   const {

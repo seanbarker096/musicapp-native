@@ -19,7 +19,7 @@ export const ConfirmSignUp: FC<Props> = ({
 }) => {
   const [submitting, setSubmitting] = React.useState(false);
 
-  const { mutate, error } = useSignUpMutation({
+  const { mutateAsync: signUp, error } = useSignUpMutation({
     onSuccess: ({ authState }: SignUpMutationResult) =>
       navigation.navigate('UploadProfileImage', {
         userId: authState.authUser.userId,
@@ -49,7 +49,8 @@ export const ConfirmSignUp: FC<Props> = ({
   const handleFormSubmit = async () => {
     setErrorMessage(undefined);
     setSubmitting(true);
-    mutate({ email, username, password });
+
+    return signUp({ email, username, password });
   };
 
   return (
