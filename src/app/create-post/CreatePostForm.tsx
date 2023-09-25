@@ -11,6 +11,8 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -306,222 +308,228 @@ export const CreatePostForm: FC<CreatePostFormProps> = ({
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        width: '100%',
-        padding: APP_GUTTER,
-      }}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      style={{ flex: 1 }}
     >
-      <AppText
-        weight="bold"
-        size="large"
-        textAlign="center"
-        marginBottom={SPACING_XXSMALL}
-      >
-        Upload your video from the artist's gig
-      </AppText>
-      <View
-        style={{
-          ...styles.flexRowContainer,
-          ...styles.borederedContainer,
-        }}
-      >
-        {!thumbnailLoading &&
-          (thumbnailUri ? (
-            <Image
-              style={{ marginRight: SPACING_XXXSMALL }}
-              source={{
-                uri: thumbnailUri,
-                width: 50,
-                height: 50,
-              }}
-            ></Image>
-          ) : (
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: 50,
-                height: 50,
-                backgroundColor: COLOR_NEUTRAL_XXLIGHT,
-              }}
-            >
-              <SVGIcon
-                height={40}
-                width={40}
-                color={IconColor.LIGHT}
-              >
-                <PictureSVG></PictureSVG>
-              </SVGIcon>
-            </View>
-          ))}
-        {thumbnailLoading && <LoadingThumbnail />}
-        {/* Had to wrap in View to stop the AppTextInput overflowing width of the screen */}
-        <View style={{ flex: 1 }}>
-          <AppTextInput
-            handleChange={(e: string | React.ChangeEvent<any>) => {
-              if (showError) {
-                setShowError(false);
-              }
-              handleCaptionChange(e);
-            }}
-            handleBlur={(e: any) => {
-              if (showError) {
-                setShowError(false);
-              }
-              setShowError(false);
-              handleCaptionBlur(e);
-            }}
-            value={values.caption}
-            placeholder="Write a caption"
-            error={errors.caption}
-            touched={touched.caption}
-            backgroundColor="transparent"
-            multiline={true}
-          />
-        </View>
-      </View>
-
-      <View
-        style={{
-          ...styles.flexColumnContainer,
-          ...styles.borederedContainer,
-        }}
-      >
-        {!performer && (
-          <AppText
-            isLink={true}
-            handlePress={handlSearchForPerformerPress}
-          >
-            Select the artist
-          </AppText>
-        )}
-        {performer && (
-          <PerformerSearchCard
-            performer={performer}
-            onPress={handlSearchForPerformerPress}
-          ></PerformerSearchCard>
-        )}
-      </View>
-      {performer && (
-        <>
-          <View
-            style={{
-              ...styles.flexColumnContainer,
-              ...styles.borederedContainer,
-            }}
-          >
-            {performance && (
-              <Pressable
-                style={styles.flexRowContainer}
-                onPress={handleSelectPerformancePress}
-              >
-                <SVGIcon
-                  styles={{ marginRight: SPACING_SMALL }}
-                  height={22}
-                  width={22}
-                  handlePress={handleSelectPerformancePress}
-                >
-                  <LocationSVG></LocationSVG>
-                </SVGIcon>
-                <AppText>
-                  {`${performance.venueName} ${new Date(
-                    performance.performanceDate * 1000,
-                  ).toLocaleDateString()}`}
-                </AppText>
-              </Pressable>
-            )}
-            {!performance && (
-              <AppText
-                isLink={true}
-                handlePress={handleSelectPerformancePress}
-              >
-                Select a gig
-              </AppText>
-            )}
-          </View>
-        </>
-      )}
-      {performer && (
-        <View style={{ marginTop: SPACING_SMALL }}>
-          <AppText marginBottom={SPACING_XXSMALL}>
-            Can't find the artist's gig?
-          </AppText>
-          <AppText marginBottom={SPACING_XXSMALL}>
-            Describe the gig to us. Once the gig has been created by our team or
-            the artist, we can use your description to link your post to the
-            gig.
-          </AppText>
-          <AppTextInput
-            handleChange={(e: string | React.ChangeEvent<any>) => {
-              if (showError) {
-                setShowError(false);
-              }
-              handleNoteChange(e);
-            }}
-            handleBlur={(e: any) => {
-              if (showError) {
-                setShowError(false);
-              }
-              setShowError(false);
-              handleNoteBlur(e);
-            }}
-            value={values.note}
-            placeholder="e.g. O2 Academy Brixton, London. 22/03/23"
-            error={errors.note}
-            touched={touched.note}
-            backgroundColor="transparent"
-            multiline={true}
-          />
-        </View>
-      )}
-      <View
-        style={{
-          flexGrow: 1,
-          justifyContent: 'flex-end',
-          marginBottom: SPACING_SMALL,
+      <ScrollView
+        contentContainerStyle={{
           width: '100%',
+          padding: APP_GUTTER,
         }}
+        showsVerticalScrollIndicator={false}
       >
-        {showError && !!errorComponent && errorComponent}
+        <AppText
+          weight="bold"
+          size="large"
+          textAlign="center"
+          marginBottom={SPACING_XXSMALL}
+        >
+          Upload your video from the artist's gig
+        </AppText>
         <View
           style={{
             ...styles.flexRowContainer,
+            ...styles.borederedContainer,
           }}
         >
-          <View
-            style={{
-              flexGrow: 1,
-              flexShrink: 0,
-              marginRight: SPACING_SMALL,
-            }}
-          >
-            <AppButton
-              color={BUTTON_COLOR_DISABLED}
-              text="Cancel"
-              handlePress={() => onCancel(false)}
-            ></AppButton>
-          </View>
-          <View
-            style={{
-              flexGrow: 1,
-              flexShrink: 0,
-            }}
-          >
-            <AppButton
-              color={BUTTON_COLOR_PRIMARY}
-              disabled={buttonDisabled}
-              text="Share"
-              handlePress={handleSubmit}
-              isSubmitting={isSubmitting}
-            ></AppButton>
+          {!thumbnailLoading &&
+            (thumbnailUri ? (
+              <Image
+                style={{ marginRight: SPACING_XXXSMALL }}
+                source={{
+                  uri: thumbnailUri,
+                  width: 50,
+                  height: 50,
+                }}
+              ></Image>
+            ) : (
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 50,
+                  height: 50,
+                  backgroundColor: COLOR_NEUTRAL_XXLIGHT,
+                }}
+              >
+                <SVGIcon
+                  height={40}
+                  width={40}
+                  color={IconColor.LIGHT}
+                >
+                  <PictureSVG></PictureSVG>
+                </SVGIcon>
+              </View>
+            ))}
+          {thumbnailLoading && <LoadingThumbnail />}
+          {/* Had to wrap in View to stop the AppTextInput overflowing width of the screen */}
+          <View style={{ flex: 1 }}>
+            <AppTextInput
+              handleChange={(e: string | React.ChangeEvent<any>) => {
+                if (showError) {
+                  setShowError(false);
+                }
+                handleCaptionChange(e);
+              }}
+              handleBlur={(e: any) => {
+                if (showError) {
+                  setShowError(false);
+                }
+                setShowError(false);
+                handleCaptionBlur(e);
+              }}
+              value={values.caption}
+              placeholder="Write a caption"
+              error={errors.caption}
+              touched={touched.caption}
+              backgroundColor="transparent"
+              multiline={true}
+            />
           </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View
+          style={{
+            ...styles.flexColumnContainer,
+            ...styles.borederedContainer,
+          }}
+        >
+          {!performer && (
+            <AppText
+              isLink={true}
+              handlePress={handlSearchForPerformerPress}
+            >
+              Select the artist
+            </AppText>
+          )}
+          {performer && (
+            <PerformerSearchCard
+              performer={performer}
+              onPress={handlSearchForPerformerPress}
+            ></PerformerSearchCard>
+          )}
+        </View>
+        {performer && (
+          <>
+            <View
+              style={{
+                ...styles.flexColumnContainer,
+                ...styles.borederedContainer,
+              }}
+            >
+              {performance && (
+                <Pressable
+                  style={styles.flexRowContainer}
+                  onPress={handleSelectPerformancePress}
+                >
+                  <SVGIcon
+                    styles={{ marginRight: SPACING_SMALL }}
+                    height={22}
+                    width={22}
+                    handlePress={handleSelectPerformancePress}
+                  >
+                    <LocationSVG></LocationSVG>
+                  </SVGIcon>
+                  <AppText>
+                    {`${performance.venueName} ${new Date(
+                      performance.performanceDate * 1000,
+                    ).toLocaleDateString()}`}
+                  </AppText>
+                </Pressable>
+              )}
+              {!performance && (
+                <AppText
+                  isLink={true}
+                  handlePress={handleSelectPerformancePress}
+                >
+                  Select a gig
+                </AppText>
+              )}
+            </View>
+          </>
+        )}
+        {performer && (
+          <View style={{ marginTop: SPACING_SMALL }}>
+            <AppText marginBottom={SPACING_XXSMALL}>
+              Can't find the artist's gig?
+            </AppText>
+            <AppText marginBottom={SPACING_XXSMALL}>
+              Describe the gig to us. Once the gig has been created by our team
+              or the artist, we can use your description to link your post to
+              the gig.
+            </AppText>
+            <AppTextInput
+              handleChange={(e: string | React.ChangeEvent<any>) => {
+                if (showError) {
+                  setShowError(false);
+                }
+                handleNoteChange(e);
+              }}
+              handleBlur={(e: any) => {
+                if (showError) {
+                  setShowError(false);
+                }
+                setShowError(false);
+                handleNoteBlur(e);
+              }}
+              value={values.note}
+              placeholder="e.g. O2 Academy Brixton, London. 22/03/23"
+              error={errors.note}
+              touched={touched.note}
+              backgroundColor="transparent"
+              multiline={true}
+            />
+          </View>
+        )}
+        <View
+          style={{
+            flexGrow: 1,
+            justifyContent: 'flex-end',
+            marginBottom: SPACING_SMALL,
+            width: '100%',
+          }}
+        >
+          {showError && !!errorComponent && errorComponent}
+          <View
+            style={{
+              ...styles.flexRowContainer,
+            }}
+          >
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+                marginRight: SPACING_SMALL,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_DISABLED}
+                text="Cancel"
+                handlePress={() => onCancel(false)}
+              ></AppButton>
+            </View>
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_PRIMARY}
+                disabled={buttonDisabled}
+                text="Share"
+                handlePress={handleSubmit}
+                isSubmitting={isSubmitting}
+              ></AppButton>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

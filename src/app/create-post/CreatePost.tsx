@@ -3,6 +3,7 @@ import { PrimaryScreens } from 'app/primary-nav/PrimaryNav.types';
 import { AppError } from 'components/app-error';
 import { ProfileContext, ProfileType } from 'contexts/profile.context';
 import React, { FC, useContext, useState } from 'react';
+import { View } from 'react-native';
 import { SPACING_SMALL } from 'styles';
 import { CreatePostForm } from './CreatePostForm';
 import { UploadFile } from './UploadFile';
@@ -26,7 +27,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
   }
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
       {/* Only users can create posts */}
       {!fileTypeError &&
         postFile &&
@@ -76,7 +77,7 @@ export const CreatePost: FC<CreatePostStackScreenProps> = ({
           onCancel={handleCancel}
         ></UploadFile>
       )}
-    </>
+    </View>
   );
 };
 

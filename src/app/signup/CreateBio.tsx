@@ -5,7 +5,13 @@ import { AppText } from 'components/app-text';
 import { AppTextInput } from 'components/form-components';
 import { useFormik } from 'formik';
 import React, { FC } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { AuthStatus, AuthUserRole } from 'store/auth/auth.types';
 import { useUsersUpdateMutation } from 'store/users';
 import {
@@ -87,72 +93,81 @@ export const CreateBio: FC<Props> = ({
   const buttonDisabled = isSubmitting || !isValid || !dirty;
 
   return (
-    <ScrollView
-      contentContainerStyle={{
-        width: '100%',
-        padding: APP_GUTTER,
-        paddingTop: '25%',
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <AppText
-        size="large"
-        marginBottom={SPACING_MID}
+    <View style={{ flex: 1 }}>
+      {/**View component needed to ensure KeyboardAvoidingView works correctly */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 32 : 0}
+        style={{ flex: 1 }}
       >
-        Tell us about yourself
-      </AppText>
-
-      <AppTextInput
-        handleChange={(e: string | React.ChangeEvent<any>) => {
-          setFieldTouched('biography', true, true);
-          handleBioChange(e);
-        }}
-        handleBlur={(e: any) => {
-          handleBioBlur(e);
-        }}
-        value={values.biography}
-        placeholder="e.g. 21 year old from London. I love 90's hip hop..."
-        error={errors.biography}
-        touched={touched.biography}
-        borderless={false}
-        multiline={true}
-      />
-
-      <View
-        style={{
-          ...styles.flexRowContainer,
-          marginTop: 'auto',
-        }}
-      >
-        <View
-          style={{
-            flexGrow: 1,
-            flexShrink: 0,
-            marginRight: SPACING_SMALL,
+        <ScrollView
+          contentContainerStyle={{
+            width: '100%',
+            padding: APP_GUTTER,
+            paddingTop: '25%',
           }}
+          showsVerticalScrollIndicator={false}
         >
-          <AppButton
-            color={BUTTON_COLOR_DISABLED}
-            text="Skip"
-            handlePress={updateAuthState}
-          ></AppButton>
-        </View>
-        <View
-          style={{
-            flexGrow: 1,
-            flexShrink: 0,
-          }}
-        >
-          <AppButton
-            color={BUTTON_COLOR_PRIMARY}
-            disabled={buttonDisabled}
-            text="Submit"
-            handlePress={handleSubmit}
-            isSubmitting={isSubmitting}
-          ></AppButton>
-        </View>
-      </View>
-    </ScrollView>
+          <AppText
+            size="large"
+            marginBottom={SPACING_MID}
+          >
+            Tell us about yourself
+          </AppText>
+
+          <AppTextInput
+            handleChange={(e: string | React.ChangeEvent<any>) => {
+              setFieldTouched('biography', true, true);
+              handleBioChange(e);
+            }}
+            handleBlur={(e: any) => {
+              handleBioBlur(e);
+            }}
+            value={values.biography}
+            placeholder="e.g. 21 year old from London. I love 90's hip hop..."
+            error={errors.biography}
+            touched={touched.biography}
+            borderless={false}
+            multiline={true}
+          />
+
+          <View
+            style={{
+              ...styles.flexRowContainer,
+              marginTop: 'auto',
+            }}
+          >
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+                marginRight: SPACING_SMALL,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_DISABLED}
+                text="Skip"
+                handlePress={updateAuthState}
+              ></AppButton>
+            </View>
+            <View
+              style={{
+                flexGrow: 1,
+                flexShrink: 0,
+              }}
+            >
+              <AppButton
+                color={BUTTON_COLOR_PRIMARY}
+                disabled={buttonDisabled}
+                text="Submit"
+                handlePress={handleSubmit}
+                isSubmitting={isSubmitting}
+              ></AppButton>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
