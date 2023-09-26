@@ -36,5 +36,5 @@ export default ({ config }) => {
     }
 
     // Handle case of local development against real dev backend
-    return 'https://gigsstory-api-prod.eba-c662d9mj.us-east-2.elasticbeanstalk.com';
+    return "https://gigsstory-api-dev.us-east-2.elasticbeanstalk.com";
   }
