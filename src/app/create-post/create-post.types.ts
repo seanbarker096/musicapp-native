@@ -37,3 +37,8 @@ export interface PostFile {
   blob: Blob;
 }
 
+
+export enum UploadFileErrorType {
+  FILE_SIZE = 'FILE_SIZE',
+  PERMISSION_DENIED = 'PERMISSION_DENIED',
+}

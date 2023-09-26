@@ -2,12 +2,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { FC, useContext } from 'react';
 import { AuthStateContext } from 'store/auth/auth.contexts';
-import { PostFile } from './create-post.types';
-
+import { PostFile, UploadFileErrorType } from './create-post.types';
 
 interface UploadFileProps {
   onFileSelected: (file: PostFile) => void;
-  onCancel: (fileTypeError: boolean) => void;
+  onCancel: (uploadFileErrorType?: UploadFileErrorType) => void;
 }
 
 export const UploadFile: FC<UploadFileProps> = ({
@@ -21,8 +20,11 @@ export const UploadFile: FC<UploadFileProps> = ({
   useFocusEffect(
     React.useCallback(() => {
       const _openMediaLibrary = async () => {
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-        const response = await ImagePicker.getMediaLibraryPermissionsAsync();
+        const res = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (res.granted === false) {
+          return onCancel(UploadFileErrorType.PERMISSION_DENIED);
+        }
 
         const result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Videos,
@@ -30,26 +32,24 @@ export const UploadFile: FC<UploadFileProps> = ({
           quality: 1,
         });
 
-        if (result.cancelled) {
-          onCancel(false);
+        if (result.canceled) {
+          return onCancel();
         }
 
-        if (!result.cancelled) {
-          const file = await fetch(result.uri);
+        const file = await fetch(result.uri);
 
-          const blob = await file.blob();
+        const blob = await file.blob();
 
-          if (blob.type !== 'video/mp4' && blob.type !== 'video/webm') {
-            onCancel(true);
-          }
-
-          onFileSelected({
-            imageInfo: result,
-            mimeType: blob.type,
-            fileName: `${userId}-post-${Date.now()}`,
-            blob,
-          });
+        if (blob && blob.type !== 'video/mp4' && blob.type !== 'video/webm') {
+          return onCancel(UploadFileErrorType.FILE_TYPE);
         }
+
+        return onFileSelected({
+          imageInfo: result,
+          mimeType: blob.type,
+          fileName: `${userId}-post-${Date.now()}`,
+          blob,
+        });
       };
 
       _openMediaLibrary();
