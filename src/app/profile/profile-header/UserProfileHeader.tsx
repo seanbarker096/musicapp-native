@@ -48,16 +48,19 @@ const UserProfileHeader: FC<UserProfileHeaderProps> = ({ userId }) => {
             <ProfileImage
               imageUrl={user.avatarFile?.url}
               size="xlarge"
+              styles={{ marginBottom: SPACING_XSMALL }}
             />
-            <AppText
-              size="large"
-              weight="bold"
-            >
-              {user.firstName} {user.secondName}
-            </AppText>
+            {user.firstName && (
+              <AppText
+                size="large"
+                weight="bold"
+              >
+                {user.firstName} {user.secondName}
+              </AppText>
+            )}
             <AppText marginBottom={SPACING_XSMALL}>@{user.username}</AppText>
           </View>
-          <AppText maxLines={4}>{user.bio}</AppText>
+          {user.bio && <AppText maxLines={4}>{user.bio}</AppText>}
         </View>
       )}
     </>

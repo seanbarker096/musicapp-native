@@ -93,7 +93,7 @@ const Timeline: FC<TimelineProps> = ({
             weight="bold"
             marginBottom={SPACING_XSMALL}
           >
-            {performer.name} & {user.firstName}
+            {performer.name} & {user.username}
           </AppText>
           <View
             style={{
@@ -114,7 +114,7 @@ const Timeline: FC<TimelineProps> = ({
               textColor={COLOR_NEUTRAL_XXXXLIGHT}
               weight="semi-bold"
             >
-              Gigs attended by {user.firstName}
+              Gigs attended by {user.username}
             </AppText>
           </View>
           <PerformanceList
